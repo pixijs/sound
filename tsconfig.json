@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS",
+        "target": "es5",
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outDir": "lib",
+        "sourceMap": true,
+        "inlineSources": true,
+        "declaration": true,
+        "typeRoots": [
+            "lib/"
+        ]
+    },
+    "files": [
+        "typings/index.d.ts"
+    ],
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules/**/*"
+    ]
+}

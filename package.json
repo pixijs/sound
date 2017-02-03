@@ -1,0 +1,69 @@
+{
+  "name": "pixi-sound",
+  "version": "1.0.0",
+  "description": "WebAudio API playback without any Flash shims or HTML Audio fallback",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "npm run test:lib && npm run test:dist && npm run test:dist:min",
+    "test:lib": "floss --path=test/lib.js",
+    "test:dist": "floss --path=test/dist.js",
+    "test:dist:min": "floss --path=test/dist.min.js",
+    "coverage": "npm run test:lib -- -c \"lib/*.js\" -s",
+    "precoverage:report": "rimraf coverage",
+    "coverage:report": "npm run coverage -- -h",
+    "clean": "rimraf lib/** dist/** && mkdirp lib dist",
+    "start": "npm run watch",
+    "watch": "tsc -w",
+    "prebuild": "npm run clean",
+    "build": "tsc",
+    "postbuild": "npm run dist",
+    "dist": "browserify --no-builtins -d -s Sound -e ./lib/index.js -o ./dist/pixi-sound.js",
+    "postdist": "uglifyjs --output ./dist/pixi-sound.min.js -- ./dist/pixi-sound.js",
+    "predocs": "rimraf docs/** .docs && gulp comments",
+    "docs": "jsdoc -c jsdoc.conf.json -R README.md",
+    "postdocs": "rimraf .docs",
+    "deploy": "gh-pages -d docs"
+  },
+  "typings": "lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pixijs/pixi-sound.git"
+  },
+  "files": [
+    "dist/",
+    "lib/",
+    "LICENSE",
+    "package.json",
+    "README.md"
+  ],
+  "keywords": [
+    "webaudio",
+    "sound",
+    "pixi"
+  ],
+  "author": "Matt Karl @bigtimebuddy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pixijs/pixi-sound/issues"
+  },
+  "homepage": "https://github.com/pixijs/pixi-sound#readme",
+  "devDependencies": {
+    "browserify": "^14.0.0",
+    "electron-prebuilt": "^1.4.13",
+    "floss": "^1.2.4",
+    "gh-pages": "^0.12.0",
+    "gulp": "^3.9.1",
+    "gulp-comments": "^1.2.0",
+    "jaguarjs-jsdoc": "^1.0.2",
+    "jsdoc": "^3.4.3",
+    "mkdirp": "^0.5.1",
+    "pixi.js": "^4.3.4",
+    "rimraf": "^2.5.4",
+    "typescript": "^2.1.5",
+    "uglify-js": "^2.7.5"
+  },
+  "dependencies": {
+    "eventemitter3": "^2.0.2",
+    "uuid": "^3.0.1"
+  }
+}
