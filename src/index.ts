@@ -11,6 +11,9 @@ const sound:SoundLibrary = new SoundLibrary();
 // library doesn't depend on PIXI strictly
 if (root.PIXI === undefined)
 {
+    /**
+     * @namespace PIXI
+     */
     root.PIXI = {};
 }
 else if (root.PIXI.loaders !== undefined)

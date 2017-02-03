@@ -73,10 +73,18 @@ export default class SoundLibrary
      * @readOnly
      * @type {PIXI.sound.SoundContext}
      */
-    get context(): SoundContext
+    get context():SoundContext
     {
         return this._context;
     }
+
+    /**
+     * Adds a new sound by alias.
+     * @method PIXI.sound#add
+     * @param {String} alias The sound alias reference.
+     * @param {PIXI.sound.Sound} sound Sound reference to use.
+     * @return {PIXI.sound.Sound} Instance of the Sound object.
+     */
 
     /**
      * Adds a new sound by alias.
@@ -93,14 +101,22 @@ export default class SoundLibrary
      * @param {Number} [options.panning=0] The panning amount from -1 (left) to 1 (right).
      * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback when play is finished.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
-     * @return {PIXI.sound.Sound} Instance to the Sound object.
+     * @return {PIXI.sound.Sound} Instance of the Sound object.
      */
-    add(alias:string, options:Options|string|ArrayBuffer):Sound
+    add(alias:string, options:Options|string|ArrayBuffer|Sound):Sound
     {
         // @if DEBUG
         console.assert(!this._sounds[alias], `Sound with alias ${alias} already exists.`);
         // @endif
-        const sound = this._sounds[alias] = new Sound(this.context, options);
+        let sound:Sound;
+        if (options instanceof Sound)
+        {
+            sound = this._sounds[alias] = (options as Sound);
+        }
+        else
+        {
+            sound = this._sounds[alias] = new Sound(this.context, options);
+        }
         return sound;
     }
 
@@ -198,7 +214,7 @@ export default class SoundLibrary
      * @method PIXI.sound#removeAll
      * @return {PIXI.sound} Instance for chaining.
      */
-    removeAll(): SoundLibrary
+    removeAll():SoundLibrary
     {
         for (let alias in this._sounds)
         {
@@ -329,6 +345,17 @@ export default class SoundLibrary
             sound.panning = panning;
         }
         return sound.panning;
+    }
+
+    /**
+     * Get the length of a sound in seconds.
+     * @method PIXI.sound#duration
+     * @param {String} alias The sound alias reference.
+     * @return {Number} The current duration in seconds.
+     */
+    duration(alias:string):number
+    {
+        return this.sound(alias).duration;
     }
 
     /**

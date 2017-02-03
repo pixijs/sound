@@ -1,6 +1,7 @@
 import SoundContext from './SoundContext';
 import ChainBuilder from './ChainBuilder';
 import SoundInstance from './SoundInstance';
+import soundLibrary from './index';
 import * as path from 'path';
 
 export interface Options {
@@ -45,19 +46,12 @@ export declare type CompleteCallback = (sound:Sound) => void;
  *
  * @class Sound
  * @memberof PIXI.sound
- * @param {PIXI.sound.SoundContext} [context] The context.
+ * @example
+ * const foo = PIXI.sound.Sound.from('foo.mp3');
+ * foo.play();
+ * @param {PIXI.sound.SoundContext} context The SoundContext instance.
  * @param {ArrayBuffer|String|Object} options Either the path or url to the source file.
- *        or the object of options to use.
- * @param {ArrayBuffer|String} [options.src] If `options` is an object, the source of file.
- * @param {Boolean} [options.autoPlay=false] true to play after loading.
- * @param {Boolean} [options.preload=false] true to immediately start preloading.
- * @param {Boolean} [options.block=false] true to only play one instance of the sound at a time.
- * @param {Number} [options.volume=1] The amount of volume 1 = 100%.
- * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false, loaded with NodeJS's `fs` module.
- * @param {Number} [options.panning=0] The panning amount from -1 (left) to 1 (right).
- * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback when play is finished.
- * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
- * @param {Boolean} [options.loop=false] true to loop the audio playback.
+ *        or the object of options to use. See {@link PIXI.sound.Sound.from}
  */
 export default class Sound
 {
@@ -79,6 +73,28 @@ export default class Sound
     private _gainNode:any;
     private _analyser:any;
     private _panner:any;
+
+    /**
+     * Create a new sound instance from source.
+     * @method PIXI.sound.Sound.from
+     * @param {ArrayBuffer|String|Object} options Either the path or url to the source file.
+     *        or the object of options to use.
+     * @param {ArrayBuffer|String} [options.src] If `options` is an object, the source of file.
+     * @param {Boolean} [options.autoPlay=false] true to play after loading.
+     * @param {Boolean} [options.preload=false] true to immediately start preloading.
+     * @param {Boolean} [options.block=false] true to only play one instance of the sound at a time.
+     * @param {Number} [options.volume=1] The amount of volume 1 = 100%.
+     * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false, loaded with NodeJS's `fs` module.
+     * @param {Number} [options.panning=0] The panning amount from -1 (left) to 1 (right).
+     * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback when play is finished.
+     * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
+     * @param {Boolean} [options.loop=false] true to loop the audio playback.
+     * @return {PIXI.sound.Sound} Created sound instance.
+     */
+    static from(options:string|Options|ArrayBuffer): Sound
+    {
+        return new Sound(soundLibrary.context, options);
+    }
 
     constructor(context:SoundContext, options:string|Options|ArrayBuffer)
     {
@@ -254,38 +270,11 @@ export default class Sound
     }
 
     /**
-     * Starts the preloading of sound.
-     * @method PIXI.sound.Sound#_beginPreload
-     * @private
-     */
-    _beginPreload():void
-    {
-        // Load from the file path
-        if (this.src)
-        {
-            this.useXHR ? this.loadUrl() : this.loadPath();
-        }
-        // Load from the arraybuffer, incase it was loaded outside
-        else if (this.srcBuffer)
-        {
-            this.decode(this.srcBuffer);
-        }
-        else if (this.loaded)
-        {
-            this.loaded(new Error("sound.src or sound.srcBuffer must be set"));
-        }
-        else
-        {
-            console.error('sound.src or sound.srcBuffer must be set');
-        }
-    }
-
-    /**
      * Destructor, safer to use `SoundLibrary.remove(alias)` to remove this sound.
      * @private
      * @method PIXI.sound.Sound#destroy
      */
-    destroy():void
+    public destroy():void
     {
         // disconnect from this._context
         this._chain.last().disconnect();
@@ -301,7 +290,7 @@ export default class Sound
         this._instances = null;
     }
 
-    get isPlayable():boolean
+    public get isPlayable():boolean
     {
         return this.isLoaded && !!this._source && !!this._source.buffer;
     }
@@ -310,10 +299,9 @@ export default class Sound
      * Getter of the chain nodes.
      * @name PIXI.sound.Sound#nodes
      * @type {Object}
-     * @private
      * @readOnly
      */
-    get nodes():Object
+    public get nodes():Object
     {
         return this._chain.nodes();
     }
@@ -323,11 +311,11 @@ export default class Sound
      * @name PIXI.sound.Sound#volume
      * @type {Number}
      */
-    get volume():number
+    public get volume():number
     {
         return this._gainNode.gain.value;
     }
-    set volume(volume:number)
+    public set volume(volume:number)
     {
         this._gainNode.gain.value = volume;
     }
@@ -337,11 +325,11 @@ export default class Sound
      * @name PIXI.sound.Sound#loop
      * @type {Boolean}
      */
-    get loop():boolean
+    public get loop():boolean
     {
         return this._source.loop;
     }
-    set loop(loop:boolean)
+    public set loop(loop:boolean)
     {
         this._source.loop = !!loop;
     }
@@ -351,13 +339,26 @@ export default class Sound
      * @name PIXI.sound.Sound#buffer
      * @type {AudioBuffer}
      */
-    get buffer():AudioBuffer
+    public get buffer():AudioBuffer
     {
         return this._source.buffer;
     }
-    set buffer(buffer:AudioBuffer)
+    public set buffer(buffer:AudioBuffer)
     {
         this._source.buffer = buffer;
+    }
+
+    /**
+     * Get the duration in seconds.
+     * @name PIXI.sound.Sound#duration
+     * @type {number}
+     */
+    public get duration():number
+    {
+        // @if DEBUG
+        console.assert(this.isPlayable, 'Sound not yet playable, no duration');
+        // @endif
+        return this._source.buffer.duration;
     }
 
     /**
@@ -366,11 +367,11 @@ export default class Sound
      * @type {Number}
      * @default 0
      */
-    get panning():number
+    public get panning():number
     {
         return this._panner.pan;
     }
-    set panning(pan:number)
+    public set panning(pan:number)
     {
         this._panner.pan.value = pan;
     }
@@ -381,7 +382,7 @@ export default class Sound
      * @type {Array<SoundInstance>}
      * @readOnly
      */
-    get instances():Array<SoundInstance>
+    public get instances():Array<SoundInstance>
     {
         return this._instances;
     }
@@ -390,13 +391,13 @@ export default class Sound
      * Plays the sound.
      * @method PIXI.sound.Sound#play
      * @param {PIXI.sound.Sound~completeCallback|object} options Either completed function or play options.
-     * @param {Number} [options.offset=0] time when to play the sound.
+     * @param {Number} [options.offset=0] time when to play the sound in seconds.
      * @param {PIXI.sound.Sound~completeCallback} [options.complete] Callback when complete.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded] If the sound isn't already preloaded, callback when
      *        the audio has completely finished loading and decoded.
-     * @return {SoundInstance} Current playing instance.
+     * @return {PIXI.sound.SoundInstance} Current playing instance.
      */
-    play(options?:PlayOptions|CompleteCallback):SoundInstance
+    public play(options?:PlayOptions|CompleteCallback):SoundInstance
     {
         if (typeof options === "function")
         {
@@ -435,16 +436,14 @@ export default class Sound
         const instance = SoundInstance.create(this._chain);
         this._instances.push(instance);
         this.isPlaying = true;
-        instance.once('complete', () =>
-        {
-            this._onComplete(instance);
+        instance.once('end', () => {
             if ((<PlayOptions>options).complete)
             {
                 (<PlayOptions>options).complete(this);
             }
+            this._onComplete(instance);
         });
-        instance.once('stopped', () =>
-        {
+        instance.once('stop', () => {
             this._onComplete(instance);
         });
         instance.play((<PlayOptions>options).offset);
@@ -452,32 +451,11 @@ export default class Sound
     }
 
     /**
-     * Sound instance completed.
-     * @method PIXI.sound.Sound#_onComplete
-     * @private
-     * @param {PIXI.sound.SoundInstance} instance
-     */
-    _onComplete(instance:SoundInstance): void
-    {
-        if (this._instances)
-        {
-            const index = this._instances.indexOf(instance);
-            if (index > -1)
-            {
-                this._instances.splice(index, 1);
-            }
-            this.isPlaying = this._instances.length > 0;
-        }
-        instance.destroy();
-    }
-
-
-    /**
      * Stops all the instances of this sound from playing.
      * @method PIXI.sound.Sound#stop
      * @return {PIXI.sound.Sound} Instance of this sound.
      */
-    stop():Sound
+    public stop():Sound
     {
         if (!this.isPlayable)
         {
@@ -499,7 +477,7 @@ export default class Sound
      * @method PIXI.sound.Sound#pause
      * @return {PIXI.sound.Sound} Instance of this sound.
      */
-    pause():Sound
+    public pause():Sound
     {
         for (let i = this._instances.length - 1; i >= 0; i--)
         {
@@ -510,11 +488,11 @@ export default class Sound
     };
 
     /**
-     * Stops all the instances of this sound from playing
-     * @method PIXI.sound.Sound#stop
+     * Resuming all the instances of this sound from playing
+     * @method PIXI.sound.Sound#resume
      * @return {PIXI.sound.Sound} Instance of this sound.
      */
-    resume():Sound
+    public resume():Sound
     {
         for (let i = this._instances.length - 1; i >= 0; i--)
         {
@@ -525,11 +503,58 @@ export default class Sound
     }
 
     /**
+     * Starts the preloading of sound.
+     * @method PIXI.sound.Sound#_beginPreload
+     * @private
+     */
+    private _beginPreload():void
+    {
+        // Load from the file path
+        if (this.src)
+        {
+            this.useXHR ? this._loadUrl() : this._loadPath();
+        }
+        // Load from the arraybuffer, incase it was loaded outside
+        else if (this.srcBuffer)
+        {
+            this._decode(this.srcBuffer);
+        }
+        else if (this.loaded)
+        {
+            this.loaded(new Error("sound.src or sound.srcBuffer must be set"));
+        }
+        else
+        {
+            console.error('sound.src or sound.srcBuffer must be set');
+        }
+    }
+
+    /**
+     * Sound instance completed.
+     * @method PIXI.sound.Sound#_onComplete
+     * @private
+     * @param {PIXI.sound.SoundInstance} instance
+     */
+    private _onComplete(instance:SoundInstance): void
+    {
+        if (this._instances)
+        {
+            const index = this._instances.indexOf(instance);
+            if (index > -1)
+            {
+                this._instances.splice(index, 1);
+            }
+            this.isPlaying = this._instances.length > 0;
+        }
+        instance.destroy();
+    }
+
+    /**
      * Removes all instances.
      * @method PIXI.sound.Sound#_removeInstances
      * @private
      */
-    _removeInstances():void
+    private _removeInstances():void
     {
         // destroying also stops
         for (let i = this._instances.length - 1; i >= 0; i--)
@@ -541,10 +566,10 @@ export default class Sound
 
     /**
      * Loads a sound using XHMLHttpRequest object.
-     * @method PIXI.sound.Sound#loadUrl
+     * @method PIXI.sound.Sound#_loadUrl
      * @private
      */
-    loadUrl():void
+    private _loadUrl():void
     {
         const request = new XMLHttpRequest();
         let src:string = this.src;
@@ -552,11 +577,10 @@ export default class Sound
         request.responseType = 'arraybuffer';
 
         // Decode asynchronously
-        request.onload = () =>
-        {
+        request.onload = () => {
             this.isLoaded = true;
             this.srcBuffer = request.response as ArrayBuffer;
-            this.decode(request.response);
+            this._decode(request.response);
         };
 
         // actually start the request
@@ -565,15 +589,14 @@ export default class Sound
 
     /**
      * Loads using the file system (NodeJS's fs module).
-     * @method PIXI.sound.Sound#loadPath
+     * @method PIXI.sound.Sound#_loadPath
      * @private
      */
-    loadPath()
+    private _loadPath()
     {
         const fs = require('fs');
         let src:string = this.src;
-        fs.readFile(src, (err, data) =>
-        {
+        fs.readFile(src, (err, data) => {
             if (err)
             {
                 // @if DEBUG
@@ -591,7 +614,7 @@ export default class Sound
             {
                 view[i] = data[i];
             }
-            this.decode(arrayBuffer);
+            this._decode(arrayBuffer);
         });
     }
 
@@ -601,11 +624,10 @@ export default class Sound
      * @param {ArrayBuffer} arrayBuffer From load.
      * @private
      */
-    decode(arrayBuffer:ArrayBuffer): void
+    private _decode(arrayBuffer:ArrayBuffer): void
     {
         this._ctx.decodeAudioData(
-            arrayBuffer, (buffer) =>
-            {
+            arrayBuffer, (buffer) => {
                 this.isLoaded = true;
                 this.buffer = buffer;
                 if (this.loaded)
@@ -617,8 +639,7 @@ export default class Sound
                     this.play(this.complete);
                 }
             },
-            () =>
-            {
+            () => {
                 this.loaded(new Error('Unable to decode file'));
             }
         );

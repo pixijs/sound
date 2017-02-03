@@ -6,7 +6,7 @@ const AUDIO_EXTENSIONS:string[] = ['wav', 'mp3', 'ogg', 'oga'];
 /**
  * Actual resource-loader middleware for sound class
  */
-function middleware(resource, next)
+function middleware(resource, next):void
 {
     if (resource.data && AUDIO_EXTENSIONS.indexOf(resource._getExtension()) > -1)
     {
@@ -41,8 +41,7 @@ export function install(PIXI)
     const Resource = PIXI.loaders.Resource;
 
     // Load all audio files as ArrayBuffers
-    AUDIO_EXTENSIONS.forEach((ext) =>
-    {
+    AUDIO_EXTENSIONS.forEach((ext) => {
         Resource.setExtensionXhrType(ext, Resource.XHR_RESPONSE_TYPE.BUFFER);
         Resource.setExtensionLoadType(ext, Resource.LOAD_TYPE.XHR);
     });
