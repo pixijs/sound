@@ -2,6 +2,8 @@
 
 WebAudio API playback without any Flash shims or HTML Audio fallback. Modern audio playback for modern browsers. 
 
+[![Build Status](https://travis-ci.org/pixijs/pixi-sound.svg?branch=master)](https://travis-ci.org/pixijs/pixi-sound)
+
 **Features**
 
 * Pausing and resuming
