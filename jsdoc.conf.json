@@ -21,7 +21,7 @@
         "applicationName": "PIXI.sound",
         "footer"        : "Made with ♥ by Matt Karl (github.com/bigtimebuddy)",
         "copyright"     : "PIXI Copyright &copy; 2017 Matt Karl.",
-        "linenums"      : true
+        "linenums"      : false
     },
     "markdown"  : {
         "parser"        : "gfm",
