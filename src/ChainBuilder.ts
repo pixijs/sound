@@ -1,5 +1,6 @@
 /**
  * @class ChainBuilder
+ * @memberof PIXI.sound
  * @private
  * @param {AudioContext} audioContext The audio context.
  */
@@ -19,9 +20,9 @@ export default class ChainBuilder
 
     /**
      * Cleans up.
-     * @method ChainBuilder#destroy
+     * @method PIXI.sound.ChainBuilder#destroy
      */
-    destroy():void
+    public destroy():void
     {
         this._nodes = null;
         this._context = null;
@@ -31,42 +32,109 @@ export default class ChainBuilder
 
     /**
      * Gets the nodes.
-     * @method ChainBuilder#nodes
+     * @method PIXI.sound.ChainBuilder#nodes
      * @return {Object}
      */
-    nodes():any
+    public nodes():any
     {
         return this._nodes;
     }
 
     /**
      * Gets the first node.
-     * @method ChainBuilder#first
+     * @method PIXI.sound.ChainBuilder#first
      * @return {Object}
      */
-    first():any
+    public first():any
     {
         return this._firstNode;
     }
 
     /**
      * Gets the last node.
-     * @method ChainBuilder#last
+     * @method PIXI.sound.ChainBuilder#last
      * @return {Object}
      */
-    last():any
+    public last():any
     {
         return this._lastNode;
     }
 
     /**
+     * Clones the bufferSource. Used just before playing a sound.
+     * @method PIXI.sound.ChainBuilder#cloneBufferSource
+     * @returns {AudioBufferSourceNode} The clone AudioBufferSourceNode.
+     */
+    public cloneBufferSource():AudioBufferSourceNode
+    {
+        // @if DEBUG
+        console.assert(this._nodes.bufferSource, "No buffersource presents. Add one.");
+        // @endif
+        const orig = this._nodes.bufferSource;
+        const clone = this._context.createBufferSource();
+        clone.buffer = orig.buffer;
+        clone.playbackRate.value = orig.playbackRate.value;
+        clone.loop = orig.loop;
+        clone.connect(this._bufferSourceDst);
+        return clone;
+    }
+
+    /**
+     * Adds a bufferSource.
+     * @method PIXI.sound.ChainBuilder#bufferSrouce
+     * @param {Object} [properties] Properties to set in the created node.
+     */
+    public bufferSource(properties?:any):ChainBuilder
+    {
+        const node = this._context.createBufferSource();
+        this._nodes.bufferSource = node;
+        return this._addNode(node, properties);
+    }
+
+    /**
+     * Adds a panner.
+     * @method PIXI.sound.ChainBuilder#panner
+     * @param {Object} [properties] Properties to set in the created node.
+     */
+    public panner(properties?:any):ChainBuilder
+    {
+        const node = this._context.createStereoPanner();
+        this._nodes.panner = node;
+        return this._addNode(node, properties);
+    }
+
+    /**
+     * Adds an analyser.
+     * @method PIXI.sound.ChainBuilder#analyser
+     * @param {Object} [properties] Properties to set in the created node.
+     */
+    public analyser(properties?:any):ChainBuilder
+    {
+        const node = this._context.createAnalyser();
+        this._nodes.analyser = node;
+        return this._addNode(node, properties);
+    }
+
+    /**
+     * Adds a gainNode.
+     * @method PIXI.sound.ChainBuilder#gainNode
+     * @param {Object} [properties] Properties to set in the created node.
+     */
+    public gainNode(properties?:any):ChainBuilder
+    {
+        const node = this._context.createGain();
+        this._nodes.gainNode = node;
+        return this._addNode(node, properties);
+    }
+
+    /**
      * Adds a node to the chain.
-     * @method ChainBuilder#_addNode
+     * @method PIXI.sound.ChainBuilder#_addNode
      * @private
      * @param {*} node
      * @param {*} properties
      */
-    _addNode(node:any, properties?:any): ChainBuilder
+    private _addNode(node:any, properties?:any):ChainBuilder
     {
         // update this._bufferSourceDst - needed for .cloneBufferSource()
         const lastIsBufferSource = this._lastNode && ('playbackRate' in this._lastNode);
@@ -95,98 +163,5 @@ export default class ChainBuilder
         }
         // for chained API
         return this;
-    }
-
-    /**
-     * Clones the bufferSource. Used just before playing a sound.
-     * @method ChainBuilder#cloneBufferSource
-     * @returns {AudioBufferSourceNode} The clone AudioBufferSourceNode.
-     */
-    cloneBufferSource():AudioBufferSourceNode
-    {
-        // @if DEBUG
-        console.assert(this._nodes.bufferSource, "No buffersource presents. Add one.");
-        // @endif
-        const orig = this._nodes.bufferSource;
-        const clone = this._context.createBufferSource();
-        clone.buffer = orig.buffer;
-        clone.playbackRate.value = orig.playbackRate.value;
-        clone.loop = orig.loop;
-        clone.connect(this._bufferSourceDst);
-        return clone;
-    }
-
-    /**
-     * Adds a bufferSource.
-     * @method ChainBuilder#bufferSrouce
-     * @param {Object} [properties] Properties to set in the created node.
-     */
-    bufferSource(properties?:any):ChainBuilder
-    {
-        const node = this._context.createBufferSource();
-        this._nodes.bufferSource = node;
-        return this._addNode(node, properties);
-    }
-
-    /**
-     * Adds a createMediaStreamSource.
-     * @method ChainBuilder#mediaStreamSource
-     * @param {Object} [properties] Properties to set in the created node.
-     */
-    // mediaStreamSource(stream:any, properties?:any):ChainBuilder
-    // {
-    //     const node = this._context.createMediaStreamSource(stream);
-    //     this._nodes.bufferSource = node;
-    //     return this._addNode(node, properties);
-    // }
-
-    /**
-     * Adds a createMediaElementSource.
-     * @method ChainBuilder#mediaElementSource
-     * @param  {HTMLElement} element    The element to add.
-     * @param {Object} [properties] Properties to set in the created node.
-     */
-    // mediaElementSource(element:HTMLElement, properties?:any):ChainBuilder
-    // {
-    //     console.assert(element instanceof HTMLAudioElement || element instanceof HTMLVideoElement);
-    //     const node = this._context.createMediaElementSource(element);
-    //     this._nodes.bufferSource = node;
-    //     return this._addNode(node, properties);
-    // }
-
-    /**
-     * Adds a panner.
-     * @method ChainBuilder#panner
-     * @param {Object} [properties] Properties to set in the created node.
-     */
-    panner(properties?:any):ChainBuilder
-    {
-        const node = this._context.createStereoPanner();
-        this._nodes.panner = node;
-        return this._addNode(node, properties);
-    }
-
-    /**
-     * Adds an analyser.
-     * @method ChainBuilder#analyser
-     * @param {Object} [properties] Properties to set in the created node.
-     */
-    analyser(properties?:any):ChainBuilder
-    {
-        const node = this._context.createAnalyser();
-        this._nodes.analyser = node;
-        return this._addNode(node, properties);
-    }
-
-    /**
-     * Adds a gainNode.
-     * @method ChainBuilder#gainNode
-     * @param {Object} [properties] Properties to set in the created node.
-     */
-    gainNode(properties?:any):ChainBuilder
-    {
-        const node = this._context.createGain();
-        this._nodes.gainNode = node;
-        return this._addNode(node, properties);
     }
 }

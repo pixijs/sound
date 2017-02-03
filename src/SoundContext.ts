@@ -47,7 +47,7 @@ export default class SoundContext
      * @type {AudioContext}
      * @readOnly
      */
-    get audioContext(): AudioContext
+    get audioContext():AudioContext
     {
         return this._ctx;
     }

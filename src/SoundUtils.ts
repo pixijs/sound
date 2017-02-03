@@ -1,5 +1,5 @@
 import Sound from './Sound';
-import sound from './index';
+import soundLibrary from './index';
 import * as uuid from 'uuid';
 
 /**
@@ -19,7 +19,7 @@ export default class SoundUtils
      */
     static sineTone(hertz:number = 200, seconds:number = 1):Sound
     {
-        const soundContext = sound.context;
+        const soundContext = soundLibrary.context;
         const soundInstance = new Sound(soundContext, {
             block: true
         });
@@ -62,25 +62,23 @@ export default class SoundUtils
     {
         const alias = uuid.v4();
 
-        sound.add(alias, {
+        soundLibrary.add(alias, {
             src: src,
             preload: true,
             autoPlay: true,
-            loaded: (err:Error) =>
-            {
+            loaded: (err:Error) => {
                 if (err)
                 {
                     console.error(err);
-                    sound.remove(alias);
+                    soundLibrary.remove(alias);
                     if (callback)
                     {
                         callback(err);
                     }
                 }
             },
-            complete: () =>
-            {
-                sound.remove(alias);
+            complete: () => {
+                soundLibrary.remove(alias);
                 if (callback)
                 {
                     callback(null);
