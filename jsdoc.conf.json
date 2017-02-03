@@ -16,7 +16,7 @@
         "cleverLinks"   : false,
         "monospaceLinks": false,
         "default"       : {
-            "outputSourceFiles" : true
+            "outputSourceFiles" : false
         },
         "applicationName": "PIXI.sound",
         "footer"        : "Made with ♥ by Matt Karl (github.com/bigtimebuddy)",
