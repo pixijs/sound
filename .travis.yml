@@ -27,4 +27,6 @@ before_script:
 script:
   - npm run build
   - xvfb-maybe npm run coverage
+  - xvfb-maybe npm run test:dist
+  - xvfb-maybe npm run test:dist:min
   - npm run docs
