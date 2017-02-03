@@ -171,15 +171,22 @@ describe('PIXI.sound', function()
         const alias = 'silence';
         const sound = this.library.add(alias, {
             src: manifest[alias],
-            volume: 0,
             preload: true,
             loaded: () =>
             {
-                this.library.play(alias, () =>
+                expect(this.library.volume(alias)).to.equal(1);
+                this.library.volume(alias, 0);
+                expect(this.library.volume(alias)).to.equal(0);
+                expect(sound.volume).to.equal(0);
+
+                const instance = this.library.play(alias, () =>
                 {
+                    expect(instance.progress).to.equal(1);
                     this.library.remove(alias);
                     done();
                 });
+
+                expect(instance.progress).to.equal(0);
 
                 // Pause
                 this.library.pause(alias);
@@ -205,7 +212,7 @@ describe('PIXI.sound', function()
 
     it('should play a sine tone', function(done)
     {
-        this.slow(1100);
+        this.slow(300);
         const sound = this.library.SoundUtils.sineTone(200, 0.1);
         sound.volume = 0;
         sound.play(() => {

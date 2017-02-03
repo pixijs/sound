@@ -3,6 +3,12 @@ import ChainBuilder from './ChainBuilder';
 
 let id = 0;
 
+// Get the optional shared ticker for
+// handling the progress update
+// otherwise sound instance don't update
+const PIXI:any = (global as any).PIXI;
+const sharedTicker:any = PIXI.ticker ? PIXI.ticker.shared : null;
+
 /**
  * A single play instance that handles the AudioBufferSourceNode.
  * @class SoundInstance
@@ -25,6 +31,7 @@ export default class SoundInstance extends EventEmitter
     private _startTime:number;
     private _paused:boolean;
     private _position:number;
+    private _progress:number;
     private _duration:number;
     private _source:any;
 
@@ -94,6 +101,14 @@ export default class SoundInstance extends EventEmitter
          */
         this._duration = 0;
 
+        /**
+         * Progress float from 0 to 1.
+         * @type {Number}
+         * @name PIXI.sound.SoundInstance#_progress
+         * @private
+         */
+        this._progress = 0;
+
         // Initialize
         this._init(chain);
     }
@@ -123,6 +138,7 @@ export default class SoundInstance extends EventEmitter
      */
     public play(offset:number = 0):void
     {
+        this._progress = 0;
         this._paused = false;
         this._position = offset;
         this._source = this._chain.cloneBufferSource();
@@ -143,6 +159,11 @@ export default class SoundInstance extends EventEmitter
          * @param {Number} progress Amount progressed from 0 to 1
          */
         this.emit('progress', 0);
+
+        if (sharedTicker)
+        {
+            sharedTicker.add(this._update, this);
+        }
     }
 
     /**
@@ -152,10 +173,7 @@ export default class SoundInstance extends EventEmitter
      */
     public get progress():number
     {
-        const position = this._paused ? 
-            this._position :
-            (performance.now() - this._startTime) / 1000;
-        return Math.max(0, Math.min(1, position / this._duration));
+        return this._progress;
     }
 
     /**
@@ -233,13 +251,31 @@ export default class SoundInstance extends EventEmitter
 
     /**
      * To string method for instance.
-     * @method SoundInstance#toString
+     * @method PIXI.sound.SoundInstance#toString
      * @return {String} The string representation of instance.
      * @private
      */
     public toString():string
     {
         return '[SoundInstance id=' + this.id + ']';
+    }
+
+    /**
+     * Internal update the progress. This only run's
+     * if the PIXI shared ticker is available.
+     * @method PIXI.sound.SoundInstance#_update
+     * @private
+     */
+    private _update(): void
+    {
+        if (this._duration)
+        {
+            const position = this._paused ? 
+                this._position :
+                (performance.now() - this._startTime) / 1000;
+            this._progress = Math.max(0, Math.min(1, position / this._duration));
+            this.emit('progress', this._progress);
+        }
     }
 
     /**
@@ -261,9 +297,14 @@ export default class SoundInstance extends EventEmitter
     {
         if (this._source)
         {
+            if (sharedTicker)
+            {
+                sharedTicker.remove(this._update, this);
+            }
             this._source.onended = null;
             this._source.stop();
             this._source = null;
+
         }
     }
 
@@ -279,6 +320,7 @@ export default class SoundInstance extends EventEmitter
             this._source.onended = null;
         }
         this._source = null;
+        this._progress = 1;
         this.emit('progress', 1);
         /**
          * The sound ends, don't use after this
