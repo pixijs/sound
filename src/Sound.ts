@@ -243,7 +243,7 @@ export default class Sound
         this._instances = [];
 
         // connect this._chain.last() node to this._context._entryNode()
-        this._chain.last().connect(this._context._entryNode());
+        this._chain.last().connect(this._context.entryNode());
 
         // create some alias
         this._source = this._chain.nodes().bufferSource;

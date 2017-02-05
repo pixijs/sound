@@ -34,7 +34,7 @@ export default class SoundContext
         this.paused = false;
     }
 
-    destroy()
+    public destroy()
     {
         this._ctx = null;
         this._gainNode = null;
@@ -47,7 +47,7 @@ export default class SoundContext
      * @type {AudioContext}
      * @readOnly
      */
-    get audioContext():AudioContext
+    public get audioContext():AudioContext
     {
         return this._ctx;
     }
@@ -58,11 +58,11 @@ export default class SoundContext
      * @name PIXI.sound.SoundContext#muted
      * @default false
      */
-    get muted():boolean
+    public get muted():boolean
     {
         return this._muted;
     }
-    set muted(muted:boolean)
+    public set muted(muted:boolean)
     {
         this._muted = !!muted;
         this._gainNode.gain.value = this._muted ? 0 : this._volume;
@@ -74,7 +74,7 @@ export default class SoundContext
      * @name PIXI.sound.SoundContext#volume
      * @default 1
      */
-    set volume(volume:number)
+    public set volume(volume:number)
     {
         // update volume
         this._volume = volume;
@@ -85,7 +85,7 @@ export default class SoundContext
             this._gainNode.gain.value = this._volume;
         }
     }
-    get volume():number
+    public get volume():number
     {
         return this._volume;
     }
@@ -96,7 +96,7 @@ export default class SoundContext
      * @name PIXI.sound.SoundContext#paused
      * @default false
      */
-    set paused(paused:boolean)
+    public set paused(paused:boolean)
     {
         if (paused && this._ctx.state === 'running')
         {
@@ -108,18 +108,18 @@ export default class SoundContext
         }
         this._paused = paused;
     }
-    get paused():boolean
+    public get paused():boolean
     {
         return this._paused;
     }
 
     /**
      * Returns the entry node in the master node chains.
-     * @private
+     * @method PIXI.sound.SoundContext#entryNode
+     * @return {GainNode} Destination node for sounds
      */
-    _entryNode():GainNode
+    public entryNode():GainNode
     {
-        //return this._ctx.destination;
         return this._gainNode;
     }
 
@@ -128,7 +128,7 @@ export default class SoundContext
      * @method PIXI.sound.SoundContext#toggleMute
      * @return {Boolean} The current muted state.
      */
-    toggleMute():boolean
+    public toggleMute():boolean
     {
         this.muted = !this.muted;
         return this._muted;
