@@ -33,9 +33,8 @@ function middlewareFactory()
 /**
  * Install the middleware
  * @private
- * @param {PIXI} PIXI - Namespace from PIXI
  */
-export function install(PIXI)
+export function install()
 {
     // Configure PIXI Loader to handle audio files correctly
     const Resource = PIXI.loaders.Resource;

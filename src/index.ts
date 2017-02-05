@@ -1,33 +1,32 @@
 import SoundLibrary from './SoundLibrary';
 import { install } from './LoaderMiddleware'
 
-// Cast as any
-const root = global as any;
-
 // Create instance of the library
 const sound:SoundLibrary = new SoundLibrary();
 
+/**
+ * @namespace PIXI
+ */
+
 // There's no PIXI object, create it
 // library doesn't depend on PIXI strictly
-if (root.PIXI === undefined)
+if ((global as any).PIXI === undefined)
 {
-    /**
-     * @namespace PIXI
-     */
-    root.PIXI = {};
+    throw "pixi.js is required";
 }
-else if (root.PIXI.loaders !== undefined)
+
+if (PIXI.loaders !== undefined)
 {
     // Install the middleware to support 
     // PIXI.loader and new PIXI.loaders.Loader
-    install(root.PIXI);
+    install();
 }
 
 /**
  * Playing sound files with WebAudio API
  * @namespace PIXI.sound
  */
-Object.defineProperty(root.PIXI, 'sound', 
+Object.defineProperty(PIXI, 'sound', 
 {
     get() { return sound; }
 });

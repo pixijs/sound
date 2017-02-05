@@ -54,6 +54,7 @@
   },
   "homepage": "https://github.com/pixijs/pixi-sound#readme",
   "devDependencies": {
+    "@types/pixi.js": "^4.3.1",
     "browserify": "^14.0.0",
     "electron-prebuilt": "^1.4.13",
     "floss": "^1.2.4",
@@ -68,8 +69,10 @@
     "typescript": "^2.1.5",
     "uglify-js": "^2.7.5"
   },
+  "peerDependencies": {
+    "pixi.js": "^4.3.4"
+  },
   "dependencies": {
-    "eventemitter3": "^2.0.2",
     "uuid": "^3.0.1"
   }
 }

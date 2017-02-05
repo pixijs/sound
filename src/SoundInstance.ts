@@ -1,13 +1,6 @@
-import {EventEmitter} from 'eventemitter3';
 import ChainBuilder from './ChainBuilder';
 
 let id = 0;
-
-// Get the optional shared ticker for
-// handling the progress update
-// otherwise sound instance don't update
-const PIXI:any = (global as any).PIXI;
-const sharedTicker:any = PIXI.ticker ? PIXI.ticker.shared : null;
 
 /**
  * A single play instance that handles the AudioBufferSourceNode.
@@ -15,7 +8,7 @@ const sharedTicker:any = PIXI.ticker ? PIXI.ticker.shared : null;
  * @memberof PIXI.sound
  * @param {ChainBuilder} source Reference to the ChainBuilder.
  */
-export default class SoundInstance extends EventEmitter
+export default class SoundInstance extends PIXI.utils.EventEmitter
 {
     /**
      * Recycle instance, because they will be created many times.
@@ -160,10 +153,7 @@ export default class SoundInstance extends EventEmitter
          */
         this.emit('progress', 0);
 
-        if (sharedTicker)
-        {
-            sharedTicker.add(this._update, this);
-        }
+        PIXI.ticker.shared.add(this._update, this);
     }
 
     /**
@@ -297,10 +287,7 @@ export default class SoundInstance extends EventEmitter
     {
         if (this._source)
         {
-            if (sharedTicker)
-            {
-                sharedTicker.remove(this._update, this);
-            }
+            PIXI.ticker.shared.remove(this._update, this);
             this._source.onended = null;
             this._source.stop();
             this._source = null;
