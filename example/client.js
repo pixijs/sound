@@ -22,12 +22,19 @@ PIXI.loader.load(function(loader, resources) {
     const loop = $("#loop");
     const panning = $("#panning");
     for (const name in resources) {
+        const progressBar = $(`#progress-${name}`);
         $(`#${name}`).addEventListener('click', function() {
             const sound = resources[this.id].sound;
             sound.block = block.checked;
             sound.loop = loop.checked;
             sound.panning = parseFloat(panning.value);
-            sound.play();
+            const instance = sound.play();
+            instance.on('progress', (value) => {
+                progressBar.style = `width:${value * 100}%`;
+            });
+            instance.on('end', () => {
+                progressBar.style = '';
+            });
         });
     }
 });

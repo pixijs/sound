@@ -12,6 +12,10 @@
     overflow: hidden;
 }
 
+.btn {
+    outline:none !important;
+}
+
 .btn .off,
 .btn .on {
     display:none;
@@ -20,3 +24,16 @@
 .btn.on .on {
     display:inline-block;
 }
+
+.progress {
+    margin-top:10px;
+    height: 6px;
+}
+
+.progress .progress-bar {
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    -o-transition: none;
+    transition: none;
+}​
