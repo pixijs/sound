@@ -1,0 +1,22 @@
+.sound-list {
+    margin:20px 0;
+}
+
+.sound-controls {
+    margin-bottom:20px;
+}
+
+.code-block {
+    display:block;
+    margin-top:5px;
+    overflow: hidden;
+}
+
+.btn .off,
+.btn .on {
+    display:none;
+}
+.btn.off .off,
+.btn.on .on {
+    display:inline-block;
+}
