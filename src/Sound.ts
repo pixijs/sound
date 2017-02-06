@@ -264,9 +264,26 @@ export default class Sound
         this._instances = null;
     }
 
+    /**
+     * If the current sound is playable (loaded).
+     * @name PIXI.sound.Sound#isPlayable
+     * @type {Boolean}
+     * @readOnly
+     */
     public get isPlayable():boolean
     {
         return this.isLoaded && !!this._source && !!this._source.buffer;
+    }
+
+    /**
+     * The current current sound being played in.
+     * @name PIXI.sound.Sound#context
+     * @type {PIXI.sound.SoundContext}
+     * @readOnly
+     */
+    public get context():SoundContext
+    {
+        return this._context;
     }
 
     /**
@@ -322,6 +339,17 @@ export default class Sound
         console.assert(this.isPlayable, 'Sound not yet playable, no duration');
         // @endif
         return this._source.buffer.duration;
+    }
+
+    /**
+     * Get the current chained nodes object
+     * @private
+     * @name PIXI.sound.Sound#nodes
+     * @type {PIXI.sound.SoundNodes}
+     */
+    public get nodes():SoundNodes
+    {
+        return this._nodes;
     }
 
     /**
@@ -411,7 +439,7 @@ export default class Sound
         }
 
         // clone the bufferSource
-        const instance = SoundInstance.create(this._nodes);
+        const instance = SoundInstance.create(this);
         this._instances.push(instance);
         this.isPlaying = true;
         instance.once('end', () => {
