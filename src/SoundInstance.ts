@@ -1,4 +1,4 @@
-import ChainBuilder from './ChainBuilder';
+import SoundNodes from './SoundNodes';
 
 let id = 0;
 
@@ -6,7 +6,7 @@ let id = 0;
  * A single play instance that handles the AudioBufferSourceNode.
  * @class SoundInstance
  * @memberof PIXI.sound
- * @param {ChainBuilder} source Reference to the ChainBuilder.
+ * @param {SoundNodes} source Reference to the SoundNodes.
  */
 export default class SoundInstance extends PIXI.utils.EventEmitter
 {
@@ -20,13 +20,13 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     static _pool:Array<SoundInstance> = [];
 
     public id:number;
-    private _chain:ChainBuilder;
+    private _nodes:SoundNodes;
     private _startTime:number;
     private _paused:boolean;
     private _position:number;
     private _progress:number;
     private _duration:number;
-    private _source:any;
+    private _source:AudioBufferSourceNode;
 
     /**
      * Recycle instance, because they will be created many times.
@@ -34,7 +34,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @static
      * @private
      */
-    public static create(chain:ChainBuilder):SoundInstance
+    public static create(chain:SoundNodes):SoundInstance
     {
         if (SoundInstance._pool.length > 0)
         {
@@ -48,7 +48,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         }
     }
 
-    constructor(chain:ChainBuilder)
+    constructor(chain:SoundNodes)
     {
         super();
 
@@ -56,11 +56,11 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
 
         /**
          * The source node chain.
-         * @type {ChainBuilder}
-         * @name PIXI.sound.SoundInstance#_chain
+         * @type {SoundNodes}
+         * @name PIXI.sound.SoundInstance#_nodes
          * @private
          */
-        this._chain = null;
+        this._nodes = null;
 
         /**
          * The starting time.
@@ -134,7 +134,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         this._progress = 0;
         this._paused = false;
         this._position = offset;
-        this._source = this._chain.cloneBufferSource();
+        this._source = this._nodes.cloneBufferSource();
         this._duration = this._source.buffer.duration;
         this._startTime = performance.now();
         this._source.onended = this._onComplete.bind(this);
@@ -226,7 +226,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
             this._source.onended = null;
         }
         this._source = null;
-        this._chain = null;
+        this._nodes = null;
         this._startTime = 0;
         this._paused = false;
         this._position = 0;
@@ -273,9 +273,9 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @method PIXI.sound.SoundInstance#init
      * @private
      */
-    private _init(chain:ChainBuilder):void
+    private _init(chain:SoundNodes):void
     {
-        this._chain = chain;
+        this._nodes = chain;
     }
 
     /**

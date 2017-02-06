@@ -129,21 +129,26 @@ export default class SoundLibrary
      *        if a property is defined, it will use the local property instead.
      * @return {PIXI.sound.Sound} Instance to the Sound object.
      */
-    addMap(map:{string:Options|string|ArrayBuffer}, globalOptions?:Options):{[id:string]:Sound}
+    addMap(map:{[id:string]:Options|string|ArrayBuffer}, globalOptions?:Options):{[id:string]:Sound}
     {
-        let results:{[id:string]:Sound} = {};
-        for(let a in map)
+        const results:{[id:string]:Sound} = {};
+        for(const alias in map)
         {
             let options:Options;
-            if (typeof map[a] === "string" || map[a] instanceof ArrayBuffer)
+            let sound:any = map[alias] as any;
+            if (typeof sound === "string")
             {
-                options = {src: map[a]};
+                options = { src: sound as string };
+            }
+            else if(sound instanceof ArrayBuffer)
+            {
+                options = { srcBuffer: sound as ArrayBuffer };
             }
             else
             {
-                options = map[a];
+                options = sound as Options;
             }
-            results[a] = this.add(a, Object.assign(
+            results[alias] = this.add(alias, Object.assign(
                 options,
                 globalOptions || {}
             ));
@@ -255,12 +260,12 @@ export default class SoundLibrary
     }
 
     /**
-     * Gets a sound.
-     * @method PIXI.sound#sound
+     * Find a sound by alias.
+     * @method PIXI.sound#find
      * @param {String} alias The sound alias reference.
      * @return {PIXI.sound.Sound} Sound object.
      */
-    sound(alias:string):Sound
+    find(alias:string):Sound
     {
         this.exists(alias, true);
         return this._sounds[alias];
@@ -279,7 +284,7 @@ export default class SoundLibrary
      */
     play(alias:string, options?:PlayOptions|Object):SoundInstance
     {
-        return this.sound(alias).play(options);
+        return this.find(alias).play(options);
     }
 
     /**
@@ -290,7 +295,7 @@ export default class SoundLibrary
      */
     stop(alias:string):Sound
     {
-        return this.sound(alias).stop();
+        return this.find(alias).stop();
     }
 
     /**
@@ -301,7 +306,7 @@ export default class SoundLibrary
      */
     pause(alias:string):Sound
     {
-        return this.sound(alias).pause();
+        return this.find(alias).pause();
     }
 
     /**
@@ -312,7 +317,7 @@ export default class SoundLibrary
      */
     resume(alias:string):Sound
     {
-        return this.sound(alias).resume();
+        return this.find(alias).resume();
     }
 
     /**
@@ -324,7 +329,7 @@ export default class SoundLibrary
      */
     volume(alias:string, volume?:number):number
     {
-        const sound = this.sound(alias);
+        const sound = this.find(alias);
         if (volume !== undefined) {
             sound.volume = volume;
         }
@@ -340,7 +345,7 @@ export default class SoundLibrary
      */
     panning(alias:string, panning?:number):number
     {
-        const sound = this.sound(alias);
+        const sound = this.find(alias);
         if (panning !== undefined) {
             sound.panning = panning;
         }
@@ -355,7 +360,7 @@ export default class SoundLibrary
      */
     duration(alias:string):number
     {
-        return this.sound(alias).duration;
+        return this.find(alias).duration;
     }
 
     /**

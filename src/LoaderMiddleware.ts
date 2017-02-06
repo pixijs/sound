@@ -6,11 +6,11 @@ const AUDIO_EXTENSIONS:string[] = ['wav', 'mp3', 'ogg', 'oga'];
 /**
  * Actual resource-loader middleware for sound class
  */
-function middleware(resource, next):void
+function middleware(resource:PIXI.loaders.Resource, next:() => void):void
 {
-    if (resource.data && AUDIO_EXTENSIONS.indexOf(resource._getExtension()) > -1)
+    if (resource.data && AUDIO_EXTENSIONS.indexOf((resource as any)._getExtension()) > -1)
     {
-        resource.sound = sound.add(resource.name, {
+        (resource as any).sound = sound.add(resource.name, {
             srcBuffer: resource.data,
             preload: true,
             loaded: next

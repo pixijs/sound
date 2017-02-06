@@ -1,5 +1,8 @@
 import SoundLibrary from './SoundLibrary';
-import { install } from './LoaderMiddleware'
+import { install } from './LoaderMiddleware';
+
+// Mixin any deprecations
+import './deprecations';
 
 // Create instance of the library
 const sound:SoundLibrary = new SoundLibrary();

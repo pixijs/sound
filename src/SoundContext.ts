@@ -7,6 +7,7 @@
 export default class SoundContext
 {
     private _ctx:AudioContext;
+    private _offlineCtx:OfflineAudioContext;
     private _gainNode:GainNode;
     private _compressor:DynamicsCompressorNode;
     private _muted:boolean;
@@ -22,6 +23,13 @@ export default class SoundContext
          */
         this._ctx = new AudioContext();
 
+        /**
+         * The instance of the OfflineAudioContext for fast decoding audio.
+         * @private
+         * @property {OfflineAudioContext} _offlineCtx
+         */
+        this._offlineCtx = new OfflineAudioContext(1, 2, this._ctx.sampleRate);
+
         // setup the end of the node chain
         this._gainNode = this._ctx.createGain();
         this._compressor = this._ctx.createDynamicsCompressor();
@@ -36,6 +44,15 @@ export default class SoundContext
 
     public destroy()
     {
+        const ctx:any = this._ctx as any;
+        // check if browser supports AudioContext.close()
+        if (typeof ctx.close !== 'undefined')
+        {
+            ctx.close();
+        }
+        this._gainNode.disconnect();
+        this._compressor.disconnect();
+        this._offlineCtx = null;
         this._ctx = null;
         this._gainNode = null;
         this._compressor = null;
@@ -50,6 +67,17 @@ export default class SoundContext
     public get audioContext():AudioContext
     {
         return this._ctx;
+    }
+
+    /**
+     * The WebAudio API OfflineAudioContext object.
+     * @name PIXI.sound.SoundContext#offlineContext
+     * @type {OfflineAudioContext}
+     * @readOnly
+     */
+    public get offlineContext():OfflineAudioContext
+    {
+        return this._offlineCtx;
     }
 
     /**
@@ -115,10 +143,10 @@ export default class SoundContext
 
     /**
      * Returns the entry node in the master node chains.
-     * @method PIXI.sound.SoundContext#entryNode
-     * @return {GainNode} Destination node for sounds
+     * @name PIXI.sound.SoundContext#destination
+     * @type {AudioNode}
      */
-    public entryNode():GainNode
+    public get destination():AudioNode
     {
         return this._gainNode;
     }
@@ -132,5 +160,23 @@ export default class SoundContext
     {
         this.muted = !this.muted;
         return this._muted;
+    }
+
+    /**
+     * Decode the audio data
+     * @method decode
+     * @param {ArrayBuffer} arrayBuffer Buffer from loader
+     * @param {Function} callback When completed, error and audioBuffer are parameters.
+     */
+    public decode(arrayBuffer:ArrayBuffer, callback:(err?:Error, buffer?:AudioBuffer) => void):void
+    {
+        this._offlineCtx.decodeAudioData(
+            arrayBuffer, (buffer:AudioBuffer) => {
+                callback(null, buffer);
+            },
+            () => {
+                callback(new Error('Unable to decode file'));
+            }
+        );
     }
 }

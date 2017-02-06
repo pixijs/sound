@@ -84,14 +84,14 @@ describe('PIXI.sound', function()
 
     it('should get a reference by alias', function()
     {
-        const sound = this.library.sound('alert-7');
+        const sound = this.library.find('alert-7');
         expect(sound).to.not.be.undefined;
         expect(sound).to.be.instanceof(this.library.Sound);
     });
 
     it('should play multiple at once', function()
     {
-        const sound = this.library.sound('alert-12');
+        const sound = this.library.find('alert-12');
         sound.play();
         sound.play();
         sound.play();
@@ -103,7 +103,7 @@ describe('PIXI.sound', function()
 
     it('should play with blocking', function()
     {
-        const sound = this.library.sound('alert-4');
+        const sound = this.library.find('alert-4');
         sound.block = true;
         sound.play();
         sound.play();
@@ -117,7 +117,7 @@ describe('PIXI.sound', function()
 
     it('should play with stopping single instance', function()
     {
-        const sound = this.library.sound('alert-4');
+        const sound = this.library.find('alert-4');
         sound.play();
         sound.play();
         sound.play();
