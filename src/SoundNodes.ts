@@ -8,31 +8,91 @@ import SoundContext from './SoundContext';
  */
 export default class SoundNodes
 {
-    private _destination:AudioNode;
-    private _bufferSource:AudioBufferSourceNode;
-    private _gainNode:GainNode;
-    private _analyser:AnalyserNode
-    private _panner:StereoPannerNode;
+    /**
+     * The buffer size for script processor
+     * @name PIXI.sound.SoundNodes.BUFFER_SIZE
+     * @type {Number}
+     * @default 256
+     */
+    public static BUFFER_SIZE:number = 256;
 
-    constructor(private _context:SoundContext)
+    /**
+     * Get the buffer source node
+     * @name PIXI.sound.SoundNodes#bufferSource
+     * @type {AudioBufferSourceNode}
+     * @readOnly
+     */
+    public bufferSource:AudioBufferSourceNode;
+
+    /**
+     * Get the script processor node.
+     * @name PIXI.sound.SoundNodes#scriptNode
+     * @type {ScriptProcessorNode}
+     * @readOnly
+     */
+    public scriptNode:ScriptProcessorNode;
+
+    /**
+     * Get the gain node
+     * @name PIXI.sound.SoundNodes#gainNode
+     * @type {GainNode}
+     * @readOnly
+     */
+    public gainNode:GainNode;
+
+    /**
+     * Get the analyser node
+     * @name PIXI.sound.SoundNodes#analyser
+     * @type {AnalyserNode}
+     * @readOnly
+     */
+    public analyser:AnalyserNode;
+
+    /**
+     * Get the panner node
+     * @name PIXI.sound.SoundNodes#panner
+     * @type {StereoPannerNode}
+     * @readOnly
+     */
+    public panner:StereoPannerNode;
+
+    /**
+     * The destination output audio node
+     * @name PIXI.sound.SoundNodes#destination
+     * @type {AudioNode}
+     * @readOnly
+     */
+    public destination:AudioNode;
+
+    /**
+     * Reference to the SoundContext
+     * @name PIXI.sound.SoundNodes#context
+     * @type {PIXI.sound.SoundContext}
+     * @readOnly
+     */
+
+    constructor(public context:SoundContext)
     {
-        const audioContext:AudioContext = this._context.audioContext;
+        const audioContext:AudioContext = this.context.audioContext;
 
         const bufferSource:AudioBufferSourceNode = audioContext.createBufferSource();
+        const scriptNode:ScriptProcessorNode = audioContext.createScriptProcessor(SoundNodes.BUFFER_SIZE);
         const gainNode:GainNode = audioContext.createGain();
         const analyser:AnalyserNode = audioContext.createAnalyser();
         const panner:StereoPannerNode = audioContext.createStereoPanner();
 
-        gainNode.connect(this._context.destination);
+        gainNode.connect(this.context.destination);
+        scriptNode.connect(this.context.destination);
         analyser.connect(gainNode);
         panner.connect(analyser);
         bufferSource.connect(panner);
 
-        this._bufferSource = bufferSource;
-        this._gainNode = gainNode;
-        this._analyser = analyser;
-        this._panner = panner;
-        this._destination = panner; // needed for .cloneBufferSource()
+        this.bufferSource = bufferSource;
+        this.scriptNode = scriptNode;
+        this.gainNode = gainNode;
+        this.analyser = analyser;
+        this.panner = panner;
+        this.destination = panner;
     }
 
     /**
@@ -41,61 +101,19 @@ export default class SoundNodes
      */
     public destroy():void
     {
-        this._bufferSource.disconnect();
-        this._gainNode.disconnect();
-        this._analyser.disconnect();
-        this._panner.disconnect();
+        this.bufferSource.disconnect();
+        this.scriptNode.disconnect();
+        this.gainNode.disconnect();
+        this.analyser.disconnect();
+        this.panner.disconnect();
 
-        this._bufferSource = null;
-        this._gainNode = null;
-        this._analyser = null;
-        this._panner = null;
+        this.bufferSource = null;
+        this.scriptNode = null;
+        this.gainNode = null;
+        this.analyser = null;
+        this.panner = null;
 
-        this._context = null;
-    }
-
-    /**
-     * Get the analyser node
-     * @name PIXI.sound.SoundNodes#analyser
-     * @type {AnalyserNode}
-     * @readOnly
-     */
-    public get analyser():AnalyserNode
-    {
-        return this._analyser;
-    }
-
-    /**
-     * Get the gain node
-     * @name PIXI.sound.SoundNodes#gainNode
-     * @type {GainNode}
-     * @readOnly
-     */
-    public get gainNode():GainNode
-    {
-        return this._gainNode;
-    }
-
-    /**
-     * Get the panner node
-     * @name PIXI.sound.SoundNodes#panner
-     * @type {StereoPannerNode}
-     * @readOnly
-     */
-    public get panner():StereoPannerNode
-    {
-        return this._panner;
-    }
-
-    /**
-     * Get the buffer source node
-     * @name PIXI.sound.SoundNodes#bufferSource
-     * @type {AudioBufferSourceNode}
-     * @readOnly
-     */
-    public get bufferSource():AudioBufferSourceNode
-    {
-        return this._bufferSource;
+        this.context = null;
     }
 
     /**
@@ -105,12 +123,12 @@ export default class SoundNodes
      */
     public cloneBufferSource():AudioBufferSourceNode
     {
-        const orig:AudioBufferSourceNode = this._bufferSource;
-        const clone:AudioBufferSourceNode = this._context.audioContext.createBufferSource();
+        const orig:AudioBufferSourceNode = this.bufferSource;
+        const clone:AudioBufferSourceNode = this.context.audioContext.createBufferSource();
         clone.buffer = orig.buffer;
         clone.playbackRate.value = orig.playbackRate.value;
         clone.loop = orig.loop;
-        clone.connect(this._destination);
+        clone.connect(this.destination);
         return clone;
     }
 }

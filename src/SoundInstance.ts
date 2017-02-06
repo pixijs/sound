@@ -154,7 +154,21 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
          */
         this.emit('progress', 0);
 
-        PIXI.ticker.shared.add(this._update, this);
+        // Start handling internal ticks
+        this._onUpdate();
+    }
+
+    /**
+     * Start the update progress.
+     * @method PIXI.sound.SoundInstance#_onUpdate
+     * @private
+     * @param {Boolean} [enabled = true] `true` to start listening
+     */
+    private _onUpdate(enabled:boolean = true): void
+    {
+        this._parent.nodes.scriptNode.onaudioprocess = !enabled ? null : () => {
+            this._update();
+        };
     }
 
     /**
@@ -263,8 +277,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     }
 
     /**
-     * Internal update the progress. This only run's
-     * if the PIXI shared ticker is available.
+     * Internal update the progress.
      * @method PIXI.sound.SoundInstance#_update
      * @private
      */
@@ -299,7 +312,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     {
         if (this._source)
         {
-            PIXI.ticker.shared.remove(this._update, this);
+            this._onUpdate(false);
             this._source.onended = null;
             this._source.stop();
             this._source = null;
@@ -316,6 +329,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     {
         if (this._source)
         {
+            this._onUpdate(false);
             this._source.onended = null;
         }
         this._source = null;
