@@ -19,13 +19,67 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      */
     static _pool:Array<SoundInstance> = [];
 
+    /**
+     * The current unique ID for this instance.
+     * @name PIXI.sound.SoundInstance#id
+     * @readOnly
+     */
     public id:number;
+
+    /**
+     * The source Sound.
+     * @type {SoundNodes}
+     * @name PIXI.sound.SoundInstance#_parent
+     * @private
+     */
     private _parent:Sound;
+
+    /**
+     * The starting time.
+     * @type {int}
+     * @name PIXI.sound.SoundInstance#_startTime
+     * @private
+     */
     private _startTime:number;
+
+    /**
+     * true if paused.
+     * @type {Boolean}
+     * @name PIXI.sound.SoundInstance#_paused
+     * @private
+     */
     private _paused:boolean;
+
+    /**
+     * The current position in seconds.
+     * @type {int}
+     * @name PIXI.sound.SoundInstance#_position
+     * @private
+     */
     private _position:number;
+
+    /**
+     * Progress float from 0 to 1.
+     * @type {Number}
+     * @name PIXI.sound.SoundInstance#_progress
+     * @private
+     */
     private _progress:number;
+
+    /**
+     * Total length of audio in seconds.
+     * @type {Number}
+     * @name PIXI.sound.SoundInstance#_duration
+     * @private
+     */
     private _duration:number;
+
+    /**
+     * Audio buffer source clone from Sound object.
+     * @type {AudioBufferSourceNode}
+     * @name PIXI.sound.SoundInstance#_source
+     * @private
+     */
     private _source:AudioBufferSourceNode;
 
     /**
@@ -54,53 +108,11 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         super();
 
         this.id = id++;
-
-        /**
-         * The source Sound.
-         * @type {SoundNodes}
-         * @name PIXI.sound.SoundInstance#_parent
-         * @private
-         */
         this._parent = null;
-
-        /**
-         * The starting time.
-         * @type {int}
-         * @name PIXI.sound.SoundInstance#_startTime
-         * @private
-         */
         this._startTime = 0;
-
-        /**
-         * true if paused.
-         * @type {Boolean}
-         * @name PIXI.sound.SoundInstance#_paused
-         * @private
-         */
         this._paused = false;
-
-        /**
-         * The current position in seconds.
-         * @type {int}
-         * @name PIXI.sound.SoundInstance#_position
-         * @private
-         */
         this._position = 0;
-
-        /**
-         * Total length of audio in seconds.
-         * @type {Number}
-         * @name PIXI.sound.SoundInstance#_duration
-         * @private
-         */
         this._duration = 0;
-
-        /**
-         * Progress float from 0 to 1.
-         * @type {Number}
-         * @name PIXI.sound.SoundInstance#_progress
-         * @private
-         */
         this._progress = 0;
 
         // Initialize

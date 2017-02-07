@@ -54,20 +54,122 @@ export declare type CompleteCallback = (sound:Sound) => void;
  *        or the object of options to use. See {@link PIXI.sound.Sound.from}
  */
 export default class Sound
-{
+{   
+    /**
+     * `true` if the buffer is loaded.
+     * @name PIXI.sound.Sound#isLoaded
+     * @type {Boolean}
+     * @default false
+     */
     public isLoaded:boolean;
+
+    /**
+     * `true` if the sound is currently being played.
+     * @name PIXI.sound.Sound#isPlaying
+     * @type {Boolean}
+     * @default false
+     * @readOnly
+     */
     public isPlaying:boolean;
+
+    /**
+     * true to start playing immediate after load.
+     * @name PIXI.sound.Sound#autoPlay
+     * @type {Boolean}
+     * @private
+     * @default false
+     * @readOnly
+     */
     public autoPlay:boolean;
+
+    /**
+     * Callback when finished playing.
+     * @name PIXI.sound.Sound#complete
+     * @type {PIXI.sound.Sound~completeCallback}
+     * @default false
+     */
     public complete:CompleteCallback;
+
+    /**
+     * Callback when load is finished.
+     * @type {PIXI.sound.Sound~loadedCallback}
+     * @name PIXI.sound.Sound#loaded
+     * @readOnly
+     */
     public loaded:LoadedCallback;
+
+    /**
+     * `true` to block successive plays.
+     * @name PIXI.sound.Sound#block
+     * @type {Boolean}
+     * @default false
+     */
     public block:boolean;
+
+    /**
+     * `true` to immediately start preloading.
+     * @name PIXI.sound.Sound#preload
+     * @type {Boolean}
+     * @default false
+     * @readOnly
+     */
     public preload:boolean;
+
+    /**
+     * The file source to load.
+     * @name PIXI.sound.Sound#src
+     * @type {String}
+     * @readOnly
+     */
     public src:string;
+
+    /**
+     * The file buffer to load.
+     * @name PIXI.sound.Sound#srcBuffer
+     * @type {ArrayBuffer}
+     * @readOnly
+     */
     public srcBuffer:ArrayBuffer;
+
+    /**
+     * `true` to use XMLHttpRequest object to load.
+     * Default is to use NodeJS's fs module to read the sound.
+     * @name PIXI.sound.Sound#useXHR
+     * @type {Boolean}
+     * @default false
+     */
     public useXHR:boolean;
+
+    /**
+     * Reference to the sound context.
+     * @name PIXI.sound.Sound#_context
+     * @type {SoundContext}
+     * @private
+     */
     private _context:SoundContext;
+
+    /**
+     * Instance of the chain builder.
+     * @name PIXI.sound.Sound#_nodes
+     * @type {SoundNodes}
+     * @private
+     */
     private _nodes:SoundNodes;
+
+    /**
+     * Instance of the source node.
+     * @name PIXI.sound.Sound#_source
+     * @type {AudioBufferSourceNode}
+     * @private
+     */
     private _source:AudioBufferSourceNode;
+
+    /**
+     * The collection of instances being played.
+     * @name PIXI.sound.Sound#_instances
+     * @type {Array<SoundInstance>}
+     * @private
+     */
     private _instances:Array<SoundInstance>;
 
     /**
@@ -119,121 +221,19 @@ export default class Sound
             useXHR: true
         }, options || {});
 
-        /**
-         * Reference to the sound context.
-         * @name PIXI.sound.Sound#_context
-         * @type {SoundContext}
-         * @private
-         */
         this._context = context;
-
-        /**
-         * Instance of the chain builder.
-         * @name PIXI.sound.Sound#_nodes
-         * @type {SoundNodes}
-         * @private
-         */
         this._nodes = new SoundNodes(this._context);
-
-        /**
-         * Instance of the source node.
-         * @name PIXI.sound.Sound#_source
-         * @type {AudioBufferSourceNode}
-         * @private
-         */
         this._source = this._nodes.bufferSource;
-
-        /**
-         * `true` if the buffer is loaded.
-         * @name PIXI.sound.Sound#isLoaded
-         * @type {Boolean}
-         * @default false
-         */
         this.isLoaded = false;
-
-        /**
-         * `true` if the sound is currently being played.
-         * @name PIXI.sound.Sound#isPlaying
-         * @type {Boolean}
-         * @default false
-         * @readOnly
-         */
         this.isPlaying = false;
-
-        /**
-         * true to start playing immediate after load.
-         * @name PIXI.sound.Sound#autoPlay
-         * @type {Boolean}
-         * @private
-         * @default false
-         * @readOnly
-         */
         this.autoPlay = (<Options>options).autoPlay;
-
-        /**
-         * `true` to block successive plays.
-         * @name PIXI.sound.Sound#block
-         * @type {Boolean}
-         * @default false
-         */
         this.block = (<Options>options).block;
-
-        /**
-         * `true` to immediately start preloading.
-         * @name PIXI.sound.Sound#preload
-         * @type {Boolean}
-         * @default false
-         * @readOnly
-         */
         this.preload = (<Options>options).preload;
-
-        /**
-         * Callback when finished playing.
-         * @name PIXI.sound.Sound#complete
-         * @type {PIXI.sound.Sound~completeCallback}
-         * @default false
-         */
         this.complete = (<Options>options).complete;
-
-        /**
-         * Callback when load is finished.
-         * @type {PIXI.sound.Sound~loadedCallback}
-         * @name PIXI.sound.Sound#loaded
-         * @readOnly
-         */
         this.loaded = (<Options>options).loaded;
-
-        /**
-         * The file source to load.
-         * @name PIXI.sound.Sound#src
-         * @type {String}
-         * @readOnly
-         */
         this.src = (<Options>options).src;
-
-        /**
-         * The file buffer to load.
-         * @name PIXI.sound.Sound#srcBuffer
-         * @type {ArrayBuffer}
-         * @readOnly
-         */
         this.srcBuffer = (<Options>options).srcBuffer;
-
-        /**
-         * `true` to use XMLHttpRequest object to load.
-         * Default is to use NodeJS's fs module to read the sound.
-         * @name PIXI.sound.Sound#useXHR
-         * @type {Boolean}
-         * @default false
-         */
         this.useXHR = (<Options>options).useXHR;
-
-        /**
-         * The collection of instances being played.
-         * @name PIXI.sound.Sound#_instances
-         * @type {Array<SoundInstance>}
-         * @private
-         */
         this._instances = [];
 
         this.volume = (<Options>options).volume;
