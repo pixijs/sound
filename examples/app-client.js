@@ -1,17 +1,12 @@
-require('pixi.js');
-require('../'); // Load pixi-sound
-
-const path = require('path');
-const resources = path.join(__dirname, 'resources');
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 
 const manifest = {
-    applause: path.join(resources, 'applause.mp3'),
-    bird: path.join(resources, 'bird.mp3'),
-    boing: path.join(resources, 'boing.mp3'),
-    mechanical: path.join(resources, 'mechanical.mp3'),
-    whistle: path.join(resources, 'whistle.mp3')
+    applause: 'resources/applause.mp3',
+    bird: 'resources/bird.mp3',
+    boing: 'resources/boing.mp3',
+    mechanical: 'resources/mechanical.mp3',
+    whistle: 'resources/whistle.mp3'
 };
 
 for (const name in manifest) {
@@ -21,7 +16,6 @@ for (const name in manifest) {
 const distortion = new PIXI.sound.filters.DistortionFilter();
 const stereo = new PIXI.sound.filters.StereoFilter();
 const equalizer = new PIXI.sound.filters.EqualizerFilter();
-// const reverb = new PIXI.sound.filters.ReverbFilter();
 
 PIXI.loader.load(function(loader, resources) {
     const block = $("#block");
@@ -62,7 +56,6 @@ $('#distortion').addEventListener('input', function() {
     distortion.amount = parseFloat(this.value);
 });
 
-// Update the global volume
 $('#globalVolume').addEventListener('input', function() {
     PIXI.sound.context.volume = Math.max(0, 
         Math.min(1, parseFloat(this.value))
@@ -71,6 +64,9 @@ $('#globalVolume').addEventListener('input', function() {
 
 $("#stop").addEventListener('click', function() {
     PIXI.sound.stopAll();
+    $$('.progress-bar').forEach(function(progress) {
+        progress.style = '';
+    });
 });
 
 $("#paused").addEventListener('click', function() {
@@ -84,3 +80,5 @@ $("#muted").addEventListener('click', function() {
     this.className = this.className.replace(/ (on|off)/g, ' ');
     this.className += muted ? 'on' : 'off'; 
 });
+
+hljs.initHighlightingOnLoad();

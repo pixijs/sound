@@ -1,8 +1,9 @@
 .eq {
     display: inline-block !important;
     -webkit-appearance: slider-vertical;
-    width: 40px !important;
+    width: 8% !important;
     height: 150px;
+    margin:10px 0;
 }
 
 .sound-list {
@@ -13,22 +14,12 @@
     margin-bottom: 20px;
 }
 
-.code-block {
-    display: block;
-    margin-top: 5px;
-    overflow: hidden;
-}
-
-.options-row {
-    margin:0 0 20px;
-    border:1px solid #ddd;
-    padding:15px;
-    border-radius: 4px
-}
-
-.options-row h3 {
-    font-size:16px;
+.well h3 {
     margin-top:0;
+}
+
+.well p {
+    margin-top:10px;
 }
 
 .btn {
@@ -50,10 +41,21 @@
     margin: 10px 0 0;
 }
 
+.range {
+    height: 40px;
+}
+
 .progress-bar {
     -webkit-transition: none;
     -moz-transition: none;
     -ms-transition: none;
     -o-transition: none;
     transition: none;
+}
+
+pre {
+    padding: 0;
+}
+pre code {
+    margin: 0;
 }

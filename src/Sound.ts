@@ -226,7 +226,7 @@ export default class Sound
         this.isPlaying = false;
         this.autoPlay = (<Options>options).autoPlay;
         this.block = (<Options>options).block;
-        this.preload = (<Options>options).preload;
+        this.preload = (<Options>options).preload || this.autoPlay;
         this.complete = (<Options>options).complete;
         this.loaded = (<Options>options).loaded;
         this.src = (<Options>options).src;
