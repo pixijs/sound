@@ -67,8 +67,8 @@ export default class SoundContext
 
     constructor()
     {
-        this._ctx = new AudioContext();
-        this._offlineCtx = new OfflineAudioContext(1, 2, this._ctx.sampleRate);
+        this._ctx = new SoundContext.AudioContext();
+        this._offlineCtx = new SoundContext.OfflineAudioContext(1, 2, this._ctx.sampleRate);
 
         // setup the end of the node chain
         this._gainNode = this._ctx.createGain();
@@ -80,6 +80,38 @@ export default class SoundContext
         this.volume = 1;
         this.muted = false;
         this.paused = false;
+    }
+
+    /**
+     * Get AudioContext class, if not supported returns `null`
+     * @name PIXI.sound.SoundContext.AudioContext
+     * @type {Function}
+     * @static
+     */
+    public static get AudioContext():typeof AudioContext
+    {
+        const win:any = window as any;
+        return (
+            win.AudioContext || 
+            win.webkitAudioContext ||
+            null
+        );
+    }
+
+    /**
+     * Get OfflineAudioContext class, if not supported returns `null`
+     * @name PIXI.sound.SoundContext.OfflineAudioContext
+     * @type {Function}
+     * @static
+     */
+    public static get OfflineAudioContext():typeof OfflineAudioContext
+    {
+        const win:any = window as any;
+        return (
+            win.OfflineAudioContext ||
+            win.webkitOfflineAudioContext ||
+            null
+        );
     }
 
     /**

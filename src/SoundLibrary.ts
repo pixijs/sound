@@ -58,7 +58,10 @@ export default class SoundLibrary
 
     constructor()
     {
-        this._context = new SoundContext();
+        if (this.supported)
+        {
+            this._context = new SoundContext();
+        }
         this._sounds = {};
         this.utils = SoundUtils;
         this.filters = filters;
@@ -76,6 +79,17 @@ export default class SoundLibrary
     get context():SoundContext
     {
         return this._context;
+    }
+
+    /**
+     * WebAudio is supported on the current browser.
+     * @name PIXI.sound#supported
+     * @readOnly
+     * @type {Boolean}
+     */
+    get supported(): boolean
+    {
+        return SoundContext.AudioContext !== null;
     }
 
     /**
