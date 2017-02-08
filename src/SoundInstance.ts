@@ -1,21 +1,14 @@
-import {EventEmitter} from 'eventemitter3';
-import ChainBuilder from './ChainBuilder';
+import Sound from './Sound';
 
 let id = 0;
-
-// Get the optional shared ticker for
-// handling the progress update
-// otherwise sound instance don't update
-const PIXI:any = (global as any).PIXI;
-const sharedTicker:any = PIXI.ticker ? PIXI.ticker.shared : null;
 
 /**
  * A single play instance that handles the AudioBufferSourceNode.
  * @class SoundInstance
  * @memberof PIXI.sound
- * @param {ChainBuilder} source Reference to the ChainBuilder.
+ * @param {SoundNodes} source Reference to the SoundNodes.
  */
-export default class SoundInstance extends EventEmitter
+export default class SoundInstance extends PIXI.utils.EventEmitter
 {
     /**
      * Recycle instance, because they will be created many times.
@@ -26,91 +19,104 @@ export default class SoundInstance extends EventEmitter
      */
     static _pool:Array<SoundInstance> = [];
 
+    /**
+     * The current unique ID for this instance.
+     * @name PIXI.sound.SoundInstance#id
+     * @readOnly
+     */
     public id:number;
-    private _chain:ChainBuilder;
+
+    /**
+     * The source Sound.
+     * @type {SoundNodes}
+     * @name PIXI.sound.SoundInstance#_parent
+     * @private
+     */
+    private _parent:Sound;
+
+    /**
+     * The starting time.
+     * @type {int}
+     * @name PIXI.sound.SoundInstance#_startTime
+     * @private
+     */
     private _startTime:number;
+
+    /**
+     * true if paused.
+     * @type {Boolean}
+     * @name PIXI.sound.SoundInstance#_paused
+     * @private
+     */
     private _paused:boolean;
+
+    /**
+     * The current position in seconds.
+     * @type {int}
+     * @name PIXI.sound.SoundInstance#_position
+     * @private
+     */
     private _position:number;
+
+    /**
+     * Progress float from 0 to 1.
+     * @type {Number}
+     * @name PIXI.sound.SoundInstance#_progress
+     * @private
+     */
     private _progress:number;
+
+    /**
+     * Total length of audio in seconds.
+     * @type {Number}
+     * @name PIXI.sound.SoundInstance#_duration
+     * @private
+     */
     private _duration:number;
-    private _source:any;
+
+    /**
+     * Audio buffer source clone from Sound object.
+     * @type {AudioBufferSourceNode}
+     * @name PIXI.sound.SoundInstance#_source
+     * @private
+     */
+    private _source:AudioBufferSourceNode;
 
     /**
      * Recycle instance, because they will be created many times.
      * @method PIXI.sound.SoundInstance.create
      * @static
      * @private
+     * @param {PIXI.sound.Sound} parent Parent sound object
      */
-    public static create(chain:ChainBuilder):SoundInstance
+    public static create(parent:Sound):SoundInstance
     {
         if (SoundInstance._pool.length > 0)
         {
             let sound = SoundInstance._pool.pop();
-            sound._init(chain);
+            sound._init(parent);
             return sound;
         }
         else
         {
-            return new SoundInstance(chain);
+            return new SoundInstance(parent);
         }
     }
 
-    constructor(chain:ChainBuilder)
+    constructor(parent:Sound)
     {
         super();
 
         this.id = id++;
-
-        /**
-         * The source node chain.
-         * @type {ChainBuilder}
-         * @name PIXI.sound.SoundInstance#_chain
-         * @private
-         */
-        this._chain = null;
-
-        /**
-         * The starting time.
-         * @type {int}
-         * @name PIXI.sound.SoundInstance#_startTime
-         * @private
-         */
+        this._parent = null;
         this._startTime = 0;
-
-        /**
-         * true if paused.
-         * @type {Boolean}
-         * @name PIXI.sound.SoundInstance#_paused
-         * @private
-         */
         this._paused = false;
-
-        /**
-         * The current position in seconds.
-         * @type {int}
-         * @name PIXI.sound.SoundInstance#_position
-         * @private
-         */
         this._position = 0;
-
-        /**
-         * Total length of audio in seconds.
-         * @type {Number}
-         * @name PIXI.sound.SoundInstance#_duration
-         * @private
-         */
         this._duration = 0;
-
-        /**
-         * Progress float from 0 to 1.
-         * @type {Number}
-         * @name PIXI.sound.SoundInstance#_progress
-         * @private
-         */
         this._progress = 0;
 
         // Initialize
-        this._init(chain);
+        this._init(parent);
     }
 
     /**
@@ -141,9 +147,9 @@ export default class SoundInstance extends EventEmitter
         this._progress = 0;
         this._paused = false;
         this._position = offset;
-        this._source = this._chain.cloneBufferSource();
+        this._source = this._parent.nodes.cloneBufferSource();
         this._duration = this._source.buffer.duration;
-        this._startTime = performance.now();
+        this._startTime = this._now;
         this._source.onended = this._onComplete.bind(this);
         this._source.start(0, offset);
 
@@ -160,10 +166,21 @@ export default class SoundInstance extends EventEmitter
          */
         this.emit('progress', 0);
 
-        if (sharedTicker)
-        {
-            sharedTicker.add(this._update, this);
-        }
+        // Start handling internal ticks
+        this._onUpdate();
+    }
+
+    /**
+     * Start the update progress.
+     * @method PIXI.sound.SoundInstance#_onUpdate
+     * @private
+     * @param {Boolean} [enabled = true] `true` to start listening
+     */
+    private _onUpdate(enabled:boolean = true): void
+    {
+        this._parent.nodes.scriptNode.onaudioprocess = !enabled ? null : () => {
+            this._update();
+        };
     }
 
     /**
@@ -196,7 +213,12 @@ export default class SoundInstance extends EventEmitter
             {
                 // pause the sounds
                 this._internalStop();
-                this._position = (performance.now() - this._startTime) / 1000;
+                let speed:number = 1;
+                if (this._source)
+                {
+                    speed = this._source.playbackRate.value;
+                }
+                this._position = (this._now - this._startTime) * speed;
                 /**
                  * The sound is paused.
                  * @event PIXI.sound.SoundInstance#paused
@@ -236,7 +258,7 @@ export default class SoundInstance extends EventEmitter
             this._source.onended = null;
         }
         this._source = null;
-        this._chain = null;
+        this._parent = null;
         this._startTime = 0;
         this._paused = false;
         this._position = 0;
@@ -261,8 +283,18 @@ export default class SoundInstance extends EventEmitter
     }
 
     /**
-     * Internal update the progress. This only run's
-     * if the PIXI shared ticker is available.
+     * Get the current time in seconds.
+     * @method PIXI.sound.SoundInstance#_now
+     * @private
+     * @return {Number} Seconds since start of context
+     */
+    private get _now(): number
+    {
+        return this._parent.context.audioContext.currentTime;
+    }
+
+    /**
+     * Internal update the progress.
      * @method PIXI.sound.SoundInstance#_update
      * @private
      */
@@ -270,10 +302,9 @@ export default class SoundInstance extends EventEmitter
     {
         if (this._duration)
         {
-            const position = this._paused ? 
-                this._position :
-                (performance.now() - this._startTime) / 1000;
-            this._progress = Math.max(0, Math.min(1, position / this._duration));
+            const speed:number = this._source.playbackRate.value;
+            const position = this._paused ? this._position : (this._now - this._startTime);
+            this._progress = Math.max(0, Math.min(1, (position / this._duration) * speed));
             this.emit('progress', this._progress);
         }
     }
@@ -283,9 +314,9 @@ export default class SoundInstance extends EventEmitter
      * @method PIXI.sound.SoundInstance#init
      * @private
      */
-    private _init(chain:ChainBuilder):void
+    private _init(parent:Sound):void
     {
-        this._chain = chain;
+        this._parent = parent;
     }
 
     /**
@@ -297,10 +328,7 @@ export default class SoundInstance extends EventEmitter
     {
         if (this._source)
         {
-            if (sharedTicker)
-            {
-                sharedTicker.remove(this._update, this);
-            }
+            this._onUpdate(false);
             this._source.onended = null;
             this._source.stop();
             this._source = null;
@@ -317,6 +345,7 @@ export default class SoundInstance extends EventEmitter
     {
         if (this._source)
         {
+            this._onUpdate(false);
             this._source.onended = null;
         }
         this._source = null;

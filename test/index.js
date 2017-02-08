@@ -33,9 +33,14 @@ describe('PIXI.sound', function()
     {
         expect(PIXI.sound).to.be.a.function;
         expect(PIXI.sound.Sound).to.be.a.function;
-        expect(PIXI.sound.SoundUtils).to.be.a.function;
+        expect(PIXI.sound.utils).to.be.a.function;
         expect(PIXI.sound.SoundInstance).to.be.a.function;
         expect(PIXI.sound.SoundLibrary).to.be.a.function;
+        expect(PIXI.sound.filters).to.be.an.object;
+        expect(PIXI.sound.filters.DistortionFilter).to.be.a.function;
+        expect(PIXI.sound.filters.EqualizerFilter).to.be.a.function;
+        expect(PIXI.sound.filters.ReverbFilter).to.be.a.function;
+        expect(PIXI.sound.filters.StereoFilter).to.be.a.function;
         expect(PIXI.sound).to.be.instanceof(PIXI.sound.SoundLibrary);
         expect(library.default).to.equal(PIXI.sound);
     });
@@ -84,14 +89,14 @@ describe('PIXI.sound', function()
 
     it('should get a reference by alias', function()
     {
-        const sound = this.library.sound('alert-7');
+        const sound = this.library.find('alert-7');
         expect(sound).to.not.be.undefined;
         expect(sound).to.be.instanceof(this.library.Sound);
     });
 
     it('should play multiple at once', function()
     {
-        const sound = this.library.sound('alert-12');
+        const sound = this.library.find('alert-12');
         sound.play();
         sound.play();
         sound.play();
@@ -103,7 +108,7 @@ describe('PIXI.sound', function()
 
     it('should play with blocking', function()
     {
-        const sound = this.library.sound('alert-4');
+        const sound = this.library.find('alert-4');
         sound.block = true;
         sound.play();
         sound.play();
@@ -117,7 +122,7 @@ describe('PIXI.sound', function()
 
     it('should play with stopping single instance', function()
     {
-        const sound = this.library.sound('alert-4');
+        const sound = this.library.find('alert-4');
         sound.play();
         sound.play();
         sound.play();
@@ -201,7 +206,7 @@ describe('PIXI.sound', function()
 
     it('sound play once a file', function(done)
     {
-        const alias = this.library.SoundUtils.playOnce(manifest.silence, (err) =>
+        const alias = this.library.utils.playOnce(manifest.silence, (err) =>
         {
             expect(alias).to.be.ok;
             expect(this.library.exists(alias)).to.be.false;
@@ -213,7 +218,7 @@ describe('PIXI.sound', function()
     it('should play a sine tone', function(done)
     {
         this.slow(300);
-        const sound = this.library.SoundUtils.sineTone(200, 0.1);
+        const sound = this.library.utils.sineTone(200, 0.1);
         sound.volume = 0;
         sound.play(() => {
             done();

@@ -3,6 +3,7 @@ import {Options, PlayOptions} from './Sound';
 import Sound from './Sound';
 import SoundInstance from './SoundInstance';
 import SoundUtils from './SoundUtils';
+import * as filters from './filters';
 
 /**
  * @description Manages the playback of sounds.
@@ -12,58 +13,60 @@ import SoundUtils from './SoundUtils';
  */
 export default class SoundLibrary
 {
-    public SoundUtils:typeof SoundUtils;
+    /**
+     * The reference to Sound class.
+     * @name PIXI.sound.Sound
+     * @type {Sound}
+     */
     public Sound:typeof Sound;
+
+    /**
+     * The reference to SoundInstance class.
+     * @name PIXI.sound.SoundInstance
+     * @type {PIXI.sound.SoundInstance}
+     */
     public SoundInstance:typeof SoundInstance;
+
+    /*
+     * The reference to SoundLibrary class.
+     * @name PIXI.sound.SoundLibrary
+     * @type {PIXI.sound.SoundLibrary}
+     */
     public SoundLibrary:typeof SoundLibrary;
 
+    // Documentation as namespace
+    public filters:typeof filters;
+
+    // Documented as namespace
+    public utils:typeof SoundUtils;
+
+    /**
+     * The global context to use.
+     * @name PIXI.sound#_context
+     * @type {PIXI.sound.SoundContext}
+     * @private
+     */
     private _context:SoundContext;
+
+    /**
+     * The map of all sounds by alias.
+     * @name PIXI.sound#_sounds
+     * @type {Object}
+     * @private
+     */
     private _sounds:{[id:string]: Sound};
 
     constructor()
     {
-        /**
-         * The global context to use.
-         * @name PIXI.sound#_context
-         * @type {PIXI.sound.SoundContext}
-         * @private
-         */
-        this._context = new SoundContext();
-
-        /**
-         * The map of all sounds by alias.
-         * @name PIXI.sound#_sounds
-         * @type {Object}
-         * @private
-         */
+        if (this.supported)
+        {
+            this._context = new SoundContext();
+        }
         this._sounds = {};
-
-        /*
-         * The reference to SoundUtils class.
-         * @name PIXI.sound.SoundUtils
-         * @type {PIXI.sound.SoundUtils}
-         */
-        this.SoundUtils = SoundUtils;
-
-        /*
-         * The reference to Sound class.
-         * @name PIXI.sound.Sound
-         * @type {Sound}
-         */
+        this.utils = SoundUtils;
+        this.filters = filters;
         this.Sound = Sound;
-
-        /*
-         * The reference to SoundInstance class.
-         * @name PIXI.sound.SoundInstance
-         * @type {PIXI.sound.SoundInstance}
-         */
         this.SoundInstance = SoundInstance;
-        
-        /*
-         * The reference to SoundLibrary class.
-         * @name PIXI.sound.SoundLibrary
-         * @type {PIXI.sound.SoundLibrary}
-         */
         this.SoundLibrary = SoundLibrary;
     }
 
@@ -76,6 +79,17 @@ export default class SoundLibrary
     get context():SoundContext
     {
         return this._context;
+    }
+
+    /**
+     * WebAudio is supported on the current browser.
+     * @name PIXI.sound#supported
+     * @readOnly
+     * @type {Boolean}
+     */
+    get supported(): boolean
+    {
+        return SoundContext.AudioContext !== null;
     }
 
     /**
@@ -98,7 +112,6 @@ export default class SoundLibrary
      * @param {Boolean} [options.block=false] true to only play one instance of the sound at a time.
      * @param {Number} [options.volume=1] The amount of volume 1 = 100%.
      * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false, loaded with NodeJS's `fs` module.
-     * @param {Number} [options.panning=0] The panning amount from -1 (left) to 1 (right).
      * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback when play is finished.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
      * @return {PIXI.sound.Sound} Instance of the Sound object.
@@ -129,21 +142,26 @@ export default class SoundLibrary
      *        if a property is defined, it will use the local property instead.
      * @return {PIXI.sound.Sound} Instance to the Sound object.
      */
-    addMap(map:{string:Options|string|ArrayBuffer}, globalOptions?:Options):{[id:string]:Sound}
+    addMap(map:{[id:string]:Options|string|ArrayBuffer}, globalOptions?:Options):{[id:string]:Sound}
     {
-        let results:{[id:string]:Sound} = {};
-        for(let a in map)
+        const results:{[id:string]:Sound} = {};
+        for(const alias in map)
         {
             let options:Options;
-            if (typeof map[a] === "string" || map[a] instanceof ArrayBuffer)
+            let sound:any = map[alias] as any;
+            if (typeof sound === "string")
             {
-                options = {src: map[a]};
+                options = { src: sound as string };
+            }
+            else if(sound instanceof ArrayBuffer)
+            {
+                options = { srcBuffer: sound as ArrayBuffer };
             }
             else
             {
-                options = map[a];
+                options = sound as Options;
             }
-            results[a] = this.add(a, Object.assign(
+            results[alias] = this.add(alias, Object.assign(
                 options,
                 globalOptions || {}
             ));
@@ -255,12 +273,12 @@ export default class SoundLibrary
     }
 
     /**
-     * Gets a sound.
-     * @method PIXI.sound#sound
+     * Find a sound by alias.
+     * @method PIXI.sound#find
      * @param {String} alias The sound alias reference.
      * @return {PIXI.sound.Sound} Sound object.
      */
-    sound(alias:string):Sound
+    find(alias:string):Sound
     {
         this.exists(alias, true);
         return this._sounds[alias];
@@ -279,7 +297,7 @@ export default class SoundLibrary
      */
     play(alias:string, options?:PlayOptions|Object):SoundInstance
     {
-        return this.sound(alias).play(options);
+        return this.find(alias).play(options);
     }
 
     /**
@@ -290,7 +308,7 @@ export default class SoundLibrary
      */
     stop(alias:string):Sound
     {
-        return this.sound(alias).stop();
+        return this.find(alias).stop();
     }
 
     /**
@@ -301,7 +319,7 @@ export default class SoundLibrary
      */
     pause(alias:string):Sound
     {
-        return this.sound(alias).pause();
+        return this.find(alias).pause();
     }
 
     /**
@@ -312,7 +330,7 @@ export default class SoundLibrary
      */
     resume(alias:string):Sound
     {
-        return this.sound(alias).resume();
+        return this.find(alias).resume();
     }
 
     /**
@@ -324,27 +342,11 @@ export default class SoundLibrary
      */
     volume(alias:string, volume?:number):number
     {
-        const sound = this.sound(alias);
+        const sound = this.find(alias);
         if (volume !== undefined) {
             sound.volume = volume;
         }
         return sound.volume;
-    }
-
-    /**
-     * Get or set the panning for a sound.
-     * @method PIXI.sound#panning
-     * @param {String} alias The sound alias reference.
-     * @param {Number} [panning] Optional current panning from -1 to 1 (0 is centered).
-     * @return {Number} The current panning.
-     */
-    panning(alias:string, panning?:number):number
-    {
-        const sound = this.sound(alias);
-        if (panning !== undefined) {
-            sound.panning = panning;
-        }
-        return sound.panning;
     }
 
     /**
@@ -355,7 +357,7 @@ export default class SoundLibrary
      */
     duration(alias:string):number
     {
-        return this.sound(alias).duration;
+        return this.find(alias).duration;
     }
 
     /**

@@ -1,0 +1,61 @@
+.eq {
+    display: inline-block !important;
+    -webkit-appearance: slider-vertical;
+    width: 8% !important;
+    height: 150px;
+    margin:10px 0;
+}
+
+.sound-list {
+    margin: 20px 0;
+}
+
+.sound-controls {
+    margin-bottom: 20px;
+}
+
+.well h3 {
+    margin-top:0;
+}
+
+.well p {
+    margin-top:10px;
+}
+
+.btn {
+    outline: none !important;
+}
+
+.btn .off,
+.btn .on {
+    display: none;
+}
+
+.btn.off .off,
+.btn.on .on {
+    display: inline-block;
+}
+
+.progress {
+    height: 10px;
+    margin: 10px 0 0;
+}
+
+.range {
+    height: 40px;
+}
+
+.progress-bar {
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    -o-transition: none;
+    transition: none;
+}
+
+pre {
+    padding: 0;
+}
+pre code {
+    margin: 0;
+}

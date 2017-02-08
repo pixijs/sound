@@ -4,14 +4,13 @@ import * as uuid from 'uuid';
 
 /**
  * Utilities that work with sounds.
- * @class SoundUtils
- * @memberof PIXI.sound
+ * @namespace PIXI.sound.utils
  */
 export default class SoundUtils
 {
     /**
      * Create a new sound for a sine wave-based tone.
-     * @method PIXI.sound.SoundUtils.sineTone
+     * @method PIXI.sound.utils.sineTone
      * @param {PIXI.sound.SoundContext} soundContext
      * @param {Number} [hertz=200] Frequency of sound.
      * @param {Number} [seconds=1] Duration of sound in seconds.
@@ -52,7 +51,7 @@ export default class SoundUtils
 
     /**
      * Create a new "Audio" stream based on given audio path and project uri; returns the audio object.
-     * @method PIXI.sound.SoundUtils.playOnce
+     * @method PIXI.sound.utils.playOnce
      * @static
      * @param {String} fileName Full path of the file to play.
      * @param {Function} callback Callback when complete.

@@ -8,7 +8,7 @@
     "test:lib": "floss --path=test/lib.js",
     "test:dist": "floss --path=test/dist.js",
     "test:dist:min": "floss --path=test/dist.min.js",
-    "coverage": "npm run test:lib -- -c \"lib/*.js\" -s",
+    "coverage": "npm run test:lib -- -c \"lib/**.js\" -s",
     "precoverage:report": "rimraf coverage",
     "coverage:report": "npm run coverage -- -h",
     "clean": "rimraf lib/** dist/** && mkdirp lib dist",
@@ -23,7 +23,9 @@
     "docs": "jsdoc -c jsdoc.conf.json -R README.md",
     "postdocs": "rimraf .docs",
     "predeploy": "npm run docs",
-    "deploy": "gh-pages -d docs",
+    "deploy": "gulp deploy",
+    "examples": "electron examples/index",
+    "app": "electron examples/app",
     "publish:patch": "npm version patch && npm run publish:skip",
     "publish:minor": "npm version minor && npm run publish:skip",
     "publish:major": "npm version major && npm run publish:skip",
@@ -68,8 +70,10 @@
     "typescript": "^2.1.5",
     "uglify-js": "^2.7.5"
   },
+  "peerDependencies": {
+    "pixi.js": "^4.3.4"
+  },
   "dependencies": {
-    "eventemitter3": "^2.0.2",
     "uuid": "^3.0.1"
   }
 }
