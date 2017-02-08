@@ -23,7 +23,7 @@
     "docs": "jsdoc -c jsdoc.conf.json -R README.md",
     "postdocs": "rimraf .docs",
     "predeploy": "npm run docs",
-    "deploy": "gh-pages -d docs",
+    "deploy": "gulp deploy",
     "examples": "electron examples/index",
     "app": "electron examples/app",
     "publish:patch": "npm version patch && npm run publish:skip",
