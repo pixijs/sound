@@ -33,7 +33,7 @@ describe('PIXI.sound', function()
     {
         expect(PIXI.sound).to.be.a.function;
         expect(PIXI.sound.Sound).to.be.a.function;
-        expect(PIXI.sound.SoundUtils).to.be.a.function;
+        expect(PIXI.sound.utils).to.be.a.function;
         expect(PIXI.sound.SoundInstance).to.be.a.function;
         expect(PIXI.sound.SoundLibrary).to.be.a.function;
         expect(PIXI.sound.filters).to.be.an.object;
@@ -206,7 +206,7 @@ describe('PIXI.sound', function()
 
     it('sound play once a file', function(done)
     {
-        const alias = this.library.SoundUtils.playOnce(manifest.silence, (err) =>
+        const alias = this.library.utils.playOnce(manifest.silence, (err) =>
         {
             expect(alias).to.be.ok;
             expect(this.library.exists(alias)).to.be.false;
@@ -218,7 +218,7 @@ describe('PIXI.sound', function()
     it('should play a sine tone', function(done)
     {
         this.slow(300);
-        const sound = this.library.SoundUtils.sineTone(200, 0.1);
+        const sound = this.library.utils.sineTone(200, 0.1);
         sound.volume = 0;
         sound.play(() => {
             done();

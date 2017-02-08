@@ -14,25 +14,11 @@ import * as filters from './filters';
 export default class SoundLibrary
 {
     /**
-     * The reference to SoundUtils class.
-     * @name PIXI.sound.SoundUtils
-     * @type {PIXI.sound.SoundUtils}
-     */
-    public SoundUtils:typeof SoundUtils;
-
-    /**
      * The reference to Sound class.
      * @name PIXI.sound.Sound
      * @type {Sound}
      */
     public Sound:typeof Sound;
-
-    /**
-     * The collection of filters.
-     * @name PIXI.sound.filters
-     * @type {Object}
-     */
-    public filters:typeof filters;
 
     /**
      * The reference to SoundInstance class.
@@ -47,6 +33,12 @@ export default class SoundLibrary
      * @type {PIXI.sound.SoundLibrary}
      */
     public SoundLibrary:typeof SoundLibrary;
+
+    // Documentation as namespace
+    public filters:typeof filters;
+
+    // Documented as namespace
+    public utils:typeof SoundUtils;
 
     /**
      * The global context to use.
@@ -68,7 +60,7 @@ export default class SoundLibrary
     {
         this._context = new SoundContext();
         this._sounds = {};
-        this.SoundUtils = SoundUtils;
+        this.utils = SoundUtils;
         this.filters = filters;
         this.Sound = Sound;
         this.SoundInstance = SoundInstance;

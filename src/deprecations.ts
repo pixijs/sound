@@ -19,10 +19,23 @@ SoundLibraryPrototype.sound = function sound(alias:string): Sound
  * Get or set the panning for a sound.
  * @method PIXI.sound#panning
  * @deprecated since 1.1.0
- * @see PIXI.sound.filters.SteroPan
+ * @see PIXI.sound.filters.StereoFilter
  */
 SoundLibraryPrototype.panning = function(alias:string, panning?:number):number
 {
     console.warn('PIXI.sound.panning is deprecated, use PIXI.sound.filters.StereoPan');
     return 0;
 }
+
+/**
+ * Get the utilities.
+ * @name PIXI.sound#SoundUtils
+ * @deprecated since 1.1.0
+ * @see PIXI.sound.utils
+ */
+Object.defineProperty(SoundLibraryPrototype, 'SoundUtils', {
+    get() {
+        console.warn('PIXI.sound.SoundUtils is deprecated, use PIXI.sound.utils');
+        return this.utils;
+    }
+});
