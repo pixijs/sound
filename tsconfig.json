@@ -8,10 +8,7 @@
         "outDir": "lib",
         "sourceMap": true,
         "inlineSources": true,
-        "declaration": true,
-        "typeRoots": [
-            "lib/"
-        ]
+        "declaration": true
     },
     "files": [
         "typings/index.d.ts"
@@ -20,6 +17,7 @@
         "src/**/*"
     ],
     "exclude": [
-        "node_modules/**/*"
+        "node_modules",
+        "lib"
     ]
 }

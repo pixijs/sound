@@ -36,6 +36,11 @@ describe('PIXI.sound', function()
         expect(PIXI.sound.SoundUtils).to.be.a.function;
         expect(PIXI.sound.SoundInstance).to.be.a.function;
         expect(PIXI.sound.SoundLibrary).to.be.a.function;
+        expect(PIXI.sound.filters).to.be.an.object;
+        expect(PIXI.sound.filters.DistortionFilter).to.be.a.function;
+        expect(PIXI.sound.filters.EqualizerFilter).to.be.a.function;
+        expect(PIXI.sound.filters.ReverbFilter).to.be.a.function;
+        expect(PIXI.sound.filters.StereoFilter).to.be.a.function;
         expect(PIXI.sound).to.be.instanceof(PIXI.sound.SoundLibrary);
         expect(library.default).to.equal(PIXI.sound);
     });

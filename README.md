@@ -7,11 +7,15 @@ WebAudio API playback without any Flash shims or HTML Audio fallback. Modern aud
 **Features**
 
 * Pausing and resuming
-* Panning channels
 * Independent volume control
 * Loading with XMLHttpRequest or Node's `fs` module
 * Support blocking or layered sounds (multiple instances)
 * Support for `PIXI.loader` system
+* Dynamic filters:
+    * ReverbFilter
+    * DistortionFilter
+    * EqualizerFilter
+    * StereoFilter
 
 ## Usage
 

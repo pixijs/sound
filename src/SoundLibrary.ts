@@ -3,6 +3,7 @@ import {Options, PlayOptions} from './Sound';
 import Sound from './Sound';
 import SoundInstance from './SoundInstance';
 import SoundUtils from './SoundUtils';
+import * as filters from './filters';
 
 /**
  * @description Manages the playback of sounds.
@@ -12,21 +13,28 @@ import SoundUtils from './SoundUtils';
  */
 export default class SoundLibrary
 {
-    /*
+    /**
      * The reference to SoundUtils class.
      * @name PIXI.sound.SoundUtils
      * @type {PIXI.sound.SoundUtils}
      */
     public SoundUtils:typeof SoundUtils;
 
-    /*
+    /**
      * The reference to Sound class.
      * @name PIXI.sound.Sound
      * @type {Sound}
      */
     public Sound:typeof Sound;
 
-    /*
+    /**
+     * The collection of filters.
+     * @name PIXI.sound.filters
+     * @type {Object}
+     */
+    public filters:typeof filters;
+
+    /**
      * The reference to SoundInstance class.
      * @name PIXI.sound.SoundInstance
      * @type {PIXI.sound.SoundInstance}
@@ -61,6 +69,7 @@ export default class SoundLibrary
         this._context = new SoundContext();
         this._sounds = {};
         this.SoundUtils = SoundUtils;
+        this.filters = filters;
         this.Sound = Sound;
         this.SoundInstance = SoundInstance;
         this.SoundLibrary = SoundLibrary;
@@ -97,7 +106,6 @@ export default class SoundLibrary
      * @param {Boolean} [options.block=false] true to only play one instance of the sound at a time.
      * @param {Number} [options.volume=1] The amount of volume 1 = 100%.
      * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false, loaded with NodeJS's `fs` module.
-     * @param {Number} [options.panning=0] The panning amount from -1 (left) to 1 (right).
      * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback when play is finished.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
      * @return {PIXI.sound.Sound} Instance of the Sound object.
@@ -333,22 +341,6 @@ export default class SoundLibrary
             sound.volume = volume;
         }
         return sound.volume;
-    }
-
-    /**
-     * Get or set the panning for a sound.
-     * @method PIXI.sound#panning
-     * @param {String} alias The sound alias reference.
-     * @param {Number} [panning] Optional current panning from -1 to 1 (0 is centered).
-     * @return {Number} The current panning.
-     */
-    panning(alias:string, panning?:number):number
-    {
-        const sound = this.find(alias);
-        if (panning !== undefined) {
-            sound.panning = panning;
-        }
-        return sound.panning;
     }
 
     /**

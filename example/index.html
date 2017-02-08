@@ -10,62 +10,207 @@
     </head>
     <body>
         <div class="container-fluid">
-            <div class="sound-list btn-group-vertical btn-block">
-                <button class="btn btn-default" id="applause">applause
-                    <div class="progress"><div class="progress-bar" id="progress-applause"></div></div>
-                </button>
-                <button class="btn btn-default" id="bird">bird
-                    <div class="progress"><div class="progress-bar" id="progress-bird"></div></div>
-                </button>
-                <button class="btn btn-default" id="boing">boing
-                    <div class="progress"><div class="progress-bar" id="progress-boing"></div></div>
-                </button>
-                <button class="btn btn-default" id="mechanical">mechanical
-                    <div class="progress"><div class="progress-bar" id="progress-mechanical"></div></div>
-                </button>
-                <button class="btn btn-default" id="whistle">whistle
-                    <div class="progress"><div class="progress-bar" id="progress-whistle"></div></div>
-                </button>
-            </div>
+            <ul class="sound-list list-group">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <strong>applause</strong>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="progress">
+                                <div class="progress-bar" id="progress-applause"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="btn-group btn-group-justified">
+                                <div class="btn-group">
+                                    <button class="btn btn-default play" data-id="applause">
+                                        <span class="glyphicon glyphicon-play"></span>
+                                    </button>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn btn-default play" data-id="applause" data-loop="true">
+                                        <span class="glyphicon glyphicon-play-circle"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <strong>bird</strong>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="progress">
+                                <div class="progress-bar" id="progress-bird"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="btn-group btn-group-justified">
+                                <div class="btn-group">
+                                    <button class="btn btn-default play" data-id="bird">
+                                        <span class="glyphicon glyphicon-play"></span>
+                                    </button>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn btn-default play" data-id="bird" data-loop="true">
+                                        <span class="glyphicon glyphicon-play-circle"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <strong>boing</strong>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="progress">
+                                <div class="progress-bar" id="progress-boing"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="btn-group btn-group-justified">
+                                <div class="btn-group">
+                                    <button class="btn btn-default play" data-id="boing">
+                                        <span class="glyphicon glyphicon-play"></span>
+                                    </button>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn btn-default play" data-id="boing" data-loop="true">
+                                        <span class="glyphicon glyphicon-play-circle"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <strong>mechanical</strong>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="progress">
+                                <div class="progress-bar" id="progress-mechanical"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="btn-group btn-group-justified">
+                                <div class="btn-group">
+                                    <button class="btn btn-default play" data-id="mechanical">
+                                        <span class="glyphicon glyphicon-play"></span>
+                                    </button>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn btn-default play" data-id="mechanical" data-loop="true">
+                                        <span class="glyphicon glyphicon-play-circle"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <strong>whistle</strong>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="progress">
+                                <div class="progress-bar" id="progress-whistle"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="btn-group btn-group-justified">
+                                <div class="btn-group">
+                                    <button class="btn btn-default play" data-id="whistle">
+                                        <span class="glyphicon glyphicon-play"></span>
+                                    </button>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn btn-default play" data-id="whistle" data-loop="true">
+                                        <span class="glyphicon glyphicon-play-circle"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
             <div class="sound-controls text-center">
                 <div class="btn-group">
-                    <button class="btn btn-primary" id="stop">
+                    <button class="btn btn-lg btn-primary" id="stop">
                         <span class="glyphicon glyphicon-stop"></span>
                     </button>
-                    <button class="btn btn-primary off" id="paused">
+                    <button class="btn btn-lg btn-primary off" id="paused">
                         <span class="glyphicon glyphicon-pause off"></span>
                         <span class="glyphicon glyphicon-play on"></span>
                     </button>
-                    <button class="btn btn-primary off" id="muted">
+                    <button class="btn btn-lg btn-primary off" id="muted">
                         <span class="glyphicon glyphicon-volume-up off"></span>
                         <span class="glyphicon glyphicon-volume-off on"></span>
                     </button>
                 </div>
             </div>
-            <div class="form-row">
-                <strong>Global Volume: </strong>
+            <div class="options-row">
+                <h3>Global Volume</h3>
                 <input id="globalVolume" type="range" step="0.01" value="1" min="0" max="1" />
-                <code class="code-block">PIXI.sound.context.volume = ${volume};</code>
+                <code class="code-block">PIXI.sound.context.volume = 0.5;</code>
             </div>
-            <div class="form-row">
-                <strong>Volume: </strong>
+            <div class="options-row">
+                <h3>Volume <small>Applied Per SoundInstance</small></h3>
                 <input id="volume" type="range" step="0.01" value="1" min="0" max="1" />
-                <code class="code-block">PIXI.sound.volume('${name}', ${volume});</code>
+                <code class="code-block">PIXI.sound.volume('bird', 0.5);</code>
             </div>
-            <div class="form-row">
-                <strong>Panning: </strong>
-                <input id="panning" type="range" step="0.01" value="0" min="-1" max="1" />
-                <code class="code-block">PIXI.sound.panning('${name}', ${panning});</code>
+            <div class="options-row">
+                <h3>Speed <small>Applied Per SoundInstance</small></h3>
+                <input id="speed" type="range" step="0.01" value="1" min="0.5" max="1.5" />
+                <code class="code-block">PIXI.sound.find('bird').speed = 0.5;</code>
             </div>
-            <div class="form-row">
-                <strong>Block: </strong>
+            <div class="options-row">
+                <h3>Block</h3>
                 <input id="block" type="checkbox" checked />
-                <code class="code-block">PIXI.sound.find('${name}').block = ${block};</code>
+                <code class="code-block">PIXI.sound.find('bird').block = true;</code>
             </div>
-            <div class="form-row">
-                <strong>Loop: </strong>
-                <input id="loop" type="checkbox" />
-                <code class="code-block">PIXI.sound.find('${name}').loop = ${loop};</code>
+            <div class="options-row">
+                <h3>Stereo Filter</h3>
+                <input id="panning" type="range" value="0" step="0.1" min="-1" max="1" />
+                <code class="code-block">
+                const stereo = new PIXI.sound.filters.StereoFilter(-1);
+                PIXI.sound.find('bird').filters = [stereo];
+                </code>
+            </div>
+            <div class="options-row">
+                <h3>Distortion Filter</h3>
+                <input id="distortion" type="range" value="0" step="0.01" min="0" max="1" />
+                <code class="code-block">
+                const distortion = new PIXI.sound.filters.DistortionFilter(0.5);
+                PIXI.sound.find('bird').filters = [distortion];
+                </code>
+            </div>
+            <div class="options-row">
+                <h3>Equalizer Filter</h3>
+                <div class="text-center">
+                    <input id="F32" title="32 Hz" class="eq" type="range" min="-40" max="40" orient="vertical">
+                    <input id="F64" title="64 Hz" class="eq" type="range" min="-40" max="40" orient="vertical">
+                    <input id="F125" title="125 Hz" class="eq" type="range" min="-40" max="40" orient="vertical">
+                    <input id="F250" title="250 Hz" class="eq" type="range" min="-40" max="40" orient="vertical">
+                    <input id="F500" title="500 Hz" class="eq" type="range" min="-40" max="40" orient="vertical">
+                    <input id="F1K" title="1000 Hz" class="eq" type="range" min="-40" max="40" orient="vertical">
+                    <input id="F2K" title="2000 Hz" class="eq" type="range" min="-40" max="40" orient="vertical">
+                    <input id="F4K" title="4000 Hz" class="eq" type="range" min="-40" max="40" orient="vertical">
+                    <input id="F8K" title="8000 Hz" class="eq" type="range" min="-40" max="40" orient="vertical">
+                    <input id="F16K" title="16000 Hz" class="eq" type="range" min="-40" max="40" orient="vertical">
+                </div>
+                <code class="code-block">
+                const eq = new PIXI.sound.filters.EqualizerFilter();
+                PIXI.sound.find('bird').filters = [eq];
+                </code>
             </div>
         </div>
         <script>

@@ -213,7 +213,12 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
             {
                 // pause the sounds
                 this._internalStop();
-                this._position = (this._now - this._startTime);
+                let speed:number = 1;
+                if (this._source)
+                {
+                    speed = this._source.playbackRate.value;
+                }
+                this._position = (this._now - this._startTime) * speed;
                 /**
                  * The sound is paused.
                  * @event PIXI.sound.SoundInstance#paused
@@ -297,10 +302,9 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     {
         if (this._duration)
         {
-            const position = this._paused ? 
-                this._position :
-                (this._now - this._startTime);
-            this._progress = Math.max(0, Math.min(1, position / this._duration));
+            const speed:number = this._source.playbackRate.value;
+            const position = this._paused ? this._position : (this._now - this._startTime);
+            this._progress = Math.max(0, Math.min(1, (position / this._duration) * speed));
             this.emit('progress', this._progress);
         }
     }

@@ -1,39 +1,59 @@
+.eq {
+    display: inline-block !important;
+    -webkit-appearance: slider-vertical;
+    width: 40px !important;
+    height: 150px;
+}
+
 .sound-list {
-    margin:20px 0;
+    margin: 20px 0;
 }
 
 .sound-controls {
-    margin-bottom:20px;
+    margin-bottom: 20px;
 }
 
 .code-block {
-    display:block;
-    margin-top:5px;
+    display: block;
+    margin-top: 5px;
     overflow: hidden;
 }
 
+.options-row {
+    margin:0 0 20px;
+    border:1px solid #ddd;
+    padding:15px;
+    border-radius: 4px
+}
+
+.options-row h3 {
+    font-size:16px;
+    margin-top:0;
+}
+
 .btn {
-    outline:none !important;
+    outline: none !important;
 }
 
 .btn .off,
 .btn .on {
-    display:none;
+    display: none;
 }
+
 .btn.off .off,
 .btn.on .on {
-    display:inline-block;
+    display: inline-block;
 }
 
 .progress {
-    margin-top:10px;
-    height: 6px;
+    height: 10px;
+    margin: 10px 0 0;
 }
 
-.progress .progress-bar {
+.progress-bar {
     -webkit-transition: none;
     -moz-transition: none;
     -ms-transition: none;
     -o-transition: none;
     transition: none;
-}​
+}

@@ -1,4 +1,5 @@
 import SoundContext from './SoundContext';
+import Filter from './filters/Filter';
 
 /**
  * @class SoundNodes
@@ -49,20 +50,20 @@ export default class SoundNodes
     public analyser:AnalyserNode;
 
     /**
-     * Get the panner node
-     * @name PIXI.sound.SoundNodes#panner
-     * @type {StereoPannerNode}
-     * @readOnly
-     */
-    public panner:StereoPannerNode;
-
-    /**
      * The destination output audio node
      * @name PIXI.sound.SoundNodes#destination
      * @type {AudioNode}
      * @readOnly
      */
     public destination:AudioNode;
+
+    /**
+     * Collection of filters.
+     * @name PIXI.sound.SoundNodes#_filters
+     * @type {PIXI.sound.filters.Filter[]}
+     * @private
+     */
+    private _filters:Filter[];
 
     /**
      * Reference to the SoundContext
@@ -79,20 +80,64 @@ export default class SoundNodes
         const scriptNode:ScriptProcessorNode = audioContext.createScriptProcessor(SoundNodes.BUFFER_SIZE);
         const gainNode:GainNode = audioContext.createGain();
         const analyser:AnalyserNode = audioContext.createAnalyser();
-        const panner:StereoPannerNode = audioContext.createStereoPanner();
 
         gainNode.connect(this.context.destination);
         scriptNode.connect(this.context.destination);
         analyser.connect(gainNode);
-        panner.connect(analyser);
-        bufferSource.connect(panner);
+        bufferSource.connect(analyser);
 
         this.bufferSource = bufferSource;
         this.scriptNode = scriptNode;
         this.gainNode = gainNode;
         this.analyser = analyser;
-        this.panner = panner;
-        this.destination = panner;
+        this.destination = analyser;
+    }
+
+    /** 
+     * The collection of filters
+     * @name PIXI.sound.SoundNodes#filters
+     * @type {PIXI.sound.filters.Filter[]}
+     */
+    get filters():Filter[]
+    {
+        return this._filters;
+    }
+    set filters(filters:Filter[])
+    {
+        if (this._filters)
+        {
+            this._filters.forEach((filter:Filter) => {
+                filter && filter.disconnect();
+            });
+            this._filters = null;
+            // Reconnect direct path
+            this.analyser.connect(this.gainNode);
+        }
+
+        if (filters && filters.length)
+        {
+            this._filters = filters.slice(0);
+
+            // Disconnect direct path before inserting filters
+            this.analyser.disconnect();
+
+            // Connect each filter
+            let prevFilter:Filter = null;
+            filters.forEach((filter:Filter) => {
+                if (prevFilter === null)
+                {
+                    // first filter is the destination
+                    // for the analyser
+                    this.analyser.connect(filter.destination);
+                }
+                else
+                {
+                    prevFilter.connect(filter.destination);
+                }
+                prevFilter = filter;
+            });
+            prevFilter.connect(this.gainNode);
+        }
     }
 
     /**
@@ -101,17 +146,16 @@ export default class SoundNodes
      */
     public destroy():void
     {
+        this.filters = null;
         this.bufferSource.disconnect();
         this.scriptNode.disconnect();
         this.gainNode.disconnect();
         this.analyser.disconnect();
-        this.panner.disconnect();
 
         this.bufferSource = null;
         this.scriptNode = null;
         this.gainNode = null;
         this.analyser = null;
-        this.panner = null;
 
         this.context = null;
     }

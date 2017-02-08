@@ -2,6 +2,7 @@ import SoundContext from './SoundContext';
 import SoundNodes from './SoundNodes';
 import SoundInstance from './SoundInstance';
 import soundLibrary from './index';
+import Filter from './filters/Filter';
 import * as path from 'path';
 
 export interface Options {
@@ -9,7 +10,6 @@ export interface Options {
     preaload?:boolean;
     block?:boolean;
     volume?:number;
-    panning?:number;
     speed?:number;
     complete?:CompleteCallback;
     loaded?:LoadedCallback;
@@ -183,7 +183,6 @@ export default class Sound
      * @param {Boolean} [options.block=false] true to only play one instance of the sound at a time.
      * @param {Number} [options.volume=1] The amount of volume 1 = 100%.
      * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false, loaded with NodeJS's `fs` module.
-     * @param {Number} [options.panning=0] The panning amount from -1 (left) to 1 (right).
      * @param {Number} [options.speed=1] The playback rate where 1 is 100% speed.
      * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback when play is finished.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
@@ -213,7 +212,6 @@ export default class Sound
             src: null,
             preload: false,
             volume: 1,
-            panning: 0,
             speed: 1,
             complete: null,
             loaded: null,
@@ -237,7 +235,6 @@ export default class Sound
         this._instances = [];
 
         this.volume = (<Options>options).volume;
-        this.panning = (<Options>options).panning;
         this.loop = (<Options>options).loop;
         this.speed = (<Options>options).speed;
 
@@ -353,18 +350,17 @@ export default class Sound
     }
 
     /**
-     * Gets and sets the panning -1 (full left pan) and 1 (full right pan).
-     * @name PIXI.sound.Sound#panning
-     * @type {Number}
-     * @default 0
+     * Push the collection of filteres
+     * @name PIXI.sound.Sound#filters
+     * @type {PIXI.sound.SoundNodes}
      */
-    public get panning():number
+    public get filters(): Filter[]
     {
-        return this._nodes.panner.pan.value;
+        return this._nodes.filters;
     }
-    public set panning(pan:number)
+    public set filters(filters:Filter[])
     {
-        this._nodes.panner.pan.value = pan;
+        this._nodes.filters = filters;
     }
 
     /**

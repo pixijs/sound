@@ -8,7 +8,7 @@
     "test:lib": "floss --path=test/lib.js",
     "test:dist": "floss --path=test/dist.js",
     "test:dist:min": "floss --path=test/dist.min.js",
-    "coverage": "npm run test:lib -- -c \"lib/*.js\" -s",
+    "coverage": "npm run test:lib -- -c \"lib/**.js\" -s",
     "precoverage:report": "rimraf coverage",
     "coverage:report": "npm run coverage -- -h",
     "clean": "rimraf lib/** dist/** && mkdirp lib dist",
