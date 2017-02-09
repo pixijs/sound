@@ -13,31 +13,11 @@ import * as filters from './filters';
  */
 export default class SoundLibrary
 {
-    /**
-     * The reference to Sound class.
-     * @name PIXI.sound.Sound
-     * @type {Sound}
-     */
+    // These are already documented else where
     public Sound:typeof Sound;
-
-    /**
-     * The reference to SoundInstance class.
-     * @name PIXI.sound.SoundInstance
-     * @type {PIXI.sound.SoundInstance}
-     */
     public SoundInstance:typeof SoundInstance;
-
-    /*
-     * The reference to SoundLibrary class.
-     * @name PIXI.sound.SoundLibrary
-     * @type {PIXI.sound.SoundLibrary}
-     */
     public SoundLibrary:typeof SoundLibrary;
-
-    // Documentation as namespace
     public filters:typeof filters;
-
-    // Documented as namespace
     public utils:typeof SoundUtils;
 
     /**
