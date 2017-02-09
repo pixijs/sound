@@ -39,14 +39,16 @@ export default class StereoFilter extends Filter
         let stereo:StereoPannerNode;
         let panner:PannerNode;
         let destination:AudioNode;
-        try
+        const audioContext = soundLibrary.context.audioContext;
+
+        if (audioContext.createStereoPanner)
         {
-            // Webkit browser don't support this
-            stereo = soundLibrary.context.audioContext.createStereoPanner();
+            stereo = audioContext.createStereoPanner();
             destination = stereo;
         }
-        catch(e) {
-            panner = soundLibrary.context.audioContext.createPanner();
+        else
+        {
+            panner = audioContext.createPanner();
             panner.panningModel = 'equalpower';
             destination = panner;
         }
