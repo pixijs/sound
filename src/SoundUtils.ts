@@ -20,7 +20,7 @@ export default class SoundUtils
     {
         const soundContext = soundLibrary.context;
         const soundInstance = new Sound(soundContext, {
-            block: true
+            singleInstance: true
         });
 
         // set default value

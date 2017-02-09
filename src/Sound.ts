@@ -8,7 +8,7 @@ import * as path from 'path';
 export interface Options {
     autoPlay?:boolean;
     preaload?:boolean;
-    block?:boolean;
+    singleInstance?:boolean;
     volume?:number;
     speed?:number;
     complete?:CompleteCallback;
@@ -99,12 +99,12 @@ export default class Sound
     public loaded:LoadedCallback;
 
     /**
-     * `true` to block successive plays.
-     * @name PIXI.sound.Sound#block
+     * `true` to disallow playing multiple layered instances at once.
+     * @name PIXI.sound.Sound#singleInstance
      * @type {Boolean}
      * @default false
      */
-    public block:boolean;
+    public singleInstance:boolean;
 
     /**
      * `true` to immediately start preloading.
@@ -180,7 +180,7 @@ export default class Sound
      * @param {ArrayBuffer|String} [options.src] If `options` is an object, the source of file.
      * @param {Boolean} [options.autoPlay=false] true to play after loading.
      * @param {Boolean} [options.preload=false] true to immediately start preloading.
-     * @param {Boolean} [options.block=false] true to only play one instance of the sound at a time.
+     * @param {Boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
      * @param {Number} [options.volume=1] The amount of volume 1 = 100%.
      * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false, loaded with NodeJS's `fs` module.
      * @param {Number} [options.speed=1] The playback rate where 1 is 100% speed.
@@ -208,7 +208,7 @@ export default class Sound
         // Default settings
         options = Object.assign({
             autoPlay: false,
-            block: false,
+            singleInstance: false,
             src: null,
             preload: false,
             volume: 1,
@@ -225,7 +225,7 @@ export default class Sound
         this.isLoaded = false;
         this.isPlaying = false;
         this.autoPlay = (<Options>options).autoPlay;
-        this.block = (<Options>options).block;
+        this.singleInstance = (<Options>options).singleInstance;
         this.preload = (<Options>options).preload || this.autoPlay;
         this.complete = (<Options>options).complete;
         this.loaded = (<Options>options).loaded;
@@ -429,7 +429,7 @@ export default class Sound
         }
 
         // Stop all sounds
-        if (this.block)
+        if (this.singleInstance)
         {
             this._removeInstances();
         }

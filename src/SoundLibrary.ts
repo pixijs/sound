@@ -109,7 +109,7 @@ export default class SoundLibrary
      * @param {ArrayBuffer|String} [options.src] If `options` is an object, the source of file.
      * @param {Boolean} [options.autoPlay=false] true to play after loading.
      * @param {Boolean} [options.preload=false] true to immediately start preloading.
-     * @param {Boolean} [options.block=false] true to only play one instance of the sound at a time.
+     * @param {Boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
      * @param {Number} [options.volume=1] The amount of volume 1 = 100%.
      * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false, loaded with NodeJS's `fs` module.
      * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback when play is finished.

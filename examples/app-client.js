@@ -18,7 +18,7 @@ const stereo = new PIXI.sound.filters.StereoFilter();
 const equalizer = new PIXI.sound.filters.EqualizerFilter();
 
 PIXI.loader.load(function(loader, resources) {
-    const block = $("#block");
+    const singleInstance = $("#singleInstance");
     const loop = $("#loop");
     const speed = $("#speed");
     const volume = $('#volume');
@@ -27,7 +27,7 @@ PIXI.loader.load(function(loader, resources) {
         button.addEventListener('click', function() {
             const sound = resources[this.dataset.id].sound;
             sound.filters = [stereo, equalizer, distort];
-            sound.block = block.checked;
+            sound.singleInstance = singleInstance.checked;
             sound.volume = parseFloat(volume.value);
             sound.loop = !!this.dataset.loop;
             sound.speed = parseFloat(speed.value);
