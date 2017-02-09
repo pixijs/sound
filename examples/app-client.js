@@ -36,7 +36,7 @@ PIXI.loader.load(function(loader, resources) {
                 progressBar.style.width = `${value * 100}%`;
             });
             instance.on('end', () => {
-                progressBar.style = '';
+                progressBar.style.width = '';
             });
         });
     });
@@ -65,7 +65,7 @@ $('#globalVolume').addEventListener('input', function() {
 $("#stop").addEventListener('click', function() {
     PIXI.sound.stopAll();
     $$('.progress-bar').forEach(function(progress) {
-        progress.style = '';
+        progress.style.width = '';
     });
 });
 
