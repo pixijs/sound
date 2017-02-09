@@ -57,7 +57,7 @@ $('#distortion').addEventListener('input', function() {
 });
 
 $('#globalVolume').addEventListener('input', function() {
-    PIXI.sound.context.volume = Math.max(0, 
+    PIXI.sound.volumeAll = Math.max(0, 
         Math.min(1, parseFloat(this.value))
     );
 });

@@ -164,6 +164,20 @@ export default class SoundLibrary
     }
 
     /**
+     * Set the global volume for all sounds. To set per-sound volume see {@link PIXI.sound#volume}.
+     * @name PIXI.sound#volumeAll
+     * @type {Number}
+     */
+    get volumeAll():number
+    {
+        return this._context.volume;
+    }
+    set volumeAll(volume:number)
+    {
+        this._context.volume = volume;
+    }
+
+    /**
      * Pauses any playing sounds.
      * @method PIXI.sound#pauseAll
      * @return {PIXI.sound} Instance for chaining.
