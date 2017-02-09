@@ -74,6 +74,7 @@
     "pixi.js": "^4.3.4"
   },
   "dependencies": {
-    "uuid": "^3.0.1"
+    "uuid": "^3.0.1",
+    "web-audio-ios": "^1.0.2"
   }
 }

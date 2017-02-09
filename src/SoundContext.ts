@@ -1,3 +1,5 @@
+import webAudioIOS = require('web-audio-ios');
+
 /**
  * @description Main class to handle webkit audio.
  *
@@ -80,6 +82,9 @@ export default class SoundContext
         this.volume = 1;
         this.muted = false;
         this.paused = false;
+
+        // Unlock WebAudio on iOS
+        webAudioIOS(window, this._ctx, () => {});
     }
 
     /**
