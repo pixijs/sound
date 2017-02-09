@@ -19,6 +19,14 @@ export default class StereoFilter extends Filter
     private _stereo:StereoPannerNode;
 
     /**
+     * The stereo panning node
+     * @name PIXI.sound.filters.StereoFilter#_panner
+     * @type {PannerNode}
+     * @private
+     */
+    private _panner:PannerNode;
+
+    /**
      * The amount of panning, -1 is left, 1 is right, 0 is centered
      * @name PIXI.sound.filters.StereoFilter#_pan
      * @type {Number}
@@ -28,11 +36,26 @@ export default class StereoFilter extends Filter
 
     constructor(pan:number = 0)
     {
-        const stereo:StereoPannerNode = soundLibrary.context.audioContext.createStereoPanner();
+        let stereo:StereoPannerNode;
+        let panner:PannerNode;
+        let destination:AudioNode;
+        try
+        {
+            // Webkit browser don't support this
+            stereo = soundLibrary.context.audioContext.createStereoPanner();
+            destination = stereo;
+        }
+        catch(e) {
+            panner = soundLibrary.context.audioContext.createPanner();
+            panner.panningModel = 'equalpower';
+            destination = panner;
+        }
 
-        super(stereo);
+        super(destination);
 
         this._stereo = stereo;
+        this._panner = panner;
+
         this.pan = pan;
     }
 
@@ -44,7 +67,14 @@ export default class StereoFilter extends Filter
     set pan(value:number)
     {
         this._pan = value;
-        this._stereo.pan.value = value;
+        if (this._stereo)
+        {
+            this._stereo.pan.value = value;
+        }
+        else
+        {
+            this._panner.setPosition(value, 0, 1 - Math.abs(value));
+        }
     }
     get pan(): number
     {
@@ -55,5 +85,6 @@ export default class StereoFilter extends Filter
     {
         super.destroy();
         this._stereo = null;
+        this._panner = null;
     }
 }
