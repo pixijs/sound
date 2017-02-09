@@ -30,7 +30,7 @@
     "publish:minor": "npm version minor && npm run publish:skip",
     "publish:major": "npm version major && npm run publish:skip",
     "publish:skip": "npm run build && npm test && npm publish",
-    "postpublish": "npm run deploy"
+    "postpublish": "npm run deploy && git push && git push --tags"
   },
   "typings": "lib/index.d.ts",
   "repository": {
