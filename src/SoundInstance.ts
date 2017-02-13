@@ -67,6 +67,22 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     private _speed:number;
 
     /**
+     * Length of the sound in seconds.
+     * @type {Number}
+     * @name PIXI.sound.SoundInstance#_duration
+     * @private
+     */
+    private _duration:number;
+
+    /**
+     * The progress of the sound from 0 to 1.
+     * @type {Number}
+     * @name PIXI.sound.SoundInstance#_progress
+     * @private
+     */
+    private _progress:number;
+
+    /**
      * Audio buffer source clone from Sound object.
      * @type {AudioBufferSourceNode}
      * @name PIXI.sound.SoundInstance#_source
@@ -164,6 +180,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         }
         this._lastUpdate = this._now();
         this._elapsed = start;
+        this._duration = this._source.buffer.duration;
         this._source.onended = this._onComplete.bind(this);
         this._source.start(0, start, (end ? end - start : undefined));
 
@@ -173,24 +190,20 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
          */
         this.emit('start');
 
-        /**
-         * The sound progress is updated.
-         * @event PIXI.sound.SoundInstance#progress
-         * @param {Number} progress Amount progressed from 0 to 1
-         */
-        this.emit('progress', 0);
+        // Do an update for the initial progress
+        this._update(true);
 
         // Start handling internal ticks
-        this._onUpdate();
+        this._enabled = true;
     }
 
     /**
      * Start the update progress.
-     * @method PIXI.sound.SoundInstance#_onUpdate
+     * @name PIXI.sound.SoundInstance#_enabled
+     * @type {Boolean}
      * @private
-     * @param {Boolean} [enabled = true] `true` to start listening
      */
-    private _onUpdate(enabled:boolean = true): void
+    private set _enabled(enabled:boolean)
     {
         this._parent.nodes.scriptNode.onaudioprocess = !enabled ? null : () => {
             this._update();
@@ -204,8 +217,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      */
     public get progress():number
     {
-        return 0;
-    //     return this._progress;
+        return this._progress;
     }
 
     /**
@@ -244,7 +256,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
                 this.emit('resumed');
 
                 // resume the playing with offset
-                this.play(this._elapsed % this._source.buffer.duration);
+                this.play(this._elapsed % this._duration);
             }
 
             /**
@@ -271,6 +283,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         this._source = null;
         this._parent = null;
         this._elapsed = 0;
+        this._duration = 0;
         this._paused = false;
 
         // Add it if it isn't already added
@@ -307,20 +320,26 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @method PIXI.sound.SoundInstance#_update
      * @private
      */
-    private _update(): void
+    private _update(force:boolean = false): void
     {
         if (this._source)
         {
             const now:number = this._now();
             const delta:number = now - this._lastUpdate;
 
-            if (delta > 0)
+            if (delta > 0 || force)
             {
                 this._elapsed += delta;
                 this._lastUpdate = now;
-                const duration:number = this._source.buffer.duration;
-                const progress:number = ((this._elapsed * this._speed) % duration) / duration;
-                this.emit('progress', progress);
+                const duration:number = this._duration;
+                this._progress = ((this._elapsed * this._speed) % duration) / duration;
+
+                /**
+                 * The sound progress is updated.
+                 * @event PIXI.sound.SoundInstance#progress
+                 * @param {Number} progress Amount progressed from 0 to 1
+                 */
+                this.emit('progress', this._progress);
             }
         }
     }
@@ -344,7 +363,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     {
         if (this._source)
         {
-            this._onUpdate(false);
+            this._enabled = false;
             this._source.onended = null;
             this._source.stop();
             this._source = null;
@@ -361,11 +380,11 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     {
         if (this._source)
         {
-            this._onUpdate(false);
+            this._enabled = false;
             this._source.onended = null;
         }
         this._source = null;
-        //this._progress = 1;
+        this._progress = 1;
         this.emit('progress', 1);
         /**
          * The sound ends, don't use after this

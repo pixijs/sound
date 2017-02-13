@@ -109,7 +109,7 @@ describe('PIXI.sound', function()
     it('should play with blocking', function()
     {
         const sound = this.library.find('alert-4');
-        sound.block = true;
+        sound.singleInstance = true;
         sound.play();
         sound.play();
         sound.play();
@@ -117,7 +117,7 @@ describe('PIXI.sound', function()
         expect(sound.instances.length).to.equal(1);
         sound.stop();
         expect(sound.instances.length).to.equal(0);
-        sound.block = false;
+        sound.singleInstance = false;
     });
 
     it('should play with stopping single instance', function()
