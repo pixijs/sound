@@ -35,14 +35,6 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     private _parent:Sound;
 
     /**
-     * The starting time.
-     * @type {int}
-     * @name PIXI.sound.SoundInstance#_startTime
-     * @private
-     */
-    private _startTime:number;
-
-    /**
      * true if paused.
      * @type {Boolean}
      * @name PIXI.sound.SoundInstance#_paused
@@ -51,28 +43,28 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     private _paused:boolean;
 
     /**
-     * The current position in seconds.
-     * @type {int}
-     * @name PIXI.sound.SoundInstance#_position
+     * Last update frame number.
+     * @type {Number}
+     * @name PIXI.sound.SoundInstance#_lastUpdate
      * @private
      */
-    private _position:number;
+    private _lastUpdate:number;
 
     /**
-     * Progress float from 0 to 1.
+     * The total number of seconds elapsed in playback.
      * @type {Number}
-     * @name PIXI.sound.SoundInstance#_progress
+     * @name PIXI.sound.SoundInstance#_elapsed
      * @private
      */
-    private _progress:number;
+    private _elapsed:number;
 
     /**
-     * Total length of audio in seconds.
+     * Playback rate, where 1 is 100%.
      * @type {Number}
-     * @name PIXI.sound.SoundInstance#_duration
+     * @name PIXI.sound.SoundInstance#_speed
      * @private
      */
-    private _duration:number;
+    private _speed:number;
 
     /**
      * Audio buffer source clone from Sound object.
@@ -109,11 +101,8 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
 
         this.id = id++;
         this._parent = null;
-        this._startTime = 0;
         this._paused = false;
-        this._position = 0;
-        this._duration = 0;
-        this._progress = 0;
+        this._elapsed = 0;
 
         // Initialize
         this._init(parent);
@@ -140,18 +129,43 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     /**
      * Plays the sound.
      * @method PIXI.sound.SoundInstance#play
-     * @param {Number} [offset=0] Number of seconds to offset playing.
+     * @param {Number} [start=0] The position to start playing, in seconds.
+     * @param {Number} [end] The ending position in seconds.
+     * @param {Number} [speed] Override the default speed.
+     * @param {Boolean} [loop] Override the default loop.
      */
-    public play(offset:number = 0):void
+    public play(start:number = 0, end?:number, speed?:number, loop?:boolean):void
     {
-        this._progress = 0;
+        // @if DEBUG
+        if (end)
+        {
+            console.assert(end > start, 'End time is before start time');
+        }
+        // @endif
         this._paused = false;
-        this._position = offset;
         this._source = this._parent.nodes.cloneBufferSource();
-        this._duration = this._source.buffer.duration;
-        this._startTime = this._now;
+        if (speed !== undefined)
+        {
+            this._source.playbackRate.value = speed;
+        }
+        this._speed = this._source.playbackRate.value;
+        if (loop !== undefined)
+        {
+            this._source.loop = loop;
+        }
+        // WebAudio doesn't support looping when a duration is set
+        // we'll set this just for the heck of it
+        if (this._source.loop && end !== undefined)
+        {
+            // @if DEBUG
+            console.warn('Looping not support when specifying an "end" time');
+            // @endif
+            this._source.loop = false;
+        }
+        this._lastUpdate = this._now();
+        this._elapsed = start;
         this._source.onended = this._onComplete.bind(this);
-        this._source.start(0, offset);
+        this._source.start(0, start, (end ? end - start : undefined));
 
         /**
          * The sound is started.
@@ -190,7 +204,8 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      */
     public get progress():number
     {
-        return this._progress;
+        return 0;
+    //     return this._progress;
     }
 
     /**
@@ -213,12 +228,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
             {
                 // pause the sounds
                 this._internalStop();
-                let speed:number = 1;
-                if (this._source)
-                {
-                    speed = this._source.playbackRate.value;
-                }
-                this._position = (this._now - this._startTime) * speed;
+
                 /**
                  * The sound is paused.
                  * @event PIXI.sound.SoundInstance#paused
@@ -232,8 +242,9 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
                  * @event PIXI.sound.SoundInstance#resumed
                  */
                 this.emit('resumed');
+
                 // resume the playing with offset
-                this.play(this._position);
+                this.play(this._elapsed % this._source.buffer.duration);
             }
 
             /**
@@ -259,10 +270,8 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         }
         this._source = null;
         this._parent = null;
-        this._startTime = 0;
+        this._elapsed = 0;
         this._paused = false;
-        this._position = 0;
-        this._duration = 0;
 
         // Add it if it isn't already added
         if (SoundInstance._pool.indexOf(this) < 0)
@@ -288,7 +297,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @private
      * @return {Number} Seconds since start of context
      */
-    private get _now(): number
+    private _now(): number
     {
         return this._parent.context.audioContext.currentTime;
     }
@@ -300,12 +309,19 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      */
     private _update(): void
     {
-        if (this._duration)
+        if (this._source)
         {
-            const speed:number = this._source.playbackRate.value;
-            const position = this._paused ? this._position : (this._now - this._startTime);
-            this._progress = Math.max(0, Math.min(1, (position / this._duration) * speed));
-            this.emit('progress', this._progress);
+            const now:number = this._now();
+            const delta:number = now - this._lastUpdate;
+
+            if (delta > 0)
+            {
+                this._elapsed += delta;
+                this._lastUpdate = now;
+                const duration:number = this._source.buffer.duration;
+                const progress:number = ((this._elapsed * this._speed) % duration) / duration;
+                this.emit('progress', progress);
+            }
         }
     }
 
@@ -349,7 +365,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
             this._source.onended = null;
         }
         this._source = null;
-        this._progress = 1;
+        //this._progress = 1;
         this.emit('progress', 1);
         /**
          * The sound ends, don't use after this

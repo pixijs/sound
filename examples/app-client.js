@@ -22,10 +22,18 @@ PIXI.loader.load(function(loader, resources) {
     const loop = $("#loop");
     const speed = $("#speed");
     const volume = $('#volume');
-    $$(`.play`).forEach(function(button) {
-        const progressBar = $(`#progress-${button.dataset.id}`);
+    $$(`button[data-stop]`).forEach(function(button) {
+        const progressBar = $(`#progress-${button.dataset.stop}`);
         button.addEventListener('click', function() {
-            const sound = resources[this.dataset.id].sound;
+            const sound = resources[this.dataset.stop].sound;
+            sound.stop();
+            progressBar.style.width = '';
+        });
+    });
+    $$(`button[data-play]`).forEach(function(button) {
+        const progressBar = $(`#progress-${button.dataset.play}`);
+        button.addEventListener('click', function() {
+            const sound = resources[this.dataset.play].sound;
             sound.filters = [stereo, equalizer, distort];
             sound.singleInstance = singleInstance.checked;
             sound.volume = parseFloat(volume.value);

@@ -285,7 +285,10 @@ export default class SoundLibrary
      * @param {Object|Function} options The options or callback when done.
      * @param {Function} [options.complete] When completed.
      * @param {Function} [options.loaded] If not already preloaded, callback when finishes load.
-     * @param {Number} [options.offset=0] Start time offset.
+     * @param {Number} [options.start=0] Start time offset.
+     * @param {Number} [options.end] End time offset.
+     * @param {Number} [options.speed] Override default speed, default to the Sound's speed setting.
+     * @param {Boolean} [options.loop] Override default loop, default to the Sound's loop setting.
      * @return {PIXI.sound.SoundInstance|null} The sound instance, this cannot be reused
      *         after it is done playing. Returns `null` if the sound has not yet loaded.
      */

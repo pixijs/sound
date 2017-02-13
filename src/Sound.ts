@@ -21,7 +21,10 @@ export interface Options {
 }
 
 export interface PlayOptions {
-    offset?:number;
+    start?:number;
+    end?:number;
+    speed?:number;
+    loop?:boolean;
     complete?:CompleteCallback;
     loaded?:LoadedCallback;
 }
@@ -194,15 +197,21 @@ export default class Sound
         return new Sound(soundLibrary.context, options);
     }
 
-    constructor(context:SoundContext, options:string|Options|ArrayBuffer)
+    constructor(context:SoundContext, source:string|Options|ArrayBuffer)
     {
-        if (typeof options === "string" || options instanceof ArrayBuffer)
+        let options:Options = {};
+
+        if (typeof source === "string")
         {
-            options = {src: <string>options};
+            options.src = source as string;
         }
-        else if (options instanceof ArrayBuffer)
+        else if (source instanceof ArrayBuffer)
         {
-            options = {srcBuffer: <ArrayBuffer>options};
+            options.srcBuffer = source as ArrayBuffer;
+        }
+        else
+        {
+            options = source;
         }
 
         // Default settings
@@ -210,6 +219,7 @@ export default class Sound
             autoPlay: false,
             singleInstance: false,
             src: null,
+            srcBuffer: null,
             preload: false,
             volume: 1,
             speed: 1,
@@ -217,26 +227,25 @@ export default class Sound
             loaded: null,
             loop: false,
             useXHR: true
-        }, options || {});
+        }, options);
 
         this._context = context;
         this._nodes = new SoundNodes(this._context);
         this._source = this._nodes.bufferSource;
         this.isLoaded = false;
         this.isPlaying = false;
-        this.autoPlay = (<Options>options).autoPlay;
-        this.singleInstance = (<Options>options).singleInstance;
-        this.preload = (<Options>options).preload || this.autoPlay;
-        this.complete = (<Options>options).complete;
-        this.loaded = (<Options>options).loaded;
-        this.src = (<Options>options).src;
-        this.srcBuffer = (<Options>options).srcBuffer;
-        this.useXHR = (<Options>options).useXHR;
+        this.autoPlay = options.autoPlay;
+        this.singleInstance = options.singleInstance;
+        this.preload = options.preload || this.autoPlay;
+        this.complete = options.complete;
+        this.loaded = options.loaded;
+        this.src = options.src;
+        this.srcBuffer = options.srcBuffer;
+        this.useXHR = options.useXHR;
+        this.volume = options.volume;
+        this.loop = options.loop;
+        this.speed = options.speed;
         this._instances = [];
-
-        this.volume = (<Options>options).volume;
-        this.loop = (<Options>options).loop;
-        this.speed = (<Options>options).speed;
 
         if (this.preload)
         {
@@ -393,23 +402,38 @@ export default class Sound
      * Plays the sound.
      * @method PIXI.sound.Sound#play
      * @param {PIXI.sound.Sound~completeCallback|object} options Either completed function or play options.
-     * @param {Number} [options.offset=0] time when to play the sound in seconds.
+     * @param {Number} [options.start=0] Time when to play the sound in seconds.
+     * @param {Number} [options.end] Time to end playing in seconds.
+     * @param {Number} [options.speed] Override default speed, default to the Sound's speed setting.
+     * @param {Boolean} [options.loop] Override default loop, default to the Sound's loop setting.
      * @param {PIXI.sound.Sound~completeCallback} [options.complete] Callback when complete.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded] If the sound isn't already preloaded, callback when
      *        the audio has completely finished loading and decoded.
      * @return {PIXI.sound.SoundInstance} Current playing instance.
      */
-    public play(options?:PlayOptions|CompleteCallback):SoundInstance
+    public play(source?:PlayOptions|CompleteCallback):SoundInstance
     {
-        if (typeof options === "function")
+        let options:PlayOptions;
+        if (typeof source === "function")
         {
-            options = { complete: <CompleteCallback>options };
+            options = {};
+            options.complete = source as CompleteCallback;
         }
+        else
+        {
+            options = source as PlayOptions;
+        }
+        
         options = Object.assign({
             complete: null,
             loaded: null,
-            offset: 0
+            start: 0
         }, options || {});
+
+        // @deprecated offset option
+        if ((options as any).offset) {
+            options.start = (options as any).offset as number;
+        }
 
         // if not yet playable, ignore
         // - usefull when the sound download isnt yet completed
@@ -418,7 +442,7 @@ export default class Sound
             this.autoPlay = true;
             if (!this.isLoaded)
             {
-                const loaded = (<PlayOptions>options).loaded;
+                const loaded = options.loaded;
                 if (loaded)
                 {
                     this.loaded = loaded;
@@ -439,16 +463,21 @@ export default class Sound
         this._instances.push(instance);
         this.isPlaying = true;
         instance.once('end', () => {
-            if ((<PlayOptions>options).complete)
+            if (options.complete)
             {
-                (<PlayOptions>options).complete(this);
+                options.complete(this);
             }
             this._onComplete(instance);
         });
         instance.once('stop', () => {
             this._onComplete(instance);
         });
-        instance.play((<PlayOptions>options).offset);
+        instance.play(
+            options.start,
+            options.end,
+            options.speed,
+            options.loop
+        );
         return instance;
     }
 
