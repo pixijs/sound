@@ -116,7 +116,7 @@ sound.play();</code></pre>
     loaded: function(err, sound) {
         const instance = sound.play();
         instance.on('progress', function(progress) {
-            console.log('Amount loaded: ', Math.round(progress * 100) + '%');
+            console.log('Amount played: ', Math.round(progress * 100) + '%');
         });
         instance.on('end', function() {
             console.log('Sound finished playing');
