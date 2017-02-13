@@ -1,7 +1,7 @@
 import sound from './index';
 
 // Supported audio formats
-const AUDIO_EXTENSIONS:string[] = ['wav', 'mp3', 'ogg', 'oga'];
+const AUDIO_EXTENSIONS:string[] = ['wav', 'mp3', 'ogg', 'oga', 'm4a'];
 
 /**
  * Actual resource-loader middleware for sound class
