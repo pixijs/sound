@@ -266,6 +266,10 @@ export default class Sound
         this._context = null;
         this._source = null;
 
+        this.complete = null;
+        this.loaded = null;
+        this.srcBuffer = null;
+
         this._removeInstances();
         this._instances = null;
     }
@@ -645,6 +649,7 @@ export default class Sound
             {
                 view[i] = data[i];
             }
+            this.srcBuffer = arrayBuffer;
             this._decode(arrayBuffer);
         });
     }

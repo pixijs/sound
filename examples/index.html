@@ -51,14 +51,6 @@ sound.play();</code></pre>
                     <span class="glyphicon glyphicon-play"></span> Play
                 </button>
 
-                <p>Alternatively, there's a utility method for playing a sound once. It is immediately destroyed and after this.</p>
-                <pre><code id="autoplay2" class="javascript">PIXI.sound.utils.playOnce('resources/mechanical.mp3', function() {
-    console.log('Sound finished');
-});</code></pre>
-                <button class="btn btn-primary" data-code="#autoplay2">
-                    <span class="glyphicon glyphicon-play"></span> Play
-                </button>
-
                 <p>Globally, you can also use the <code>PIXI.sound</code> library methods (<code>add</code>, <code>play</code>) for adding and playing a sound as well.</p>
                 <pre><code id="autoplay-global" class="javascript">PIXI.sound.add('bird', 'resources/bird.mp3');
 PIXI.sound.play('bird');</code></pre>
@@ -153,6 +145,52 @@ PIXI.sound.play('mechanical');</code></pre>
 console.log('Exists?', PIXI.sound.exists('boing'));
 console.log('Sound: ', PIXI.sound.find('boing'));</code></pre>
                 <button class="btn btn-primary" data-code="#library-exists">
+                    <span class="glyphicon glyphicon-play"></span> Run
+                </button>
+            </div>
+            <div class="well">
+                <h3 id="section-utils"><small><a href="#section-utils"><span class="glyphicon glyphicon-link"></span></a></small>Utilities</h3>
+                <p>First setup an Application to render the waveform.</p>
+                <code class="hidden" id="render-clear">waveform.stage.removeChildren();</code>
+                <canvas class="canvas" width="1024" height="128" id="waveform"></canvas>
+                <pre><code data-autorun class="javascript">window.waveform = new PIXI.Application(1024, 128, {
+    view: document.getElementById('waveform'),
+    backgroundColor: 0xffffff
+});
+</code></pre>
+                <pre><code id="render3" class="javascript">PIXI.loader.add('applause', 'resources/applause.mp3')
+    .load(function(loader, resources) {
+        const sound = resources.applause.sound;
+        const baseTexture = PIXI.sound.utils.render(sound, {
+            width: waveform.renderer.width,
+            height: waveform.renderer.height,
+            fill: '#999'
+        });
+        const playhead = new PIXI.Graphics()
+            .beginFill(0xff0000)
+            .drawRect(0, 0, 1, waveform.renderer.height);
+
+        waveform.stage.addChild(PIXI.Sprite.from(baseTexture), playhead);
+        sound.play().on('progress', function(value) {
+            playhead.x = baseTexture.width * value;
+        });
+    });</code></pre>
+                <button class="btn btn-primary" data-code="#render3" data-beforeCode="#render-clear">
+                    <span class="glyphicon glyphicon-play"></span> Play
+                </button>
+
+                <p>Create a simple sine-wave tone.</p>
+                <pre><code id="sine-tone" class="javascript">const sound = PIXI.sound.utils.sineTone(523.251);
+sound.play();</code></pre>
+                <button class="btn btn-primary" data-code="#sine-tone" data-beforeCode="#render-clear">
+                    <span class="glyphicon glyphicon-play"></span> Play
+                </button>
+
+                <p>There's a utility method for playing a sound once. It is immediately destroyed and after this.</p>
+                <pre><code id="autoplay2" class="javascript">PIXI.sound.utils.playOnce('resources/mechanical.mp3', function() {
+    console.log('Sound finished');
+});</code></pre>
+                <button class="btn btn-primary" data-code="#autoplay2">
                     <span class="glyphicon glyphicon-play"></span> Play
                 </button>
             </div>

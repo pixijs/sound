@@ -53,6 +53,14 @@
     transition: none;
 }
 
+.canvas {
+    width: 100%;
+    margin-bottom: 10px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    background: #fff;
+}
+
 pre {
     padding: 0;
 }
