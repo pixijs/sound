@@ -67,3 +67,7 @@ pre {
 pre code {
     margin: 0;
 }
+
+.sprites .btn {
+    margin-bottom:10px;
+}

@@ -69,7 +69,7 @@ describe('PIXI.sound', function()
     {
         this.slow(200);
         let counter = 0;
-        this.library.addMap(manifest, {
+        const results = this.library.add(manifest, {
             preload: true,
             loaded: (err, sound) => {
                 expect(sound.isLoaded).to.be.true;
@@ -85,6 +85,12 @@ describe('PIXI.sound', function()
                 }
             }
         });
+        expect(results).to.be.an.object;
+        expect(results['alert-4']).to.be.instanceof(this.library.Sound);
+        expect(results['alert-7']).to.be.instanceof(this.library.Sound);
+        expect(results['alert-12']).to.be.instanceof(this.library.Sound);
+        expect(results['musical-11']).to.be.instanceof(this.library.Sound);
+        expect(results['silence']).to.be.instanceof(this.library.Sound);
     });
 
     it('should get a reference by alias', function()
@@ -224,6 +230,32 @@ describe('PIXI.sound', function()
             done();
         });
         expect(sound.isPlaying);
+    });
+
+    it('should setup sprites', function() {
+        const alias = 'musical-11';
+        const sound = this.library.add(alias, {
+            src: manifest[alias],
+            sprites: {
+                foo: {
+                    start: 0,
+                    end: 2
+                },
+                bar: {
+                    start: 3,
+                    end: 5
+                }
+            }
+        });
+        expect(Object.keys(sound.sprites).length).to.equal(2);
+        expect(sound.sprites.foo.start).to.equal(0);
+        expect(sound.sprites.foo.end).to.equal(2);
+        expect(sound.sprites.foo.duration).to.equal(2);
+        expect(sound.sprites.bar.start).to.equal(3);
+        expect(sound.sprites.bar.end).to.equal(5);
+        expect(sound.sprites.bar.duration).to.equal(2);
+        expect(sound.sprites.foo.parent).to.equal(sound);
+        expect(sound.sprites.bar.parent).to.equal(sound);
     });
 });
 

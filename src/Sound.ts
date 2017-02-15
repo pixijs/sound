@@ -3,6 +3,8 @@ import SoundNodes from './SoundNodes';
 import SoundInstance from './SoundInstance';
 import soundLibrary from './index';
 import Filter from './filters/Filter';
+import SoundSprite from './SoundSprite';
+import {SoundSpriteData} from './SoundSprite';
 import * as path from 'path';
 
 export interface Options {
@@ -18,7 +20,10 @@ export interface Options {
     src?:string;
     srcBuffer?:ArrayBuffer;
     useXHR?:boolean;
+    sprites?:{[id:string]: SoundSpriteData};
 }
+
+export type SoundSprites = {[id:string]:SoundSprite};
 
 export interface PlayOptions {
     start?:number;
@@ -149,6 +154,14 @@ export default class Sound
      * @type {SoundContext}
      * @private
      */
+    private _sprites:SoundSprites;
+
+    /**
+     * Reference to the sound context.
+     * @name PIXI.sound.Sound#_context
+     * @type {SoundContext}
+     * @private
+     */
     private _context:SoundContext;
 
     /**
@@ -187,6 +200,9 @@ export default class Sound
      * @param {Number} [options.volume=1] The amount of volume 1 = 100%.
      * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false, loaded with NodeJS's `fs` module.
      * @param {Number} [options.speed=1] The playback rate where 1 is 100% speed.
+     * @param {Object} [options.sprites] The map of sprite data. Where a sprite is an object 
+     *        with a `start` and `end`, which are the times in seconds. Optionally, can include
+     *        a `speed` amount where 1 is 100% speed.
      * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback when play is finished.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
      * @param {Boolean} [options.loop=false] true to loop the audio playback.
@@ -232,6 +248,9 @@ export default class Sound
         this._context = context;
         this._nodes = new SoundNodes(this._context);
         this._source = this._nodes.bufferSource;
+        this._instances = [];
+        this._sprites = {};
+
         this.isLoaded = false;
         this.isPlaying = false;
         this.autoPlay = options.autoPlay;
@@ -245,7 +264,11 @@ export default class Sound
         this.volume = options.volume;
         this.loop = options.loop;
         this.speed = options.speed;
-        this._instances = [];
+
+        if (options.sprites)
+        {
+            this.addSprites(options.sprites);
+        }
 
         if (this.preload)
         {
@@ -265,6 +288,9 @@ export default class Sound
         this._nodes = null;
         this._context = null;
         this._source = null;
+
+        this.removeSprites();
+        this._sprites = null;
 
         this.complete = null;
         this.loaded = null;
@@ -403,6 +429,117 @@ export default class Sound
     }
 
     /**
+     * Get the map of sprites.
+     * @name PIXI.sound.Sound#sprites
+     * @type {Object}
+     * @readOnly
+     */
+    public get sprites(): SoundSprites
+    {
+        return this._sprites;
+    }
+
+    /**
+     * Add a sound sprite, which is a saved instance of a longer sound.
+     * Similar to an image spritesheet.
+     * @method PIXI.sound.Sound#addSprites
+     * @param {String} alias The unique name of the sound sprite.
+     * @param {object} data Either completed function or play options.
+     * @param {Number} data.start Time when to play the sound in seconds.
+     * @param {Number} data.end Time to end playing in seconds.
+     * @param {Number} [data.speed] Override default speed, default to the Sound's speed setting.
+     * @return {PIXI.sound.SoundSprite} Sound sprite result.
+     */
+    public addSprites(alias:string, data:SoundSpriteData): SoundSprite;
+    
+    /**
+     * Convenience method to add more than one sprite add a time.
+     * @method PIXI.sound.Sound#addSprites
+     * @param {Object} data Map of sounds to add where the key is the alias,
+     *        and the data are configuration options, see {@PIXI.sound.Sound#addSprite} for info on data.
+     * @return {Object} The map of sound sprites added.
+     */
+    public addSprites(sprites:{[id:string]:SoundSpriteData}): SoundSprites;
+
+    // Actual implementation
+    public addSprites(source:string|{[id:string]:SoundSpriteData}, data?:SoundSpriteData): SoundSprite|SoundSprites
+    {
+        if (typeof source === 'object')
+        {
+            const results:SoundSprites = {};
+            for (const alias in source)
+            {
+                results[alias] = this.addSprites(alias, source[alias]);
+            }
+            return results;
+        }
+        else if (typeof source === 'string')
+        {
+            console.assert(!this._sprites[source], `Alias ${source} is already taken`);
+            const sprite = new SoundSprite(this, data)
+            this._sprites[source] = sprite;
+            return sprite;
+        }
+    }
+
+    /**
+     * Remove a sound sprite.
+     * @method PIXI.sound.Sound#removeSprites
+     * @param {String} alias The unique name of the sound sprite.
+     * @return {PIXI.sound.Sound} Sound instance for chaining.
+     */
+    public removeSprites(alias:string): Sound;
+
+    /**
+     * Remove all sprites
+     * @method PIXI.sound.Sound#removeSprites
+     * @return {PIXI.sound.Sound} Sound instance for chaining.
+     */
+    public removeSprites(): Sound;
+
+    /**
+     * Remove a sound sprite.
+     * @method PIXI.sound.Sound#removeSprites
+     * @param {String} alias The unique name of the sound sprite.
+     * @return {PIXI.sound.Sound} Sound instance for chaining.
+     */
+    public removeSprites(alias?:string): Sound
+    {
+        if (!alias)
+        {
+            for (const alias in this._sprites)
+            {
+                this.removeSprites(alias);
+            }
+        }
+        else
+        {
+            const sprite:SoundSprite = this._sprites[alias];
+
+            if (sprite !== undefined)
+            {
+                sprite.destroy();
+                delete this._sprites[alias];
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Play a sound sprite, which is a saved instance of a longer sound.
+     * Similar to an image spritesheet.
+     * @method PIXI.sound.Sound#play
+     * @param {String} alias The unique name of the sound sprite.
+     * @param {object} data Either completed function or play options.
+     * @param {Number} data.start Time when to play the sound in seconds.
+     * @param {Number} data.end Time to end playing in seconds.
+     * @param {Number} [data.speed] Override default speed, default to the Sound's speed setting.
+     * @param {PIXI.sound.Sound~completeCallback} [callback] Callback when completed.
+     * @return {PIXI.sound.SoundInstance} Current playing instance.
+     */
+    public play(alias:string, callback?:CompleteCallback): SoundInstance;
+
+    /**
      * Plays the sound.
      * @method PIXI.sound.Sound#play
      * @param {PIXI.sound.Sound~completeCallback|object} options Either completed function or play options.
@@ -415,10 +552,28 @@ export default class Sound
      *        the audio has completely finished loading and decoded.
      * @return {PIXI.sound.SoundInstance} Current playing instance.
      */
-    public play(source?:PlayOptions|CompleteCallback):SoundInstance
+    public play(source?:PlayOptions|CompleteCallback, callback?:CompleteCallback):SoundInstance;
+    
+    // Overloaded function
+    public play(source?:any, callback?:CompleteCallback): SoundInstance
     {
         let options:PlayOptions;
-        if (typeof source === "function")
+
+        if (typeof source === "string")
+        {
+            const alias:string = source as string;
+            // @if DEBUG
+            console.assert(!!this._sprites[alias], `Alias ${alias} is not available`);
+            // @endif
+            const sprite:SoundSprite = this._sprites[alias];
+            options = {
+                start: sprite.start,
+                end: sprite.end,
+                speed: sprite.speed,
+                complete: callback
+            };
+        }
+        else if (typeof source === "function")
         {
             options = {};
             options.complete = source as CompleteCallback;

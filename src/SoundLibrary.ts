@@ -3,7 +3,10 @@ import {Options, PlayOptions} from './Sound';
 import Sound from './Sound';
 import SoundInstance from './SoundInstance';
 import SoundUtils from './SoundUtils';
+import SoundSprite from './SoundSprite';
 import * as filters from './filters';
+
+export type SoundMap = {[id:string]:Options|string|ArrayBuffer};
 
 /**
  * @description Manages the playback of sounds.
@@ -17,6 +20,7 @@ export default class SoundLibrary
     public Sound:typeof Sound;
     public SoundInstance:typeof SoundInstance;
     public SoundLibrary:typeof SoundLibrary;
+    public SoundSprite:typeof SoundSprite;
     public filters:typeof filters;
     public utils:typeof SoundUtils;
 
@@ -48,6 +52,7 @@ export default class SoundLibrary
         this.Sound = Sound;
         this.SoundInstance = SoundInstance;
         this.SoundLibrary = SoundLibrary;
+        this.SoundSprite = SoundSprite;
     }
 
     /**
@@ -73,7 +78,7 @@ export default class SoundLibrary
     }
 
     /**
-     * Adds a new sound by alias.
+     * Register an existing sound with the library cache.
      * @method PIXI.sound#add
      * @param {String} alias The sound alias reference.
      * @param {PIXI.sound.Sound} sound Sound reference to use.
@@ -91,62 +96,91 @@ export default class SoundLibrary
      * @param {Boolean} [options.preload=false] true to immediately start preloading.
      * @param {Boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
      * @param {Number} [options.volume=1] The amount of volume 1 = 100%.
+     * @param {Number} [options.speed=1] The playback rate where 1 is 100% speed.
      * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false, loaded with NodeJS's `fs` module.
+     * @param {Object} [options.sprites] The map of sprite data. Where a sprite is an object 
+     *        with a `start` and `end`, which are the times in seconds. Optionally, can include
+     *        a `speed` amount where 1 is 100% speed.
      * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback when play is finished.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
      * @return {PIXI.sound.Sound} Instance of the Sound object.
      */
-    add(alias:string, options:Options|string|ArrayBuffer|Sound):Sound
-    {
-        // @if DEBUG
-        console.assert(!this._sounds[alias], `Sound with alias ${alias} already exists.`);
-        // @endif
-        let sound:Sound;
-        if (options instanceof Sound)
-        {
-            sound = this._sounds[alias] = (options as Sound);
-        }
-        else
-        {
-            sound = this._sounds[alias] = new Sound(this.context, options);
-        }
-        return sound;
-    }
+    add(alias:string, options:Options|string|ArrayBuffer|Sound): Sound;
 
     /**
-     * Adds multiple sounds.
-     * @method PIXI.sound#addMap
+     * Adds multiple sounds at once.
+     * @method PIXI.sound#add
      * @param {Object} map Map of sounds to add, the key is the alias, the value is the
      *        string, ArrayBuffer or the list of options (see `add` method for options).
      * @param {Object|String|ArrayBuffer} globalOptions The default options for all sounds.
      *        if a property is defined, it will use the local property instead.
      * @return {PIXI.sound.Sound} Instance to the Sound object.
      */
-    addMap(map:{[id:string]:Options|string|ArrayBuffer}, globalOptions?:Options):{[id:string]:Sound}
+    add(map:SoundMap, globalOptions?:Options):{[id:string]:Sound};
+
+    // Actual method
+    add(source:string|SoundMap, sourceOptions?:Options|string|ArrayBuffer|Sound):{[id:string]:Sound}|Sound
     {
-        const results:{[id:string]:Sound} = {};
-        for(const alias in map)
+        if (typeof source === 'object')
         {
-            let options:Options;
-            let sound:any = map[alias] as any;
-            if (typeof sound === "string")
+            const results:{[id:string]:Sound} = {};
+
+            for (const alias in source)
             {
-                options = { src: sound as string };
+                const options:Options = this._getOptions(
+                    source[alias],
+                    sourceOptions as Options
+                );
+                results[alias] = this.add(alias, options);
             }
-            else if(sound instanceof ArrayBuffer)
+            return results;
+        }
+        else if (typeof source === 'string')
+        {
+            // @if DEBUG
+            console.assert(!this._sounds[source], `Sound with alias ${source} already exists.`);
+            // @endif
+
+            if (sourceOptions instanceof Sound)
             {
-                options = { srcBuffer: sound as ArrayBuffer };
+                this._sounds[source] = sourceOptions;
+                return sourceOptions;
             }
             else
             {
-                options = sound as Options;
+                const options:Options = this._getOptions(sourceOptions);
+                const sound:Sound = new Sound(this.context, options);
+                this._sounds[source] = sound;
+                return sound;
             }
-            results[alias] = this.add(alias, Object.assign(
-                options,
-                globalOptions || {}
-            ));
         }
-        return results;
+    }
+
+    /**
+     * Internal methods for getting the options object
+     * @method PIXI.sound#_getOptions
+     * @private
+     * @param {string|ArrayBuffer|Object} source The source options
+     * @param {Object} [overrides] Override default options
+     * @return {Object} The construction options
+     */
+    private _getOptions(source:string|ArrayBuffer|Options, overrides?:Options):Options
+    {
+        let options:Options;
+
+        if (typeof source === 'string')
+        {
+            options = { src: source };
+        }
+        else if(source instanceof ArrayBuffer)
+        {
+            options = { srcBuffer: source };
+        }
+        else
+        {
+            options = source as Options;
+        }
+        return Object.assign(options, overrides || {}) as Options;
     }
 
     /**
@@ -282,6 +316,15 @@ export default class SoundLibrary
      * Plays a sound.
      * @method PIXI.sound#play
      * @param {String} alias The sound alias reference.
+     * @param {String} sprite The alias of the sprite to play.
+     * @return {PIXI.sound.SoundInstance|null} The sound instance, this cannot be reused
+     *         after it is done playing. Returns `null` if the sound has not yet loaded.
+     */
+
+    /**
+     * Plays a sound.
+     * @method PIXI.sound#play
+     * @param {String} alias The sound alias reference.
      * @param {Object|Function} options The options or callback when done.
      * @param {Function} [options.complete] When completed.
      * @param {Function} [options.loaded] If not already preloaded, callback when finishes load.
@@ -292,7 +335,7 @@ export default class SoundLibrary
      * @return {PIXI.sound.SoundInstance|null} The sound instance, this cannot be reused
      *         after it is done playing. Returns `null` if the sound has not yet loaded.
      */
-    play(alias:string, options?:PlayOptions|Object):SoundInstance
+    play(alias:string, options?:PlayOptions|Object|string):SoundInstance
     {
         return this.find(alias).play(options);
     }

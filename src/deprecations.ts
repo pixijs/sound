@@ -1,5 +1,6 @@
 import SoundLibrary from './SoundLibrary';
 import Sound from './Sound';
+import {Options} from './Sound';
 
 const SoundLibraryPrototype:any = SoundLibrary.prototype as any;
 const SoundPrototype:any = Sound.prototype as any;
@@ -26,7 +27,19 @@ SoundLibraryPrototype.panning = function(alias:string, panning?:number):number
 {
     console.warn('PIXI.sound.panning is deprecated, use PIXI.sound.filters.StereoPan');
     return 0;
-}
+};
+
+/**
+ * Add a map of sounds.
+ * @method PIXI.sound#addMap
+ * @deprecated since 1.3.0
+ * @see PIXI.sound#add
+ */
+SoundLibraryPrototype.addMap = function(map:{[id:string]:Options|string|ArrayBuffer}, globalOptions?:Options):{[id:string]:Sound}
+{
+    console.warn('PIXI.sound.addMap is deprecated, use PIXI.sound.add');
+    return this.add(map, globalOptions);
+};
 
 /**
  * Get the utilities.
