@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
-const electron = require('./lib/electron');
-electron('app.html');
+const electron = require("./lib/electron");
+electron("app.html");

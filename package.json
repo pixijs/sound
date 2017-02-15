@@ -14,7 +14,7 @@
     "clean": "rimraf lib/** dist/** && mkdirp lib dist",
     "start": "npm run watch",
     "watch": "tsc -w",
-    "lint": "tslint src/**.ts --format=stylish",
+    "lint": "tslint examples/**.js test/*.js src/**.ts --format=stylish",
     "prebuild": "npm run clean && npm run lint",
     "build": "tsc",
     "postbuild": "npm run dist",

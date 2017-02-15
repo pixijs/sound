@@ -8,5 +8,10 @@
     "interface-over-type-literal": false,
     "object-literal-sort-keys": false,
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"]
+  },
+  "jsRules": {
+    "object-literal-sort-keys": false,
+    "one-line": [true, "check-whitespace"],
+    "forin": false
   }
 }

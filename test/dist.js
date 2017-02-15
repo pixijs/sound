@@ -1,2 +1,2 @@
-global.__libraryPath = '../dist/pixi-sound';
-require('./');
+global.__libraryPath = "../dist/pixi-sound";
+require("./");
