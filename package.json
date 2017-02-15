@@ -1,6 +1,6 @@
 {
   "name": "pixi-sound",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "WebAudio API playback without any Flash shims or HTML Audio fallback",
   "main": "lib/index.js",
   "scripts": {
