@@ -36,7 +36,7 @@ npm i pixi-sound --save
 
 * [Releases](https://github.com/pixijs/pixi-sound/releases)
 * [Examples](https://pixijs.github.io/pixi-sound/examples/index.html)
-* [Sprites](https://pixijs.github.io/pixi-sound/examples/sprites.html)
+* [Sprites Example](https://pixijs.github.io/pixi-sound/examples/sprites.html)
 * [App Example](https://pixijs.github.io/pixi-sound/examples/app.html)
 * [API Documentation](https://pixijs.github.io/pixi-sound/docs/index.html)
 
