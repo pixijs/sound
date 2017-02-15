@@ -2,10 +2,14 @@
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 
-$$('code[data-autorun]').forEach((code) => {
-    eval(code.innerHTML);
-});
-$$('button[data-code]').forEach((button) => {
+const autorun = $$('code[data-autorun]');
+for (let i = 0; i < autorun.length; i++) {
+    eval(autorun[i].innerHTML);
+}
+
+const buttons = $$('button[data-code]');
+for (let i = 0; i < buttons.length; i++) {
+    const button = buttons[i];
     button.dataset.codeContent = $(button.dataset.code).innerHTML;
     if (button.dataset.beforecode) {
         button.dataset.beforecodeContent = $(button.dataset.beforecode).innerHTML;
@@ -19,6 +23,6 @@ $$('button[data-code]').forEach((button) => {
         }
         eval(this.dataset.codeContent);
     });
-});
+}
 
 hljs.initHighlightingOnLoad();

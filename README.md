@@ -17,6 +17,13 @@ WebAudio API playback without any Flash shims or HTML Audio fallback. Modern aud
     * EqualizerFilter
     * StereoFilter
 
+**Known Compatibility**
+
+* Chrome 58+
+* Firefox 49+
+* Safari 10+
+* iOS 10+
+
 ## Usage
 
 Installation is available by [NPM](https://npmjs.org):
