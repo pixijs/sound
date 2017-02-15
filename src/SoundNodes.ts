@@ -1,5 +1,5 @@
-import SoundContext from './SoundContext';
-import Filter from './filters/Filter';
+import Filter from "./filters/Filter";
+import SoundContext from "./SoundContext";
 
 /**
  * @class SoundNodes
@@ -15,7 +15,7 @@ export default class SoundNodes
      * @type {Number}
      * @default 256
      */
-    public static BUFFER_SIZE:number = 256;
+    public static BUFFER_SIZE: number = 256;
 
     /**
      * Get the buffer source node
@@ -23,7 +23,7 @@ export default class SoundNodes
      * @type {AudioBufferSourceNode}
      * @readOnly
      */
-    public bufferSource:AudioBufferSourceNode;
+    public bufferSource: AudioBufferSourceNode;
 
     /**
      * Get the script processor node.
@@ -31,7 +31,7 @@ export default class SoundNodes
      * @type {ScriptProcessorNode}
      * @readOnly
      */
-    public scriptNode:ScriptProcessorNode;
+    public scriptNode: ScriptProcessorNode;
 
     /**
      * Get the gain node
@@ -39,7 +39,7 @@ export default class SoundNodes
      * @type {GainNode}
      * @readOnly
      */
-    public gainNode:GainNode;
+    public gainNode: GainNode;
 
     /**
      * Get the analyser node
@@ -47,7 +47,7 @@ export default class SoundNodes
      * @type {AnalyserNode}
      * @readOnly
      */
-    public analyser:AnalyserNode;
+    public analyser: AnalyserNode;
 
     /**
      * The destination output audio node
@@ -55,7 +55,7 @@ export default class SoundNodes
      * @type {AudioNode}
      * @readOnly
      */
-    public destination:AudioNode;
+    public destination: AudioNode;
 
     /**
      * Collection of filters.
@@ -63,7 +63,7 @@ export default class SoundNodes
      * @type {PIXI.sound.filters.Filter[]}
      * @private
      */
-    private _filters:Filter[];
+    private _filters: Filter[];
 
     /**
      * Reference to the SoundContext
@@ -72,14 +72,14 @@ export default class SoundNodes
      * @readOnly
      */
 
-    constructor(public context:SoundContext)
+    constructor(public context: SoundContext)
     {
-        const audioContext:AudioContext = this.context.audioContext;
+        const audioContext: AudioContext = this.context.audioContext;
 
-        const bufferSource:AudioBufferSourceNode = audioContext.createBufferSource();
-        const scriptNode:ScriptProcessorNode = audioContext.createScriptProcessor(SoundNodes.BUFFER_SIZE);
-        const gainNode:GainNode = audioContext.createGain();
-        const analyser:AnalyserNode = audioContext.createAnalyser();
+        const bufferSource: AudioBufferSourceNode = audioContext.createBufferSource();
+        const scriptNode: ScriptProcessorNode = audioContext.createScriptProcessor(SoundNodes.BUFFER_SIZE);
+        const gainNode: GainNode = audioContext.createGain();
+        const analyser: AnalyserNode = audioContext.createAnalyser();
 
         gainNode.connect(this.context.destination);
         scriptNode.connect(this.context.destination);
@@ -93,21 +93,24 @@ export default class SoundNodes
         this.destination = analyser;
     }
 
-    /** 
+    /**
      * The collection of filters
      * @name PIXI.sound.SoundNodes#filters
      * @type {PIXI.sound.filters.Filter[]}
      */
-    get filters():Filter[]
+    get filters(): Filter[]
     {
         return this._filters;
     }
-    set filters(filters:Filter[])
+    set filters(filters: Filter[])
     {
         if (this._filters)
         {
-            this._filters.forEach((filter:Filter) => {
-                filter && filter.disconnect();
+            this._filters.forEach((filter: Filter) => {
+                if (filter)
+                {
+                    filter.disconnect();
+                }
             });
             this._filters = null;
             // Reconnect direct path
@@ -122,8 +125,8 @@ export default class SoundNodes
             this.analyser.disconnect();
 
             // Connect each filter
-            let prevFilter:Filter = null;
-            filters.forEach((filter:Filter) => {
+            let prevFilter: Filter = null;
+            filters.forEach((filter: Filter) => {
                 if (prevFilter === null)
                 {
                     // first filter is the destination
@@ -144,7 +147,7 @@ export default class SoundNodes
      * Cleans up.
      * @method PIXI.sound.SoundNodes#destroy
      */
-    public destroy():void
+    public destroy(): void
     {
         this.filters = null;
         this.bufferSource.disconnect();
@@ -165,10 +168,10 @@ export default class SoundNodes
      * @method PIXI.sound.SoundNodes#cloneBufferSource
      * @returns {AudioBufferSourceNode} The clone AudioBufferSourceNode.
      */
-    public cloneBufferSource():AudioBufferSourceNode
+    public cloneBufferSource(): AudioBufferSourceNode
     {
-        const orig:AudioBufferSourceNode = this.bufferSource;
-        const clone:AudioBufferSourceNode = this.context.audioContext.createBufferSource();
+        const orig: AudioBufferSourceNode = this.bufferSource;
+        const clone: AudioBufferSourceNode = this.context.audioContext.createBufferSource();
         clone.buffer = orig.buffer;
         clone.playbackRate.value = orig.playbackRate.value;
         clone.loop = orig.loop;

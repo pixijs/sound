@@ -1,37 +1,37 @@
-import SoundContext from './SoundContext';
-import SoundNodes from './SoundNodes';
-import SoundInstance from './SoundInstance';
-import soundLibrary from './index';
-import Filter from './filters/Filter';
-import SoundSprite from './SoundSprite';
-import {SoundSpriteData} from './SoundSprite';
-import * as path from 'path';
+import * as path from "path";
+import Filter from "./filters/Filter";
+import soundLibrary from "./index";
+import SoundContext from "./SoundContext";
+import SoundInstance from "./SoundInstance";
+import SoundNodes from "./SoundNodes";
+import SoundSprite from "./SoundSprite";
+import {SoundSpriteData} from "./SoundSprite";
 
 export interface Options {
-    autoPlay?:boolean;
-    preaload?:boolean;
-    singleInstance?:boolean;
-    volume?:number;
-    speed?:number;
-    complete?:CompleteCallback;
-    loaded?:LoadedCallback;
-    preload?:boolean;
-    loop?:boolean;
-    src?:string;
-    srcBuffer?:ArrayBuffer;
-    useXHR?:boolean;
-    sprites?:{[id:string]: SoundSpriteData};
+    autoPlay?: boolean;
+    preaload?: boolean;
+    singleInstance?: boolean;
+    volume?: number;
+    speed?: number;
+    complete?: CompleteCallback;
+    loaded?: LoadedCallback;
+    preload?: boolean;
+    loop?: boolean;
+    src?: string;
+    srcBuffer?: ArrayBuffer;
+    useXHR?: boolean;
+    sprites?: {[id: string]: SoundSpriteData};
 }
 
-export type SoundSprites = {[id:string]:SoundSprite};
+export type SoundSprites = {[id: string]: SoundSprite};
 
 export interface PlayOptions {
-    start?:number;
-    end?:number;
-    speed?:number;
-    loop?:boolean;
-    complete?:CompleteCallback;
-    loaded?:LoadedCallback;
+    start?: number;
+    end?: number;
+    speed?: number;
+    loop?: boolean;
+    complete?: CompleteCallback;
+    loaded?: LoadedCallback;
 }
 
 /**
@@ -40,14 +40,14 @@ export interface PlayOptions {
  * @param {Error} err The callback error.
  * @param {PIXI.sound.Sound} sound The instance of new sound.
  */
-export declare type LoadedCallback = (err:Error, sound?:Sound) => void;
+export declare type LoadedCallback = (err: Error, sound?: Sound) => void;
 
 /**
  * Callback when sound is completed.
  * @callback PIXI.sound.Sound~completeCallback
  * @param {PIXI.sound.Sound} sound The instance of sound.
  */
-export declare type CompleteCallback = (sound:Sound) => void;
+export declare type CompleteCallback = (sound: Sound) => void;
 
 /**
  * Represents a single sound element. Can be used to play, pause, etc. sound instances.
@@ -62,14 +62,14 @@ export declare type CompleteCallback = (sound:Sound) => void;
  *        or the object of options to use. See {@link PIXI.sound.Sound.from}
  */
 export default class Sound
-{   
+{
     /**
      * `true` if the buffer is loaded.
      * @name PIXI.sound.Sound#isLoaded
      * @type {Boolean}
      * @default false
      */
-    public isLoaded:boolean;
+    public isLoaded: boolean;
 
     /**
      * `true` if the sound is currently being played.
@@ -78,7 +78,7 @@ export default class Sound
      * @default false
      * @readOnly
      */
-    public isPlaying:boolean;
+    public isPlaying: boolean;
 
     /**
      * true to start playing immediate after load.
@@ -88,7 +88,7 @@ export default class Sound
      * @default false
      * @readOnly
      */
-    public autoPlay:boolean;
+    public autoPlay: boolean;
 
     /**
      * Callback when finished playing.
@@ -96,7 +96,7 @@ export default class Sound
      * @type {PIXI.sound.Sound~completeCallback}
      * @default false
      */
-    public complete:CompleteCallback;
+    public complete: CompleteCallback;
 
     /**
      * Callback when load is finished.
@@ -104,7 +104,7 @@ export default class Sound
      * @name PIXI.sound.Sound#loaded
      * @readOnly
      */
-    public loaded:LoadedCallback;
+    public loaded: LoadedCallback;
 
     /**
      * `true` to disallow playing multiple layered instances at once.
@@ -112,7 +112,7 @@ export default class Sound
      * @type {Boolean}
      * @default false
      */
-    public singleInstance:boolean;
+    public singleInstance: boolean;
 
     /**
      * `true` to immediately start preloading.
@@ -121,7 +121,7 @@ export default class Sound
      * @default false
      * @readOnly
      */
-    public preload:boolean;
+    public preload: boolean;
 
     /**
      * The file source to load.
@@ -129,7 +129,7 @@ export default class Sound
      * @type {String}
      * @readOnly
      */
-    public src:string;
+    public src: string;
 
     /**
      * The file buffer to load.
@@ -137,7 +137,7 @@ export default class Sound
      * @type {ArrayBuffer}
      * @readOnly
      */
-    public srcBuffer:ArrayBuffer;
+    public srcBuffer: ArrayBuffer;
 
     /**
      * `true` to use XMLHttpRequest object to load.
@@ -146,7 +146,7 @@ export default class Sound
      * @type {Boolean}
      * @default false
      */
-    public useXHR:boolean;
+    public useXHR: boolean;
 
     /**
      * Reference to the sound context.
@@ -154,7 +154,7 @@ export default class Sound
      * @type {SoundContext}
      * @private
      */
-    private _sprites:SoundSprites;
+    private _sprites: SoundSprites;
 
     /**
      * Reference to the sound context.
@@ -162,7 +162,7 @@ export default class Sound
      * @type {SoundContext}
      * @private
      */
-    private _context:SoundContext;
+    private _context: SoundContext;
 
     /**
      * Instance of the chain builder.
@@ -170,7 +170,7 @@ export default class Sound
      * @type {SoundNodes}
      * @private
      */
-    private _nodes:SoundNodes;
+    private _nodes: SoundNodes;
 
     /**
      * Instance of the source node.
@@ -178,7 +178,7 @@ export default class Sound
      * @type {AudioBufferSourceNode}
      * @private
      */
-    private _source:AudioBufferSourceNode;
+    private _source: AudioBufferSourceNode;
 
     /**
      * The collection of instances being played.
@@ -186,7 +186,7 @@ export default class Sound
      * @type {Array<SoundInstance>}
      * @private
      */
-    private _instances:Array<SoundInstance>;
+    private _instances: SoundInstance[];
 
     /**
      * Create a new sound instance from source.
@@ -198,24 +198,26 @@ export default class Sound
      * @param {Boolean} [options.preload=false] true to immediately start preloading.
      * @param {Boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
      * @param {Number} [options.volume=1] The amount of volume 1 = 100%.
-     * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false, loaded with NodeJS's `fs` module.
+     * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false,
+     *        loaded with NodeJS's `fs` module.
      * @param {Number} [options.speed=1] The playback rate where 1 is 100% speed.
-     * @param {Object} [options.sprites] The map of sprite data. Where a sprite is an object 
+     * @param {Object} [options.sprites] The map of sprite data. Where a sprite is an object
      *        with a `start` and `end`, which are the times in seconds. Optionally, can include
      *        a `speed` amount where 1 is 100% speed.
-     * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback when play is finished.
+     * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback
+     *        when play is finished.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
      * @param {Boolean} [options.loop=false] true to loop the audio playback.
      * @return {PIXI.sound.Sound} Created sound instance.
      */
-    static from(options:string|Options|ArrayBuffer): Sound
+    public static from(options: string|Options|ArrayBuffer): Sound
     {
         return new Sound(soundLibrary.context, options);
     }
 
-    constructor(context:SoundContext, source:string|Options|ArrayBuffer)
+    constructor(context: SoundContext, source: string|Options|ArrayBuffer)
     {
-        let options:Options = {};
+        let options: Options = {};
 
         if (typeof source === "string")
         {
@@ -242,7 +244,7 @@ export default class Sound
             complete: null,
             loaded: null,
             loop: false,
-            useXHR: true
+            useXHR: true,
         }, options);
 
         this._context = context;
@@ -281,7 +283,7 @@ export default class Sound
      * @private
      * @method PIXI.sound.Sound#destroy
      */
-    public destroy():void
+    public destroy(): void
     {
         // destroy this._nodes
         this._nodes.destroy();
@@ -306,7 +308,7 @@ export default class Sound
      * @type {Boolean}
      * @readOnly
      */
-    public get isPlayable():boolean
+    public get isPlayable(): boolean
     {
         return this.isLoaded && !!this._source && !!this._source.buffer;
     }
@@ -317,7 +319,7 @@ export default class Sound
      * @type {PIXI.sound.SoundContext}
      * @readOnly
      */
-    public get context():SoundContext
+    public get context(): SoundContext
     {
         return this._context;
     }
@@ -327,11 +329,11 @@ export default class Sound
      * @name PIXI.sound.Sound#volume
      * @type {Number}
      */
-    public get volume():number
+    public get volume(): number
     {
         return this._nodes.gainNode.gain.value;
     }
-    public set volume(volume:number)
+    public set volume(volume: number)
     {
         this._nodes.gainNode.gain.value = volume;
     }
@@ -341,11 +343,11 @@ export default class Sound
      * @name PIXI.sound.Sound#loop
      * @type {Boolean}
      */
-    public get loop():boolean
+    public get loop(): boolean
     {
         return this._source.loop;
     }
-    public set loop(loop:boolean)
+    public set loop(loop: boolean)
     {
         this._source.loop = !!loop;
     }
@@ -355,11 +357,11 @@ export default class Sound
      * @name PIXI.sound.Sound#buffer
      * @type {AudioBuffer}
      */
-    public get buffer():AudioBuffer
+    public get buffer(): AudioBuffer
     {
         return this._source.buffer;
     }
-    public set buffer(buffer:AudioBuffer)
+    public set buffer(buffer: AudioBuffer)
     {
         this._source.buffer = buffer;
     }
@@ -369,10 +371,10 @@ export default class Sound
      * @name PIXI.sound.Sound#duration
      * @type {number}
      */
-    public get duration():number
+    public get duration(): number
     {
         // @if DEBUG
-        console.assert(this.isPlayable, 'Sound not yet playable, no duration');
+        console.assert(this.isPlayable, "Sound not yet playable, no duration");
         // @endif
         return this._source.buffer.duration;
     }
@@ -383,7 +385,7 @@ export default class Sound
      * @name PIXI.sound.Sound#nodes
      * @type {PIXI.sound.SoundNodes}
      */
-    public get nodes():SoundNodes
+    public get nodes(): SoundNodes
     {
         return this._nodes;
     }
@@ -397,7 +399,7 @@ export default class Sound
     {
         return this._nodes.filters;
     }
-    public set filters(filters:Filter[])
+    public set filters(filters: Filter[])
     {
         this._nodes.filters = filters;
     }
@@ -408,11 +410,11 @@ export default class Sound
      * @type {Number}
      * @default 1
      */
-    public get speed():number
+    public get speed(): number
     {
         return this._source.playbackRate.value;
     }
-    public set speed(value:number)
+    public set speed(value: number)
     {
         this._source.playbackRate.value = value;
     }
@@ -423,7 +425,7 @@ export default class Sound
      * @type {Array<SoundInstance>}
      * @readOnly
      */
-    public get instances():Array<SoundInstance>
+    public get instances(): SoundInstance[]
     {
         return this._instances;
     }
@@ -450,8 +452,8 @@ export default class Sound
      * @param {Number} [data.speed] Override default speed, default to the Sound's speed setting.
      * @return {PIXI.sound.SoundSprite} Sound sprite result.
      */
-    public addSprites(alias:string, data:SoundSpriteData): SoundSprite;
-    
+    public addSprites(alias: string, data: SoundSpriteData): SoundSprite;
+
     /**
      * Convenience method to add more than one sprite add a time.
      * @method PIXI.sound.Sound#addSprites
@@ -459,43 +461,34 @@ export default class Sound
      *        and the data are configuration options, see {@PIXI.sound.Sound#addSprite} for info on data.
      * @return {Object} The map of sound sprites added.
      */
-    public addSprites(sprites:{[id:string]:SoundSpriteData}): SoundSprites;
+    public addSprites(sprites: {[id: string]: SoundSpriteData}): SoundSprites;
 
     // Actual implementation
-    public addSprites(source:string|{[id:string]:SoundSpriteData}, data?:SoundSpriteData): SoundSprite|SoundSprites
+    public addSprites(source: string|{[id: string]: SoundSpriteData}, data?: SoundSpriteData): SoundSprite|SoundSprites
     {
-        if (typeof source === 'object')
+        if (typeof source === "object")
         {
-            const results:SoundSprites = {};
+            const results: SoundSprites = {};
             for (const alias in source)
             {
                 results[alias] = this.addSprites(alias, source[alias]);
             }
             return results;
         }
-        else if (typeof source === 'string')
+        else if (typeof source === "string")
         {
             console.assert(!this._sprites[source], `Alias ${source} is already taken`);
-            const sprite = new SoundSprite(this, data)
+            const sprite = new SoundSprite(this, data);
             this._sprites[source] = sprite;
             return sprite;
         }
     }
 
     /**
-     * Remove a sound sprite.
-     * @method PIXI.sound.Sound#removeSprites
-     * @param {String} alias The unique name of the sound sprite.
-     * @return {PIXI.sound.Sound} Sound instance for chaining.
-     */
-    public removeSprites(alias:string): Sound;
-
-    /**
-     * Remove all sprites
+     * Remove all sound sprites.
      * @method PIXI.sound.Sound#removeSprites
      * @return {PIXI.sound.Sound} Sound instance for chaining.
      */
-    public removeSprites(): Sound;
 
     /**
      * Remove a sound sprite.
@@ -503,18 +496,18 @@ export default class Sound
      * @param {String} alias The unique name of the sound sprite.
      * @return {PIXI.sound.Sound} Sound instance for chaining.
      */
-    public removeSprites(alias?:string): Sound
+    public removeSprites(alias?: string): Sound
     {
         if (!alias)
         {
-            for (const alias in this._sprites)
+            for (const name in this._sprites)
             {
-                this.removeSprites(alias);
+                this.removeSprites(name);
             }
         }
         else
         {
-            const sprite:SoundSprite = this._sprites[alias];
+            const sprite: SoundSprite = this._sprites[alias];
 
             if (sprite !== undefined)
             {
@@ -537,7 +530,7 @@ export default class Sound
      * @param {PIXI.sound.Sound~completeCallback} [callback] Callback when completed.
      * @return {PIXI.sound.SoundInstance} Current playing instance.
      */
-    public play(alias:string, callback?:CompleteCallback): SoundInstance;
+    public play(alias: string, callback?: CompleteCallback): SoundInstance;
 
     /**
      * Plays the sound.
@@ -552,25 +545,25 @@ export default class Sound
      *        the audio has completely finished loading and decoded.
      * @return {PIXI.sound.SoundInstance} Current playing instance.
      */
-    public play(source?:PlayOptions|CompleteCallback, callback?:CompleteCallback):SoundInstance;
-    
+    public play(source?: PlayOptions|CompleteCallback, callback?: CompleteCallback): SoundInstance;
+
     // Overloaded function
-    public play(source?:any, callback?:CompleteCallback): SoundInstance
+    public play(source?: any, callback?: CompleteCallback): SoundInstance
     {
-        let options:PlayOptions;
+        let options: PlayOptions;
 
         if (typeof source === "string")
         {
-            const alias:string = source as string;
+            const alias: string = source as string;
             // @if DEBUG
             console.assert(!!this._sprites[alias], `Alias ${alias} is not available`);
             // @endif
-            const sprite:SoundSprite = this._sprites[alias];
+            const sprite: SoundSprite = this._sprites[alias];
             options = {
                 start: sprite.start,
                 end: sprite.end,
                 speed: sprite.speed,
-                complete: callback
+                complete: callback,
             };
         }
         else if (typeof source === "function")
@@ -582,11 +575,11 @@ export default class Sound
         {
             options = source as PlayOptions;
         }
-        
+
         options = Object.assign({
             complete: null,
             loaded: null,
-            start: 0
+            start: 0,
         }, options || {});
 
         // @deprecated offset option
@@ -621,21 +614,21 @@ export default class Sound
         const instance = SoundInstance.create(this);
         this._instances.push(instance);
         this.isPlaying = true;
-        instance.once('end', () => {
+        instance.once("end", () => {
             if (options.complete)
             {
                 options.complete(this);
             }
             this._onComplete(instance);
         });
-        instance.once('stop', () => {
+        instance.once("stop", () => {
             this._onComplete(instance);
         });
         instance.play(
             options.start,
             options.end,
             options.speed,
-            options.loop
+            options.loop,
         );
         return instance;
     }
@@ -645,7 +638,7 @@ export default class Sound
      * @method PIXI.sound.Sound#stop
      * @return {PIXI.sound.Sound} Instance of this sound.
      */
-    public stop():Sound
+    public stop(): Sound
     {
         if (!this.isPlayable)
         {
@@ -667,7 +660,7 @@ export default class Sound
      * @method PIXI.sound.Sound#pause
      * @return {PIXI.sound.Sound} Instance of this sound.
      */
-    public pause():Sound
+    public pause(): Sound
     {
         for (let i = this._instances.length - 1; i >= 0; i--)
         {
@@ -682,7 +675,7 @@ export default class Sound
      * @method PIXI.sound.Sound#resume
      * @return {PIXI.sound.Sound} Instance of this sound.
      */
-    public resume():Sound
+    public resume(): Sound
     {
         for (let i = this._instances.length - 1; i >= 0; i--)
         {
@@ -697,7 +690,7 @@ export default class Sound
      * @method PIXI.sound.Sound#_beginPreload
      * @private
      */
-    private _beginPreload():void
+    private _beginPreload(): void
     {
         // Load from the file path
         if (this.src)
@@ -715,7 +708,7 @@ export default class Sound
         }
         else
         {
-            console.error('sound.src or sound.srcBuffer must be set');
+            console.error("sound.src or sound.srcBuffer must be set");
         }
     }
 
@@ -725,7 +718,7 @@ export default class Sound
      * @private
      * @param {PIXI.sound.SoundInstance} instance
      */
-    private _onComplete(instance:SoundInstance): void
+    private _onComplete(instance: SoundInstance): void
     {
         if (this._instances)
         {
@@ -744,7 +737,7 @@ export default class Sound
      * @method PIXI.sound.Sound#_removeInstances
      * @private
      */
-    private _removeInstances():void
+    private _removeInstances(): void
     {
         // destroying also stops
         for (let i = this._instances.length - 1; i >= 0; i--)
@@ -759,12 +752,12 @@ export default class Sound
      * @method PIXI.sound.Sound#_loadUrl
      * @private
      */
-    private _loadUrl():void
+    private _loadUrl(): void
     {
         const request = new XMLHttpRequest();
-        let src:string = this.src;
-        request.open('GET', src, true);
-        request.responseType = 'arraybuffer';
+        const src: string = this.src;
+        request.open("GET", src, true);
+        request.responseType = "arraybuffer";
 
         // Decode asynchronously
         request.onload = () => {
@@ -784,9 +777,9 @@ export default class Sound
      */
     private _loadPath()
     {
-        const fs = require('fs');
-        let src:string = this.src;
-        fs.readFile(src, (err:Error, data:Buffer) => {
+        const fs = require("fs");
+        const src: string = this.src;
+        fs.readFile(src, (err: Error, data: Buffer) => {
             if (err)
             {
                 // @if DEBUG
@@ -815,9 +808,9 @@ export default class Sound
      * @param {ArrayBuffer} arrayBuffer From load.
      * @private
      */
-    private _decode(arrayBuffer:ArrayBuffer): void
+    private _decode(arrayBuffer: ArrayBuffer): void
     {
-        this._context.decode(arrayBuffer, (err:Error, buffer:AudioBuffer) =>
+        this._context.decode(arrayBuffer, (err: Error, buffer: AudioBuffer) =>
         {
                 if (err)
                 {
@@ -836,7 +829,7 @@ export default class Sound
                         this.play(this.complete);
                     }
                 }
-            }
+            },
         );
     }
 }

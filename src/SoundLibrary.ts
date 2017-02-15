@@ -1,12 +1,12 @@
-import SoundContext from './SoundContext';
-import {Options, PlayOptions} from './Sound';
-import Sound from './Sound';
-import SoundInstance from './SoundInstance';
-import SoundUtils from './SoundUtils';
-import SoundSprite from './SoundSprite';
-import * as filters from './filters';
+import * as filters from "./filters";
+import {Options, PlayOptions} from "./Sound";
+import Sound from "./Sound";
+import SoundContext from "./SoundContext";
+import SoundInstance from "./SoundInstance";
+import SoundSprite from "./SoundSprite";
+import SoundUtils from "./SoundUtils";
 
-export type SoundMap = {[id:string]:Options|string|ArrayBuffer};
+export type SoundMap = {[id: string]: Options|string|ArrayBuffer};
 
 /**
  * @description Manages the playback of sounds.
@@ -17,12 +17,12 @@ export type SoundMap = {[id:string]:Options|string|ArrayBuffer};
 export default class SoundLibrary
 {
     // These are already documented else where
-    public Sound:typeof Sound;
-    public SoundInstance:typeof SoundInstance;
-    public SoundLibrary:typeof SoundLibrary;
-    public SoundSprite:typeof SoundSprite;
-    public filters:typeof filters;
-    public utils:typeof SoundUtils;
+    public Sound: typeof Sound;
+    public SoundInstance: typeof SoundInstance;
+    public SoundLibrary: typeof SoundLibrary;
+    public SoundSprite: typeof SoundSprite;
+    public filters: typeof filters;
+    public utils: typeof SoundUtils;
 
     /**
      * The global context to use.
@@ -30,7 +30,7 @@ export default class SoundLibrary
      * @type {PIXI.sound.SoundContext}
      * @private
      */
-    private _context:SoundContext;
+    private _context: SoundContext;
 
     /**
      * The map of all sounds by alias.
@@ -38,7 +38,7 @@ export default class SoundLibrary
      * @type {Object}
      * @private
      */
-    private _sounds:{[id:string]: Sound};
+    private _sounds: {[id: string]: Sound};
 
     constructor()
     {
@@ -61,7 +61,7 @@ export default class SoundLibrary
      * @readOnly
      * @type {PIXI.sound.SoundContext}
      */
-    get context():SoundContext
+    public get context(): SoundContext
     {
         return this._context;
     }
@@ -72,7 +72,7 @@ export default class SoundLibrary
      * @readOnly
      * @type {Boolean}
      */
-    get supported(): boolean
+    public get supported(): boolean
     {
         return SoundContext.AudioContext !== null;
     }
@@ -97,15 +97,17 @@ export default class SoundLibrary
      * @param {Boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
      * @param {Number} [options.volume=1] The amount of volume 1 = 100%.
      * @param {Number} [options.speed=1] The playback rate where 1 is 100% speed.
-     * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false, loaded with NodeJS's `fs` module.
-     * @param {Object} [options.sprites] The map of sprite data. Where a sprite is an object 
+     * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false,
+     *        loaded with NodeJS's `fs` module.
+     * @param {Object} [options.sprites] The map of sprite data. Where a sprite is an object
      *        with a `start` and `end`, which are the times in seconds. Optionally, can include
      *        a `speed` amount where 1 is 100% speed.
-     * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback when play is finished.
+     * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback when
+     *        play is finished.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
      * @return {PIXI.sound.Sound} Instance of the Sound object.
      */
-    add(alias:string, options:Options|string|ArrayBuffer|Sound): Sound;
+    public add(alias: string, options: Options|string|ArrayBuffer|Sound): Sound;
 
     /**
      * Adds multiple sounds at once.
@@ -116,26 +118,26 @@ export default class SoundLibrary
      *        if a property is defined, it will use the local property instead.
      * @return {PIXI.sound.Sound} Instance to the Sound object.
      */
-    add(map:SoundMap, globalOptions?:Options):{[id:string]:Sound};
+    public add(map: SoundMap, globalOptions?: Options): {[id: string]: Sound};
 
     // Actual method
-    add(source:string|SoundMap, sourceOptions?:Options|string|ArrayBuffer|Sound):{[id:string]:Sound}|Sound
+    public add(source: string|SoundMap, sourceOptions?: Options|string|ArrayBuffer|Sound): {[id: string]: Sound}|Sound
     {
-        if (typeof source === 'object')
+        if (typeof source === "object")
         {
-            const results:{[id:string]:Sound} = {};
+            const results: {[id: string]: Sound} = {};
 
             for (const alias in source)
             {
-                const options:Options = this._getOptions(
+                const options: Options = this._getOptions(
                     source[alias],
-                    sourceOptions as Options
+                    sourceOptions as Options,
                 );
                 results[alias] = this.add(alias, options);
             }
             return results;
         }
-        else if (typeof source === 'string')
+        else if (typeof source === "string")
         {
             // @if DEBUG
             console.assert(!this._sounds[source], `Sound with alias ${source} already exists.`);
@@ -148,8 +150,8 @@ export default class SoundLibrary
             }
             else
             {
-                const options:Options = this._getOptions(sourceOptions);
-                const sound:Sound = new Sound(this.context, options);
+                const options: Options = this._getOptions(sourceOptions);
+                const sound: Sound = new Sound(this.context, options);
                 this._sounds[source] = sound;
                 return sound;
             }
@@ -164,15 +166,15 @@ export default class SoundLibrary
      * @param {Object} [overrides] Override default options
      * @return {Object} The construction options
      */
-    private _getOptions(source:string|ArrayBuffer|Options, overrides?:Options):Options
+    private _getOptions(source: string|ArrayBuffer|Options, overrides?: Options): Options
     {
-        let options:Options;
+        let options: Options;
 
-        if (typeof source === 'string')
+        if (typeof source === "string")
         {
             options = { src: source };
         }
-        else if(source instanceof ArrayBuffer)
+        else if (source instanceof ArrayBuffer)
         {
             options = { srcBuffer: source };
         }
@@ -189,7 +191,7 @@ export default class SoundLibrary
      * @param {String} alias The sound alias reference.
      * @return {PIXI.sound} Instance for chaining.
      */
-    remove(alias:string):SoundLibrary
+    public remove(alias: string): SoundLibrary
     {
         this.exists(alias, true);
         this._sounds[alias].destroy();
@@ -202,11 +204,11 @@ export default class SoundLibrary
      * @name PIXI.sound#volumeAll
      * @type {Number}
      */
-    get volumeAll():number
+    public get volumeAll(): number
     {
         return this._context.volume;
     }
-    set volumeAll(volume:number)
+    public set volumeAll(volume: number)
     {
         this._context.volume = volume;
     }
@@ -216,7 +218,7 @@ export default class SoundLibrary
      * @method PIXI.sound#pauseAll
      * @return {PIXI.sound} Instance for chaining.
      */
-    pauseAll():SoundLibrary
+    public pauseAll(): SoundLibrary
     {
         this._context.paused = true;
         return this;
@@ -227,7 +229,7 @@ export default class SoundLibrary
      * @method PIXI.sound#resumeAll
      * @return {PIXI.sound} Instance for chaining.
      */
-    resumeAll():SoundLibrary
+    public resumeAll(): SoundLibrary
     {
         this._context.paused = false;
         return this;
@@ -238,7 +240,7 @@ export default class SoundLibrary
      * @method PIXI.sound#muteAll
      * @return {PIXI.sound} Instance for chaining.
      */
-    muteAll():SoundLibrary
+    public muteAll(): SoundLibrary
     {
         this._context.muted = true;
         return this;
@@ -249,7 +251,7 @@ export default class SoundLibrary
      * @method PIXI.sound#unmuteAll
      * @return {PIXI.sound} Instance for chaining.
      */
-    unmuteAll():SoundLibrary
+    public unmuteAll(): SoundLibrary
     {
         this._context.muted = false;
         return this;
@@ -260,9 +262,9 @@ export default class SoundLibrary
      * @method PIXI.sound#removeAll
      * @return {PIXI.sound} Instance for chaining.
      */
-    removeAll():SoundLibrary
+    public removeAll(): SoundLibrary
     {
-        for (let alias in this._sounds)
+        for (const alias in this._sounds)
         {
             this._sounds[alias].destroy();
             delete this._sounds[alias];
@@ -275,9 +277,9 @@ export default class SoundLibrary
      * @method PIXI.sound#stopAll
      * @return {PIXI.sound} Instance for chaining.
      */
-    stopAll():SoundLibrary
+    public stopAll(): SoundLibrary
     {
-        for(let alias in this._sounds)
+        for (const alias in this._sounds)
         {
             this._sounds[alias].stop();
         }
@@ -290,7 +292,7 @@ export default class SoundLibrary
      * @param {String} alias Check for alias.
      * @return {Boolean} true if the sound exists.
      */
-    exists(alias:string, assert:boolean=false):boolean
+    public exists(alias: string, assert: boolean= false): boolean
     {
         const exists = !!this._sounds[alias];
         if (assert)
@@ -306,7 +308,7 @@ export default class SoundLibrary
      * @param {String} alias The sound alias reference.
      * @return {PIXI.sound.Sound} Sound object.
      */
-    find(alias:string):Sound
+    public find(alias: string): Sound
     {
         this.exists(alias, true);
         return this._sounds[alias];
@@ -335,7 +337,7 @@ export default class SoundLibrary
      * @return {PIXI.sound.SoundInstance|null} The sound instance, this cannot be reused
      *         after it is done playing. Returns `null` if the sound has not yet loaded.
      */
-    play(alias:string, options?:PlayOptions|Object|string):SoundInstance
+    public play(alias: string, options?: PlayOptions|Object|string): SoundInstance
     {
         return this.find(alias).play(options);
     }
@@ -346,7 +348,7 @@ export default class SoundLibrary
      * @param {String} alias The sound alias reference.
      * @return {PIXI.sound.Sound} Sound object.
      */
-    stop(alias:string):Sound
+    public stop(alias: string): Sound
     {
         return this.find(alias).stop();
     }
@@ -357,7 +359,7 @@ export default class SoundLibrary
      * @param {String} alias The sound alias reference.
      * @return {PIXI.sound.Sound} Sound object.
      */
-    pause(alias:string):Sound
+    public pause(alias: string): Sound
     {
         return this.find(alias).pause();
     }
@@ -368,7 +370,7 @@ export default class SoundLibrary
      * @param {String} alias The sound alias reference.
      * @return {PIXI.sound} Instance for chaining.
      */
-    resume(alias:string):Sound
+    public resume(alias: string): Sound
     {
         return this.find(alias).resume();
     }
@@ -380,7 +382,7 @@ export default class SoundLibrary
      * @param {Number} [volume] Optional current volume to set.
      * @return {Number} The current volume.
      */
-    volume(alias:string, volume?:number):number
+    public volume(alias: string, volume?: number): number
     {
         const sound = this.find(alias);
         if (volume !== undefined) {
@@ -395,7 +397,7 @@ export default class SoundLibrary
      * @param {String} alias The sound alias reference.
      * @return {Number} The current duration in seconds.
      */
-    duration(alias:string):number
+    public duration(alias: string): number
     {
         return this.find(alias).duration;
     }
@@ -405,7 +407,7 @@ export default class SoundLibrary
      * @method PIXI.sound#destroy
      * @private
      */
-    destroy():void
+    public destroy(): void
     {
         this.removeAll();
         this._sounds = null;

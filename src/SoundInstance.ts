@@ -1,4 +1,4 @@
-import Sound from './Sound';
+import Sound from "./Sound";
 
 let id = 0;
 
@@ -17,14 +17,14 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @static
      * @private
      */
-    static _pool:Array<SoundInstance> = [];
+    private static _pool: SoundInstance[] = [];
 
     /**
      * The current unique ID for this instance.
      * @name PIXI.sound.SoundInstance#id
      * @readOnly
      */
-    public id:number;
+    public id: number;
 
     /**
      * The source Sound.
@@ -32,7 +32,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @name PIXI.sound.SoundInstance#_parent
      * @private
      */
-    private _parent:Sound;
+    private _parent: Sound;
 
     /**
      * true if paused.
@@ -40,7 +40,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @name PIXI.sound.SoundInstance#_paused
      * @private
      */
-    private _paused:boolean;
+    private _paused: boolean;
 
     /**
      * Last update frame number.
@@ -48,7 +48,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @name PIXI.sound.SoundInstance#_lastUpdate
      * @private
      */
-    private _lastUpdate:number;
+    private _lastUpdate: number;
 
     /**
      * The total number of seconds elapsed in playback.
@@ -56,7 +56,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @name PIXI.sound.SoundInstance#_elapsed
      * @private
      */
-    private _elapsed:number;
+    private _elapsed: number;
 
     /**
      * Playback rate, where 1 is 100%.
@@ -64,7 +64,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @name PIXI.sound.SoundInstance#_speed
      * @private
      */
-    private _speed:number;
+    private _speed: number;
 
     /**
      * Length of the sound in seconds.
@@ -72,7 +72,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @name PIXI.sound.SoundInstance#_duration
      * @private
      */
-    private _duration:number;
+    private _duration: number;
 
     /**
      * The progress of the sound from 0 to 1.
@@ -80,7 +80,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @name PIXI.sound.SoundInstance#_progress
      * @private
      */
-    private _progress:number;
+    private _progress: number;
 
     /**
      * Audio buffer source clone from Sound object.
@@ -88,7 +88,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @name PIXI.sound.SoundInstance#_source
      * @private
      */
-    private _source:AudioBufferSourceNode;
+    private _source: AudioBufferSourceNode;
 
     /**
      * Recycle instance, because they will be created many times.
@@ -97,11 +97,11 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @private
      * @param {PIXI.sound.Sound} parent Parent sound object
      */
-    public static create(parent:Sound):SoundInstance
+    public static create(parent: Sound): SoundInstance
     {
         if (SoundInstance._pool.length > 0)
         {
-            let sound = SoundInstance._pool.pop();
+            const sound = SoundInstance._pool.pop();
             sound._init(parent);
             return sound;
         }
@@ -111,7 +111,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         }
     }
 
-    constructor(parent:Sound)
+    constructor(parent: Sound)
     {
         super();
 
@@ -128,7 +128,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * Stops the instance, don't use after this.
      * @method PIXI.sound.SoundInstance#stop
      */
-    public stop():void
+    public stop(): void
     {
         if (this._source)
         {
@@ -138,7 +138,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
              * The sound is stopped. Don't use after this is called.
              * @event PIXI.sound.SoundInstance#stop
              */
-            this.emit('stop');
+            this.emit("stop");
         }
     }
 
@@ -150,12 +150,12 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @param {Number} [speed] Override the default speed.
      * @param {Boolean} [loop] Override the default loop.
      */
-    public play(start:number = 0, end?:number, speed?:number, loop?:boolean):void
+    public play(start: number = 0, end?: number, speed?: number, loop?: boolean): void
     {
         // @if DEBUG
         if (end)
         {
-            console.assert(end > start, 'End time is before start time');
+            console.assert(end > start, "End time is before start time");
         }
         // @endif
         this._paused = false;
@@ -188,7 +188,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
          * The sound is started.
          * @event PIXI.sound.SoundInstance#start
          */
-        this.emit('start');
+        this.emit("start");
 
         // Do an update for the initial progress
         this._update(true);
@@ -203,7 +203,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @type {Boolean}
      * @private
      */
-    private set _enabled(enabled:boolean)
+    private set _enabled(enabled: boolean)
     {
         this._parent.nodes.scriptNode.onaudioprocess = !enabled ? null : () => {
             this._update();
@@ -215,7 +215,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @type {Number}
      * @name PIXI.sound.SoundInstance#progress
      */
-    public get progress():number
+    public get progress(): number
     {
         return this._progress;
     }
@@ -225,12 +225,12 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @type {Boolean}
      * @name PIXI.sound.SoundInstance#paused
      */
-    public get paused():boolean
+    public get paused(): boolean
     {
         return this._paused;
     }
 
-    public set paused(paused:boolean)
+    public set paused(paused: boolean)
     {
         if (paused !== this._paused)
         {
@@ -245,7 +245,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
                  * The sound is paused.
                  * @event PIXI.sound.SoundInstance#paused
                  */
-                this.emit('paused');
+                this.emit("paused");
             }
             else
             {
@@ -253,7 +253,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
                  * The sound is unpaused.
                  * @event PIXI.sound.SoundInstance#resumed
                  */
-                this.emit('resumed');
+                this.emit("resumed");
 
                 // resume the playing with offset
                 this.play(this._elapsed % this._duration);
@@ -264,15 +264,15 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
              * @event PIXI.sound.SoundInstance#pause
              * @param {Boolean} paused If the instance was paused or not.
              */
-            this.emit('pause', paused);
+            this.emit("pause", paused);
         }
     }
-    
+
     /**
      * Don't use after this.
      * @method PIXI.sound.SoundInstance#destroy
      */
-    public destroy():void
+    public destroy(): void
     {
         this.removeAllListeners();
         this._internalStop();
@@ -299,9 +299,9 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @return {String} The string representation of instance.
      * @private
      */
-    public toString():string
+    public toString(): string
     {
-        return '[SoundInstance id=' + this.id + ']';
+        return "[SoundInstance id=" + this.id + "]";
     }
 
     /**
@@ -320,18 +320,18 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @method PIXI.sound.SoundInstance#_update
      * @private
      */
-    private _update(force:boolean = false): void
+    private _update(force: boolean = false): void
     {
         if (this._source)
         {
-            const now:number = this._now();
-            const delta:number = now - this._lastUpdate;
+            const now: number = this._now();
+            const delta: number = now - this._lastUpdate;
 
             if (delta > 0 || force)
             {
                 this._elapsed += delta;
                 this._lastUpdate = now;
-                const duration:number = this._duration;
+                const duration: number = this._duration;
                 this._progress = ((this._elapsed * this._speed) % duration) / duration;
 
                 /**
@@ -339,7 +339,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
                  * @event PIXI.sound.SoundInstance#progress
                  * @param {Number} progress Amount progressed from 0 to 1
                  */
-                this.emit('progress', this._progress);
+                this.emit("progress", this._progress);
             }
         }
     }
@@ -349,7 +349,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @method PIXI.sound.SoundInstance#init
      * @private
      */
-    private _init(parent:Sound):void
+    private _init(parent: Sound): void
     {
         this._parent = parent;
     }
@@ -359,7 +359,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @method PIXI.sound.SoundInstance#_internalStop
      * @private
      */
-    private _internalStop():void
+    private _internalStop(): void
     {
         if (this._source)
         {
@@ -376,7 +376,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @method PIXI.sound.SoundInstance#_onComplete
      * @private
      */
-    private _onComplete():void
+    private _onComplete(): void
     {
         if (this._source)
         {
@@ -385,11 +385,11 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         }
         this._source = null;
         this._progress = 1;
-        this.emit('progress', 1);
+        this.emit("progress", 1);
         /**
          * The sound ends, don't use after this
          * @event PIXI.sound.SoundInstance#end
          */
-        this.emit('end', this);
+        this.emit("end", this);
     }
 }

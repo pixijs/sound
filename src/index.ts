@@ -1,11 +1,11 @@
-import SoundLibrary from './SoundLibrary';
-import { install } from './LoaderMiddleware';
+import { install } from "./LoaderMiddleware";
+import SoundLibrary from "./SoundLibrary";
 
 // Mixin any deprecations
-import './deprecations';
+import "./deprecations";
 
 // Create instance of the library
-const sound:SoundLibrary = new SoundLibrary();
+const sound: SoundLibrary = new SoundLibrary();
 
 /**
  * @namespace PIXI
@@ -15,12 +15,12 @@ const sound:SoundLibrary = new SoundLibrary();
 // library doesn't depend on PIXI strictly
 if ((global as any).PIXI === undefined)
 {
-    throw "pixi.js is required";
+    throw new Error("pixi.js is required");
 }
 
 if (PIXI.loaders !== undefined)
 {
-    // Install the middleware to support 
+    // Install the middleware to support
     // PIXI.loader and new PIXI.loaders.Loader
     install();
 }
@@ -29,9 +29,9 @@ if (PIXI.loaders !== undefined)
  * Playing sound files with WebAudio API
  * @namespace PIXI.sound
  */
-Object.defineProperty(PIXI, 'sound', 
+Object.defineProperty(PIXI, "sound",
 {
-    get() { return sound; }
+    get() { return sound; },
 });
 
 // Export the default plugin instance

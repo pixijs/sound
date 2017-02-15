@@ -1,11 +1,11 @@
-import Sound from './Sound';
-import {CompleteCallback} from './Sound';
-import SoundInstance from './SoundInstance';
+import Sound from "./Sound";
+import {CompleteCallback} from "./Sound";
+import SoundInstance from "./SoundInstance";
 
 export interface SoundSpriteData {
-    start:number;
-    end:number;
-    speed?:number;
+    start: number;
+    end: number;
+    speed?: number;
 }
 
 /**
@@ -27,7 +27,7 @@ export default class SoundSprite
      * @type {PIXI.sound.Sound}
      * @readOnly
      */
-    public parent:Sound;
+    public parent: Sound;
 
     /**
      * The starting location in seconds.
@@ -35,7 +35,7 @@ export default class SoundSprite
      * @type {Number}
      * @readOnly
      */
-    public start:number;
+    public start: number;
 
     /**
      * The ending location in seconds
@@ -43,7 +43,7 @@ export default class SoundSprite
      * @type {Number}
      * @readOnly
      */
-    public end:number;
+    public end: number;
 
     /**
      * The speed override where 1 is 100% speed playback.
@@ -51,7 +51,7 @@ export default class SoundSprite
      * @type {Number}
      * @readOnly
      */
-    public speed:number;
+    public speed: number;
 
     /**
      * The duration of the sound in seconds.
@@ -59,19 +59,19 @@ export default class SoundSprite
      * @type {Number}
      * @readOnly
      */
-    public duration:number;
+    public duration: number;
 
     /**
      * Constructor
      */
-    constructor(parent:Sound, options:SoundSpriteData)
+    constructor(parent: Sound, options: SoundSpriteData)
     {
         this.parent = parent;
         Object.assign(this, options);
         this.duration = this.end - this.start;
 
         // @if DEBUG
-        console.assert(this.duration > 0, 'End time must be after start time');
+        console.assert(this.duration > 0, "End time must be after start time");
         // @endif
     }
 
@@ -81,13 +81,13 @@ export default class SoundSprite
      * @param {PIXI.sound.Sound~completeCallback} [complete] Function call when complete
      * @return {PIXI.sound.SoundInstance} Sound instance being played.
      */
-    play(complete?:CompleteCallback): SoundInstance
+    public play(complete?: CompleteCallback): SoundInstance
     {
         return this.parent.play(Object.assign({
             complete,
             speed: this.speed || this.parent.speed,
             end: this.end,
-            start: this.start
+            start: this.start,
         }));
     }
 
@@ -95,7 +95,7 @@ export default class SoundSprite
      * Destroy and don't use after this
      * @method PIXI.sound.SoundSprite#destroy
      */
-    destroy(): void
+    public destroy(): void
     {
         this.parent = null;
     }

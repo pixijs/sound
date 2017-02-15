@@ -1,9 +1,9 @@
-import SoundLibrary from './SoundLibrary';
-import Sound from './Sound';
-import {Options} from './Sound';
+import Sound from "./Sound";
+import {Options} from "./Sound";
+import SoundLibrary from "./SoundLibrary";
 
-const SoundLibraryPrototype:any = SoundLibrary.prototype as any;
-const SoundPrototype:any = Sound.prototype as any;
+const SoundLibraryPrototype: any = SoundLibrary.prototype as any;
+const SoundPrototype: any = Sound.prototype as any;
 
 /**
  * Gets a sound.
@@ -11,9 +11,9 @@ const SoundPrototype:any = Sound.prototype as any;
  * @deprecated since 1.1.0
  * @see PIXI.sound#find
  */
-SoundLibraryPrototype.sound = function sound(alias:string): Sound
+SoundLibraryPrototype.sound = function sound(alias: string): Sound
 {
-    console.warn('PIXI.sound.sound is deprecated, use PIXI.sound.find');
+    console.warn("PIXI.sound.sound is deprecated, use PIXI.sound.find");
     return this.find(alias);
 };
 
@@ -23,9 +23,9 @@ SoundLibraryPrototype.sound = function sound(alias:string): Sound
  * @deprecated since 1.1.0
  * @see PIXI.sound.filters.StereoFilter
  */
-SoundLibraryPrototype.panning = function(alias:string, panning?:number):number
+SoundLibraryPrototype.panning = function panning(alias: string, panning?: number): number
 {
-    console.warn('PIXI.sound.panning is deprecated, use PIXI.sound.filters.StereoPan');
+    console.warn("PIXI.sound.panning is deprecated, use PIXI.sound.filters.StereoPan");
     return 0;
 };
 
@@ -35,9 +35,11 @@ SoundLibraryPrototype.panning = function(alias:string, panning?:number):number
  * @deprecated since 1.3.0
  * @see PIXI.sound#add
  */
-SoundLibraryPrototype.addMap = function(map:{[id:string]:Options|string|ArrayBuffer}, globalOptions?:Options):{[id:string]:Sound}
+SoundLibraryPrototype.addMap = function addMap(
+    map: {[id: string]: Options|string|ArrayBuffer},
+    globalOptions?: Options): {[id: string]: Sound}
 {
-    console.warn('PIXI.sound.addMap is deprecated, use PIXI.sound.add');
+    console.warn("PIXI.sound.addMap is deprecated, use PIXI.sound.add");
     return this.add(map, globalOptions);
 };
 
@@ -47,11 +49,11 @@ SoundLibraryPrototype.addMap = function(map:{[id:string]:Options|string|ArrayBuf
  * @deprecated since 1.1.0
  * @see PIXI.sound.utils
  */
-Object.defineProperty(SoundLibraryPrototype, 'SoundUtils', {
+Object.defineProperty(SoundLibraryPrototype, "SoundUtils", {
     get() {
-        console.warn('PIXI.sound.SoundUtils is deprecated, use PIXI.sound.utils');
+        console.warn("PIXI.sound.SoundUtils is deprecated, use PIXI.sound.utils");
         return this.utils;
-    }
+    },
 });
 
 /**
@@ -60,13 +62,13 @@ Object.defineProperty(SoundLibraryPrototype, 'SoundUtils', {
  * @deprecated since 1.1.0
  * @see PIXI.sound.Sound#singleInstance
  */
-Object.defineProperty(SoundPrototype, 'block', {
+Object.defineProperty(SoundPrototype, "block", {
     get() {
-        console.warn('PIXI.sound.Sound.prototype.block is deprecated, use singleInstance instead');
+        console.warn("PIXI.sound.Sound.prototype.block is deprecated, use singleInstance instead");
         return this.singleInstance;
     },
-    set(value:boolean) {
-        console.warn('PIXI.sound.Sound.prototype.block is deprecated, use singleInstance instead');
+    set(value: boolean) {
+        console.warn("PIXI.sound.Sound.prototype.block is deprecated, use singleInstance instead");
         this.singleInstance = value;
-    }
+    },
 });

@@ -1,19 +1,19 @@
-import sound from './index';
+import sound from "./index";
 
 // Supported audio formats
-const AUDIO_EXTENSIONS:string[] = ['wav', 'mp3', 'ogg', 'oga', 'm4a'];
+const AUDIO_EXTENSIONS: string[] = ["wav", "mp3", "ogg", "oga", "m4a"];
 
 /**
  * Actual resource-loader middleware for sound class
  */
-function middleware(resource:PIXI.loaders.Resource, next:() => void):void
+function middleware(resource: PIXI.loaders.Resource, next: () => void): void
 {
     if (resource.data && AUDIO_EXTENSIONS.indexOf((resource as any)._getExtension()) > -1)
     {
         (resource as any).sound = sound.add(resource.name, {
-            srcBuffer: resource.data,
+            loaded: next,
             preload: true,
-            loaded: next
+            srcBuffer: resource.data,
         });
     }
     else

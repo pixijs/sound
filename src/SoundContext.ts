@@ -1,4 +1,4 @@
-import webAudioIOS = require('web-audio-ios');
+import webAudioIOS = require("web-audio-ios");
 
 /**
  * @description Main class to handle webkit audio.
@@ -14,7 +14,7 @@ export default class SoundContext
      * @type {AudioContext}
      * @private
      */
-    private _ctx:AudioContext;
+    private _ctx: AudioContext;
 
     /**
      * The instance of the OfflineAudioContext for fast decoding audio.
@@ -22,7 +22,7 @@ export default class SoundContext
      * @type {OfflineAudioContext}
      * @private
      */
-    private _offlineCtx:OfflineAudioContext;
+    private _offlineCtx: OfflineAudioContext;
 
     /**
      * Handle the volume.
@@ -30,7 +30,7 @@ export default class SoundContext
      * @type {GainNode}
      * @private
      */
-    private _gainNode:GainNode;
+    private _gainNode: GainNode;
 
     /**
      * Context Compressor node
@@ -38,7 +38,7 @@ export default class SoundContext
      * @type {DynamicsCompressorNode}
      * @private
      */
-    private _compressor:DynamicsCompressorNode;
+    private _compressor: DynamicsCompressorNode;
 
     /**
      * Current muted status of the context
@@ -47,7 +47,7 @@ export default class SoundContext
      * @private
      * @default false
      */
-    private _muted:boolean;
+    private _muted: boolean;
 
     /**
      * Current volume from 0 to 1
@@ -56,7 +56,7 @@ export default class SoundContext
      * @private
      * @default 1
      */
-    private _volume:number;
+    private _volume: number;
 
     /**
      * Current paused status
@@ -65,7 +65,7 @@ export default class SoundContext
      * @private
      * @default false
      */
-    private _paused:boolean;
+    private _paused: boolean;
 
     constructor()
     {
@@ -84,7 +84,9 @@ export default class SoundContext
         this.paused = false;
 
         // Unlock WebAudio on iOS
-        webAudioIOS(window, this._ctx, () => {});
+        webAudioIOS(window, this._ctx, () => {
+            // do nothing
+        });
     }
 
     /**
@@ -93,11 +95,11 @@ export default class SoundContext
      * @type {Function}
      * @static
      */
-    public static get AudioContext():typeof AudioContext
+    public static get AudioContext(): typeof AudioContext
     {
-        const win:any = window as any;
+        const win: any = window as any;
         return (
-            win.AudioContext || 
+            win.AudioContext ||
             win.webkitAudioContext ||
             null
         );
@@ -109,9 +111,9 @@ export default class SoundContext
      * @type {Function}
      * @static
      */
-    public static get OfflineAudioContext():typeof OfflineAudioContext
+    public static get OfflineAudioContext(): typeof OfflineAudioContext
     {
-        const win:any = window as any;
+        const win: any = window as any;
         return (
             win.OfflineAudioContext ||
             win.webkitOfflineAudioContext ||
@@ -125,9 +127,9 @@ export default class SoundContext
      */
     public destroy()
     {
-        const ctx:any = this._ctx as any;
+        const ctx: any = this._ctx as any;
         // check if browser supports AudioContext.close()
-        if (typeof ctx.close !== 'undefined')
+        if (typeof ctx.close !== "undefined")
         {
             ctx.close();
         }
@@ -145,7 +147,7 @@ export default class SoundContext
      * @type {AudioContext}
      * @readOnly
      */
-    public get audioContext():AudioContext
+    public get audioContext(): AudioContext
     {
         return this._ctx;
     }
@@ -156,7 +158,7 @@ export default class SoundContext
      * @type {OfflineAudioContext}
      * @readOnly
      */
-    public get offlineContext():OfflineAudioContext
+    public get offlineContext(): OfflineAudioContext
     {
         return this._offlineCtx;
     }
@@ -167,11 +169,11 @@ export default class SoundContext
      * @name PIXI.sound.SoundContext#muted
      * @default false
      */
-    public get muted():boolean
+    public get muted(): boolean
     {
         return this._muted;
     }
-    public set muted(muted:boolean)
+    public set muted(muted: boolean)
     {
         this._muted = !!muted;
         this._gainNode.gain.value = this._muted ? 0 : this._volume;
@@ -183,7 +185,7 @@ export default class SoundContext
      * @name PIXI.sound.SoundContext#volume
      * @default 1
      */
-    public set volume(volume:number)
+    public set volume(volume: number)
     {
         // update volume
         this._volume = volume;
@@ -194,7 +196,7 @@ export default class SoundContext
             this._gainNode.gain.value = this._volume;
         }
     }
-    public get volume():number
+    public get volume(): number
     {
         return this._volume;
     }
@@ -205,19 +207,19 @@ export default class SoundContext
      * @name PIXI.sound.SoundContext#paused
      * @default false
      */
-    public set paused(paused:boolean)
+    public set paused(paused: boolean)
     {
-        if (paused && this._ctx.state === 'running')
+        if (paused && this._ctx.state === "running")
         {
             (this._ctx as any).suspend();
         }
-        else if (!paused && this._ctx.state === 'suspended')
+        else if (!paused && this._ctx.state === "suspended")
         {
             (this._ctx as any).resume();
         }
         this._paused = paused;
     }
-    public get paused():boolean
+    public get paused(): boolean
     {
         return this._paused;
     }
@@ -227,7 +229,7 @@ export default class SoundContext
      * @name PIXI.sound.SoundContext#destination
      * @type {AudioNode}
      */
-    public get destination():AudioNode
+    public get destination(): AudioNode
     {
         return this._gainNode;
     }
@@ -237,7 +239,7 @@ export default class SoundContext
      * @method PIXI.sound.SoundContext#toggleMute
      * @return {Boolean} The current muted state.
      */
-    public toggleMute():boolean
+    public toggleMute(): boolean
     {
         this.muted = !this.muted;
         return this._muted;
@@ -249,15 +251,15 @@ export default class SoundContext
      * @param {ArrayBuffer} arrayBuffer Buffer from loader
      * @param {Function} callback When completed, error and audioBuffer are parameters.
      */
-    public decode(arrayBuffer:ArrayBuffer, callback:(err?:Error, buffer?:AudioBuffer) => void):void
+    public decode(arrayBuffer: ArrayBuffer, callback: (err?: Error, buffer?: AudioBuffer) => void): void
     {
         this._offlineCtx.decodeAudioData(
-            arrayBuffer, (buffer:AudioBuffer) => {
+            arrayBuffer, (buffer: AudioBuffer) => {
                 callback(null, buffer);
             },
             () => {
-                callback(new Error('Unable to decode file'));
-            }
+                callback(new Error("Unable to decode file"));
+            },
         );
     }
 }

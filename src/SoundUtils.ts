@@ -1,11 +1,11 @@
-import Sound from './Sound';
-import soundLibrary from './index';
-import * as uuid from 'uuid';
+import * as uuid from "uuid";
+import soundLibrary from "./index";
+import Sound from "./Sound";
 
 export interface RenderOptions {
-    width?:number;
-    height?:number;
-    fill?:string|CanvasPattern|CanvasGradient;
+    width?: number;
+    height?: number;
+    fill?: string|CanvasPattern|CanvasGradient;
 }
 
 /**
@@ -22,11 +22,11 @@ export default class SoundUtils
      * @param {Number} [seconds=1] Duration of sound in seconds.
      * @return {PIXI.sound.Sound} New sound.
      */
-    static sineTone(hertz:number = 200, seconds:number = 1):Sound
+    public static sineTone(hertz: number = 200, seconds: number = 1): Sound
     {
         const soundContext = soundLibrary.context;
         const soundInstance = new Sound(soundContext, {
-            singleInstance: true
+            singleInstance: true,
         });
 
         // set default value
@@ -38,15 +38,16 @@ export default class SoundUtils
         const buffer = soundContext.audioContext.createBuffer(
             nChannels,
             seconds * sampleRate,
-            sampleRate
+            sampleRate,
         );
         const fArray = buffer.getChannelData(0);
 
         // fill the buffer
-        for(let i = 0; i < fArray.length; i++){
-            let time  = i / buffer.sampleRate;
-            let angle = hertz * time * Math.PI;
-            fArray[i] = Math.sin(angle)*amplitude;
+        for (let i = 0; i < fArray.length; i++)
+        {
+            const time  = i / buffer.sampleRate;
+            const angle = hertz * time * Math.PI;
+            fArray[i] = Math.sin(angle) * amplitude;
         }
 
         // set the buffer
@@ -65,34 +66,34 @@ export default class SoundUtils
      * @param {string|CanvasPattern|CanvasGradient} [options.fill='black'] Fill style for waveform
      * @return {PIXI.Texture} Result texture
      */
-    public static render(sound:Sound, options?:RenderOptions): PIXI.BaseTexture
+    public static render(sound: Sound, options?: RenderOptions): PIXI.BaseTexture
     {
         options = Object.assign({
             width: 512,
-            height: 128, 
-            fill: 'black',
+            height: 128,
+            fill: "black",
         }, options || {});
 
-        console.assert(!!sound.buffer, 'No buffer found, load first');
+        console.assert(!!sound.buffer, "No buffer found, load first");
 
-        const canvas:HTMLCanvasElement = document.createElement('canvas');
+        const canvas: HTMLCanvasElement = document.createElement("canvas");
         canvas.width = options.width;
         canvas.height = options.height;
 
-        const context:CanvasRenderingContext2D = canvas.getContext('2d');
+        const context: CanvasRenderingContext2D = canvas.getContext("2d");
         context.fillStyle = options.fill;
-        const data:Float32Array = sound.buffer.getChannelData(0);
-        const step:number = Math.ceil(data.length / options.width);
-        const amp:number = options.height / 2;
+        const data: Float32Array = sound.buffer.getChannelData(0);
+        const step: number = Math.ceil(data.length / options.width);
+        const amp: number = options.height / 2;
 
-        for(let i:number = 0; i < options.width; i++)
+        for (let i: number = 0; i < options.width; i++)
         {
-            let min:number = 1.0;
-            let max:number = -1.0;
+            let min: number = 1.0;
+            let max: number = -1.0;
 
-            for (let j:number = 0; j < step; j++)
+            for (let j: number = 0; j < step; j++)
             {
-                let datum:number = data[(i * step) + j]; 
+                const datum: number = data[(i * step) + j];
 
                 if (datum < min)
                 {
@@ -116,15 +117,15 @@ export default class SoundUtils
      * @param {Function} callback Callback when complete.
      * @return {string} New audio element alias.
      */
-    static playOnce(src:string, callback?:(err?:Error) => void):string
+    public static playOnce(src: string, callback?: (err?: Error) => void): string
     {
         const alias = uuid.v4();
 
         soundLibrary.add(alias, {
-            src: src,
+            src,
             preload: true,
             autoPlay: true,
-            loaded: (err:Error) => {
+            loaded: (err: Error) => {
                 if (err)
                 {
                     console.error(err);
@@ -141,7 +142,7 @@ export default class SoundUtils
                 {
                     callback(null);
                 }
-            }
+            },
         });
         return alias;
     }

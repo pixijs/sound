@@ -14,7 +14,8 @@
     "clean": "rimraf lib/** dist/** && mkdirp lib dist",
     "start": "npm run watch",
     "watch": "tsc -w",
-    "prebuild": "npm run clean",
+    "lint": "tslint src/**.ts --format=stylish",
+    "prebuild": "npm run clean && npm run lint",
     "build": "tsc",
     "postbuild": "npm run dist",
     "dist": "browserify --no-builtins -d -s Sound -e ./lib/index.js -o ./dist/pixi-sound.js",
@@ -67,6 +68,7 @@
     "mkdirp": "^0.5.1",
     "pixi.js": "^4.3.4",
     "rimraf": "^2.5.4",
+    "tslint": "^4.4.2",
     "typescript": "^2.1.5",
     "uglify-js": "^2.7.5"
   },
