@@ -19,7 +19,7 @@
     "build": "tsc",
     "postbuild": "npm run dist",
     "dist": "browserify --no-builtins -d -s Sound -e ./lib/index.js -o ./dist/pixi-sound.js",
-    "postdist": "uglifyjs --compress drop_console=true,warnings=false --output ./dist/pixi-sound.min.js -- ./dist/pixi-sound.js",
+    "postdist": "uglifyjs --mangle --compress drop_console=true,warnings=false --output ./dist/pixi-sound.min.js -- ./dist/pixi-sound.js",
     "predocs": "rimraf docs/** .docs && gulp comments",
     "docs": "jsdoc -c jsdoc.conf.json -R README.md",
     "postdocs": "rimraf .docs",
@@ -76,7 +76,6 @@
     "pixi.js": "^4.3.4"
   },
   "dependencies": {
-    "uuid": "^3.0.1",
-    "web-audio-ios": "^1.0.2"
+    "uuid": "^3.0.1"
   }
 }

@@ -1,4 +1,4 @@
-import * as uuid from "uuid";
+import uuid = require("uuid/v4");
 import soundLibrary from "./index";
 import Sound from "./Sound";
 
@@ -119,7 +119,7 @@ export default class SoundUtils
      */
     public static playOnce(src: string, callback?: (err?: Error) => void): string
     {
-        const alias = uuid.v4();
+        const alias = uuid();
 
         soundLibrary.add(alias, {
             src,

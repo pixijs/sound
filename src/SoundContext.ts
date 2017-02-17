@@ -1,5 +1,3 @@
-import webAudioIOS = require("web-audio-ios");
-
 /**
  * @description Main class to handle webkit audio.
  *
@@ -67,10 +65,21 @@ export default class SoundContext
      */
     private _paused: boolean;
 
+    /**
+     * Indicated whether audio on iOS has been unlocked, which requires a touchend/mousedown event that plays an
+     * empty sound.
+     * @name PIXI.sound.SoundContext#_unlocked
+     * @type {boolean}
+     * @private
+     */
+    private _unlocked: boolean;
+
     constructor()
     {
         this._ctx = new SoundContext.AudioContext();
         this._offlineCtx = new SoundContext.OfflineAudioContext(1, 2, this._ctx.sampleRate);
+
+        this._unlocked = false;
 
         // setup the end of the node chain
         this._gainNode = this._ctx.createGain();
@@ -83,10 +92,55 @@ export default class SoundContext
         this.muted = false;
         this.paused = false;
 
-        // Unlock WebAudio on iOS
-        webAudioIOS(window, this._ctx, () => {
-            // do nothing
-        });
+        // Listen for document level clicks to unlock WebAudio on iOS. See the _unlock method.
+        if ("ontouchstart" in window && this._ctx.state !== "running")
+        {
+            this._unlock(); // When played inside of a touch event, this will enable audio on iOS immediately.
+            this._unlock = this._unlock.bind(this);
+            document.addEventListener("mousedown", this._unlock, true);
+            document.addEventListener("touchstart", this._unlock, true);
+            document.addEventListener("touchend", this._unlock, true);
+        }
+    }
+
+    /**
+     * Try to unlock audio on iOS. This is triggered from either WebAudio plugin setup (which will work if inside of
+     * a `mousedown` or `touchend` event stack), or the first document touchend/mousedown event. If it fails (touchend
+     * will fail if the user presses for too long, indicating a scroll event instead of a click event.
+     *
+     * Note that earlier versions of iOS supported `touchstart` for this, but iOS9 removed this functionality. Adding
+     * a `touchstart` event to support older platforms may preclude a `mousedown` even from getting fired on iOS9, so we
+     * stick with `mousedown` and `touchend`.
+     * @method PIXI.sound.SoundContext#_unlock
+     * @private
+     */
+    private _unlock(): void
+    {
+        if (this._unlocked)
+        {
+            return;
+        }
+        this.playEmptySound();
+        if (this._ctx.state === "running")
+        {
+            document.removeEventListener("mousedown", this._unlock, true);
+            document.removeEventListener("touchend", this._unlock, true);
+            document.removeEventListener("touchstart", this._unlock, true);
+            this._unlocked = true;
+        }
+    }
+
+    /**
+     * Plays an empty sound in the web audio context.  This is used to enable web audio on iOS devices, as they
+     * require the first sound to be played inside of a user initiated event (touch/click).
+     * @method PIXI.sound.SoundContext#playEmptySound
+     */
+    public playEmptySound(): void
+    {
+        const source = this._ctx.createBufferSource();
+        source.buffer = this._ctx.createBuffer(1, 1, 22050);
+        source.connect(this._ctx.destination);
+        source.start(0, 0, 0);
     }
 
     /**
