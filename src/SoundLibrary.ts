@@ -1,12 +1,12 @@
 import Filterable from "./Filterable";
 import * as filters from "./filters";
+import Filter from "./filters/Filter";
 import {Options, PlayOptions} from "./Sound";
 import Sound from "./Sound";
 import SoundContext from "./SoundContext";
 import SoundInstance from "./SoundInstance";
 import SoundSprite from "./SoundSprite";
 import SoundUtils from "./SoundUtils";
-import Filter from "./filters/Filter";
 
 export type SoundMap = {[id: string]: Options|string|ArrayBuffer};
 
