@@ -262,7 +262,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
             /**
              * The sound is paused or unpaused.
              * @event PIXI.sound.SoundInstance#pause
-             * @param {Boolean} paused If the instance was paused or not.
+             * @property {Boolean} paused If the instance was paused or not.
              */
             this.emit("pause", paused);
         }
@@ -337,9 +337,10 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
                 /**
                  * The sound progress is updated.
                  * @event PIXI.sound.SoundInstance#progress
-                 * @param {Number} progress Amount progressed from 0 to 1
+                 * @property {Number} progress Amount progressed from 0 to 1
+                 * @property {Number} duration The total playback in seconds
                  */
-                this.emit("progress", this._progress);
+                this.emit("progress", this._progress, duration);
             }
         }
     }
@@ -385,7 +386,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         }
         this._source = null;
         this._progress = 1;
-        this.emit("progress", 1);
+        this.emit("progress", 1, this._duration);
         /**
          * The sound ends, don't use after this
          * @event PIXI.sound.SoundInstance#end
