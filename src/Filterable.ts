@@ -1,6 +1,9 @@
 import Filter from "./filters/Filter";
 
 /**
+ * Abstract class which SoundNodes and SoundContext
+ * both extend. This provides the functionality for adding
+ * dynamic filters.
  * @class Filterable
  * @memberof PIXI.sound
  * @param {AudioNode} source The source audio node
