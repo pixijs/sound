@@ -1,11 +1,39 @@
+import Filterable from "./Filterable";
+
 /**
- * @description Main class to handle webkit audio.
- *
+ * @description Main class to handle WebAudio API. There's a simple chain
+ * of AudioNode elements: analyser > gainNode > compressor > context.destination.
+ * any filters that are added are inserted between the analyser and gainNode nodes
  * @class SoundContext
+ * @extends PIXI.sound.Filterable
  * @memberof PIXI.sound
  */
-export default class SoundContext
+export default class SoundContext extends Filterable
 {
+    /**
+     * Handle the volume.
+     * @name PIXI.sound.SoundContext#gain
+     * @type {GainNode}
+     * @readOnly
+     */
+    public gain: GainNode;
+
+    /**
+     * Context Compressor node
+     * @name PIXI.sound.SoundContext#compressor
+     * @type {DynamicsCompressorNode}
+     * @readOnly
+     */
+    public compressor: DynamicsCompressorNode;
+
+    /**
+     * Context Analyser node
+     * @name PIXI.sound.SoundContext#analyser
+     * @type {AnalyserNode}
+     * @readOnly
+     */
+    public analyser: AnalyserNode;
+
     /**
      * The instance of the AudioContext for WebAudio API.
      * @name PIXI.sound.SoundContext#_ctx
@@ -21,22 +49,6 @@ export default class SoundContext
      * @private
      */
     private _offlineCtx: OfflineAudioContext;
-
-    /**
-     * Handle the volume.
-     * @name PIXI.sound.SoundContext#_gainNode
-     * @type {GainNode}
-     * @private
-     */
-    private _gainNode: GainNode;
-
-    /**
-     * Context Compressor node
-     * @name PIXI.sound.SoundContext#_compressor
-     * @type {DynamicsCompressorNode}
-     * @private
-     */
-    private _compressor: DynamicsCompressorNode;
 
     /**
      * Current muted status of the context
@@ -76,16 +88,25 @@ export default class SoundContext
 
     constructor()
     {
-        this._ctx = new SoundContext.AudioContext();
-        this._offlineCtx = new SoundContext.OfflineAudioContext(1, 2, this._ctx.sampleRate);
-
-        this._unlocked = false;
+        const ctx = new SoundContext.AudioContext();
+        const gain: GainNode = ctx.createGain();
+        const compressor: DynamicsCompressorNode = ctx.createDynamicsCompressor();
+        const analyser: AnalyserNode = ctx.createAnalyser();
 
         // setup the end of the node chain
-        this._gainNode = this._ctx.createGain();
-        this._compressor = this._ctx.createDynamicsCompressor();
-        this._gainNode.connect(this._compressor);
-        this._compressor.connect(this._ctx.destination);
+        analyser.connect(gain);
+        gain.connect(compressor);
+        compressor.connect(ctx.destination);
+
+        super(analyser, gain);
+
+        this._ctx = ctx;
+        this._offlineCtx = new SoundContext.OfflineAudioContext(1, 2, ctx.sampleRate);
+        this._unlocked = false;
+
+        this.gain = gain;
+        this.compressor = compressor;
+        this.analyser = analyser;
 
         // Set the defaults
         this.volume = 1;
@@ -93,7 +114,7 @@ export default class SoundContext
         this.paused = false;
 
         // Listen for document level clicks to unlock WebAudio on iOS. See the _unlock method.
-        if ("ontouchstart" in window && this._ctx.state !== "running")
+        if ("ontouchstart" in window && ctx.state !== "running")
         {
             this._unlock(); // When played inside of a touch event, this will enable audio on iOS immediately.
             this._unlock = this._unlock.bind(this);
@@ -181,18 +202,22 @@ export default class SoundContext
      */
     public destroy()
     {
+        super.destroy();
+
         const ctx: any = this._ctx as any;
         // check if browser supports AudioContext.close()
         if (typeof ctx.close !== "undefined")
         {
             ctx.close();
         }
-        this._gainNode.disconnect();
-        this._compressor.disconnect();
+        this.analyser.disconnect();
+        this.gain.disconnect();
+        this.compressor.disconnect();
+        this.gain = null;
+        this.analyser = null;
+        this.compressor = null;
         this._offlineCtx = null;
         this._ctx = null;
-        this._gainNode = null;
-        this._compressor = null;
     }
 
     /**
@@ -230,7 +255,7 @@ export default class SoundContext
     public set muted(muted: boolean)
     {
         this._muted = !!muted;
-        this._gainNode.gain.value = this._muted ? 0 : this._volume;
+        this.gain.gain.value = this._muted ? 0 : this._volume;
     }
 
     /**
@@ -247,7 +272,7 @@ export default class SoundContext
         // update actual volume IIF not muted
         if (!this._muted)
         {
-            this._gainNode.gain.value = this._volume;
+            this.gain.gain.value = this._volume;
         }
     }
     public get volume(): number
@@ -276,16 +301,6 @@ export default class SoundContext
     public get paused(): boolean
     {
         return this._paused;
-    }
-
-    /**
-     * Returns the entry node in the master node chains.
-     * @name PIXI.sound.SoundContext#destination
-     * @type {AudioNode}
-     */
-    public get destination(): AudioNode
-    {
-        return this._gainNode;
     }
 
     /**

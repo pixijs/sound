@@ -1,3 +1,4 @@
+import Filterable from "./Filterable";
 import * as filters from "./filters";
 import {Options, PlayOptions} from "./Sound";
 import Sound from "./Sound";
@@ -5,6 +6,7 @@ import SoundContext from "./SoundContext";
 import SoundInstance from "./SoundInstance";
 import SoundSprite from "./SoundSprite";
 import SoundUtils from "./SoundUtils";
+import Filter from "./filters/Filter";
 
 export type SoundMap = {[id: string]: Options|string|ArrayBuffer};
 
@@ -21,6 +23,7 @@ export default class SoundLibrary
     public SoundInstance: typeof SoundInstance;
     public SoundLibrary: typeof SoundLibrary;
     public SoundSprite: typeof SoundSprite;
+    public Filterable: typeof Filterable;
     public filters: typeof filters;
     public utils: typeof SoundUtils;
 
@@ -53,6 +56,7 @@ export default class SoundLibrary
         this.SoundInstance = SoundInstance;
         this.SoundLibrary = SoundLibrary;
         this.SoundSprite = SoundSprite;
+        this.Filterable = Filterable;
     }
 
     /**
@@ -64,6 +68,26 @@ export default class SoundLibrary
     public get context(): SoundContext
     {
         return this._context;
+    }
+
+    /**
+     * Apply filters to all sounds. Can be useful
+     * for setting global planning or global effects.
+     * @example
+     * // Adds a filter to pan all output left
+     * PIXI.sound.filtersAll = [
+     *     new PIXI.sound.filters.StereoFilter(-1)
+     * ];
+     * @name PIXI.sound#filtersAll
+     * @type {PIXI.sound.filters.Filter[]}
+     */
+    public get filtersAll(): Filter[]
+    {
+        return this._context.filters;
+    }
+    public set filtersAll(filters: Filter[])
+    {
+        this._context.filters = filters;
     }
 
     /**

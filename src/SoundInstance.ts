@@ -205,7 +205,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      */
     private set _enabled(enabled: boolean)
     {
-        this._parent.nodes.scriptNode.onaudioprocess = !enabled ? null : () => {
+        this._parent.nodes.script.onaudioprocess = !enabled ? null : () => {
             this._update();
         };
     }
