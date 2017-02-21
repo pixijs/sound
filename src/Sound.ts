@@ -331,11 +331,11 @@ export default class Sound
      */
     public get volume(): number
     {
-        return this._nodes.gainNode.gain.value;
+        return this._nodes.gain.gain.value;
     }
     public set volume(volume: number)
     {
-        this._nodes.gainNode.gain.value = volume;
+        this._nodes.gain.gain.value = volume;
     }
 
     /**
