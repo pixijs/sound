@@ -30,6 +30,9 @@ export interface PlayOptions {
     end?: number;
     speed?: number;
     loop?: boolean;
+    fadeIn?: number;
+    fadeOut?: number;
+    sprite?: string;
     complete?: CompleteCallback;
     loaded?: LoadedCallback;
 }
@@ -149,6 +152,22 @@ export default class Sound
     public useXHR: boolean;
 
     /**
+     * The options when auto-playing.
+     * @name PIXI.sound.Sound#_autoPlayOptions
+     * @type {PlayOptions}
+     * @private
+     */
+    private _autoPlayOptions: PlayOptions;
+
+    /**
+     * The internal volume.
+     * @name PIXI.sound.Sound#_volume
+     * @type {Number}
+     * @private
+     */
+    private _volume: number;
+
+    /**
      * Reference to the sound context.
      * @name PIXI.sound.Sound#_context
      * @type {SoundContext}
@@ -253,12 +272,14 @@ export default class Sound
         this._instances = [];
         this._sprites = {};
 
+        const complete = options.complete;
+        this._autoPlayOptions = complete ? { complete } : null;
+
         this.isLoaded = false;
         this.isPlaying = false;
         this.autoPlay = options.autoPlay;
         this.singleInstance = options.singleInstance;
         this.preload = options.preload || this.autoPlay;
-        this.complete = options.complete;
         this.loaded = options.loaded;
         this.src = options.src;
         this.srcBuffer = options.srcBuffer;
@@ -294,7 +315,6 @@ export default class Sound
         this.removeSprites();
         this._sprites = null;
 
-        this.complete = null;
         this.loaded = null;
         this.srcBuffer = null;
 
@@ -331,11 +351,11 @@ export default class Sound
      */
     public get volume(): number
     {
-        return this._nodes.gain.gain.value;
+        return this._volume;
     }
     public set volume(volume: number)
     {
-        this._nodes.gain.gain.value = volume;
+        this._volume = this._nodes.gain.gain.value = volume;
     }
 
     /**
@@ -538,6 +558,9 @@ export default class Sound
      * @param {PIXI.sound.Sound~completeCallback|object} options Either completed function or play options.
      * @param {Number} [options.start=0] Time when to play the sound in seconds.
      * @param {Number} [options.end] Time to end playing in seconds.
+     * @param {String} [options.sprite] Play a named sprite. Will override end, start and speed options.
+     * @param {Number} [options.fadeIn] Amount of time to fade in volume. If less than 10, considered seconds or else milliseconds.
+     * @param {Number} [options.fadeOut] Amount of time to fade out volume. If less than 10, considered seconds or else milliseconds.
      * @param {Number} [options.speed] Override default speed, default to the Sound's speed setting.
      * @param {Boolean} [options.loop] Override default loop, default to the Sound's loop setting.
      * @param {PIXI.sound.Sound~completeCallback} [options.complete] Callback when complete.
@@ -548,23 +571,14 @@ export default class Sound
     public play(source?: PlayOptions|CompleteCallback, callback?: CompleteCallback): SoundInstance;
 
     // Overloaded function
-    public play(source?: any, callback?: CompleteCallback): SoundInstance
+    public play(source?: any, complete?: CompleteCallback): SoundInstance
     {
         let options: PlayOptions;
 
         if (typeof source === "string")
         {
-            const alias: string = source as string;
-            // @if DEBUG
-            console.assert(!!this._sprites[alias], `Alias ${alias} is not available`);
-            // @endif
-            const sprite: SoundSprite = this._sprites[alias];
-            options = {
-                start: sprite.start,
-                end: sprite.end,
-                speed: sprite.speed,
-                complete: callback,
-            };
+            const sprite: string = source as string;
+            options = { sprite, complete };
         }
         else if (typeof source === "function")
         {
@@ -579,8 +593,25 @@ export default class Sound
         options = Object.assign({
             complete: null,
             loaded: null,
+            sprite: null,
             start: 0,
+            fadeIn: 0,
+            fadeOut: 0,
         }, options || {});
+
+        // A sprite is specified, add the options
+        if (options.sprite)
+        {
+            const alias:string = options.sprite;
+            // @if DEBUG
+            console.assert(!!this._sprites[alias], `Alias ${alias} is not available`);
+            // @endif
+            const sprite: SoundSprite = this._sprites[alias];
+            options.start = sprite.start;
+            options.end = sprite.end;
+            options.speed = sprite.speed;
+            delete options.sprite;
+        }
 
         // @deprecated offset option
         if ((options as any).offset) {
@@ -592,6 +623,7 @@ export default class Sound
         if (!this.isPlayable)
         {
             this.autoPlay = true;
+            this._autoPlayOptions = options;
             if (!this.isLoaded)
             {
                 const loaded = options.loaded;
@@ -624,11 +656,14 @@ export default class Sound
         instance.once("stop", () => {
             this._onComplete(instance);
         });
+
         instance.play(
             options.start,
             options.end,
             options.speed,
             options.loop,
+            options.fadeIn,
+            options.fadeOut,
         );
         return instance;
     }
@@ -643,6 +678,7 @@ export default class Sound
         if (!this.isPlayable)
         {
             this.autoPlay = false;
+            this._autoPlayOptions = null;
             return this;
         }
         this.isPlaying = false;
@@ -826,7 +862,7 @@ export default class Sound
                     }
                     if (this.autoPlay)
                     {
-                        this.play(this.complete);
+                        this.play(this._autoPlayOptions);
                     }
                 }
             },

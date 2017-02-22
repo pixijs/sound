@@ -181,8 +181,11 @@ console.log('Sound: ', PIXI.sound.find('boing'));</code></pre>
                 </button>
 
                 <p>Create a simple sine-wave tone.</p>
-                <pre><code id="sine-tone" class="javascript">const sound = PIXI.sound.utils.sineTone(523.251);
-sound.play();</code></pre>
+                <pre><code id="sine-tone" class="javascript">const sound = PIXI.sound.utils.sineTone(523.251, 3);
+sound.play({
+    fadeIn: 1,
+    fadeOut: 1
+});</code></pre>
                 <button class="btn btn-primary" data-code="#sine-tone" data-beforeCode="#render-clear">
                     <span class="glyphicon glyphicon-play"></span> Play
                 </button>
