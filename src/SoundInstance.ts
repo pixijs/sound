@@ -91,6 +91,14 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     private _end: number;
 
     /**
+     * `true` if should be looping.
+     * @type {Boolean}
+     * @name PIXI.sound.SoundInstance#_loop
+     * @private
+     */
+    private _loop: boolean;
+
+    /**
      * Length of the sound in seconds.
      * @type {Number}
      * @name PIXI.sound.SoundInstance#_duration
@@ -193,16 +201,16 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         this._speed = this._source.playbackRate.value;
         if (loop !== undefined)
         {
-            this._source.loop = loop;
+            this._loop = this._source.loop = !!loop;
         }
         // WebAudio doesn't support looping when a duration is set
         // we'll set this just for the heck of it
-        if (this._source.loop && end !== undefined)
+        if (this._loop && end !== undefined)
         {
             // @if DEBUG
             console.warn('Looping not support when specifying an "end" time');
             // @endif
-            this._source.loop = false;
+            this._loop = this._source.loop = false;
         }
         this._end = end;
 
@@ -217,7 +225,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         }
 
         // Cannot fade out for looping sounds
-        if (!this._source.loop)
+        if (!this._loop)
         {
             fadeOut = this._toSec(fadeOut);
 
@@ -328,7 +336,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
                     this._elapsed % this._duration,
                     this._end,
                     this._speed,
-                    this._source.loop,
+                    this._loop,
                     this._fadeIn,
                     this._fadeOut,
                 );
@@ -351,19 +359,13 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     {
         this.removeAllListeners();
         this._internalStop();
-        if (this._source)
-        {
-            this._source.onended = null;
-        }
-        // reset the volume back to original
-        this._parent.volume = this._parent.volume;
-
         this._source = null;
         this._speed = 0;
         this._end = 0;
         this._parent = null;
         this._elapsed = 0;
         this._duration = 0;
+        this._loop = false;
         this._fadeIn = 0;
         this._fadeOut = 0;
         this._paused = false;
@@ -481,6 +483,9 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
             this._source.onended = null;
             this._source.stop();
             this._source = null;
+
+            // Reset the volume
+            this._parent.volume = this._parent.volume;
         }
     }
 
