@@ -207,7 +207,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         this._end = end;
 
         const duration: number = this._source.buffer.duration;
-        
+
         fadeIn = this._toSec(fadeIn);
 
         // Clamp fadeIn to the duration
@@ -225,7 +225,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
             if (fadeOut > duration - fadeIn)
             {
                 fadeOut = duration - fadeIn;
-            } 
+            }
         }
 
         this._duration = duration;
@@ -330,7 +330,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
                     this._speed,
                     this._source.loop,
                     this._fadeIn,
-                    this._fadeOut
+                    this._fadeOut,
                 );
             }
 
@@ -415,7 +415,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
                 this._lastUpdate = now;
                 const duration: number = this._duration;
                 const progress: number = ((this._elapsed * this._speed) % duration) / duration;
-                
+
                 if (this._fadeIn || this._fadeOut)
                 {
                     const position: number = progress * duration;

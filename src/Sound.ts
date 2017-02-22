@@ -559,8 +559,10 @@ export default class Sound
      * @param {Number} [options.start=0] Time when to play the sound in seconds.
      * @param {Number} [options.end] Time to end playing in seconds.
      * @param {String} [options.sprite] Play a named sprite. Will override end, start and speed options.
-     * @param {Number} [options.fadeIn] Amount of time to fade in volume. If less than 10, considered seconds or else milliseconds.
-     * @param {Number} [options.fadeOut] Amount of time to fade out volume. If less than 10, considered seconds or else milliseconds.
+     * @param {Number} [options.fadeIn] Amount of time to fade in volume. If less than 10,
+     *        considered seconds or else milliseconds.
+     * @param {Number} [options.fadeOut] Amount of time to fade out volume. If less than 10,
+     *        considered seconds or else milliseconds.
      * @param {Number} [options.speed] Override default speed, default to the Sound's speed setting.
      * @param {Boolean} [options.loop] Override default loop, default to the Sound's loop setting.
      * @param {PIXI.sound.Sound~completeCallback} [options.complete] Callback when complete.
@@ -602,7 +604,7 @@ export default class Sound
         // A sprite is specified, add the options
         if (options.sprite)
         {
-            const alias:string = options.sprite;
+            const alias: string = options.sprite;
             // @if DEBUG
             console.assert(!!this._sprites[alias], `Alias ${alias} is not available`);
             // @endif
