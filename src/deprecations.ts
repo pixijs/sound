@@ -72,3 +72,33 @@ Object.defineProperty(SoundPrototype, "block", {
         this.singleInstance = value;
     },
 });
+
+/**
+ * Retired property on Sound for handing loaded event.
+ * @name PIXI.sound.Sound#loaded
+ * @deprecated since 1.4.0
+ */
+Object.defineProperty(SoundPrototype, "loaded", {
+    get() {
+        console.warn("PIXI.sound.Sound.prototype.loaded is deprecated, use constructor option instead");
+        return null;
+    },
+    set(value: boolean) {
+        console.warn("PIXI.sound.Sound.prototype.loaded is deprecated, use constructor option instead");
+    },
+});
+
+/**
+ * Retired property on Sound for handling autoPlay completed event.
+ * @name PIXI.sound.Sound#complete
+ * @deprecated since 1.4.0
+ */
+Object.defineProperty(SoundPrototype, "complete", {
+    get() {
+        console.warn("PIXI.sound.Sound.prototype.complete is deprecated, use constructor option instead");
+        return null;
+    },
+    set(value: boolean) {
+        console.warn("PIXI.sound.Sound.prototype.complete is deprecated, use constructor option instead");
+    },
+});

@@ -358,10 +358,11 @@ export default class SoundLibrary
      * @param {Number} [options.end] End time offset.
      * @param {Number} [options.speed] Override default speed, default to the Sound's speed setting.
      * @param {Boolean} [options.loop] Override default loop, default to the Sound's loop setting.
-     * @return {PIXI.sound.SoundInstance|null} The sound instance, this cannot be reused
-     *         after it is done playing. Returns `null` if the sound has not yet loaded.
+     * @return {PIXI.sound.SoundInstance|Promise<PIXI.sound.SoundInstance>} The sound instance,
+     *        this cannot be reused after it is done playing. Returns a Promise if the sound
+     *        has not yet loaded.
      */
-    public play(alias: string, options?: PlayOptions|Object|string): SoundInstance
+    public play(alias: string, options?: PlayOptions|Object|string): SoundInstance|Promise<SoundInstance>
     {
         return this.find(alias).play(options);
     }
