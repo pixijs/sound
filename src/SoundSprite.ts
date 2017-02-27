@@ -79,9 +79,9 @@ export default class SoundSprite
      * Play the sound sprite.
      * @method PIXI.sound.SoundSprite#play
      * @param {PIXI.sound.Sound~completeCallback} [complete] Function call when complete
-     * @return {PIXI.sound.SoundInstance} Sound instance being played.
+     * @return {PIXI.sound.SoundInstance|Promise<PIXI.sound.SoundInstance>} Sound instance being played.
      */
-    public play(complete?: CompleteCallback): SoundInstance
+    public play(complete?: CompleteCallback): SoundInstance|Promise<SoundInstance>
     {
         return this.parent.play(Object.assign({
             complete,

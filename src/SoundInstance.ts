@@ -59,12 +59,44 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     private _elapsed: number;
 
     /**
+     * The number of time in seconds to fade in.
+     * @type {Number}
+     * @name PIXI.sound.SoundInstance#_fadeIn
+     * @private
+     */
+    private _fadeIn: number;
+
+    /**
+     * The number of time in seconds to fade out.
+     * @type {Number}
+     * @name PIXI.sound.SoundInstance#_fadeOut
+     * @private
+     */
+    private _fadeOut: number;
+
+    /**
      * Playback rate, where 1 is 100%.
      * @type {Number}
      * @name PIXI.sound.SoundInstance#_speed
      * @private
      */
     private _speed: number;
+
+    /**
+     * Playback rate, where 1 is 100%.
+     * @type {Number}
+     * @name PIXI.sound.SoundInstance#_end
+     * @private
+     */
+    private _end: number;
+
+    /**
+     * `true` if should be looping.
+     * @type {Boolean}
+     * @name PIXI.sound.SoundInstance#_loop
+     * @private
+     */
+    private _loop: boolean;
 
     /**
      * Length of the sound in seconds.
@@ -149,8 +181,10 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      * @param {Number} [end] The ending position in seconds.
      * @param {Number} [speed] Override the default speed.
      * @param {Boolean} [loop] Override the default loop.
+     * @param {Number} [fadeIn] Time to fadein volume.
+     * @param {Number} [fadeOut] Time to fadeout volume.
      */
-    public play(start: number = 0, end?: number, speed?: number, loop?: boolean): void
+    public play(start: number, end: number, speed: number, loop: boolean, fadeIn: number, fadeOut: number): void
     {
         // @if DEBUG
         if (end)
@@ -167,20 +201,46 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         this._speed = this._source.playbackRate.value;
         if (loop !== undefined)
         {
-            this._source.loop = loop;
+            this._loop = this._source.loop = !!loop;
         }
         // WebAudio doesn't support looping when a duration is set
         // we'll set this just for the heck of it
-        if (this._source.loop && end !== undefined)
+        if (this._loop && end !== undefined)
         {
             // @if DEBUG
             console.warn('Looping not support when specifying an "end" time');
             // @endif
-            this._source.loop = false;
+            this._loop = this._source.loop = false;
         }
+        this._end = end;
+
+        const duration: number = this._source.buffer.duration;
+
+        fadeIn = this._toSec(fadeIn);
+
+        // Clamp fadeIn to the duration
+        if (fadeIn > duration)
+        {
+            fadeIn = duration;
+        }
+
+        // Cannot fade out for looping sounds
+        if (!this._loop)
+        {
+            fadeOut = this._toSec(fadeOut);
+
+            // Clamp fadeOut to the duration + fadeIn
+            if (fadeOut > duration - fadeIn)
+            {
+                fadeOut = duration - fadeIn;
+            }
+        }
+
+        this._duration = duration;
+        this._fadeIn = fadeIn;
+        this._fadeOut = fadeOut;
         this._lastUpdate = this._now();
         this._elapsed = start;
-        this._duration = this._source.buffer.duration;
         this._source.onended = this._onComplete.bind(this);
         this._source.start(0, start, (end ? end - start : undefined));
 
@@ -195,6 +255,22 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
 
         // Start handling internal ticks
         this._enabled = true;
+    }
+
+    /**
+     * Utility to convert time in millseconds or seconds
+     * @method PIXI.sound.SoundInstance#_toSec
+     * @private
+     * @param {Number} [time] Time in either ms or sec
+     * @return {Number} Time in seconds
+     */
+    private _toSec(time?: number): number
+    {
+        if (time > 10)
+        {
+            time /= 1000;
+        }
+        return time || 0;
     }
 
     /**
@@ -256,7 +332,14 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
                 this.emit("resumed");
 
                 // resume the playing with offset
-                this.play(this._elapsed % this._duration);
+                this.play(
+                    this._elapsed % this._duration,
+                    this._end,
+                    this._speed,
+                    this._loop,
+                    this._fadeIn,
+                    this._fadeOut,
+                );
             }
 
             /**
@@ -276,14 +359,15 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     {
         this.removeAllListeners();
         this._internalStop();
-        if (this._source)
-        {
-            this._source.onended = null;
-        }
         this._source = null;
+        this._speed = 0;
+        this._end = 0;
         this._parent = null;
         this._elapsed = 0;
         this._duration = 0;
+        this._loop = false;
+        this._fadeIn = 0;
+        this._fadeOut = 0;
         this._paused = false;
 
         // Add it if it isn't already added
@@ -332,7 +416,38 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
                 this._elapsed += delta;
                 this._lastUpdate = now;
                 const duration: number = this._duration;
-                this._progress = ((this._elapsed * this._speed) % duration) / duration;
+                const progress: number = ((this._elapsed * this._speed) % duration) / duration;
+
+                if (this._fadeIn || this._fadeOut)
+                {
+                    const position: number = progress * duration;
+                    const gain = this._parent.nodes.gain.gain;
+                    const maxVolume = this._parent.volume;
+
+                    if (this._fadeIn)
+                    {
+                        if (position <= this._fadeIn && progress < 1)
+                        {
+                            // Manipulate the gain node directly
+                            // so we can maintain the starting volume
+                            gain.value = maxVolume * (position / this._fadeIn);
+                        }
+                        else
+                        {
+                            gain.value = maxVolume;
+                            this._fadeIn = 0;
+                        }
+                    }
+
+                    if (this._fadeOut && position >= duration - this._fadeOut)
+                    {
+                        const percent: number = (duration - position) / this._fadeOut;
+                        gain.value = maxVolume * percent;
+                    }
+                }
+
+                // Update the progress
+                this._progress = progress;
 
                 /**
                  * The sound progress is updated.
@@ -369,6 +484,8 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
             this._source.stop();
             this._source = null;
 
+            // Reset the volume
+            this._parent.volume = this._parent.volume;
         }
     }
 

@@ -259,6 +259,43 @@ describe("PIXI.sound", function()
     });
 });
 
+describe("PIXI.sound.SoundInstance", function()
+{
+    afterEach(function()
+    {
+        library.default.removeAll();
+    });
+
+    it("should return Promise for playing unloaded sound", function(done)
+    {
+        const Sound = library.default.Sound;
+        const sound = Sound.from(manifest.silence);
+        expect(sound).to.be.instanceof(Sound);
+        const promise = sound.play();
+        promise.then((instance) => {
+            expect(instance).to.be.instanceof(library.default.SoundInstance);
+            done();
+        });
+        expect(promise).to.be.instanceof(Promise);
+    });
+
+    it("should return instance for playing loaded sound", function(done)
+    {
+        const sound = library.default.Sound.from({
+            src: manifest.silence,
+            preload: true,
+            loaded: (err) => {
+                expect(err).to.be.null;
+                expect(sound.isLoaded).to.be.true;
+                expect(sound.isPlayable).to.be.true;
+                const instance = sound.play();
+                expect(instance).to.be.instanceof(library.default.SoundInstance);
+                done();
+            },
+        });
+    });
+});
+
 describe("PIXI.loader", function()
 {
     afterEach(function()

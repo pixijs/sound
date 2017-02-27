@@ -30,6 +30,9 @@ export interface PlayOptions {
     end?: number;
     speed?: number;
     loop?: boolean;
+    fadeIn?: number;
+    fadeOut?: number;
+    sprite?: string;
     complete?: CompleteCallback;
     loaded?: LoadedCallback;
 }
@@ -39,8 +42,9 @@ export interface PlayOptions {
  * @callback PIXI.sound.Sound~loadedCallback
  * @param {Error} err The callback error.
  * @param {PIXI.sound.Sound} sound The instance of new sound.
+ * @param {PIXI.sound.SoundInstance} instance The instance of auto-played sound.
  */
-export declare type LoadedCallback = (err: Error, sound?: Sound) => void;
+export declare type LoadedCallback = (err: Error, sound?: Sound, instance?: SoundInstance) => void;
 
 /**
  * Callback when sound is completed.
@@ -91,22 +95,6 @@ export default class Sound
     public autoPlay: boolean;
 
     /**
-     * Callback when finished playing.
-     * @name PIXI.sound.Sound#complete
-     * @type {PIXI.sound.Sound~completeCallback}
-     * @default false
-     */
-    public complete: CompleteCallback;
-
-    /**
-     * Callback when load is finished.
-     * @type {PIXI.sound.Sound~loadedCallback}
-     * @name PIXI.sound.Sound#loaded
-     * @readOnly
-     */
-    public loaded: LoadedCallback;
-
-    /**
      * `true` to disallow playing multiple layered instances at once.
      * @name PIXI.sound.Sound#singleInstance
      * @type {Boolean}
@@ -147,6 +135,22 @@ export default class Sound
      * @default false
      */
     public useXHR: boolean;
+
+    /**
+     * The options when auto-playing.
+     * @name PIXI.sound.Sound#_autoPlayOptions
+     * @type {PlayOptions}
+     * @private
+     */
+    private _autoPlayOptions: PlayOptions;
+
+    /**
+     * The internal volume.
+     * @name PIXI.sound.Sound#_volume
+     * @type {Number}
+     * @private
+     */
+    private _volume: number;
 
     /**
      * Reference to the sound context.
@@ -253,13 +257,14 @@ export default class Sound
         this._instances = [];
         this._sprites = {};
 
+        const complete = options.complete;
+        this._autoPlayOptions = complete ? { complete } : null;
+
         this.isLoaded = false;
         this.isPlaying = false;
         this.autoPlay = options.autoPlay;
         this.singleInstance = options.singleInstance;
         this.preload = options.preload || this.autoPlay;
-        this.complete = options.complete;
-        this.loaded = options.loaded;
         this.src = options.src;
         this.srcBuffer = options.srcBuffer;
         this.useXHR = options.useXHR;
@@ -274,7 +279,7 @@ export default class Sound
 
         if (this.preload)
         {
-            this._beginPreload();
+            this._beginPreload(options.loaded);
         }
     }
 
@@ -294,8 +299,6 @@ export default class Sound
         this.removeSprites();
         this._sprites = null;
 
-        this.complete = null;
-        this.loaded = null;
         this.srcBuffer = null;
 
         this._removeInstances();
@@ -331,11 +334,11 @@ export default class Sound
      */
     public get volume(): number
     {
-        return this._nodes.gain.gain.value;
+        return this._volume;
     }
     public set volume(volume: number)
     {
-        this._nodes.gain.gain.value = volume;
+        this._volume = this._nodes.gain.gain.value = volume;
     }
 
     /**
@@ -528,9 +531,11 @@ export default class Sound
      * @param {Number} data.end Time to end playing in seconds.
      * @param {Number} [data.speed] Override default speed, default to the Sound's speed setting.
      * @param {PIXI.sound.Sound~completeCallback} [callback] Callback when completed.
-     * @return {PIXI.sound.SoundInstance} Current playing instance.
+     * @return {PIXI.sound.SoundInstance|Promise<PIXI.sound.SoundInstance>} The sound instance,
+     *        this cannot be reused after it is done playing. Returns a Promise if the sound
+     *        has not yet loaded.
      */
-    public play(alias: string, callback?: CompleteCallback): SoundInstance;
+    public play(alias: string, callback?: CompleteCallback): SoundInstance|Promise<SoundInstance>;
 
     /**
      * Plays the sound.
@@ -538,33 +543,32 @@ export default class Sound
      * @param {PIXI.sound.Sound~completeCallback|object} options Either completed function or play options.
      * @param {Number} [options.start=0] Time when to play the sound in seconds.
      * @param {Number} [options.end] Time to end playing in seconds.
+     * @param {String} [options.sprite] Play a named sprite. Will override end, start and speed options.
+     * @param {Number} [options.fadeIn] Amount of time to fade in volume. If less than 10,
+     *        considered seconds or else milliseconds.
+     * @param {Number} [options.fadeOut] Amount of time to fade out volume. If less than 10,
+     *        considered seconds or else milliseconds.
      * @param {Number} [options.speed] Override default speed, default to the Sound's speed setting.
      * @param {Boolean} [options.loop] Override default loop, default to the Sound's loop setting.
      * @param {PIXI.sound.Sound~completeCallback} [options.complete] Callback when complete.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded] If the sound isn't already preloaded, callback when
      *        the audio has completely finished loading and decoded.
-     * @return {PIXI.sound.SoundInstance} Current playing instance.
+     * @return {PIXI.sound.SoundInstance|Promise<PIXI.sound.SoundInstance>} The sound instance,
+     *        this cannot be reused after it is done playing. Returns a Promise if the sound
+     *        has not yet loaded.
      */
-    public play(source?: PlayOptions|CompleteCallback, callback?: CompleteCallback): SoundInstance;
+    public play(source?: PlayOptions|CompleteCallback,
+                callback?: CompleteCallback): SoundInstance|Promise<SoundInstance>;
 
     // Overloaded function
-    public play(source?: any, callback?: CompleteCallback): SoundInstance
+    public play(source?: any, complete?: CompleteCallback): SoundInstance|Promise<SoundInstance>
     {
         let options: PlayOptions;
 
         if (typeof source === "string")
         {
-            const alias: string = source as string;
-            // @if DEBUG
-            console.assert(!!this._sprites[alias], `Alias ${alias} is not available`);
-            // @endif
-            const sprite: SoundSprite = this._sprites[alias];
-            options = {
-                start: sprite.start,
-                end: sprite.end,
-                speed: sprite.speed,
-                complete: callback,
-            };
+            const sprite: string = source as string;
+            options = { sprite, complete };
         }
         else if (typeof source === "function")
         {
@@ -579,8 +583,25 @@ export default class Sound
         options = Object.assign({
             complete: null,
             loaded: null,
+            sprite: null,
             start: 0,
+            fadeIn: 0,
+            fadeOut: 0,
         }, options || {});
+
+        // A sprite is specified, add the options
+        if (options.sprite)
+        {
+            const alias: string = options.sprite;
+            // @if DEBUG
+            console.assert(!!this._sprites[alias], `Alias ${alias} is not available`);
+            // @endif
+            const sprite: SoundSprite = this._sprites[alias];
+            options.start = sprite.start;
+            options.end = sprite.end;
+            options.speed = sprite.speed;
+            delete options.sprite;
+        }
 
         // @deprecated offset option
         if ((options as any).offset) {
@@ -589,19 +610,28 @@ export default class Sound
 
         // if not yet playable, ignore
         // - usefull when the sound download isnt yet completed
-        if (!this.isPlayable)
+        if (!this.isLoaded)
         {
-            this.autoPlay = true;
-            if (!this.isLoaded)
+            return new Promise<SoundInstance>((resolve, reject) =>
             {
-                const loaded = options.loaded;
-                if (loaded)
+                this.autoPlay = true;
+                this._autoPlayOptions = options;
+                this._beginPreload((err: Error, sound: Sound, instance: SoundInstance) =>
                 {
-                    this.loaded = loaded;
-                }
-                this._beginPreload();
-            }
-            return;
+                    if (err)
+                    {
+                        reject(err);
+                    }
+                    else
+                    {
+                        if (options.loaded)
+                        {
+                            options.loaded(err, sound, instance);
+                        }
+                        resolve(instance);
+                    }
+                });
+            });
         }
 
         // Stop all sounds
@@ -624,11 +654,14 @@ export default class Sound
         instance.once("stop", () => {
             this._onComplete(instance);
         });
+
         instance.play(
             options.start,
             options.end,
             options.speed,
             options.loop,
+            options.fadeIn,
+            options.fadeOut,
         );
         return instance;
     }
@@ -643,6 +676,7 @@ export default class Sound
         if (!this.isPlayable)
         {
             this.autoPlay = false;
+            this._autoPlayOptions = null;
             return this;
         }
         this.isPlaying = false;
@@ -690,21 +724,21 @@ export default class Sound
      * @method PIXI.sound.Sound#_beginPreload
      * @private
      */
-    private _beginPreload(): void
+    private _beginPreload(callback?: LoadedCallback): void
     {
         // Load from the file path
         if (this.src)
         {
-            this.useXHR ? this._loadUrl() : this._loadPath();
+            this.useXHR ? this._loadUrl(callback) : this._loadPath(callback);
         }
         // Load from the arraybuffer, incase it was loaded outside
         else if (this.srcBuffer)
         {
-            this._decode(this.srcBuffer);
+            this._decode(this.srcBuffer, callback);
         }
-        else if (this.loaded)
+        else if (callback)
         {
-            this.loaded(new Error("sound.src or sound.srcBuffer must be set"));
+            callback(new Error("sound.src or sound.srcBuffer must be set"));
         }
         else
         {
@@ -752,7 +786,7 @@ export default class Sound
      * @method PIXI.sound.Sound#_loadUrl
      * @private
      */
-    private _loadUrl(): void
+    private _loadUrl(callback?: LoadedCallback): void
     {
         const request = new XMLHttpRequest();
         const src: string = this.src;
@@ -761,9 +795,8 @@ export default class Sound
 
         // Decode asynchronously
         request.onload = () => {
-            this.isLoaded = true;
             this.srcBuffer = request.response as ArrayBuffer;
-            this._decode(request.response);
+            this._decode(request.response, callback);
         };
 
         // actually start the request
@@ -775,7 +808,7 @@ export default class Sound
      * @method PIXI.sound.Sound#_loadPath
      * @private
      */
-    private _loadPath()
+    private _loadPath(callback?: LoadedCallback)
     {
         const fs = require("fs");
         const src: string = this.src;
@@ -785,9 +818,9 @@ export default class Sound
                 // @if DEBUG
                 console.error(err);
                 // @endif
-                if (this.loaded)
+                if (callback)
                 {
-                    this.loaded(new Error(`File not found ${this.src}`));
+                    callback(new Error(`File not found ${this.src}`));
                 }
                 return;
             }
@@ -798,7 +831,7 @@ export default class Sound
                 view[i] = data[i];
             }
             this.srcBuffer = arrayBuffer;
-            this._decode(arrayBuffer);
+            this._decode(arrayBuffer, callback);
         });
     }
 
@@ -808,25 +841,29 @@ export default class Sound
      * @param {ArrayBuffer} arrayBuffer From load.
      * @private
      */
-    private _decode(arrayBuffer: ArrayBuffer): void
+    private _decode(arrayBuffer: ArrayBuffer, callback?: LoadedCallback): void
     {
         this._context.decode(arrayBuffer, (err: Error, buffer: AudioBuffer) =>
         {
                 if (err)
                 {
-                    this.loaded(err);
+                    if (callback)
+                    {
+                        callback(err);
+                    }
                 }
                 else
                 {
                     this.isLoaded = true;
                     this.buffer = buffer;
-                    if (this.loaded)
-                    {
-                        this.loaded(null, this);
-                    }
+                    let instance: SoundInstance;
                     if (this.autoPlay)
                     {
-                        this.play(this.complete);
+                        instance = this.play(this._autoPlayOptions) as SoundInstance;
+                    }
+                    if (callback)
+                    {
+                        callback(null, this, instance);
                     }
                 }
             },
