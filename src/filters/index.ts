@@ -3,6 +3,7 @@ import EqualizerFilter from './EqualizerFilter';
 import DistortionFilter from './DistortionFilter';
 import StereoFilter from './StereoFilter';
 import ReverbFilter from './ReverbFilter';
+import MonoFilter from './MonoFilter';
 
 /**
  * Set of dynamic filters to be applied to PIXI.sound.Sound.
@@ -19,5 +20,6 @@ export {
     EqualizerFilter,
     DistortionFilter,
     StereoFilter,
-    ReverbFilter
+    ReverbFilter,
+    MonoFilter
 };
