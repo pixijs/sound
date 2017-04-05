@@ -1,7 +1,7 @@
 import Filterable from "./Filterable";
 import * as filters from "./filters";
 import Filter from "./filters/Filter";
-import {Options, PlayOptions} from "./Sound";
+import {CompleteCallback, Options, PlayOptions} from "./Sound";
 import Sound from "./Sound";
 import SoundContext from "./SoundContext";
 import SoundInstance from "./SoundInstance";
@@ -362,7 +362,7 @@ export default class SoundLibrary
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
      */
-    public play(alias: string, options?: PlayOptions|Object|string): SoundInstance|Promise<SoundInstance>
+    public play(alias: string, options?: PlayOptions|CompleteCallback|string): SoundInstance|Promise<SoundInstance>
     {
         return this.find(alias).play(options);
     }
