@@ -23,7 +23,7 @@ SoundLibraryPrototype.sound = function sound(alias: string): Sound
  * @deprecated since 1.1.0
  * @see PIXI.sound.filters.StereoFilter
  */
-SoundLibraryPrototype.panning = function panning(alias: string, panning?: number): number
+SoundLibraryPrototype.panning = function panning(alias: string, panningValue?: number): number
 {
     console.warn("PIXI.sound.panning is deprecated, use PIXI.sound.filters.StereoPan");
     return 0;
