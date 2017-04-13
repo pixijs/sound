@@ -1,4 +1,4 @@
-import Filter from "./filters/Filter";
+import Filter from "../filters/Filter";
 
 /**
  * Abstract class which SoundNodes and SoundContext
@@ -45,7 +45,7 @@ export default class Filterable
      * The destination output audio node
      * @name PIXI.sound.Filterable#destination
      * @type {AudioNode}
-     * @readOnly
+     * @readonly
      */
     get destination(): AudioNode
     {

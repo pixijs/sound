@@ -1,4 +1,4 @@
-import { install } from "./LoaderMiddleware";
+import { install } from "./loader/LoaderMiddleware";
 import SoundLibrary from "./SoundLibrary";
 
 // Mixin any deprecations
@@ -22,7 +22,7 @@ if (PIXI.loaders !== undefined)
 {
     // Install the middleware to support
     // PIXI.loader and new PIXI.loaders.Loader
-    install();
+    install(sound);
 }
 
 /**

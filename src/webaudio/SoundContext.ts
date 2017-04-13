@@ -1,4 +1,4 @@
-import Filterable from "./Filterable";
+import Filterable from "../base/Filterable";
 
 /**
  * @description Main class to handle WebAudio API. There's a simple chain
@@ -14,7 +14,7 @@ export default class SoundContext extends Filterable
      * Handle the volume.
      * @name PIXI.sound.SoundContext#gain
      * @type {GainNode}
-     * @readOnly
+     * @readonly
      */
     public gain: GainNode;
 
@@ -22,7 +22,7 @@ export default class SoundContext extends Filterable
      * Context Compressor node
      * @name PIXI.sound.SoundContext#compressor
      * @type {DynamicsCompressorNode}
-     * @readOnly
+     * @readonly
      */
     public compressor: DynamicsCompressorNode;
 
@@ -30,7 +30,7 @@ export default class SoundContext extends Filterable
      * Context Analyser node
      * @name PIXI.sound.SoundContext#analyser
      * @type {AnalyserNode}
-     * @readOnly
+     * @readonly
      */
     public analyser: AnalyserNode;
 
@@ -224,7 +224,7 @@ export default class SoundContext extends Filterable
      * The WebAudio API AudioContext object.
      * @name PIXI.sound.SoundContext#audioContext
      * @type {AudioContext}
-     * @readOnly
+     * @readonly
      */
     public get audioContext(): AudioContext
     {
@@ -235,7 +235,7 @@ export default class SoundContext extends Filterable
      * The WebAudio API OfflineAudioContext object.
      * @name PIXI.sound.SoundContext#offlineContext
      * @type {OfflineAudioContext}
-     * @readOnly
+     * @readonly
      */
     public get offlineContext(): OfflineAudioContext
     {

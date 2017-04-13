@@ -1,4 +1,7 @@
 import Sound from "./Sound";
+import BaseSound from "../base/BaseSound";
+import soundLibrary from "../index";
+import {ISoundInstance} from "../base/ISoundInstance";
 
 let id = 0;
 
@@ -8,21 +11,12 @@ let id = 0;
  * @memberof PIXI.sound
  * @param {SoundNodes} source Reference to the SoundNodes.
  */
-export default class SoundInstance extends PIXI.utils.EventEmitter
+export default class SoundInstance extends PIXI.utils.EventEmitter implements ISoundInstance
 {
-    /**
-     * Recycle instance, because they will be created many times.
-     * @type {Array}
-     * @name PIXI.sound.SoundInstance._pool
-     * @static
-     * @private
-     */
-    private static _pool: SoundInstance[] = [];
-
     /**
      * The current unique ID for this instance.
      * @name PIXI.sound.SoundInstance#id
-     * @readOnly
+     * @readonly
      */
     public id: number;
 
@@ -122,27 +116,6 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
      */
     private _source: AudioBufferSourceNode;
 
-    /**
-     * Recycle instance, because they will be created many times.
-     * @method PIXI.sound.SoundInstance.create
-     * @static
-     * @private
-     * @param {PIXI.sound.Sound} parent Parent sound object
-     */
-    public static create(parent: Sound): SoundInstance
-    {
-        if (SoundInstance._pool.length > 0)
-        {
-            const sound = SoundInstance._pool.pop();
-            sound._init(parent);
-            return sound;
-        }
-        else
-        {
-            return new SoundInstance(parent);
-        }
-    }
-
     constructor(parent: Sound)
     {
         super();
@@ -153,7 +126,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         this._elapsed = 0;
 
         // Initialize
-        this._init(parent);
+        this.init(parent);
     }
 
     /**
@@ -369,12 +342,6 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         this._fadeIn = 0;
         this._fadeOut = 0;
         this._paused = false;
-
-        // Add it if it isn't already added
-        if (SoundInstance._pool.indexOf(this) < 0)
-        {
-            SoundInstance._pool.push(this);
-        }
     }
 
     /**
@@ -463,9 +430,8 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     /**
      * Initializes the instance.
      * @method PIXI.sound.SoundInstance#init
-     * @private
      */
-    private _init(parent: Sound): void
+    public init(parent: Sound): void
     {
         this._parent = parent;
     }

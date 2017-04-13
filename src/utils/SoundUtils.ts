@@ -1,6 +1,6 @@
 import uuid = require("uuid/v4");
-import soundLibrary from "./index";
-import Sound from "./Sound";
+import soundLibrary from "../index";
+import Sound from "../webaudio/Sound";
 
 export interface RenderOptions {
     width?: number;
@@ -23,9 +23,11 @@ export default class SoundUtils
      */
     public static sineTone(hertz: number = 200, seconds: number = 1): Sound
     {
+        soundLibrary.noLegacy();
+
         const sound = Sound.from({
             singleInstance: true,
-        });
+        }) as Sound;
 
         // set default value
         const nChannels = 1;
@@ -66,6 +68,7 @@ export default class SoundUtils
      */
     public static render(sound: Sound, options?: RenderOptions): PIXI.BaseTexture
     {
+        soundLibrary.noLegacy();
         options = Object.assign({
             width: 512,
             height: 128,

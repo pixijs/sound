@@ -1,5 +1,5 @@
-import Filterable from "./Filterable";
-import Filter from "./filters/Filter";
+import Filterable from "../base/Filterable";
+import Filter from "../filters/Filter";
 import SoundContext from "./SoundContext";
 
 /**
@@ -23,7 +23,7 @@ export default class SoundNodes extends Filterable
      * Get the buffer source node
      * @name PIXI.sound.SoundNodes#bufferSource
      * @type {AudioBufferSourceNode}
-     * @readOnly
+     * @readonly
      */
     public bufferSource: AudioBufferSourceNode;
 
@@ -31,7 +31,7 @@ export default class SoundNodes extends Filterable
      * Get the script processor node.
      * @name PIXI.sound.SoundNodes#script
      * @type {ScriptProcessorNode}
-     * @readOnly
+     * @readonly
      */
     public script: ScriptProcessorNode;
 
@@ -39,7 +39,7 @@ export default class SoundNodes extends Filterable
      * Get the gain node
      * @name PIXI.sound.SoundNodes#gain
      * @type {GainNode}
-     * @readOnly
+     * @readonly
      */
     public gain: GainNode;
 
@@ -47,7 +47,7 @@ export default class SoundNodes extends Filterable
      * Get the analyser node
      * @name PIXI.sound.SoundNodes#analyser
      * @type {AnalyserNode}
-     * @readOnly
+     * @readonly
      */
     public analyser: AnalyserNode;
 
@@ -55,7 +55,7 @@ export default class SoundNodes extends Filterable
      * Reference to the SoundContext
      * @name PIXI.sound.SoundNodes#context
      * @type {PIXI.sound.SoundContext}
-     * @readOnly
+     * @readonly
      */
     public context: SoundContext;
 
