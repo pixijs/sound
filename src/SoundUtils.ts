@@ -17,15 +17,13 @@ export default class SoundUtils
     /**
      * Create a new sound for a sine wave-based tone.
      * @method PIXI.sound.utils.sineTone
-     * @param {PIXI.sound.SoundContext} soundContext
      * @param {Number} [hertz=200] Frequency of sound.
      * @param {Number} [seconds=1] Duration of sound in seconds.
      * @return {PIXI.sound.Sound} New sound.
      */
     public static sineTone(hertz: number = 200, seconds: number = 1): Sound
     {
-        const soundContext = soundLibrary.context;
-        const soundInstance = new Sound(soundContext, {
+        const sound = Sound.from({
             singleInstance: true,
         });
 
@@ -35,7 +33,7 @@ export default class SoundUtils
         const amplitude = 2;
 
         // create the buffer
-        const buffer = soundContext.audioContext.createBuffer(
+        const buffer = sound.context.audioContext.createBuffer(
             nChannels,
             seconds * sampleRate,
             sampleRate,
@@ -51,9 +49,9 @@ export default class SoundUtils
         }
 
         // set the buffer
-        soundInstance.buffer = buffer;
-        soundInstance.isLoaded = true;
-        return soundInstance;
+        sound.buffer = buffer;
+        sound.isLoaded = true;
+        return sound;
     }
 
     /**

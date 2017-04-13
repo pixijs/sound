@@ -175,7 +175,7 @@ export default class SoundLibrary
             else
             {
                 const options: Options = this._getOptions(sourceOptions);
-                const sound: Sound = new Sound(this.context, options);
+                const sound: Sound = Sound.from(options);
                 this._sounds[source] = sound;
                 return sound;
             }
