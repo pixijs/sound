@@ -142,7 +142,7 @@ export default class SoundLibrary
      * @param {String} alias The sound alias reference.
      * @param {ArrayBuffer|String|Object|HTMLAudioElement} options Either the path or url to the source file.
      *        or the object of options to use.
-     * @param {ArrayBuffer|String} [options.src] If `options` is an object, the source of file.
+     * @param {ArrayBuffer|String} [options.url] If `options` is an object, the source of file.
      * @param {Boolean} [options.autoPlay=false] true to play after loading.
      * @param {Boolean} [options.preload=false] true to immediately start preloading.
      * @param {Boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
@@ -224,11 +224,11 @@ export default class SoundLibrary
 
         if (typeof source === "string")
         {
-            options = { src: source };
+            options = { url: source };
         }
         else if (source instanceof ArrayBuffer || source instanceof HTMLAudioElement)
         {
-            options = { srcBuffer: source };
+            options = { source: source };
         }
         else
         {

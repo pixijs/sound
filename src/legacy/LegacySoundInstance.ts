@@ -282,9 +282,6 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
             source.onpause = null;
 
             this._internalStop();
-
-            // This is a hack to dispose of the audio file
-            // source.src = "";
         }
 
         this._source = null;

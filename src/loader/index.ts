@@ -80,8 +80,8 @@ export default class LoaderMiddleware
             (resource as any).sound = LoaderMiddleware._sound.add(resource.name, {
                 loaded: next,
                 preload: true,
-                src: resource.url,
-                srcBuffer: resource.data,
+                url: resource.url,
+                source: resource.data,
             });
         }
         else

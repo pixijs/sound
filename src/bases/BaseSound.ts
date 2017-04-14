@@ -16,8 +16,8 @@ export interface Options {
     loaded?: LoadedCallback;
     preload?: boolean;
     loop?: boolean;
-    src?: string;
-    srcBuffer?: ArrayBuffer|HTMLAudioElement;
+    url?: string;
+    source?: ArrayBuffer|HTMLAudioElement;
     useXHR?: boolean;
     sprites?: {[id: string]: SoundSpriteData};
 }
@@ -103,17 +103,17 @@ export default class BaseSound
 
     /**
      * The file source to load.
-     * @name PIXI.sound.BaseSound#src
+     * @name PIXI.sound.BaseSound#url
      * @type {String}
      * @readonly
      */
-    public src: string;
+    public url: string;
 
     /**
      * The constructor options.
      * @name PIXI.sound.BaseSound#_options
      * @type {Object}
-     * @protected
+     * @private
      */
     protected _options:Options;
 
@@ -121,7 +121,7 @@ export default class BaseSound
      * The collection of instances being played.
      * @name PIXI.sound.BaseSound#_instances
      * @type {Array<ISoundInstance>}
-     * @protected
+     * @private
      */
     protected _instances: ISoundInstance[];
 
@@ -129,7 +129,7 @@ export default class BaseSound
      * Reference to the sound context.
      * @name PIXI.sound.BaseSound#_context
      * @type {SoundContext}
-     * @protected
+     * @private
      */
     protected _sprites: SoundSprites;
 
@@ -137,7 +137,7 @@ export default class BaseSound
      * The options when auto-playing.
      * @name PIXI.sound.BaseSound#_autoPlayOptions
      * @type {PlayOptions}
-     * @protected
+     * @private
      */
     protected _autoPlayOptions: PlayOptions;
 
@@ -145,7 +145,7 @@ export default class BaseSound
      * The internal volume.
      * @name PIXI.sound.BaseSound#_volume
      * @type {Number}
-     * @protected
+     * @private
      */
     protected _volume: number;
 
@@ -153,7 +153,7 @@ export default class BaseSound
      * The internal volume.
      * @name PIXI.sound.BaseSound#_loop
      * @type {Boolean}
-     * @protected
+     * @private
      */
     protected _loop: boolean;
 
@@ -163,11 +163,11 @@ export default class BaseSound
 
         if (typeof source === "string")
         {
-            options.src = source as string;
+            options.url = source as string;
         }
         else if (source instanceof ArrayBuffer || source instanceof HTMLAudioElement)
         {
-            options.srcBuffer = source ;
+            options.source = source ;
         }
         else
         {
@@ -181,8 +181,8 @@ export default class BaseSound
         options = this._options = Object.assign({
             autoPlay: false,
             singleInstance: false,
-            src: null,
-            srcBuffer: null,
+            url: null,
+            source: null,
             preload: false,
             volume: 1,
             speed: 1,
@@ -205,13 +205,13 @@ export default class BaseSound
         this.autoPlay = options.autoPlay;
         this.singleInstance = options.singleInstance;
         this.preload = options.preload || this.autoPlay;
-        this.src = options.src;
+        this.url = options.url;
     }
 
     /**
      * Initialize the sound
      * @method PIXI.sound.BaseSound#_init
-     * @protected
+     * @private
      */
     public _init(): void
     {
@@ -547,7 +547,7 @@ export default class BaseSound
     /**
      * Method for handling volume change
      * @method PIXI.sound.BaseSound#_changeVolume
-     * @protected
+     * @private
      */
     protected _changeVolume(volume: number): void
     {
@@ -572,7 +572,7 @@ export default class BaseSound
     /**
      * Method for handling loop change
      * @method PIXI.sound.BaseSound#_changeVolume
-     * @protected
+     * @private
      */
     protected _changeLoop(loop: boolean): void
     {
@@ -602,7 +602,7 @@ export default class BaseSound
     /**
      * Starts the preloading of sound.
      * @method PIXI.sound.BaseSound#_beginPreload
-     * @protected
+     * @private
      */
     protected _beginPreload(callback?: LoadedCallback): void
     {
@@ -645,7 +645,7 @@ export default class BaseSound
     /**
      * Removes all instances.
      * @method PIXI.sound.BaseSound#_removeInstances
-     * @protected
+     * @private
      */
     protected _removeInstances(): void
     {
@@ -660,7 +660,7 @@ export default class BaseSound
     /**
      * Auto play the first instance.
      * @method PIXI.sound.BaseSound#_autoPlay
-     * @protected
+     * @private
      */
     protected _autoPlay(): ISoundInstance
     {

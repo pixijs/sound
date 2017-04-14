@@ -53,7 +53,7 @@ module.exports = function(libraryPath, useLegacy)
             library.add("silence",
             {
                 preload: true,
-                src: manifest.silence,
+                url: manifest.silence,
                 useXHR: false,
                 loaded: (err, sound) => {
                     expect(sound.isLoaded).to.be.true;
@@ -162,7 +162,7 @@ module.exports = function(libraryPath, useLegacy)
         {
             const alias = "silence";
             const sound = library.add(alias, {
-                src: manifest[alias],
+                url: manifest[alias],
                 volume: 0,
                 preload: true,
                 loaded: (err, instance) =>
@@ -184,7 +184,7 @@ module.exports = function(libraryPath, useLegacy)
         {
             const alias = "silence";
             const sound = library.add(alias, {
-                src: manifest[alias],
+                url: manifest[alias],
                 preload: true,
                 loaded: () =>
                 {
@@ -238,7 +238,7 @@ module.exports = function(libraryPath, useLegacy)
         it("should setup sprites", function() {
             const alias = "musical-11";
             const sound = library.add(alias, {
-                src: manifest[alias],
+                url: manifest[alias],
                 sprites: {
                     foo: {
                         start: 0,
@@ -291,7 +291,7 @@ module.exports = function(libraryPath, useLegacy)
                 library.legacy.LegacySoundInstance :
                 library.SoundInstance;
             const sound = library.Sound.from({
-                src: manifest.silence,
+                url: manifest.silence,
                 preload: true,
                 loaded: (err) => {
                     expect(err).to.be.null;

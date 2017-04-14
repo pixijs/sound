@@ -127,12 +127,12 @@ export default class SoundUtils
      * @param {Function} callback Callback when complete.
      * @return {string} New audio element alias.
      */
-    public static playOnce(src: string, callback?: (err?: Error) => void): string
+    public static playOnce(url: string, callback?: (err?: Error) => void): string
     {
         const alias = uuid();
 
         soundLibrary.add(alias, {
-            src,
+            url,
             preload: true,
             autoPlay: true,
             loaded: (err: Error) => {

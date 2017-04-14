@@ -15,6 +15,7 @@ import {Options, PlayOptions, LoadedCallback, CompleteCallback} from "../bases/B
  *
  * @class Sound
  * @memberof PIXI.sound
+ * @extends PIXI.sound.BaseSound
  * @example
  * const foo = PIXI.sound.Sound.from('foo.mp3');
  * foo.play();
@@ -26,11 +27,11 @@ export default class Sound extends BaseSound
 {
     /**
      * The file buffer to load.
-     * @name PIXI.sound.Sound#srcBuffer
+     * @name PIXI.sound.Sound#source
      * @type {ArrayBuffer}
      * @readonly
      */
-    public srcBuffer: ArrayBuffer;
+    public source: ArrayBuffer;
 
     /**
      * `true` to use XMLHttpRequest object to load.
@@ -68,9 +69,10 @@ export default class Sound extends BaseSound
     /**
      * Create a new sound instance from source.
      * @method PIXI.sound.Sound.from
-     * @param {ArrayBuffer|String|Object} options Either the path or url to the source file.
+     * @param {ArrayBuffer|String|Object|HTMLAudioElement} options Either the path or url to the source file.
      *        or the object of options to use.
-     * @param {ArrayBuffer|String} [options.src] If `options` is an object, the source of file.
+     * @param {String} [options.url] If `options` is an object, the source of file.
+     * @param {HTMLAudioElement|ArrayBuffer} [options.source] The source, if already preloaded.
      * @param {Boolean} [options.autoPlay=false] true to play after loading.
      * @param {Boolean} [options.preload=false] true to immediately start preloading.
      * @param {Boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
@@ -87,10 +89,10 @@ export default class Sound extends BaseSound
      * @param {Boolean} [options.loop=false] true to loop the audio playback.
      * @return {PIXI.sound.Sound} Created sound instance.
      */
-    public static from(options: string|Options|ArrayBuffer): BaseSound
+    public static from(options: string|Options|ArrayBuffer|HTMLAudioElement): BaseSound
     {
         let sound:BaseSound;
-        if (soundLibrary.useLegacy)
+        if (soundLibrary.useLegacy || options instanceof HTMLAudioElement)
         {
             sound = new LegacySound(options);
         }
@@ -110,7 +112,7 @@ export default class Sound extends BaseSound
         this._context = context;
         this._nodes = new SoundNodes(this._context);
         this._source = this._nodes.bufferSource;
-        this.srcBuffer = options.srcBuffer as ArrayBuffer;
+        this.source = options.source as ArrayBuffer;
         this.useXHR = options.useXHR;
         this.speed = options.speed;
 
@@ -131,7 +133,7 @@ export default class Sound extends BaseSound
         this._nodes = null;
         this._context = null;
         this._source = null;
-        this.srcBuffer = null;
+        this.source = null;
     }
     
     public get isPlayable(): boolean
@@ -153,7 +155,7 @@ export default class Sound extends BaseSound
     /**
      * Method for handling volume change
      * @method PIXI.sound.Sound#_changeVolume
-     * @protected
+     * @private
      */
     protected _changeVolume(volume: number): void
     {
@@ -163,7 +165,7 @@ export default class Sound extends BaseSound
     /**
      * Method for handling volume change
      * @method PIXI.sound.Sound#_changeVolume
-     * @protected
+     * @private
      */
     protected _changeLoop(loop: boolean): void
     {
@@ -240,27 +242,27 @@ export default class Sound extends BaseSound
     /**
      * Starts the preloading of sound.
      * @method PIXI.sound.Sound#_beginPreload
-     * @protected
+     * @private
      */
     protected _beginPreload(callback?: LoadedCallback): void
     {
         // Load from the file path
-        if (this.src)
+        if (this.url)
         {
             this.useXHR ? this._loadUrl(callback) : this._loadPath(callback);
         }
         // Load from the arraybuffer, incase it was loaded outside
-        else if (this.srcBuffer)
+        else if (this.source)
         {
-            this._decode(this.srcBuffer, callback);
+            this._decode(this.source, callback);
         }
         else if (callback)
         {
-            callback(new Error("sound.src or sound.srcBuffer must be set"));
+            callback(new Error("sound.url or sound.source must be set"));
         }
         else
         {
-            console.error("sound.src or sound.srcBuffer must be set");
+            console.error("sound.url or sound.source must be set");
         }
     }
 
@@ -272,13 +274,13 @@ export default class Sound extends BaseSound
     private _loadUrl(callback?: LoadedCallback): void
     {
         const request = new XMLHttpRequest();
-        const src: string = this.src;
-        request.open("GET", src, true);
+        const url: string = this.url;
+        request.open("GET", url, true);
         request.responseType = "arraybuffer";
 
         // Decode asynchronously
         request.onload = () => {
-            this.srcBuffer = request.response as ArrayBuffer;
+            this.source = request.response as ArrayBuffer;
             this._decode(request.response, callback);
         };
 
@@ -294,8 +296,8 @@ export default class Sound extends BaseSound
     private _loadPath(callback?: LoadedCallback)
     {
         const fs = require("fs");
-        const src: string = this.src;
-        fs.readFile(src, (err: Error, data: Buffer) => {
+        const url: string = this.url;
+        fs.readFile(url, (err: Error, data: Buffer) => {
             if (err)
             {
                 // @if DEBUG
@@ -303,7 +305,7 @@ export default class Sound extends BaseSound
                 // @endif
                 if (callback)
                 {
-                    callback(new Error(`File not found ${this.src}`));
+                    callback(new Error(`File not found ${this.url}`));
                 }
                 return;
             }
@@ -313,7 +315,7 @@ export default class Sound extends BaseSound
             {
                 view[i] = data[i];
             }
-            this.srcBuffer = arrayBuffer;
+            this.source = arrayBuffer;
             this._decode(arrayBuffer, callback);
         });
     }

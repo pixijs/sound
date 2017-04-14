@@ -3,6 +3,14 @@ import {SoundSpriteData, SoundSprites} from "../sprites/SoundSprite";
 import SoundSprite from "../sprites/SoundSprite";
 import BaseSound from '../bases/BaseSound';
 
+/**
+ * The fallback version of Sound which uses `<audio>` instead of WebAudio API.
+ * @class LegacySound
+ * @memberof PIXI.sound.legacy
+ * @extends PIXI.sound.BaseSound
+ * @param {HTMLAudioElement|String|Object} options Either the path or url to the source file.
+ *        or the object of options to use. See {@link PIXI.sound.Sound.from}
+ */
 export default class LegacySound extends BaseSound
 {
     private _source: HTMLAudioElement;
@@ -11,13 +19,13 @@ export default class LegacySound extends BaseSound
     {
         super(source);
         const options = this._options;
-        this._source = options.srcBuffer as HTMLAudioElement || new Audio();
+        this._source = options.source as HTMLAudioElement || new Audio();
         this.speed = options.speed;
 
         // Make sure it has a source
-        if (this.src)
+        if (this.url)
         {
-            this._source.src = this.src;
+            this._source.src = this.url;
         }
         this._init();
     }
@@ -68,7 +76,6 @@ export default class LegacySound extends BaseSound
 
         if (this._source)
         {
-            this._source.pause();
             this._source.src = "";
             this._source.load();
             this._source = null;
@@ -107,13 +114,13 @@ export default class LegacySound extends BaseSound
         }
 
         // If there's no source, we cannot load
-        if (!this.src)
+        if (!this.url)
         {
-            return callback(new Error("sound.src or sound.srcBuffer must be set"));
+            return callback(new Error("sound.url or sound.source must be set"));
         }
 
         // Set the source
-        source.src = this.src;
+        source.src = this.url;
 
         // Remove all event listeners
         const removeListeners = () =>
