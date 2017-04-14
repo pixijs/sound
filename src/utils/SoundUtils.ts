@@ -72,12 +72,6 @@ export default class SoundUtils
     public static render(sound: Sound, options?: RenderOptions): PIXI.BaseTexture
     {
         const canvas: HTMLCanvasElement = document.createElement("canvas");
-        const baseTexture = PIXI.BaseTexture.fromCanvas(canvas);
-
-        if (soundLibrary.useLegacy)
-        {
-            return baseTexture;
-        }
 
         options = Object.assign({
             width: 512,
@@ -85,10 +79,17 @@ export default class SoundUtils
             fill: "black",
         }, options || {});
 
-        console.assert(!!sound.buffer, "No buffer found, load first");
-
         canvas.width = options.width;
         canvas.height = options.height;
+
+        const baseTexture = PIXI.BaseTexture.fromCanvas(canvas);
+
+        if (soundLibrary.useLegacy)
+        {
+            return baseTexture;
+        }
+
+        console.assert(!!sound.buffer, "No buffer found, load first");        
 
         const context: CanvasRenderingContext2D = canvas.getContext("2d");
         context.fillStyle = options.fill;
