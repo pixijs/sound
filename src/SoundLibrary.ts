@@ -1,15 +1,15 @@
-import Filterable from "./base/Filterable";
-import * as filters from "./filters";
-import * as legacy from "./legacy";
-import Filter from "./filters/Filter";
 import {CompleteCallback, Options, PlayOptions} from "./base/BaseSound";
 import BaseSound from "./base/BaseSound";
+import Filterable from "./base/Filterable";
+import {ISoundInstance} from "./base/ISoundInstance";
+import SoundSprite from "./base/SoundSprite";
+import * as filters from "./filters";
+import Filter from "./filters/Filter";
+import * as legacy from "./legacy";
+import SoundUtils from "./utils/SoundUtils";
 import Sound from "./webaudio/Sound";
 import SoundContext from "./webaudio/SoundContext";
-import {ISoundInstance} from "./base/ISoundInstance";
 import SoundInstance from "./webaudio/SoundInstance";
-import SoundSprite from "./base/SoundSprite";
-import SoundUtils from "./utils/SoundUtils";
 
 export type SoundMap = {[id: string]: Options|string|ArrayBuffer};
 
@@ -170,7 +170,8 @@ export default class SoundLibrary
     public add(map: SoundMap, globalOptions?: Options): {[id: string]: BaseSound};
 
     // Actual method
-    public add(source: string|SoundMap, sourceOptions?: Options|string|ArrayBuffer|HTMLAudioElement|BaseSound): {[id: string]: BaseSound}|BaseSound
+    public add(source: string|SoundMap, sourceOptions?: Options|string|ArrayBuffer|HTMLAudioElement|BaseSound):
+        {[id: string]: BaseSound}|BaseSound
     {
         if (typeof source === "object")
         {

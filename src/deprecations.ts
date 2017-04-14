@@ -1,6 +1,6 @@
-import Sound from "./webaudio/Sound";
 import {Options} from "./base/BaseSound";
 import SoundLibrary from "./SoundLibrary";
+import Sound from "./webaudio/Sound";
 
 const SoundLibraryPrototype: any = SoundLibrary.prototype as any;
 const SoundPrototype: any = Sound.prototype as any;

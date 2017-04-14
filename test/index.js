@@ -267,7 +267,7 @@ describe("PIXI.sound.SoundInstance", function()
     it("should return Promise for playing unloaded sound", function(done)
     {
         const Sound = library.Sound;
-        const SoundInstance = library.useLegacy ? 
+        const SoundInstance = library.useLegacy ?
             library.legacy.LegacySoundInstance :
             library.SoundInstance;
         const sound = Sound.from(manifest.silence);
@@ -282,7 +282,7 @@ describe("PIXI.sound.SoundInstance", function()
 
     it("should return instance for playing loaded sound", function(done)
     {
-        const SoundInstance = library.useLegacy ? 
+        const SoundInstance = library.useLegacy ?
             library.legacy.LegacySoundInstance :
             library.SoundInstance;
         const sound = library.Sound.from({
@@ -321,7 +321,7 @@ describe("PIXI.loader", function()
             {
                 expect(resources[name]).to.be.ok;
                 const ClassRef = library.useLegacy ? HTMLAudioElement : ArrayBuffer;
-                expect(resources[name].data).to.be.instanceof(ClassRef);                
+                expect(resources[name].data).to.be.instanceof(ClassRef);
                 expect(resources[name].sound).to.be.ok;
                 const sound = resources[name].sound;
                 expect(sound).to.be.instanceof(library.BaseSound);
