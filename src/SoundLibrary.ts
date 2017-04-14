@@ -12,7 +12,7 @@ import Sound from "./webaudio/Sound";
 import SoundContext from "./webaudio/SoundContext";
 import SoundInstance from "./webaudio/SoundInstance";
 
-export type SoundMap = {[id: string]: Options|string|ArrayBuffer};
+export type SoundMap = {[id: string]: Options|string|ArrayBuffer|HTMLAudioElement};
 
 /**
  * @description Manages the playback of sounds.
@@ -142,7 +142,8 @@ export default class SoundLibrary
      * @param {String} alias The sound alias reference.
      * @param {ArrayBuffer|String|Object|HTMLAudioElement} options Either the path or url to the source file.
      *        or the object of options to use.
-     * @param {ArrayBuffer|String} [options.url] If `options` is an object, the source of file.
+     * @param {String} [options.url] If `options` is an object, the source of file.
+     * @param {ArrayBuffer|HTMLAudioElement} [options.source] If sound is already preloaded, available.
      * @param {Boolean} [options.autoPlay=false] true to play after loading.
      * @param {Boolean} [options.preload=false] true to immediately start preloading.
      * @param {Boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
@@ -164,8 +165,8 @@ export default class SoundLibrary
      * Adds multiple sounds at once.
      * @method PIXI.sound#add
      * @param {Object} map Map of sounds to add, the key is the alias, the value is the
-     *        string, ArrayBuffer or the list of options (see `add` method for options).
-     * @param {Object|String|ArrayBuffer|HTMLAudioElement} globalOptions The default options for all sounds.
+     *        `string`, `ArrayBuffer`, `HTMLAudioElement` or the list of options (see {@link PIXI.sound.add} for options).
+     * @param {Object} globalOptions The default options for all sounds.
      *        if a property is defined, it will use the local property instead.
      * @return {PIXI.sound.Sound} Instance to the Sound object.
      */
@@ -214,7 +215,7 @@ export default class SoundLibrary
      * Internal methods for getting the options object
      * @method PIXI.sound#_getOptions
      * @private
-     * @param {string|ArrayBuffer|Object} source The source options
+     * @param {string|ArrayBuffer|HTMLAudioElement|Object} source The source options
      * @param {Object} [overrides] Override default options
      * @return {Object} The construction options
      */
