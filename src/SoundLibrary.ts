@@ -228,7 +228,7 @@ export default class SoundLibrary
         }
         else if (source instanceof ArrayBuffer || source instanceof HTMLAudioElement)
         {
-            options = { source: source };
+            options = { source };
         }
         else
         {
