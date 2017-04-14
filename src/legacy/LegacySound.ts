@@ -10,14 +10,8 @@ export default class LegacySound extends BaseSound
     constructor(source: string|Options|HTMLAudioElement)
     {
         super(source);
-
-        const options = this._options;
-        this._source = options.srcBuffer as HTMLAudioElement || document.createElement('audio');
-
-        if (this.preload)
-        {
-            this._beginPreload(options.loaded);
-        }
+        this._source = this._options.srcBuffer as HTMLAudioElement || document.createElement('audio');
+        this._init();
     }
 
     // override isplayable getter
@@ -27,15 +21,15 @@ export default class LegacySound extends BaseSound
     }
 
     // Override volume setter
-    public set volume(volume:number)
+    protected _changeVolume(volume:number):void
     {
-        this._volume = this._source.volume = volume;
+        this._source.volume = volume;
     }
 
     // Override loop setter
-    public set loop(loop:boolean)
+    protected _changeLoop(loop:boolean):void
     {
-        this._loop = this._source.loop = loop;
+        this._source.loop = loop;
     }
 
     // Override duration getter

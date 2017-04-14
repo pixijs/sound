@@ -177,8 +177,11 @@ export default class BaseSound
             options = source;
         }
 
+        this._instances = [];
+        this._sprites = {};
+
         // Default settings
-        this._options = Object.assign({
+        options = this._options = Object.assign({
             autoPlay: false,
             singleInstance: false,
             src: null,
@@ -192,8 +195,10 @@ export default class BaseSound
             useXHR: true,
         }, options);
 
-        this._instances = [];
-        this._sprites = {};
+        if (options.sprites)
+        {
+            this.addSprites(options.sprites);
+        }
 
         const complete = options.complete;
         this._autoPlayOptions = complete ? { complete } : null;
@@ -204,12 +209,21 @@ export default class BaseSound
         this.singleInstance = options.singleInstance;
         this.preload = options.preload || this.autoPlay;
         this.src = options.src;
-        this._loop = options.loop;
-        this._volume = options.volume;
+    }
 
-        if (options.sprites)
+    /**
+     * Initialize the sound
+     * @method PIXI.sound.BaseSound#_init
+     * @protected
+     */
+    public _init(): void
+    {
+        const options = this._options;
+        this.volume = options.volume;
+        this.loop = options.loop;
+        if (this.preload)
         {
-            this.addSprites(options.sprites);
+            this._beginPreload(options.loaded);
         }
     }
 
@@ -524,6 +538,17 @@ export default class BaseSound
     public set volume(volume: number)
     {
         this._volume = volume;
+        this._changeVolume(volume);
+    }
+
+    /**
+     * Method for handling volume change
+     * @method PIXI.sound.BaseSound#_changeVolume
+     * @protected
+     */
+    protected _changeVolume(volume: number): void
+    {
+        // do nothing
     }
 
     /**
@@ -538,6 +563,17 @@ export default class BaseSound
     public set loop(loop: boolean)
     {
         this._loop = loop;
+        this._changeLoop(loop);
+    }
+
+    /**
+     * Method for handling loop change
+     * @method PIXI.sound.BaseSound#_changeVolume
+     * @protected
+     */
+    protected _changeLoop(loop: boolean): void
+    {
+        // do nothing
     }
 
     /**

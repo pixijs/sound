@@ -110,15 +110,11 @@ export default class Sound extends BaseSound
         this._context = context;
         this._nodes = new SoundNodes(this._context);
         this._source = this._nodes.bufferSource;
-        
         this.srcBuffer = options.srcBuffer as ArrayBuffer;
         this.useXHR = options.useXHR;
         this.speed = options.speed;
 
-        if (this.preload)
-        {
-            this._beginPreload(options.loaded);
-        }
+        this._init();
     }
 
     /**
@@ -154,14 +150,24 @@ export default class Sound extends BaseSound
         return this._context;
     }
 
-    public set volume(volume: number)
+    /**
+     * Method for handling volume change
+     * @method PIXI.sound.Sound#_changeVolume
+     * @protected
+     */
+    protected _changeVolume(volume: number): void
     {
-        this._volume = this._nodes.gain.gain.value = volume;
+        this._nodes.gain.gain.value = volume;
     }
 
-    public set loop(loop: boolean)
+    /**
+     * Method for handling volume change
+     * @method PIXI.sound.Sound#_changeVolume
+     * @protected
+     */
+    protected _changeLoop(loop: boolean): void
     {
-        this._loop = this._source.loop = !!loop;
+        this._source.loop = loop;
     }
 
     /**
@@ -333,9 +339,10 @@ export default class Sound extends BaseSound
                 {
                     this.isLoaded = true;
                     this.buffer = buffer;
+                    const instance = this._autoPlay();
                     if (callback)
                     {
-                        callback(null, this, this._autoPlay());
+                        callback(null, this, instance);
                     }
                 }
             },

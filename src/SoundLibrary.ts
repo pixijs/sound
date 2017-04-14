@@ -63,7 +63,7 @@ export default class SoundLibrary
             this._context = new SoundContext();
         }
         this._sounds = {};
-        this.forceLegacy = true;
+        this.forceLegacy = false;
         this.utils = SoundUtils;
         this.filters = filters;
         this.legacy = legacy;
