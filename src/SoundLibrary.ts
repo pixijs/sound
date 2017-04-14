@@ -1,11 +1,12 @@
-import {CompleteCallback, Options, PlayOptions} from "./base/BaseSound";
-import BaseSound from "./base/BaseSound";
-import Filterable from "./base/Filterable";
-import {ISoundInstance} from "./base/ISoundInstance";
-import SoundSprite from "./base/SoundSprite";
+import {CompleteCallback, Options, PlayOptions} from "./bases/BaseSound";
+import BaseSound from "./bases/BaseSound";
+import Filterable from "./bases/Filterable";
+import {ISoundInstance} from "./bases/ISoundInstance";
 import * as filters from "./filters";
 import Filter from "./filters/Filter";
 import * as legacy from "./legacy";
+import LoaderMiddleware from "./loader";
+import SoundSprite from "./sprites/SoundSprite";
 import SoundUtils from "./utils/SoundUtils";
 import Sound from "./webaudio/Sound";
 import SoundContext from "./webaudio/SoundContext";
@@ -35,11 +36,12 @@ export default class SoundLibrary
     /**
      * For legacy approach for Audio. Instead of using WebAudio API
      * for playback of sounds, it will use HTML5 `<audio>` element.
-     * @name PIXI.sound#forceLegacy
+     * @name PIXI.sound#_useLegacy
      * @type {Boolean}
      * @default false
+     * @private
      */
-    public forceLegacy: boolean;
+    private _useLegacy: boolean;
 
     /**
      * The global context to use.
@@ -64,7 +66,7 @@ export default class SoundLibrary
             this._context = new SoundContext();
         }
         this._sounds = {};
-        this.forceLegacy = false;
+        this.useLegacy = this.supported;
         this.utils = SoundUtils;
         this.filters = filters;
         this.legacy = legacy;
@@ -101,7 +103,7 @@ export default class SoundLibrary
      */
     public get filtersAll(): Filter[]
     {
-        if (this._context)
+        if (!this.useLegacy)
         {
             return this._context.filters;
         }
@@ -109,7 +111,7 @@ export default class SoundLibrary
     }
     public set filtersAll(filters: Filter[])
     {
-        if (this._context)
+        if (!this.useLegacy)
         {
             this._context.filters = filters;
         }
@@ -236,13 +238,18 @@ export default class SoundLibrary
     }
 
     /**
-     * If WebAudio is not supported or it is disabled
-     * using {@link PIXI.sound#forceLegacy forceLegacy}.
-     * @method PIXI.sound#useLegacy
+     * Do not use WebAudio, force the use of legacy.
+     * @name PIXI.sound#useLegacy
+     * @type {Boolean}
      */
     public get useLegacy(): boolean
     {
-        return !this.supported || this.forceLegacy;
+        return this._useLegacy;
+    }
+    public set useLegacy(legacy: boolean)
+    {
+        LoaderMiddleware.legacy = legacy;
+        this._useLegacy = legacy;
     }
 
     /**
@@ -267,7 +274,7 @@ export default class SoundLibrary
      */
     public get volumeAll(): number
     {
-        if (this._context)
+        if (!this.useLegacy)
         {
             return this._context.volume;
         }
@@ -275,7 +282,7 @@ export default class SoundLibrary
     }
     public set volumeAll(volume: number)
     {
-        if (this._context)
+        if (!this.useLegacy)
         {
             this._context.volume = volume;
         }
@@ -288,7 +295,7 @@ export default class SoundLibrary
      */
     public pauseAll(): SoundLibrary
     {
-        if (this._context)
+        if (!this.useLegacy)
         {
             this._context.paused = true;
         }
@@ -302,7 +309,7 @@ export default class SoundLibrary
      */
     public resumeAll(): SoundLibrary
     {
-        if (this._context)
+        if (!this.useLegacy)
         {
             this._context.paused = false;
         }
@@ -316,7 +323,7 @@ export default class SoundLibrary
      */
     public muteAll(): SoundLibrary
     {
-        if (this._context)
+        if (!this.useLegacy)
         {
             this._context.muted = true;
         }
@@ -330,7 +337,7 @@ export default class SoundLibrary
      */
     public unmuteAll(): SoundLibrary
     {
-        if (this._context)
+        if (!this.useLegacy)
         {
             this._context.muted = false;
         }

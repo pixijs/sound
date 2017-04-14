@@ -1,9 +1,9 @@
-import SoundSprite from './SoundSprite';
+import SoundSprite from '../sprites/SoundSprite';
+import {SoundSpriteData, SoundSprites} from "../sprites/SoundSprite";
 import Sound from "../webaudio/Sound";
 import soundLibrary from '../index';
 import {ISoundInstance} from './ISoundInstance';
 import {poolInstance, createInstance} from "../utils/InstanceUtils";
-import {SoundSpriteData} from "./SoundSprite";
 
 // Constructor options
 export interface Options {
@@ -21,9 +21,6 @@ export interface Options {
     useXHR?: boolean;
     sprites?: {[id: string]: SoundSpriteData};
 }
-
-// Collection of sound sprites
-export type SoundSprites = {[id: string]: SoundSprite};
 
 // Interface for play options
 export interface PlayOptions {

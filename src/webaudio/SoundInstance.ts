@@ -1,7 +1,7 @@
 import Sound from "./Sound";
-import BaseSound from "../base/BaseSound";
+import BaseSound from "../bases/BaseSound";
 import soundLibrary from "../index";
-import {ISoundInstance} from "../base/ISoundInstance";
+import {ISoundInstance} from "../bases/ISoundInstance";
 
 let id = 0;
 

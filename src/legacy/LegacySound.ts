@@ -1,7 +1,7 @@
-import {Options, SoundSprites, LoadedCallback, CompleteCallback, PlayOptions} from '../base/BaseSound';
-import {SoundSpriteData} from "../base/SoundSprite";
-import SoundSprite from "../base/SoundSprite";
-import BaseSound from '../base/BaseSound';
+import {Options, LoadedCallback, CompleteCallback, PlayOptions} from '../bases/BaseSound';
+import {SoundSpriteData, SoundSprites} from "../sprites/SoundSprite";
+import SoundSprite from "../sprites/SoundSprite";
+import BaseSound from '../bases/BaseSound';
 
 export default class LegacySound extends BaseSound
 {

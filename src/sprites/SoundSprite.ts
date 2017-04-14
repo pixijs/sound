@@ -1,12 +1,16 @@
-import BaseSound from "./BaseSound";
-import {CompleteCallback} from "./BaseSound";
-import {ISoundInstance} from "./ISoundInstance";
+import BaseSound from "../bases/BaseSound";
+import {CompleteCallback} from "../bases/BaseSound";
+import {ISoundInstance} from '../bases/ISoundInstance';
 
+// Sound sprite data setup
 export interface SoundSpriteData {
     start: number;
     end: number;
     speed?: number;
 }
+
+// Collection of sound sprites
+export type SoundSprites = {[id: string]: SoundSprite};
 
 /**
  * Object that represents a single Sound's sprite.

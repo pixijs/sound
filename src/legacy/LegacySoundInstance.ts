@@ -1,5 +1,5 @@
 import LegacySound from "./LegacySound";
-import {ISoundInstance} from "../base/ISoundInstance";
+import {ISoundInstance} from "../bases/ISoundInstance";
 
 let id = 0;
 

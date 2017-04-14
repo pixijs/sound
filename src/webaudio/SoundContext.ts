@@ -1,4 +1,4 @@
-import Filterable from "../base/Filterable";
+import Filterable from "../bases/Filterable";
 
 /**
  * @description Main class to handle WebAudio API. There's a simple chain

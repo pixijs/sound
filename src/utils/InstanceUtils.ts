@@ -1,10 +1,10 @@
-import BaseSound from "../base/BaseSound";
+import BaseSound from "../bases/BaseSound";
 import Sound from "../webaudio/Sound";
 import LegacySound from "../legacy/LegacySound";
 import soundLibrary from "../index";
 import SoundInstance from "../webaudio/SoundInstance";
 import LegacySoundInstance from "../legacy/LegacySoundInstance";
-import {ISoundInstance} from "../base/ISoundInstance";
+import {ISoundInstance} from "../bases/ISoundInstance";
 
 const pool: ISoundInstance[] = [];
 

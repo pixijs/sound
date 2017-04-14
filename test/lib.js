@@ -1,2 +1,1 @@
-global.__libraryPath = "../lib";
-require("./");
+require("./")("../lib");

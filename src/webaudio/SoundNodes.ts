@@ -1,4 +1,4 @@
-import Filterable from "../base/Filterable";
+import Filterable from "../bases/Filterable";
 import Filter from "../filters/Filter";
 import SoundContext from "./SoundContext";
 

@@ -1,4 +1,4 @@
-import {Options} from "./base/BaseSound";
+import {Options} from "./bases/BaseSound";
 import SoundLibrary from "./SoundLibrary";
 import Sound from "./webaudio/Sound";
 

@@ -4,11 +4,11 @@ import soundLibrary from "../index";
 import SoundContext from "./SoundContext";
 import SoundInstance from "./SoundInstance";
 import SoundNodes from "./SoundNodes";
-import SoundSprite from "../base/SoundSprite";
+import SoundSprite from "../sprites/SoundSprite";
 import LegacySound from "../legacy/LegacySound";
-import {SoundSpriteData} from "../base/SoundSprite";
-import BaseSound from "../base/BaseSound";
-import {Options, PlayOptions, SoundSprites, LoadedCallback, CompleteCallback} from "../base/BaseSound";
+import {SoundSpriteData, SoundSprites} from "../sprites/SoundSprite";
+import BaseSound from "../bases/BaseSound";
+import {Options, PlayOptions, LoadedCallback, CompleteCallback} from "../bases/BaseSound";
 
 /**
  * Represents a single sound element. Can be used to play, pause, etc. sound instances.
@@ -90,7 +90,7 @@ export default class Sound extends BaseSound
     public static from(options: string|Options|ArrayBuffer): BaseSound
     {
         let sound:BaseSound;
-        if (!soundLibrary.supported || soundLibrary.forceLegacy)
+        if (soundLibrary.useLegacy)
         {
             sound = new LegacySound(options);
         }
