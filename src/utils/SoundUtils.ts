@@ -23,11 +23,14 @@ export default class SoundUtils
      */
     public static sineTone(hertz: number = 200, seconds: number = 1): Sound
     {
-        soundLibrary.noLegacy();
-
         const sound = Sound.from({
             singleInstance: true,
         }) as Sound;
+
+        if (soundLibrary.useLegacy)
+        {
+            return sound;
+        }
 
         // set default value
         const nChannels = 1;
@@ -68,7 +71,14 @@ export default class SoundUtils
      */
     public static render(sound: Sound, options?: RenderOptions): PIXI.BaseTexture
     {
-        soundLibrary.noLegacy();
+        const canvas: HTMLCanvasElement = document.createElement("canvas");
+        const baseTexture = PIXI.BaseTexture.fromCanvas(canvas);
+
+        if (soundLibrary.useLegacy)
+        {
+            return baseTexture;
+        }
+
         options = Object.assign({
             width: 512,
             height: 128,
@@ -77,7 +87,6 @@ export default class SoundUtils
 
         console.assert(!!sound.buffer, "No buffer found, load first");
 
-        const canvas: HTMLCanvasElement = document.createElement("canvas");
         canvas.width = options.width;
         canvas.height = options.height;
 
@@ -107,7 +116,7 @@ export default class SoundUtils
             }
             context.fillRect(i, (1 + min) * amp, 1, Math.max(1, (max - min) * amp));
         }
-        return PIXI.BaseTexture.fromCanvas(canvas);
+        return baseTexture;
     }
 
     /**

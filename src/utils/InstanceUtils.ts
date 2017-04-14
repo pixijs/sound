@@ -17,7 +17,7 @@ export function createInstance(parent: BaseSound): ISoundInstance
         return instance;
     }
     
-    if (!soundLibrary.supported || soundLibrary.forceLegacy)
+    if (soundLibrary.useLegacy)
     {
         return new LegacySoundInstance(parent as LegacySound);
     }

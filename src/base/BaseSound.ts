@@ -257,6 +257,12 @@ export default class BaseSound
         return this;
     }
 
+    // Override
+    public get speed(): number
+    {
+        return 1;
+    }
+
     /**
      * Add a sound sprite, which is a saved instance of a longer sound.
      * Similar to an image spritesheet.
@@ -626,16 +632,6 @@ export default class BaseSound
     public get sprites(): SoundSprites
     {
         return this._sprites;
-    }
-
-    /**
-     * The speed, this is only support with WebAudio.
-     * @name PIXI.sound.BaseSound#speed
-     * @type {Number}
-     */
-    public get speed(): number
-    {
-        return 1;
     }
 
     /**

@@ -2,11 +2,15 @@
 require("pixi.js");
 
 // Import the library
-const library = require(global.__libraryPath);
+const library = require(global.__libraryPath).default;
 const path = require("path");
 
 // Global reference to the resources
 global.__resources = path.join(__dirname, "resources");
+
+function webAudioOnly(fn) {
+    return !library.useLegacy ? fn : undefined;
+}
 
 const manifest = {
     "alert-4": path.join(__resources, "alert-4.mp3"),
@@ -18,15 +22,9 @@ const manifest = {
 
 describe("PIXI.sound", function()
 {
-    before(function()
-    {
-        this.library = library.default;
-    });
-
     after(function()
     {
-        this.library.removeAll();
-        delete this.library;
+        library.removeAll();
     });
 
     it("should have the correct classes", function()
@@ -42,12 +40,12 @@ describe("PIXI.sound", function()
         expect(PIXI.sound.filters.ReverbFilter).to.be.a.function;
         expect(PIXI.sound.filters.StereoFilter).to.be.a.function;
         expect(PIXI.sound).to.be.instanceof(PIXI.sound.SoundLibrary);
-        expect(library.default).to.equal(PIXI.sound);
+        expect(library).to.equal(PIXI.sound);
     });
 
-    it("should load file with Node's filesystem", function(done)
+    it("should load file with Node's filesystem", webAudioOnly(function(done)
     {
-        this.library.add("silence",
+        library.add("silence",
         {
             preload: true,
             src: manifest.silence,
@@ -58,18 +56,18 @@ describe("PIXI.sound", function()
                 expect(sound.autoPlay).to.be.false;
                 expect(sound.loop).to.be.false;
                 expect(sound.preload).to.be.true;
-                expect(sound).to.be.instanceof(this.library.Sound);
-                this.library.removeAll();
+                expect(sound).to.be.instanceof(library.BaseSound);
+                library.removeAll();
                 done();
             },
         });
-    });
+    }));
 
     it("should load a manifest", function(done)
     {
         this.slow(200);
         let counter = 0;
-        const results = this.library.add(manifest, {
+        const results = library.add(manifest, {
             preload: true,
             loaded: (err, sound) => {
                 expect(sound.isLoaded).to.be.true;
@@ -77,7 +75,7 @@ describe("PIXI.sound", function()
                 expect(sound.autoPlay).to.be.false;
                 expect(sound.loop).to.be.false;
                 expect(sound.preload).to.be.true;
-                expect(sound).to.be.instanceof(this.library.Sound);
+                expect(sound).to.be.instanceof(library.BaseSound);
                 counter++;
                 if (counter === Object.keys(manifest).length)
                 {
@@ -86,23 +84,23 @@ describe("PIXI.sound", function()
             },
         });
         expect(results).to.be.an.object;
-        expect(results["alert-4"]).to.be.instanceof(this.library.Sound);
-        expect(results["alert-7"]).to.be.instanceof(this.library.Sound);
-        expect(results["alert-12"]).to.be.instanceof(this.library.Sound);
-        expect(results["musical-11"]).to.be.instanceof(this.library.Sound);
-        expect(results.silence).to.be.instanceof(this.library.Sound);
+        expect(results["alert-4"]).to.be.instanceof(library.BaseSound);
+        expect(results["alert-7"]).to.be.instanceof(library.BaseSound);
+        expect(results["alert-12"]).to.be.instanceof(library.BaseSound);
+        expect(results["musical-11"]).to.be.instanceof(library.BaseSound);
+        expect(results.silence).to.be.instanceof(library.BaseSound);
     });
 
     it("should get a reference by alias", function()
     {
-        const sound = this.library.find("alert-7");
+        const sound = library.find("alert-7");
         expect(sound).to.not.be.undefined;
-        expect(sound).to.be.instanceof(this.library.Sound);
+        expect(sound).to.be.instanceof(library.BaseSound);
     });
 
     it("should play multiple at once", function()
     {
-        const sound = this.library.find("alert-12");
+        const sound = library.find("alert-12");
         sound.play();
         sound.play();
         sound.play();
@@ -114,7 +112,7 @@ describe("PIXI.sound", function()
 
     it("should play with blocking", function()
     {
-        const sound = this.library.find("alert-4");
+        const sound = library.find("alert-4");
         sound.singleInstance = true;
         sound.play();
         sound.play();
@@ -128,7 +126,7 @@ describe("PIXI.sound", function()
 
     it("should play with stopping single instance", function()
     {
-        const sound = this.library.find("alert-4");
+        const sound = library.find("alert-4");
         sound.play();
         sound.play();
         sound.play();
@@ -141,7 +139,7 @@ describe("PIXI.sound", function()
 
     it("should play a sound by alias", function(done)
     {
-        this.library.play("silence", {
+        library.play("silence", {
             complete: function()
             {
                 done();
@@ -151,14 +149,14 @@ describe("PIXI.sound", function()
 
     it("should remove all sounds", function()
     {
-        this.library.removeAll();
-        expect(Object.keys(this.library._sounds).length).to.equal(0);
+        library.removeAll();
+        expect(Object.keys(library._sounds).length).to.equal(0);
     });
 
     it("should load a sound file", function(done)
     {
         const alias = "silence";
-        const sound = this.library.add(alias, {
+        const sound = library.add(alias, {
             src: manifest[alias],
             volume: 0,
             preload: true,
@@ -167,9 +165,9 @@ describe("PIXI.sound", function()
                 expect(err).to.be.null;
                 expect(instance).to.equal(sound);
                 expect(instance.isPlayable).to.be.true;
-                expect(this.library.exists(alias)).to.be.true;
-                this.library.remove(alias);
-                expect(this.library.exists(alias)).to.be.false;
+                expect(library.exists(alias)).to.be.true;
+                library.remove(alias);
+                expect(library.exists(alias)).to.be.false;
                 done();
             },
         });
@@ -180,31 +178,31 @@ describe("PIXI.sound", function()
     it("should play a file", function(done)
     {
         const alias = "silence";
-        const sound = this.library.add(alias, {
+        const sound = library.add(alias, {
             src: manifest[alias],
             preload: true,
             loaded: () =>
             {
-                expect(this.library.volume(alias)).to.equal(1);
-                this.library.volume(alias, 0);
-                expect(this.library.volume(alias)).to.equal(0);
+                expect(library.volume(alias)).to.equal(1);
+                library.volume(alias, 0);
+                expect(library.volume(alias)).to.equal(0);
                 expect(sound.volume).to.equal(0);
 
-                const instance = this.library.play(alias, () =>
+                const instance = library.play(alias, () =>
                 {
                     expect(instance.progress).to.equal(1);
-                    this.library.remove(alias);
+                    library.remove(alias);
                     done();
                 });
 
                 expect(instance.progress).to.equal(0);
 
                 // Pause
-                this.library.pause(alias);
+                library.pause(alias);
                 expect(sound.isPlaying).to.be.false;
 
                 // Resume
-                this.library.resume(alias);
+                library.resume(alias);
                 expect(sound.isPlaying).to.be.true;
             },
         });
@@ -212,29 +210,29 @@ describe("PIXI.sound", function()
 
     it("sound play once a file", function(done)
     {
-        const alias = this.library.utils.playOnce(manifest.silence, (err) =>
+        const alias = library.utils.playOnce(manifest.silence, (err) =>
         {
             expect(alias).to.be.ok;
-            expect(this.library.exists(alias)).to.be.false;
+            expect(library.exists(alias)).to.be.false;
             expect(err).to.be.null;
             done();
         });
     });
 
-    it("should play a sine tone", function(done)
+    it("should play a sine tone", webAudioOnly(function(done)
     {
         this.slow(300);
-        const sound = this.library.utils.sineTone(200, 0.1);
+        const sound = library.utils.sineTone(200, 0.1);
         sound.volume = 0;
         sound.play(() => {
             done();
         });
         expect(sound.isPlaying);
-    });
+    }));
 
     it("should setup sprites", function() {
         const alias = "musical-11";
-        const sound = this.library.add(alias, {
+        const sound = library.add(alias, {
             src: manifest[alias],
             sprites: {
                 foo: {
@@ -263,17 +261,20 @@ describe("PIXI.sound.SoundInstance", function()
 {
     afterEach(function()
     {
-        library.default.removeAll();
+        library.removeAll();
     });
 
     it("should return Promise for playing unloaded sound", function(done)
     {
-        const Sound = library.default.Sound;
+        const Sound = library.Sound;
+        const SoundInstance = library.useLegacy ? 
+            library.legacy.LegacySoundInstance :
+            library.SoundInstance;
         const sound = Sound.from(manifest.silence);
-        expect(sound).to.be.instanceof(Sound);
+        expect(sound).to.be.instanceof(library.BaseSound);
         const promise = sound.play();
         promise.then((instance) => {
-            expect(instance).to.be.instanceof(library.default.SoundInstance);
+            expect(instance).to.be.instanceof(SoundInstance);
             done();
         });
         expect(promise).to.be.instanceof(Promise);
@@ -281,7 +282,10 @@ describe("PIXI.sound.SoundInstance", function()
 
     it("should return instance for playing loaded sound", function(done)
     {
-        const sound = library.default.Sound.from({
+        const SoundInstance = library.useLegacy ? 
+            library.legacy.LegacySoundInstance :
+            library.SoundInstance;
+        const sound = library.Sound.from({
             src: manifest.silence,
             preload: true,
             loaded: (err) => {
@@ -289,7 +293,7 @@ describe("PIXI.sound.SoundInstance", function()
                 expect(sound.isLoaded).to.be.true;
                 expect(sound.isPlayable).to.be.true;
                 const instance = sound.play();
-                expect(instance).to.be.instanceof(library.default.SoundInstance);
+                expect(instance).to.be.instanceof(SoundInstance);
                 done();
             },
         });
@@ -300,7 +304,7 @@ describe("PIXI.loader", function()
 {
     afterEach(function()
     {
-        library.default.removeAll();
+        library.removeAll();
     });
 
     it("should load files with the PIXI.loader", function(done)
@@ -316,10 +320,11 @@ describe("PIXI.loader", function()
             for (const name in resources)
             {
                 expect(resources[name]).to.be.ok;
-                expect(resources[name].data).to.be.instanceof(ArrayBuffer);
+                const ClassRef = library.useLegacy ? HTMLAudioElement : ArrayBuffer;
+                expect(resources[name].data).to.be.instanceof(ClassRef);                
                 expect(resources[name].sound).to.be.ok;
                 const sound = resources[name].sound;
-                expect(sound).to.be.instanceof(library.default.Sound);
+                expect(sound).to.be.instanceof(library.BaseSound);
                 expect(sound.isLoaded).to.be.true;
                 expect(sound.isPlayable).to.be.true;
             }

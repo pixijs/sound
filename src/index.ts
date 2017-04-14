@@ -1,5 +1,6 @@
 import { install } from "./loader/LoaderMiddleware";
 import SoundLibrary from "./SoundLibrary";
+import "./utils/polyfills";
 
 // Mixin any deprecations
 import "./deprecations";

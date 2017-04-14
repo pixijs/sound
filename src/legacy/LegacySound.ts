@@ -10,7 +10,15 @@ export default class LegacySound extends BaseSound
     constructor(source: string|Options|HTMLAudioElement)
     {
         super(source);
-        this._source = this._options.srcBuffer as HTMLAudioElement || document.createElement('audio');
+        const options = this._options;
+        this._source = options.srcBuffer as HTMLAudioElement || new Audio();
+        this.speed = options.speed;
+
+        // Make sure it has a source
+        if (this.src)
+        {
+            this._source.src = this.src;
+        }
         this._init();
     }
 
@@ -30,6 +38,21 @@ export default class LegacySound extends BaseSound
     protected _changeLoop(loop:boolean):void
     {
         this._source.loop = loop;
+    }
+
+    /**
+     * The playback rate where 1 is 100%.
+     * @name PIXI.sound.legacy.LegacySound#speed
+     * @type {Number}
+     * @default 1
+     */
+    public get speed(): number
+    {
+        return this._source.playbackRate;
+    }
+    public set speed(value: number)
+    {
+        this._source.playbackRate = value;
     }
 
     // Override duration getter
@@ -72,7 +95,15 @@ export default class LegacySound extends BaseSound
         if (source.readyState === 4)
         {
             this.isLoaded = true;
-            return callback(null, this, this._autoPlay());
+            const instance = this._autoPlay();
+            if (callback)
+            {
+                setTimeout(() =>
+                {
+                    callback(null, this, instance)
+                }, 0);
+            }
+            return;
         }
 
         // If there's no source, we cannot load
@@ -88,6 +119,7 @@ export default class LegacySound extends BaseSound
         const removeListeners = () =>
         {
             // Listen for callback
+            source.removeEventListener('canplaythrough', onLoad);
             source.removeEventListener('load', onLoad);
             source.removeEventListener('abort', onAbort);
             source.removeEventListener('error', onError);
@@ -97,25 +129,41 @@ export default class LegacySound extends BaseSound
         {
             removeListeners();
             this.isLoaded = true;
-            callback(null, this, this._autoPlay());
+            const instance = this._autoPlay();
+            if (callback)
+            {
+                callback(null, this, instance);
+            }
         };
 
         const onAbort = () =>
         {
             removeListeners();
-            callback(new Error('Sound loading has been aborted'));
+            if (callback)
+            {
+                callback(new Error('Sound loading has been aborted'));
+            }
         };
 
         const onError = () =>
         {
             removeListeners();
-            callback(new Error('Sound loading error has occured'));
+            const message = `Failed to load audio element (code: ${source.error.code})`;
+            if (callback)
+            {
+                callback(new Error(message));
+            }
+            else
+            {
+                console.error(message);
+            }
         };
 
         // Listen for callback
-        source.addEventListener('load', onLoad);
-        source.addEventListener('abort', onAbort);
-        source.addEventListener('error', onError);
+        source.addEventListener('canplaythrough', onLoad, false);
+        source.addEventListener('load', onLoad, false);
+        source.addEventListener('abort', onAbort, false);
+        source.addEventListener('error', onError, false);
 
         // Begin the loading
         source.load();

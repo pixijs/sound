@@ -23,6 +23,7 @@ export default class SoundLibrary
 {
     // These are already documented else where
     public Sound: typeof Sound;
+    public BaseSound: typeof BaseSound;
     public SoundInstance: typeof SoundInstance;
     public SoundLibrary: typeof SoundLibrary;
     public SoundSprite: typeof SoundSprite;
@@ -67,6 +68,7 @@ export default class SoundLibrary
         this.utils = SoundUtils;
         this.filters = filters;
         this.legacy = legacy;
+        this.BaseSound = BaseSound;
         this.Sound = Sound;
         this.SoundInstance = SoundInstance;
         this.SoundLibrary = SoundLibrary;
@@ -99,13 +101,18 @@ export default class SoundLibrary
      */
     public get filtersAll(): Filter[]
     {
-        this.noLegacy();
-        return this._context.filters;
+        if (this._context)
+        {
+            return this._context.filters;
+        }
+        return [];
     }
     public set filtersAll(filters: Filter[])
     {
-        this.noLegacy();
-        this._context.filters = filters;
+        if (this._context)
+        {
+            this._context.filters = filters;
+        }
     }
 
     /**
@@ -131,7 +138,7 @@ export default class SoundLibrary
      * Adds a new sound by alias.
      * @method PIXI.sound#add
      * @param {String} alias The sound alias reference.
-     * @param {ArrayBuffer|String|Object} options Either the path or url to the source file.
+     * @param {ArrayBuffer|String|Object|HTMLAudioElement} options Either the path or url to the source file.
      *        or the object of options to use.
      * @param {ArrayBuffer|String} [options.src] If `options` is an object, the source of file.
      * @param {Boolean} [options.autoPlay=false] true to play after loading.
@@ -149,21 +156,21 @@ export default class SoundLibrary
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
      * @return {PIXI.sound.Sound} Instance of the Sound object.
      */
-    public add(alias: string, options: Options|string|ArrayBuffer|BaseSound): BaseSound;
+    public add(alias: string, options: Options|string|ArrayBuffer|HTMLAudioElement|BaseSound): BaseSound;
 
     /**
      * Adds multiple sounds at once.
      * @method PIXI.sound#add
      * @param {Object} map Map of sounds to add, the key is the alias, the value is the
      *        string, ArrayBuffer or the list of options (see `add` method for options).
-     * @param {Object|String|ArrayBuffer} globalOptions The default options for all sounds.
+     * @param {Object|String|ArrayBuffer|HTMLAudioElement} globalOptions The default options for all sounds.
      *        if a property is defined, it will use the local property instead.
      * @return {PIXI.sound.Sound} Instance to the Sound object.
      */
     public add(map: SoundMap, globalOptions?: Options): {[id: string]: BaseSound};
 
     // Actual method
-    public add(source: string|SoundMap, sourceOptions?: Options|string|ArrayBuffer|BaseSound): {[id: string]: BaseSound}|BaseSound
+    public add(source: string|SoundMap, sourceOptions?: Options|string|ArrayBuffer|HTMLAudioElement|BaseSound): {[id: string]: BaseSound}|BaseSound
     {
         if (typeof source === "object")
         {
@@ -185,7 +192,7 @@ export default class SoundLibrary
             console.assert(!this._sounds[source], `Sound with alias ${source} already exists.`);
             // @endif
 
-            if (sourceOptions instanceof Sound)
+            if (sourceOptions instanceof BaseSound)
             {
                 this._sounds[source] = sourceOptions;
                 return sourceOptions;
@@ -208,7 +215,7 @@ export default class SoundLibrary
      * @param {Object} [overrides] Override default options
      * @return {Object} The construction options
      */
-    private _getOptions(source: string|ArrayBuffer|Options, overrides?: Options): Options
+    private _getOptions(source: string|ArrayBuffer|HTMLAudioElement|Options, overrides?: Options): Options
     {
         let options: Options;
 
@@ -216,7 +223,7 @@ export default class SoundLibrary
         {
             options = { src: source };
         }
-        else if (source instanceof ArrayBuffer)
+        else if (source instanceof ArrayBuffer || source instanceof HTMLAudioElement)
         {
             options = { srcBuffer: source };
         }
@@ -228,16 +235,13 @@ export default class SoundLibrary
     }
 
     /**
-     * Throws an Error if WebAudio is not supported or it is disabled
+     * If WebAudio is not supported or it is disabled
      * using {@link PIXI.sound#forceLegacy forceLegacy}.
-     * @method PIXI.sound#noLegacy
+     * @method PIXI.sound#useLegacy
      */
-    public noLegacy(): void
+    public get useLegacy(): boolean
     {
-        if (!this.supported || this.forceLegacy)
-        {
-            throw new Error('Only supported with WebAudio');
-        }
+        return !this.supported || this.forceLegacy;
     }
 
     /**
@@ -262,13 +266,18 @@ export default class SoundLibrary
      */
     public get volumeAll(): number
     {
-        this.noLegacy();
-        return this._context.volume;
+        if (this._context)
+        {
+            return this._context.volume;
+        }
+        return 1;
     }
     public set volumeAll(volume: number)
     {
-        this.noLegacy();
-        this._context.volume = volume;
+        if (this._context)
+        {
+            this._context.volume = volume;
+        }
     }
 
     /**
@@ -278,8 +287,10 @@ export default class SoundLibrary
      */
     public pauseAll(): SoundLibrary
     {
-        this.noLegacy();
-        this._context.paused = true;
+        if (this._context)
+        {
+            this._context.paused = true;
+        }
         return this;
     }
 
@@ -290,8 +301,10 @@ export default class SoundLibrary
      */
     public resumeAll(): SoundLibrary
     {
-        this.noLegacy();
-        this._context.paused = false;
+        if (this._context)
+        {
+            this._context.paused = false;
+        }
         return this;
     }
 
@@ -302,8 +315,10 @@ export default class SoundLibrary
      */
     public muteAll(): SoundLibrary
     {
-        this.noLegacy();
-        this._context.muted = true;
+        if (this._context)
+        {
+            this._context.muted = true;
+        }
         return this;
     }
 
@@ -314,8 +329,10 @@ export default class SoundLibrary
      */
     public unmuteAll(): SoundLibrary
     {
-        this.noLegacy();
-        this._context.muted = false;
+        if (this._context)
+        {
+            this._context.muted = false;
+        }
         return this;
     }
 

@@ -18,14 +18,6 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
     public id: number;
 
     /**
-     * The source Sound.
-     * @type {SoundNodes}
-     * @name PIXI.sound.legacy.LegacySoundInstance#_parent
-     * @private
-     */
-    private _parent: LegacySound;
-
-    /**
      * The instance of the Audio element.
      * @type {HTMLAudioElement}
      * @name PIXI.sound.legacy.LegacySoundInstance#_source
@@ -42,6 +34,14 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
     private _end: number;
 
     /**
+     * Total length of the audio.
+     * @type {Number}
+     * @name PIXI.sound.legacy.LegacySoundInstance#_duration
+     * @private
+     */
+    private _duration: number;
+
+    /**
      * Playback rate, where 1 is 100%.
      * @type {Number}
      * @name PIXI.sound.legacy.LegacySoundInstance#_start
@@ -49,12 +49,19 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
      */
     private _start: number;
 
+    /**
+     * `true` if the audio is actually playing.
+     * @type {Boolean}
+     * @name PIXI.sound.legacy.LegacySoundInstance#_playing
+     * @private
+     */
+    private _playing: boolean;
+
     constructor(parent: LegacySound)
     {
         super();
 
         this.id = id++;
-        this._parent = null;
 
         this.init(parent);
     }
@@ -66,8 +73,8 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
      */
     public get progress(): number
     {
-        const {currentTime, duration} = this._source;
-        return (currentTime - this._start) / (this._end - this._start);
+        const {currentTime} = this._source;
+        return currentTime / this._duration;
     }
 
     /**
@@ -82,68 +89,63 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
 
     public set paused(paused: boolean)
     {
-        const oldPaused = this._source.paused;
-
         if (paused !== this._source.paused)
         {
-            this._source.pause();
+            // Do nothing, no pause change
+            return;
+        }
 
-            if (paused)
-            {
-                // pause the sounds
-                this._internalStop();
-
-                /**
-                 * The sound is paused.
-                 * @event PIXI.sound.legacy.LegacySoundInstance#paused
-                 */
-                this.emit("paused");
-            }
-            else
-            {
-                /**
-                 * The sound is unpaused.
-                 * @event PIXI.sound.legacy.LegacySoundInstance#resumed
-                 */
-                this.emit("resumed");
-
-                // resume the playing with offset
-                this.play(
-                    this._source.currentTime,
-                    this._end,
-                    1,
-                    this._source.loop,
-                    0,
-                    0,
-                );
-            }
+        if (paused)
+        {
+            this._internalStop();
 
             /**
-             * The sound is paused or unpaused.
-             * @event PIXI.sound.legacy.LegacySoundInstance#pause
-             * @property {Boolean} paused If the instance was paused or not.
+             * The sound is paused.
+             * @event PIXI.sound.legacy.LegacySoundInstance#paused
              */
-            this.emit("pause", paused);
+            this.emit("paused");
         }
+        else
+        {
+            /**
+             * The sound is unpaused.
+             * @event PIXI.sound.legacy.LegacySoundInstance#resumed
+             */
+            this.emit("resumed");
+
+            // resume the playing with offset
+            this.play(
+                this._source.currentTime,
+                this._end,
+                1,
+                this._source.loop,
+                0,
+                0,
+            );
+        }
+
+        /**
+         * The sound is paused or unpaused.
+         * @event PIXI.sound.legacy.LegacySoundInstance#pause
+         * @property {Boolean} paused If the instance was paused or not.
+         */
+        this.emit("pause", paused);
     }
 
     /**
-     * Stops the instance.
-     * @method PIXI.sound.legacy.LegacySoundInstance#_internalStop
-     * @private
+     * Reference: http://stackoverflow.com/a/40370077
      */
-    private _internalStop(): void
+    private _onPlay(): void
     {
-        if (this._source)
-        {
-            this._source.onended = null;
-            this._source.ontimeupdate = null;
-            this._source.pause();
-            this._source.currentTime = 0;
-            this._source.src = "";
-            this._source.load();
-            this._source = null;
-        }
+        this._playing = true;
+    }
+
+    /**
+     * Reference: http://stackoverflow.com/a/40370077
+     */
+    private _onPause(): void
+    {
+        this._playing = false;
     }
 
     /**
@@ -153,7 +155,26 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
      */
     public init(parent: LegacySound): void
     {
-        this._parent = parent;
+        this._playing = false;
+        this._duration = parent.source.duration;
+        const source = this._source = parent.source.cloneNode() as HTMLAudioElement;
+        source.ontimeupdate = this._onUpdate.bind(this);
+        source.onplay = this._onPlay.bind(this);
+        source.onpause = this._onPause.bind(this);
+    }
+
+    /**
+     * Stop the sound playing
+     * @method PIXI.sound.legacy.LegacySoundInstance#_internalStop
+     * @private
+     */
+    private _internalStop(): void
+    {
+        if (this._source && this._playing)
+        {
+            this._source.onended = null;
+            this._source.pause();
+        }
     }
 
     /**
@@ -162,14 +183,10 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
      */
     public stop(): void
     {
+        this._internalStop();
+
         if (this._source)
         {
-            this._internalStop();
-
-            /**
-             * The sound is stopped. Don't use after this is called.
-             * @event PIXI.sound.legacy.LegacySoundInstance#stop
-             */
             this.emit("stop");
         }
     }
@@ -180,8 +197,6 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
      */
     public play(start: number, end: number, speed: number, loop: boolean, fadeIn: number, fadeOut: number): void
     {
-        this._source = this._parent.source.cloneNode() as HTMLAudioElement;
-
         // @if DEBUG
         if (end)
         {
@@ -202,11 +217,11 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
             // @endif
             this._source.loop = false;
         }
+        
         this._start = start;
-        this._end = end;
-        this._source.ontimeupdate = this._onUpdate.bind(this);
-        this._source.onended = this._onComplete.bind(this);
+        this._end = end || this._duration;
         this._source.currentTime = start;
+        this._source.onended = this._onComplete.bind(this);
         this._source.play();
 
         /**
@@ -214,6 +229,8 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
          * @event PIXI.sound.legacy.LegacySoundInstance#start
          */
         this.emit("start");
+
+        this.emit("progress", 0, this._duration);
     }
 
     /**
@@ -223,7 +240,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
      */
     private _onUpdate(): void
     {
-        this.emit("progress", this.progress, this._source.duration);
+        this.emit("progress", this.progress, this._duration);
         if (this._source.currentTime >= this._end)
         {
             this._onComplete();
@@ -237,9 +254,8 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
      */
     private _onComplete(): void
     {
-        const duration: number = this._source ? this._source.duration : 0;
         this._internalStop();
-        this.emit("progress", 1, duration);
+        this.emit("progress", 1, this._duration);
         /**
          * The sound ends, don't use after this
          * @event PIXI.sound.legacy.LegacySoundInstance#end
@@ -254,9 +270,29 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
     public destroy(): void
     {
         this.removeAllListeners();
-        this._internalStop();
+
+        const source = this._source;
+
+        if (source)
+        {
+            // Remove the listeners
+            source.onended = null;
+            source.ontimeupdate = null;
+            source.onplay = null;
+            source.onpause = null;
+
+            this._internalStop();
+
+            // This is a hack to dispose of the audio file
+            // source.src = "";
+        }
+
+        this._source = null;
+
         this._end = 0;
-        this._parent = null;
+        this._start = 0;
+        this._duration = 0;
+        this._playing = false;
     }
 
     /**

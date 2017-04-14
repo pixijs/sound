@@ -14,6 +14,7 @@ function middleware(resource: PIXI.loaders.Resource, next: () => void): void
         (resource as any).sound = soundLibrary.add(resource.name, {
             loaded: next,
             preload: true,
+            src: resource.url,
             srcBuffer: resource.data,
         });
     }
