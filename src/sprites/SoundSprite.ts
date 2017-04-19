@@ -1,6 +1,6 @@
 import BaseSound from "../bases/BaseSound";
 import {CompleteCallback} from "../bases/BaseSound";
-import {ISoundInstance} from '../bases/ISoundInstance';
+import {IMediaInstance} from '../bases/IMediaInstance';
 
 // Sound sprite data setup
 export interface SoundSpriteData {
@@ -85,7 +85,7 @@ export default class SoundSprite
      * @param {PIXI.sound.Sound~completeCallback} [complete] Function call when complete
      * @return {PIXI.sound.SoundInstance|Promise<PIXI.sound.SoundInstance>} Sound instance being played.
      */
-    public play(complete?: CompleteCallback): ISoundInstance|Promise<ISoundInstance>
+    public play(complete?: CompleteCallback): IMediaInstance|Promise<IMediaInstance>
     {
         return this.parent.play(Object.assign({
             complete,

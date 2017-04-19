@@ -1,16 +1,15 @@
-import {CompleteCallback, Options, PlayOptions} from "./bases/BaseSound";
-import BaseSound from "./bases/BaseSound";
-import Filterable from "./bases/Filterable";
-import {ISoundInstance} from "./bases/ISoundInstance";
+import {CompleteCallback, Options, PlayOptions} from "./Sound";
+import Sound from "./Sound";
+import Filterable from "./Filterable";
+import {IMediaInstance} from "./interfaces/IMediaInstance";
+import {IMediaContext} from "./interfaces/IMediaContext";
 import * as filters from "./filters";
+import * as htmlaudio from "./htmlaudio";
+import * as webaudio from "./webaudio";
 import Filter from "./filters/Filter";
-import * as legacy from "./legacy";
 import LoaderMiddleware from "./loader";
 import SoundSprite from "./sprites/SoundSprite";
 import SoundUtils from "./utils/SoundUtils";
-import Sound from "./webaudio/Sound";
-import SoundContext from "./webaudio/SoundContext";
-import SoundInstance from "./webaudio/SoundInstance";
 
 export type SoundMap = {[id: string]: Options|string|ArrayBuffer|HTMLAudioElement};
 
@@ -24,14 +23,13 @@ export default class SoundLibrary
 {
     // These are already documented else where
     public Sound: typeof Sound;
-    public BaseSound: typeof BaseSound;
-    public SoundInstance: typeof SoundInstance;
     public SoundLibrary: typeof SoundLibrary;
     public SoundSprite: typeof SoundSprite;
     public Filterable: typeof Filterable;
     public filters: typeof filters;
     public utils: typeof SoundUtils;
-    public legacy: typeof legacy;
+    public htmlaudio: typeof htmlaudio;
+    public webaudio: typeof webaudio;
 
     /**
      * For legacy approach for Audio. Instead of using WebAudio API
@@ -46,10 +44,10 @@ export default class SoundLibrary
     /**
      * The global context to use.
      * @name PIXI.sound#_context
-     * @type {PIXI.sound.SoundContext}
+     * @type {PIXI.sound.webaudio.WebAudioContext}
      * @private
      */
-    private _context: SoundContext;
+    private _context: IMediaContext;
 
     /**
      * The map of all sounds by alias.
@@ -57,24 +55,21 @@ export default class SoundLibrary
      * @type {Object}
      * @private
      */
-    private _sounds: {[id: string]: BaseSound};
+    private _sounds: {[id: string]: Sound};
 
     constructor()
     {
-        if (this.supported)
-        {
-            this._context = new SoundContext();
-        }
+        // if (this.supported)
+        // {
+        //     this._context = new SoundContext();
+        // }
         this._sounds = {};
         this.useLegacy = !this.supported;
         this.utils = SoundUtils;
         this.filters = filters;
-        this.legacy = legacy;
-        this.BaseSound = BaseSound;
+        this.htmlaudio = htmlaudio;
+        this.webaudio = webaudio;
         this.Sound = Sound;
-        this.SoundInstance = SoundInstance;
-        this.SoundLibrary = SoundLibrary;
-        this.SoundSprite = SoundSprite;
         this.Filterable = Filterable;
     }
 
@@ -82,9 +77,9 @@ export default class SoundLibrary
      * The global context to use.
      * @name PIXI.sound#context
      * @readonly
-     * @type {PIXI.sound.SoundContext}
+     * @type {PIXI.sound.webaudio.WebAudioContext}
      */
-    public get context(): SoundContext
+    public get context(): IMediaContext
     {
         return this._context;
     }
@@ -125,7 +120,7 @@ export default class SoundLibrary
      */
     public get supported(): boolean
     {
-        return SoundContext.AudioContext !== null;
+        return webaudio.WebAudioContext.AudioContext !== null;
     }
 
     /**
@@ -159,7 +154,7 @@ export default class SoundLibrary
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
      * @return {PIXI.sound.Sound} Instance of the Sound object.
      */
-    public add(alias: string, options: Options|string|ArrayBuffer|HTMLAudioElement|BaseSound): BaseSound;
+    public add(alias: string, options: Options|string|ArrayBuffer|HTMLAudioElement|Sound): Sound;
 
     /**
      * Adds multiple sounds at once.
@@ -170,15 +165,15 @@ export default class SoundLibrary
      *        if a property is defined, it will use the local property instead.
      * @return {PIXI.sound.Sound} Instance to the Sound object.
      */
-    public add(map: SoundMap, globalOptions?: Options): {[id: string]: BaseSound};
+    public add(map: SoundMap, globalOptions?: Options): {[id: string]: Sound};
 
     // Actual method
-    public add(source: string|SoundMap, sourceOptions?: Options|string|ArrayBuffer|HTMLAudioElement|BaseSound):
-        {[id: string]: BaseSound}|BaseSound
+    public add(source: string|SoundMap, sourceOptions?: Options|string|ArrayBuffer|HTMLAudioElement|Sound):
+        {[id: string]: Sound}|Sound
     {
         if (typeof source === "object")
         {
-            const results: {[id: string]: BaseSound} = {};
+            const results: {[id: string]: Sound} = {};
 
             for (const alias in source)
             {
@@ -196,7 +191,7 @@ export default class SoundLibrary
             console.assert(!this._sounds[source], `Sound with alias ${source} already exists.`);
             // @endif
 
-            if (sourceOptions instanceof BaseSound)
+            if (sourceOptions instanceof Sound)
             {
                 this._sounds[source] = sourceOptions;
                 return sourceOptions;
@@ -204,7 +199,7 @@ export default class SoundLibrary
             else
             {
                 const options: Options = this._getOptions(sourceOptions);
-                const sound: BaseSound = Sound.from(options);
+                const sound: Sound = Sound.from(options);
                 this._sounds[source] = sound;
                 return sound;
             }
@@ -275,18 +270,11 @@ export default class SoundLibrary
      */
     public get volumeAll(): number
     {
-        if (!this.useLegacy)
-        {
-            return this._context.volume;
-        }
-        return 1;
+        return this._context.volume;
     }
     public set volumeAll(volume: number)
     {
-        if (!this.useLegacy)
-        {
-            this._context.volume = volume;
-        }
+        this._context.volume = volume;
     }
 
     /**
@@ -296,10 +284,7 @@ export default class SoundLibrary
      */
     public pauseAll(): SoundLibrary
     {
-        if (!this.useLegacy)
-        {
-            this._context.paused = true;
-        }
+        this._context.paused = true;
         return this;
     }
 
@@ -310,10 +295,7 @@ export default class SoundLibrary
      */
     public resumeAll(): SoundLibrary
     {
-        if (!this.useLegacy)
-        {
-            this._context.paused = false;
-        }
+        this._context.paused = false;
         return this;
     }
 
@@ -324,10 +306,7 @@ export default class SoundLibrary
      */
     public muteAll(): SoundLibrary
     {
-        if (!this.useLegacy)
-        {
-            this._context.muted = true;
-        }
+        this._context.muted = true;
         return this;
     }
 
@@ -338,10 +317,7 @@ export default class SoundLibrary
      */
     public unmuteAll(): SoundLibrary
     {
-        if (!this.useLegacy)
-        {
-            this._context.muted = false;
-        }
+        this._context.muted = false;
         return this;
     }
 
@@ -396,7 +372,7 @@ export default class SoundLibrary
      * @param {String} alias The sound alias reference.
      * @return {PIXI.sound.Sound} Sound object.
      */
-    public find(alias: string): BaseSound
+    public find(alias: string): Sound
     {
         this.exists(alias, true);
         return this._sounds[alias];
@@ -426,7 +402,7 @@ export default class SoundLibrary
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
      */
-    public play(alias: string, options?: PlayOptions|CompleteCallback|string): ISoundInstance|Promise<ISoundInstance>
+    public play(alias: string, options?: PlayOptions|CompleteCallback|string): IMediaInstance|Promise<IMediaInstance>
     {
         return this.find(alias).play(options);
     }
@@ -437,7 +413,7 @@ export default class SoundLibrary
      * @param {String} alias The sound alias reference.
      * @return {PIXI.sound.Sound} Sound object.
      */
-    public stop(alias: string): BaseSound
+    public stop(alias: string): Sound
     {
         return this.find(alias).stop();
     }
@@ -448,7 +424,7 @@ export default class SoundLibrary
      * @param {String} alias The sound alias reference.
      * @return {PIXI.sound.Sound} Sound object.
      */
-    public pause(alias: string): BaseSound
+    public pause(alias: string): Sound
     {
         return this.find(alias).pause();
     }
@@ -459,7 +435,7 @@ export default class SoundLibrary
      * @param {String} alias The sound alias reference.
      * @return {PIXI.sound} Instance for chaining.
      */
-    public resume(alias: string): BaseSound
+    public resume(alias: string): Sound
     {
         return this.find(alias).resume();
     }

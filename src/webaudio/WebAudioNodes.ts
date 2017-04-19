@@ -1,15 +1,15 @@
-import Filterable from "../bases/Filterable";
+import Filterable from "../Filterable";
 import Filter from "../filters/Filter";
-import SoundContext from "./SoundContext";
+import WebAudioContext from "./WebAudioContext";
 
 /**
- * @class SoundNodes
+ * @class WebAudioNodes
  * @extends PIXI.sound.Filterable
  * @private
- * @memberof PIXI.sound
- * @param {SoundContext} audioContext The audio context.
+ * @memberof PIXI.sound.webaudio
+ * @param {PIXI.sound.webaudio.WebAudioContext} audioContext The audio context.
  */
-export default class SoundNodes extends Filterable
+export default class WebAudioNodes extends Filterable
 {
     /**
      * The buffer size for script processor
@@ -54,17 +54,17 @@ export default class SoundNodes extends Filterable
     /**
      * Reference to the SoundContext
      * @name PIXI.sound.SoundNodes#context
-     * @type {PIXI.sound.SoundContext}
+     * @type {PIXI.sound.webaudio.WebAudioContext}
      * @readonly
      */
-    public context: SoundContext;
+    public context: WebAudioContext;
 
-    constructor(context: SoundContext)
+    constructor(context: WebAudioContext)
     {
         const audioContext: AudioContext = context.audioContext;
 
         const bufferSource: AudioBufferSourceNode = audioContext.createBufferSource();
-        const script: ScriptProcessorNode = audioContext.createScriptProcessor(SoundNodes.BUFFER_SIZE);
+        const script: ScriptProcessorNode = audioContext.createScriptProcessor(WebAudioNodes.BUFFER_SIZE);
         const gain: GainNode = audioContext.createGain();
         const analyser: AnalyserNode = audioContext.createAnalyser();
 

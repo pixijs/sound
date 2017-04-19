@@ -1,18 +1,18 @@
-import LegacySound from "./LegacySound";
-import {ISoundInstance} from "../bases/ISoundInstance";
+import HTMLAudioMedia from "./HTMLAudioMedia";
+import {IMediaInstance} from "../interfaces/IMediaInstance";
 
 let id = 0;
 
 /**
  * Instance which wraps the `<audio>` element playback.
- * @class LegacySoundInstance
+ * @class HTMLAudioInstance
  * @memberof PIXI.sound.legacy
  */
-export default class LegacySoundInstance extends PIXI.utils.EventEmitter implements ISoundInstance
+export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMediaInstance
 {
     /**
      * The current unique ID for this instance.
-     * @name PIXI.sound.legacy.LegacySoundInstance#id
+     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#id
      * @readonly
      */
     public id: number;
@@ -20,7 +20,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
     /**
      * The instance of the Audio element.
      * @type {HTMLAudioElement}
-     * @name PIXI.sound.legacy.LegacySoundInstance#_source
+     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_source
      * @private
      */
     private _source: HTMLAudioElement;
@@ -28,7 +28,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
     /**
      * Playback rate, where 1 is 100%.
      * @type {Number}
-     * @name PIXI.sound.legacy.LegacySoundInstance#_end
+     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_end
      * @private
      */
     private _end: number;
@@ -36,7 +36,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
     /**
      * Total length of the audio.
      * @type {Number}
-     * @name PIXI.sound.legacy.LegacySoundInstance#_duration
+     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_duration
      * @private
      */
     private _duration: number;
@@ -44,7 +44,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
     /**
      * Playback rate, where 1 is 100%.
      * @type {Number}
-     * @name PIXI.sound.legacy.LegacySoundInstance#_start
+     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_start
      * @private
      */
     private _start: number;
@@ -52,12 +52,12 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
     /**
      * `true` if the audio is actually playing.
      * @type {Boolean}
-     * @name PIXI.sound.legacy.LegacySoundInstance#_playing
+     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_playing
      * @private
      */
     private _playing: boolean;
 
-    constructor(parent: LegacySound)
+    constructor(parent: HTMLAudioMedia)
     {
         super();
 
@@ -69,7 +69,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
     /**
      * The current playback progress from 0 to 1.
      * @type {Number}
-     * @name PIXI.sound.legacy.LegacySoundInstance#progress
+     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#progress
      */
     public get progress(): number
     {
@@ -80,7 +80,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
     /**
      * Pauses the sound.
      * @type {Boolean}
-     * @name PIXI.sound.legacy.LegacySoundInstance#paused
+     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#paused
      */
     public get paused(): boolean
     {
@@ -101,7 +101,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
 
             /**
              * The sound is paused.
-             * @event PIXI.sound.legacy.LegacySoundInstance#paused
+             * @event PIXI.sound.htmlaudio.HTMLAudioInstance#paused
              */
             this.emit("paused");
         }
@@ -109,7 +109,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
         {
             /**
              * The sound is unpaused.
-             * @event PIXI.sound.legacy.LegacySoundInstance#resumed
+             * @event PIXI.sound.htmlaudio.HTMLAudioInstance#resumed
              */
             this.emit("resumed");
 
@@ -126,7 +126,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
 
         /**
          * The sound is paused or unpaused.
-         * @event PIXI.sound.legacy.LegacySoundInstance#pause
+         * @event PIXI.sound.htmlaudio.HTMLAudioInstance#pause
          * @property {Boolean} paused If the instance was paused or not.
          */
         this.emit("pause", paused);
@@ -150,7 +150,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
 
     /**
      * Initialize the instance.
-     * @method PIXI.sound.legacy.LegacySoundInstance#init
+     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#init
      * @param {PIXI.sound.legacy.LegacySound} parent
      */
     public init(parent: LegacySound): void
@@ -165,7 +165,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
 
     /**
      * Stop the sound playing
-     * @method PIXI.sound.legacy.LegacySoundInstance#_internalStop
+     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#_internalStop
      * @private
      */
     private _internalStop(): void
@@ -179,7 +179,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
 
     /**
      * Stop the sound playing
-     * @method PIXI.sound.legacy.LegacySoundInstance#stop
+     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#stop
      */
     public stop(): void
     {
@@ -193,7 +193,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
 
     /**
      * Start playing the sound/
-     * @method PIXI.sound.legacy.LegacySoundInstance#play
+     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#play
      */
     public play(start: number, end: number, speed: number, loop: boolean, fadeIn: number, fadeOut: number): void
     {
@@ -226,7 +226,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
 
         /**
          * The sound is started.
-         * @event PIXI.sound.legacy.LegacySoundInstance#start
+         * @event PIXI.sound.htmlaudio.HTMLAudioInstance#start
          */
         this.emit("start");
 
@@ -235,7 +235,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
 
     /**
      * Handle time update on sound.
-     * @method PIXI.sound.legacy.LegacySoundInstance#_onUpdate
+     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#_onUpdate
      * @private
      */
     private _onUpdate(): void
@@ -249,7 +249,7 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
 
     /**
      * Callback when completed.
-     * @method PIXI.sound.legacy.LegacySoundInstance#_onComplete
+     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#_onComplete
      * @private
      */
     private _onComplete(): void
@@ -258,14 +258,14 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
         this.emit("progress", 1, this._duration);
         /**
          * The sound ends, don't use after this
-         * @event PIXI.sound.legacy.LegacySoundInstance#end
+         * @event PIXI.sound.htmlaudio.HTMLAudioInstance#end
          */
         this.emit("end", this);
     }
 
     /**
      * Don't use after this.
-     * @method PIXI.sound.legacy.LegacySoundInstance#destroy
+     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#destroy
      */
     public destroy(): void
     {
@@ -294,12 +294,12 @@ export default class LegacySoundInstance extends PIXI.utils.EventEmitter impleme
 
     /**
      * To string method for instance.
-     * @method PIXI.sound.legacy.LegacySoundInstance#toString
+     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#toString
      * @return {String} The string representation of instance.
      * @private
      */
     public toString(): string
     {
-        return "[LegacySoundInstance id=" + this.id + "]";
+        return "[HTMLAudioInstance id=" + this.id + "]";
     }
 }

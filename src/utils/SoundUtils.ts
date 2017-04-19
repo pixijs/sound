@@ -1,6 +1,8 @@
 import uuid = require("uuid/v4");
 import soundLibrary from "../index";
-import Sound from "../webaudio/Sound";
+import Sound from "../Sound";
+import WebAudioMedia from "../webaudio/WebAudioMedia";
+import WebAudioContext from "../webaudio/WebAudioContext";
 
 export interface RenderOptions {
     width?: number;
@@ -15,7 +17,7 @@ export interface RenderOptions {
 export default class SoundUtils
 {
     /**
-     * Create a new sound for a sine wave-based tone.
+     * Create a new sound for a sine wave-based tone.  **Only supported with WebAudio**
      * @method PIXI.sound.utils.sineTone
      * @param {Number} [hertz=200] Frequency of sound.
      * @param {Number} [seconds=1] Duration of sound in seconds.
@@ -25,12 +27,15 @@ export default class SoundUtils
     {
         const sound = Sound.from({
             singleInstance: true,
-        }) as Sound;
+        });
 
-        if (soundLibrary.useLegacy)
+        if (!(sound.media instanceof WebAudioMedia))
         {
             return sound;
         }
+
+        const media = sound.media as WebAudioMedia;
+        const context = sound.context as WebAudioContext;
 
         // set default value
         const nChannels = 1;
@@ -38,7 +43,7 @@ export default class SoundUtils
         const amplitude = 2;
 
         // create the buffer
-        const buffer = sound.context.audioContext.createBuffer(
+        const buffer = context.audioContext.createBuffer(
             nChannels,
             seconds * sampleRate,
             sampleRate,
@@ -54,13 +59,13 @@ export default class SoundUtils
         }
 
         // set the buffer
-        sound.buffer = buffer;
+        media.buffer = buffer;
         sound.isLoaded = true;
         return sound;
     }
 
     /**
-     * Render image as Texture
+     * Render image as Texture. **Only supported with WebAudio**
      * @method PIXI.sound.utils.render
      * @param {PIXI.sound.Sound} sound Instance of sound to render
      * @param {Object} [options] Custom rendering options
@@ -84,16 +89,18 @@ export default class SoundUtils
 
         const baseTexture = PIXI.BaseTexture.fromCanvas(canvas);
 
-        if (soundLibrary.useLegacy)
+        if (!(sound.media instanceof WebAudioMedia))
         {
             return baseTexture;
         }
 
-        console.assert(!!sound.buffer, "No buffer found, load first");        
+        const media: WebAudioMedia = sound.media as WebAudioMedia;
+
+        console.assert(!!media.buffer, "No buffer found, load first");        
 
         const context: CanvasRenderingContext2D = canvas.getContext("2d");
         context.fillStyle = options.fill;
-        const data: Float32Array = sound.buffer.getChannelData(0);
+        const data: Float32Array = media.buffer.getChannelData(0);
         const step: number = Math.ceil(data.length / options.width);
         const amp: number = options.height / 2;
 

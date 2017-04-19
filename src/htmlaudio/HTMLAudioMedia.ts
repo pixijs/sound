@@ -1,49 +1,43 @@
 import {Options, LoadedCallback, CompleteCallback, PlayOptions} from '../bases/BaseSound';
 import {SoundSpriteData, SoundSprites} from "../sprites/SoundSprite";
 import SoundSprite from "../sprites/SoundSprite";
-import BaseSound from '../bases/BaseSound';
+import {IMedia} from '../interfaces/IMedia';
 
 /**
  * The fallback version of Sound which uses `<audio>` instead of WebAudio API.
- * @class LegacySound
- * @memberof PIXI.sound.legacy
- * @extends PIXI.sound.BaseSound
+ * @class HTMLAudioMedia
+ * @memberof PIXI.sound.htmlaudio
  * @param {HTMLAudioElement|String|Object} options Either the path or url to the source file.
  *        or the object of options to use. See {@link PIXI.sound.Sound.from}
  */
-export default class LegacySound extends BaseSound
+export default class HTMLAudioMedia implements IMedia
 {
     private _source: HTMLAudioElement;
 
-    constructor(source: string|Options|HTMLAudioElement)
+    constructor(options: Options)
     {
-        super(source);
-        const options = this._options;
         this._source = options.source as HTMLAudioElement || new Audio();
         this.speed = options.speed;
-
-        // Make sure it has a source
-        if (this.url)
+        if (options.url)
         {
-            this._source.src = this.url;
+            this._source.src = options.url;
         }
-        this._init();
     }
 
     // override isplayable getter
     public get isPlayable(): boolean
     {
-        return this.isLoaded && !!this._source && this._source.readyState === 4;
+        return !!this._source && this._source.readyState === 4;
     }
 
     // Override volume setter
-    protected _changeVolume(volume:number):void
+    public set volume(volume:number)
     {
         this._source.volume = volume;
     }
 
     // Override loop setter
-    protected _changeLoop(loop:boolean):void
+    public set loop(loop:boolean)
     {
         this._source.loop = loop;
     }
@@ -72,8 +66,6 @@ export default class LegacySound extends BaseSound
     // Override the destroy
     public destroy(): void
     {
-        super.destroy();
-
         if (this._source)
         {
             this._source.src = "";
@@ -94,7 +86,7 @@ export default class LegacySound extends BaseSound
     }
 
     // Implement the method to being preloading
-    protected _beginPreload(callback?: LoadedCallback): void
+    public load(callback?: LoadedCallback): void
     {
         const source = this._source;
 
