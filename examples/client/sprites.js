@@ -45,7 +45,7 @@ let playhead = new PIXI.Graphics()
     .drawRect(0, 0, 1, 100);
 playhead.x = -1;
 const sound = PIXI.sound.Sound.from({
-    src: 'resources/sprite.mp3',
+    url: 'resources/sprite.mp3',
     sprites: sprites,
     singleInstance: true,
     preload: true,

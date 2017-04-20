@@ -24,9 +24,9 @@ export default class HTMLAudioMedia implements IMedia
         this.parent = parent;
         this._source = parent.options.source as HTMLAudioElement || new Audio();
         this.speed = parent.options.speed;
-        if (this.parent.url)
+        if (parent.url)
         {
-            this._source.src = this.parent.url;
+            this._source.src = parent.url;
         }
     }
 

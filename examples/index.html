@@ -42,7 +42,7 @@ sound.play();</code></pre>
 
                 <p>To start playing the sound immediately after load is finished use the <code>autoPlay</code> flag.</p>
                 <pre><code id="autoplay" class="javascript">PIXI.sound.Sound.from({
-    src: 'resources/mechanical.mp3',
+    url: 'resources/mechanical.mp3',
     autoPlay: true,
     complete: function() {
         console.log('Sound finished');
@@ -63,7 +63,7 @@ PIXI.sound.play('bird');</code></pre>
                 <h3 id="section-preloading"><small><a href="#section-preloading"><span class="glyphicon glyphicon-link"></span></a></small> Preloading</h3>
                 <p>Preloading a sound can be enabled by passing in the <code>preload</code> flag. You can listen for when the sound is loaded by using the <code>loaded</code> callback.</p>
                 <pre><code id="loaded" class="javascript">PIXI.sound.Sound.from({
-    src: 'resources/bird.mp3',
+    url: 'resources/bird.mp3',
     preload: true,
     loaded: function(err, sound) {
         sound.play();
@@ -85,7 +85,7 @@ PIXI.loader.load(function(loader, resources) {
                 <h3 id="section-volume"><small><a href="#section-volume"><span class="glyphicon glyphicon-link"></span></a></small> Setting Volume</h3>
                 <p>Volume can be set initially by using the object constructor</p>
                 <pre><code id="volume" class="javascript">const sound = PIXI.sound.Sound.from({
-    src: 'resources/boing.mp3',
+    url: 'resources/boing.mp3',
     volume: 0.25
 });
 sound.play();</code></pre>
@@ -104,7 +104,7 @@ sound.play();</code></pre>
                 <h3 id="section-events"><small><a href="#section-events"><span class="glyphicon glyphicon-link"></span></a></small> Handling Events</h3>
                 <p>Preloaded sounds return a SoundInstance object which can be used to listen to playback events such as a the progress and end.</p>
                 <pre><code id="progress" class="javascript">PIXI.sound.Sound.from({
-    src: 'resources/boing.mp3',
+    url: 'resources/boing.mp3',
     preload: true,
     loaded: function(err, sound) {
         const instance = sound.play();
@@ -136,7 +136,7 @@ PIXI.sound.play('mechanical');</code></pre>
                 </button>
                 <p>Couple of convenience methods (<code>find</code>, <code>exist</code>, <code>duration</code>) for manipulating and checking sounds.</p>
                 <pre><code id="library-exists" class="javascript">PIXI.sound.add('boing', {
-    src: 'resources/boing.mp3',
+    url: 'resources/boing.mp3',
     preload: true,
     loaded: function() {
         // duration can only be used once the sound is loaded
