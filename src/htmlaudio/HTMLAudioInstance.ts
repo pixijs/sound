@@ -220,7 +220,10 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
         
         this._start = start;
         this._end = end || this._duration;
-        this._source.currentTime = start;
+        this._source.onloadedmetadata = () => {
+            this._source.currentTime = start;
+            this._source.onloadedmetadata = null;
+        };
         this._source.onended = this._onComplete.bind(this);
         this._source.play();
 
