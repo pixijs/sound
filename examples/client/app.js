@@ -22,10 +22,10 @@ PIXI.loader.load(function(loader, resources) {
     const loop = $("#loop");
     const speed = $("#speed");
     const volume = $('#volume');
-    const stops = $$(`button[data-stop]`);
+    const stops = $$('button[data-stop]');
     for (let i = 0; i < stops.length; i++) {
         const button = stops[i];
-        const progressBar = $(`#progress-${button.dataset.stop}`);
+        const progressBar = $('#progress-${button.dataset.stop}');
         button.addEventListener('click', function() {
             const sound = resources[this.dataset.stop].sound;
             sound.stop();
@@ -33,10 +33,10 @@ PIXI.loader.load(function(loader, resources) {
         });
     }
 
-    const plays = $$(`button[data-play]`);
+    const plays = $$('button[data-play]');
     for (let i = 0; i < plays.length; i++) {
         const button = plays[i];
-        const progressBar = $(`#progress-${button.dataset.play}`);
+        const progressBar = $('#progress-'+button.dataset.play);
         button.addEventListener('click', function() {
             const sound = resources[this.dataset.play].sound;
             sound.filters = [stereo, equalizer, distort];
@@ -46,7 +46,7 @@ PIXI.loader.load(function(loader, resources) {
             sound.speed = parseFloat(speed.value);
             const instance = sound.play();
             instance.on('progress', function(value) {
-                progressBar.style.width = `${value * 100}%`;
+                progressBar.style.width = String(value * 100) + '%';
             });
             instance.on('end', function() {
                 progressBar.style.width = '';
