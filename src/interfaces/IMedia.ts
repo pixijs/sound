@@ -5,16 +5,15 @@ import Sound from '../Sound';
 import Filter from '../filters/Filter';
 
 export interface IMedia {
-    new (parent:Sound);
     loop:boolean;
     volume:number;
     speed:number;
-    context: IMediaContext;
     filters: Filter[];
+    readonly context: IMediaContext;
     readonly duration:number;
     readonly isPlayable:boolean;
-    create(media:IMedia): IMediaInstance;
-    init(context: IMediaContext): void;
+    create(): IMediaInstance;
+    init(sound:Sound): void;
     load(callback?: LoadedCallback): void;
     destroy(): void;
 }

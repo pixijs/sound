@@ -1,7 +1,11 @@
-import {Options, LoadedCallback, CompleteCallback, PlayOptions} from '../bases/BaseSound';
+import {Options, LoadedCallback, CompleteCallback, PlayOptions} from '../Sound';
+import Sound from "../Sound";
 import {SoundSpriteData, SoundSprites} from "../sprites/SoundSprite";
 import SoundSprite from "../sprites/SoundSprite";
 import {IMedia} from '../interfaces/IMedia';
+import HTMLAudioContext from "./HTMLAudioContext";
+import HTMLAudioInstance from "./HTMLAudioInstance";
+import Filter from "../filters/Filter";
 
 /**
  * The fallback version of Sound which uses `<audio>` instead of WebAudio API.
@@ -12,42 +16,45 @@ import {IMedia} from '../interfaces/IMedia';
  */
 export default class HTMLAudioMedia implements IMedia
 {
+    public parent: Sound;
     private _source: HTMLAudioElement;
 
-    constructor(options: Options)
+    init(parent: Sound): void
     {
-        this._source = options.source as HTMLAudioElement || new Audio();
-        this.speed = options.speed;
-        if (options.url)
+        this.parent = parent;
+        this._source = parent.options.source as HTMLAudioElement || new Audio();
+        this.speed = parent.options.speed;
+        if (this.parent.url)
         {
-            this._source.src = options.url;
+            this._source.src = this.parent.url;
         }
     }
 
-    // override isplayable getter
+    // Implement create
+    public create(): HTMLAudioInstance
+    {
+        return new HTMLAudioInstance(this);
+    }
+
+    // Implement isPlayable
     public get isPlayable(): boolean
     {
         return !!this._source && this._source.readyState === 4;
     }
 
-    // Override volume setter
+    // Implement volume
     public set volume(volume:number)
     {
         this._source.volume = volume;
     }
 
-    // Override loop setter
+    // Implement loop
     public set loop(loop:boolean)
     {
         this._source.loop = loop;
     }
 
-    /**
-     * The playback rate where 1 is 100%.
-     * @name PIXI.sound.legacy.LegacySound#speed
-     * @type {Number}
-     * @default 1
-     */
+    // Implement speed
     public get speed(): number
     {
         return this._source.playbackRate;
@@ -57,15 +64,35 @@ export default class HTMLAudioMedia implements IMedia
         this._source.playbackRate = value;
     }
 
-    // Override duration getter
+    // Implement duration
     public get duration(): number
     {
         return this._source.duration;
     }
 
+    // Implement context
+    public get context(): HTMLAudioContext
+    {
+        return this.parent.context as HTMLAudioContext;
+    }
+
+    // Implement filters
+    public get filters(): Filter[]
+    {
+        return null;
+    }
+    public set filters(filters: Filter[])
+    {
+        // @if DEBUG
+        console.warn('HTML Audio does not support filters');
+        // @endif
+    }
+
     // Override the destroy
     public destroy(): void
     {
+        this.parent = null;
+
         if (this._source)
         {
             this._source.src = "";
@@ -89,30 +116,31 @@ export default class HTMLAudioMedia implements IMedia
     public load(callback?: LoadedCallback): void
     {
         const source = this._source;
+        const sound = this.parent;
 
         // See if the source is already loaded
         if (source.readyState === 4)
         {
-            this.isLoaded = true;
-            const instance = this._autoPlay();
+            sound.isLoaded = true;
+            const instance = sound.autoPlayStart();
             if (callback)
             {
                 setTimeout(() =>
                 {
-                    callback(null, this, instance)
+                    callback(null, sound, instance)
                 }, 0);
             }
             return;
         }
 
         // If there's no source, we cannot load
-        if (!this.url)
+        if (!sound.url)
         {
             return callback(new Error("sound.url or sound.source must be set"));
         }
 
         // Set the source
-        source.src = this.url;
+        source.src = sound.url;
 
         // Remove all event listeners
         const removeListeners = () =>
@@ -127,11 +155,11 @@ export default class HTMLAudioMedia implements IMedia
         const onLoad = () =>
         {
             removeListeners();
-            this.isLoaded = true;
-            const instance = this._autoPlay();
+            sound.isLoaded = true;
+            const instance = sound.autoPlayStart();
             if (callback)
             {
-                callback(null, this, instance);
+                callback(null, sound, instance);
             }
         };
 

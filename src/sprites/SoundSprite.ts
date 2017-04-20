@@ -1,6 +1,6 @@
-import BaseSound from "../bases/BaseSound";
-import {CompleteCallback} from "../bases/BaseSound";
-import {IMediaInstance} from '../bases/IMediaInstance';
+import Sound from "../Sound";
+import {CompleteCallback} from "../Sound";
+import {IMediaInstance} from '../interfaces/IMediaInstance';
 
 // Sound sprite data setup
 export interface SoundSpriteData {
@@ -31,7 +31,7 @@ export default class SoundSprite
      * @type {PIXI.sound.Sound}
      * @readonly
      */
-    public parent: BaseSound;
+    public parent: Sound;
 
     /**
      * The starting location in seconds.
@@ -68,7 +68,7 @@ export default class SoundSprite
     /**
      * Constructor
      */
-    constructor(parent: BaseSound, options: SoundSpriteData)
+    constructor(parent: Sound, options: SoundSpriteData)
     {
         this.parent = parent;
         Object.assign(this, options);

@@ -1,15 +1,15 @@
+import Filterable from "./Filterable";
+import * as filters from "./filters";
+import Filter from "./filters/Filter";
+import * as htmlaudio from "./htmlaudio";
+import {IMediaContext} from "./interfaces/IMediaContext";
+import {IMediaInstance} from "./interfaces/IMediaInstance";
+import LoaderMiddleware from "./loader";
 import {CompleteCallback, Options, PlayOptions} from "./Sound";
 import Sound from "./Sound";
-import Filterable from "./Filterable";
-import {IMediaInstance} from "./interfaces/IMediaInstance";
-import {IMediaContext} from "./interfaces/IMediaContext";
-import * as filters from "./filters";
-import * as htmlaudio from "./htmlaudio";
-import * as webaudio from "./webaudio";
-import Filter from "./filters/Filter";
-import LoaderMiddleware from "./loader";
 import SoundSprite from "./sprites/SoundSprite";
 import SoundUtils from "./utils/SoundUtils";
+import * as webaudio from "./webaudio";
 
 export type SoundMap = {[id: string]: Options|string|ArrayBuffer|HTMLAudioElement};
 
@@ -50,6 +50,22 @@ export default class SoundLibrary
     private _context: IMediaContext;
 
     /**
+     * The WebAudio specific context
+     * @name PIXI.sound#_webAudioContext
+     * @type {PIXI.sound.webaudio.WebAudioContext}
+     * @private
+     */
+    private _webAudioContext: webaudio.WebAudioContext;
+
+    /**
+     * The HTML Audio (legacy) context.
+     * @name PIXI.sound#_htmlAudioContext
+     * @type {PIXI.sound.webaudio.WebAudioContext}
+     * @private
+     */
+    private _htmlAudioContext: htmlaudio.HTMLAudioContext;
+
+    /**
      * The map of all sounds by alias.
      * @name PIXI.sound#_sounds
      * @type {Object}
@@ -59,10 +75,11 @@ export default class SoundLibrary
 
     constructor()
     {
-        // if (this.supported)
-        // {
-        //     this._context = new SoundContext();
-        // }
+        if (this.supported)
+        {
+            this._webAudioContext = new webaudio.WebAudioContext();
+        }
+        this._htmlAudioContext = new htmlaudio.HTMLAudioContext();
         this._sounds = {};
         this.useLegacy = !this.supported;
         this.utils = SoundUtils;
@@ -160,7 +177,8 @@ export default class SoundLibrary
      * Adds multiple sounds at once.
      * @method PIXI.sound#add
      * @param {Object} map Map of sounds to add, the key is the alias, the value is the
-     *        `string`, `ArrayBuffer`, `HTMLAudioElement` or the list of options (see {@link PIXI.sound.add} for options).
+     *        `string`, `ArrayBuffer`, `HTMLAudioElement` or the list of options
+     *        (see {@link PIXI.sound.add} for options).
      * @param {Object} globalOptions The default options for all sounds.
      *        if a property is defined, it will use the local property instead.
      * @return {PIXI.sound.Sound} Instance to the Sound object.
@@ -246,6 +264,16 @@ export default class SoundLibrary
     {
         LoaderMiddleware.legacy = legacy;
         this._useLegacy = legacy;
+
+        // Set the context to use
+        if (!legacy && this.supported)
+        {
+            this._context = this._webAudioContext;
+        }
+        else
+        {
+            this._context = this._htmlAudioContext;
+        }
     }
 
     /**

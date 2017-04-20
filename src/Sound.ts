@@ -1,12 +1,11 @@
-import SoundSprite from './sprites/SoundSprite';
-import {SoundSpriteData, SoundSprites} from "./sprites/SoundSprite";
-import soundLibrary from './index';
-import {IMedia} from './interfaces/IMedia';
-import {IMediaInstance} from './interfaces/IMediaInstance';
-import {IMediaContext} from './interfaces/IMediaContext';
-import {poolInstance, createInstance} from "./utils/InstanceUtils";
 import Filter from "./filters/Filter";
 import HTMLAudioMedia from "./htmlaudio/HTMLAudioMedia";
+import soundLibrary from "./index";
+import {IMedia} from "./interfaces/IMedia";
+import {IMediaContext} from "./interfaces/IMediaContext";
+import {IMediaInstance} from "./interfaces/IMediaInstance";
+import SoundSprite from "./sprites/SoundSprite";
+import {SoundSpriteData, SoundSprites} from "./sprites/SoundSprite";
 import WebAudioMedia from "./webaudio/WebAudioMedia";
 
 // Constructor options
@@ -62,6 +61,14 @@ export declare type CompleteCallback = (sound: Sound) => void;
  */
 export default class Sound
 {
+    /**
+     * Pool of instances
+     * @name PIXI.sound.Sound#_pool
+     * @type {Array<IMediaInstance>}
+     * @private
+     */
+    private static _pool: IMediaInstance[] = [];
+
     /**
      * `true` if the buffer is loaded.
      * @name PIXI.sound.Sound#isLoaded
@@ -119,15 +126,15 @@ export default class Sound
      * @type {Object}
      * @readonly
      */
-    readonly options:Options;
+    public options: Options;
 
     /**
      * The audio source
-     * @name PIXI.sound.Sound#_media
+     * @name PIXI.sound.Sound#media
      * @type {PIXI.sound.IMedia}
      * @private
      */
-    private _media:IMedia;
+    public media: IMedia;
 
     /**
      * The collection of instances being played.
@@ -139,7 +146,7 @@ export default class Sound
 
     /**
      * Reference to the sound context.
-     * @name PIXI.sound.Sound#_context
+     * @name PIXI.sound.Sound#_sprites
      * @type {SoundContext}
      * @private
      */
@@ -218,7 +225,7 @@ export default class Sound
         }
 
         // Default settings
-        options = Object.assign({
+        options = Object.freeze(Object.assign({
             autoPlay: false,
             singleInstance: false,
             url: null,
@@ -230,25 +237,22 @@ export default class Sound
             loaded: null,
             loop: false,
             useXHR: true,
-        }, options);
+        }, options));
 
-        let media:IMedia;
-
-        if (soundLibrary.useLegacy)
-        {
-            media = new HTMLAudioMedia(sound);
-        }
-        else
-        {
-            media = new WebAudioMedia(sound);
-        }
+        const media: IMedia = soundLibrary.useLegacy ?
+            new HTMLAudioMedia() :
+            new WebAudioMedia();
 
         return new Sound(media, options);
     }
 
-    constructor(media:IMedia, options: Options)
+    /**
+     * Constructor, use `PIXI.sound.Sound.from`
+     * @private
+     */
+    constructor(media: IMedia, options: Options)
     {
-        this._media = media;
+        this.media = media;
         this.options = options;
 
         if (options.sprites)
@@ -270,24 +274,12 @@ export default class Sound
         this.volume = options.volume;
         this.loop = options.loop;
 
-        // Initialize the media with the context
-        this._media.init(soundLibrary.context);
+        this.media.init(this);
 
         if (this.preload)
         {
             this._preload(options.loaded);
         }
-    }
-
-    /**
-     * Instance of the media
-     * @name PIXI.sound.Sound#media
-     * @type {PIXI.sound.IMedia}
-     * @readonly
-     */
-    public get media(): IMedia
-    {
-        return this._media;
     }
 
     /**
@@ -298,7 +290,7 @@ export default class Sound
      */
     public get context(): IMediaContext
     {
-        return this._media.context;
+        return this.media.context;
     }
 
     /**
@@ -342,7 +334,7 @@ export default class Sound
     }
     public set speed(speed: number)
     {
-        this._speed = this._media.speed = speed;
+        this._speed = this.media.speed = speed;
     }
 
     /**
@@ -352,11 +344,11 @@ export default class Sound
      */
     public get filters(): Filter[]
     {
-        return this._media.filters;
+        return this.media.filters;
     }
     public set filters(filters: Filter[])
     {
-        this._media.filters = filters;
+        this.media.filters = filters;
     }
 
     /**
@@ -408,8 +400,8 @@ export default class Sound
      */
     public destroy(): void
     {
-        this._media.destroy();
-        this._media = null;
+        this.media.destroy();
+        this.media = null;
 
         this.removeSprites();
         this._sprites = null;
@@ -460,7 +452,7 @@ export default class Sound
      */
     public get isPlayable(): boolean
     {
-        return this.isLoaded && this._media.isPlayable;
+        return this.isLoaded && this.media.isPlayable;
     }
 
     /**
@@ -606,7 +598,7 @@ export default class Sound
         }
 
         // clone the bufferSource
-        const instance = createInstance(this);
+        const instance = this._createInstance();
         this._instances.push(instance);
         this.isPlaying = true;
         instance.once("end", () => {
@@ -642,7 +634,7 @@ export default class Sound
     }
     public set volume(volume: number)
     {
-        this._volume = this._media.volume = volume;
+        this._volume = this.media.volume = volume;
     }
 
     /**
@@ -656,7 +648,7 @@ export default class Sound
     }
     public set loop(loop: boolean)
     {
-        this._loop = this._media.loop = loop;
+        this._loop = this.media.loop = loop;
     }
 
     /**
@@ -666,7 +658,7 @@ export default class Sound
      */
     private _preload(callback?: LoadedCallback): void
     {
-        this._media.load(callback);
+        this.media.load(callback);
     }
 
     /**
@@ -698,7 +690,7 @@ export default class Sound
      */
     public get duration(): number
     {
-        return this._media.duration;
+        return this.media.duration;
     }
 
     /**
@@ -726,7 +718,7 @@ export default class Sound
         // destroying also stops
         for (let i = this._instances.length - 1; i >= 0; i--)
         {
-            poolInstance(this._instances[i]);
+            this._poolInstance(this._instances[i]);
         }
         this._instances.length = 0;
     }
@@ -748,6 +740,39 @@ export default class Sound
             }
             this.isPlaying = this._instances.length > 0;
         }
-        poolInstance(instance);
+        this._poolInstance(instance);
+    }
+
+    /**
+     * Create a new instance.
+     * @method PIXI.sound.Sound#_createInstance
+     * @private
+     * @return {PIXI.sound.IMediaInstance} New instance to use
+     */
+    private _createInstance(): IMediaInstance
+    {
+        if (Sound._pool.length > 0)
+        {
+            const instance: IMediaInstance = Sound._pool.pop();
+            instance.init(this.media);
+            return instance;
+        }
+        return this.media.create();
+    }
+
+    /**
+     * Destroy/recycling the instance object.
+     * @method PIXI.sound.Sound#_poolInstance
+     * @private
+     * @param {PIXI.sound.IMediaInstance} instance - Instance to recycle
+     */
+    private _poolInstance(instance: IMediaInstance): void
+    {
+        instance.destroy();
+        // Add it if it isn't already added
+        if (Sound._pool.indexOf(instance) < 0)
+        {
+            Sound._pool.push(instance);
+        }
     }
 }

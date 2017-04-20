@@ -45,14 +45,6 @@ export default class WebAudioMedia implements IMedia
     public useXHR: boolean;
 
     /**
-     * Reference to the sound context.
-     * @name PIXI.sound.webaudio.WebAudioMedia#_context
-     * @type {PIXI.sound.webaudio.WebAudioContext}
-     * @private
-     */
-    private _context: WebAudioContext;
-
-    /**
      * Instance of the chain builder.
      * @name PIXI.sound.webaudio.WebAudioMedia#_nodes
      * @type {PIXI.sound.webaudio.WebAudioNodes}
@@ -68,11 +60,10 @@ export default class WebAudioMedia implements IMedia
      */
     private _source: AudioBufferSourceNode;
 
-    constructor(parent:Sound, context:WebAudioContext)
+    init(parent:Sound): void
     {
         this.parent = parent;
-        this._context = context;
-        this._nodes = new WebAudioNodes(context);
+        this._nodes = new WebAudioNodes(this.context);
         this._source = this._nodes.bufferSource;
         this.source = parent.options.source as ArrayBuffer;
         this.useXHR = parent.options.useXHR;
@@ -85,29 +76,29 @@ export default class WebAudioMedia implements IMedia
      */
     public destroy(): void
     {
-        this.context = null;
         this.parent = null;
         this._nodes.destroy();
         this._nodes = null;
-        this._context = null;
         this._source = null;
         this.source = null;
     }
+
+    // Implement create
+    public create(): WebAudioInstance
+    {
+        return new WebAudioInstance(this);
+    }
+
+    // Implement context
+    public get context(): WebAudioContext
+    {
+        return this.parent.context as WebAudioContext;
+    }
     
+    // Implement isPlayable
     public get isPlayable(): boolean
     {
         return !!this._source && !!this._source.buffer;
-    }
-
-    /**
-     * The current current sound being played in.
-     * @name PIXI.sound.webaudio.WebAudioMedia#context
-     * @type {PIXI.sound.webaudio.WebAudioContext}
-     * @readonly
-     */
-    public get context(): WebAudioContext
-    {
-        return this._context;
     }
 
     // Implements volume
@@ -257,26 +248,26 @@ export default class WebAudioMedia implements IMedia
      */
     private _decode(arrayBuffer: ArrayBuffer, callback?: LoadedCallback): void
     {
-        this.parent.context.decode(arrayBuffer, (err: Error, buffer: AudioBuffer) =>
+        const context = this.parent.context as WebAudioContext;
+        context.decode(arrayBuffer, (err: Error, buffer: AudioBuffer) =>
         {
-                if (err)
+            if (err)
+            {
+                if (callback)
                 {
-                    if (callback)
-                    {
-                        callback(err);
-                    }
+                    callback(err);
                 }
-                else
+            }
+            else
+            {
+                this.parent.isLoaded = true;
+                this.buffer = buffer;
+                const instance = this.parent.autoPlayStart();
+                if (callback)
                 {
-                    this.parent.isLoaded = true;
-                    this.buffer = buffer;
-                    const instance = this.parent.autoPlayStart();
-                    if (callback)
-                    {
-                        callback(null, this.parent, instance);
-                    }
+                    callback(null, this.parent, instance);
                 }
-            },
-        );
+            }
+        });
     }
 }

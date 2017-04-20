@@ -21,10 +21,10 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
     /**
      * The source Sound.
      * @type {PIXI.sound.webaudio.WebAudioMedia}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_parent
+     * @name PIXI.sound.webaudio.WebAudioInstance#_media
      * @private
      */
-    private _parent: WebAudioMedia;
+    private _media: WebAudioMedia;
 
     /**
      * true if paused.
@@ -114,17 +114,17 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
      */
     private _source: AudioBufferSourceNode;
 
-    constructor(parent: WebAudioMedia)
+    constructor(media: WebAudioMedia)
     {
         super();
 
         this.id = id++;
-        this._parent = null;
+        this._media = null;
         this._paused = false;
         this._elapsed = 0;
 
         // Initialize
-        this.init(parent);
+        this.init(media);
     }
 
     /**
@@ -164,7 +164,7 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
         }
         // @endif
         this._paused = false;
-        this._source = this._parent.nodes.cloneBufferSource();
+        this._source = this._media.nodes.cloneBufferSource();
         if (speed !== undefined)
         {
             this._source.playbackRate.value = speed;
@@ -252,7 +252,7 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
      */
     private set _enabled(enabled: boolean)
     {
-        this._parent.nodes.script.onaudioprocess = !enabled ? null : () => {
+        this._media.nodes.script.onaudioprocess = !enabled ? null : () => {
             this._update();
         };
     }
@@ -333,7 +333,7 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
         this._source = null;
         this._speed = 0;
         this._end = 0;
-        this._parent = null;
+        this._media = null;
         this._elapsed = 0;
         this._duration = 0;
         this._loop = false;
@@ -361,7 +361,7 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
      */
     private _now(): number
     {
-        return this._parent.context.audioContext.currentTime;
+        return this._media.context.audioContext.currentTime;
     }
 
     /**
@@ -386,8 +386,8 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
                 if (this._fadeIn || this._fadeOut)
                 {
                     const position: number = progress * duration;
-                    const gain = this._parent.nodes.gain.gain;
-                    const maxVolume = this._parent.volume;
+                    const gain = this._media.nodes.gain.gain;
+                    const maxVolume = this._media.volume;
 
                     if (this._fadeIn)
                     {
@@ -429,9 +429,9 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
      * Initializes the instance.
      * @method PIXI.sound.webaudio.WebAudioInstance#init
      */
-    public init(parent: WebAudioMedia): void
+    public init(media: WebAudioMedia): void
     {
-        this._parent = parent;
+        this._media = media;
     }
 
     /**
@@ -449,7 +449,7 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
             this._source = null;
 
             // Reset the volume
-            this._parent.volume = this._parent.volume;
+            this._media.volume = this._media.volume;
         }
     }
 

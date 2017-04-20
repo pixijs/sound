@@ -6,6 +6,7 @@ export interface IMediaContext
     volume: number;
     paused: boolean;
     filters: Filter[];
+    audioContext: AudioContext;
     toggleMute(): boolean;
     destroy(): void;
 }

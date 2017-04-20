@@ -151,9 +151,9 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
     /**
      * Initialize the instance.
      * @method PIXI.sound.htmlaudio.HTMLAudioInstance#init
-     * @param {PIXI.sound.legacy.LegacySound} parent
+     * @param {PIXI.sound.htmlaudio.HTMLAudioMedia} parent
      */
-    public init(parent: LegacySound): void
+    public init(parent: HTMLAudioMedia): void
     {
         this._playing = false;
         this._duration = parent.source.duration;
