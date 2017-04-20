@@ -1,6 +1,5 @@
 import * as path from "path";
 import Filter from "../filters/Filter";
-import soundLibrary from "../index";
 import WebAudioContext from "./WebAudioContext";
 import WebAudioInstance from "./WebAudioInstance";
 import WebAudioNodes from "./WebAudioNodes";

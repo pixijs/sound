@@ -6,7 +6,7 @@ import "./utils/polyfills";
 import "./deprecations";
 
 // Create instance of the library
-const sound: SoundLibrary = new SoundLibrary();
+const sound = SoundLibrary.init();
 
 /**
  * @namespace PIXI

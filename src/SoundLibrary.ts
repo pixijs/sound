@@ -21,6 +21,11 @@ export type SoundMap = {[id: string]: Options|string|ArrayBuffer|HTMLAudioElemen
  */
 export default class SoundLibrary
 {
+    /**
+     * Singleton instance
+     */
+    public static instance: SoundLibrary;
+
     // These are already documented else where
     public Sound: typeof Sound;
     public SoundLibrary: typeof SoundLibrary;
@@ -100,6 +105,21 @@ export default class SoundLibrary
     public get context(): IMediaContext
     {
         return this._context;
+    }
+
+    /**
+     * Initialize the singleton of the library
+     * @method PIXI.sound.SoundLibrary.init
+     * @return {PIXI.sound}
+     */
+    public static init(): SoundLibrary
+    {
+        if (SoundLibrary.instance)
+        {
+            throw new Error("SoundLibrary is already created");
+        }
+        SoundLibrary.instance = new SoundLibrary();
+        return SoundLibrary.instance;
     }
 
     /**

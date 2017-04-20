@@ -1,5 +1,5 @@
 import Filter from './Filter';
-import soundLibrary from '../index';
+import SoundLibrary from '../SoundLibrary';
 
 interface Band {
     f:number;
@@ -180,7 +180,7 @@ export default class EqualizerFilter extends Filter
         
         const bands:BiquadFilterNode[] = equalizerBands.map(function (band:Band)
         {
-            const filter:BiquadFilterNode = soundLibrary.context.audioContext.createBiquadFilter();
+            const filter:BiquadFilterNode = SoundLibrary.instance.context.audioContext.createBiquadFilter();
             filter.type = band.type;
             filter.gain.value = band.gain;
             filter.Q.value = 1;

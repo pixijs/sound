@@ -314,7 +314,7 @@ module.exports = function(libraryPath, useLegacy)
         });
 
         it("should load files with the PIXI.loader", function(done)
-        {            
+        {
             this.slow(200);
             for (const name in manifest)
             {

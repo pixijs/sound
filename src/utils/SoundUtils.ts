@@ -1,5 +1,5 @@
 import uuid = require("uuid/v4");
-import soundLibrary from "../index";
+import SoundLibrary from "../SoundLibrary";
 import Sound from "../Sound";
 import WebAudioMedia from "../webaudio/WebAudioMedia";
 import WebAudioContext from "../webaudio/WebAudioContext";
@@ -139,7 +139,7 @@ export default class SoundUtils
     {
         const alias = uuid();
 
-        soundLibrary.add(alias, {
+        SoundLibrary.instance.add(alias, {
             url,
             preload: true,
             autoPlay: true,
@@ -147,7 +147,7 @@ export default class SoundUtils
                 if (err)
                 {
                     console.error(err);
-                    soundLibrary.remove(alias);
+                    SoundLibrary.instance.remove(alias);
                     if (callback)
                     {
                         callback(err);
@@ -155,7 +155,7 @@ export default class SoundUtils
                 }
             },
             complete: () => {
-                soundLibrary.remove(alias);
+                SoundLibrary.instance.remove(alias);
                 if (callback)
                 {
                     callback(null);

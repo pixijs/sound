@@ -1,9 +1,9 @@
 import Filter from "./filters/Filter";
 import HTMLAudioMedia from "./htmlaudio/HTMLAudioMedia";
-import soundLibrary from "./index";
 import {IMedia} from "./interfaces/IMedia";
 import {IMediaContext} from "./interfaces/IMediaContext";
 import {IMediaInstance} from "./interfaces/IMediaInstance";
+import SoundLibrary from "./SoundLibrary";
 import SoundSprite from "./sprites/SoundSprite";
 import {SoundSpriteData, SoundSprites} from "./sprites/SoundSprite";
 import WebAudioMedia from "./webaudio/WebAudioMedia";
@@ -239,7 +239,7 @@ export default class Sound
             useXHR: true,
         }, options));
 
-        const media: IMedia = soundLibrary.useLegacy ?
+        const media: IMedia = SoundLibrary.instance.useLegacy ?
             new HTMLAudioMedia() :
             new WebAudioMedia();
 
@@ -290,7 +290,7 @@ export default class Sound
      */
     public get context(): IMediaContext
     {
-        return soundLibrary.context;
+        return SoundLibrary.instance.context;
     }
 
     /**
