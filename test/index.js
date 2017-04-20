@@ -37,7 +37,8 @@ module.exports = function(libraryPath, useLegacy)
             expect(PIXI.sound).to.be.a.function;
             expect(PIXI.sound.Sound).to.be.a.function;
             expect(PIXI.sound.utils).to.be.a.function;
-            expect(PIXI.sound.SoundInstance).to.be.a.function;
+            expect(PIXI.sound.webaudio).to.be.an.object;
+            expect(PIXI.sound.htmlaudio).to.be.an.object;
             expect(PIXI.sound.SoundLibrary).to.be.a.function;
             expect(PIXI.sound.filters).to.be.an.object;
             expect(PIXI.sound.filters.DistortionFilter).to.be.a.function;
@@ -61,7 +62,7 @@ module.exports = function(libraryPath, useLegacy)
                     expect(sound.autoPlay).to.be.false;
                     expect(sound.loop).to.be.false;
                     expect(sound.preload).to.be.true;
-                    expect(sound).to.be.instanceof(library.BaseSound);
+                    expect(sound).to.be.instanceof(library.Sound);
                     library.removeAll();
                     done();
                 },
@@ -80,7 +81,7 @@ module.exports = function(libraryPath, useLegacy)
                     expect(sound.autoPlay).to.be.false;
                     expect(sound.loop).to.be.false;
                     expect(sound.preload).to.be.true;
-                    expect(sound).to.be.instanceof(library.BaseSound);
+                    expect(sound).to.be.instanceof(library.Sound);
                     counter++;
                     if (counter === Object.keys(manifest).length)
                     {
@@ -89,18 +90,18 @@ module.exports = function(libraryPath, useLegacy)
                 },
             });
             expect(results).to.be.an.object;
-            expect(results["alert-4"]).to.be.instanceof(library.BaseSound);
-            expect(results["alert-7"]).to.be.instanceof(library.BaseSound);
-            expect(results["alert-12"]).to.be.instanceof(library.BaseSound);
-            expect(results["musical-11"]).to.be.instanceof(library.BaseSound);
-            expect(results.silence).to.be.instanceof(library.BaseSound);
+            expect(results["alert-4"]).to.be.instanceof(library.Sound);
+            expect(results["alert-7"]).to.be.instanceof(library.Sound);
+            expect(results["alert-12"]).to.be.instanceof(library.Sound);
+            expect(results["musical-11"]).to.be.instanceof(library.Sound);
+            expect(results.silence).to.be.instanceof(library.Sound);
         });
 
         it("should get a reference by alias", function()
         {
             const sound = library.find("alert-7");
             expect(sound).to.not.be.undefined;
-            expect(sound).to.be.instanceof(library.BaseSound);
+            expect(sound).to.be.instanceof(library.Sound);
         });
 
         it("should play multiple at once", function()
@@ -273,10 +274,10 @@ module.exports = function(libraryPath, useLegacy)
         {
             const Sound = library.Sound;
             const SoundInstance = useLegacy ?
-                library.legacy.LegacySoundInstance :
-                library.SoundInstance;
+                library.htmlaudio.HTMLAudioInstance :
+                library.webaudio.WebAudioInstance;
             const sound = Sound.from(manifest.silence);
-            expect(sound).to.be.instanceof(library.BaseSound);
+            expect(sound).to.be.instanceof(library.Sound);
             const promise = sound.play();
             promise.then((instance) => {
                 expect(instance).to.be.instanceof(SoundInstance);
@@ -288,8 +289,8 @@ module.exports = function(libraryPath, useLegacy)
         it("should return instance for playing loaded sound", function(done)
         {
             const SoundInstance = useLegacy ?
-                library.legacy.LegacySoundInstance :
-                library.SoundInstance;
+                library.htmlaudio.HTMLAudioInstance :
+                library.webaudio.WebAudioInstance;
             const sound = library.Sound.from({
                 url: manifest.silence,
                 preload: true,
@@ -313,7 +314,7 @@ module.exports = function(libraryPath, useLegacy)
         });
 
         it("should load files with the PIXI.loader", function(done)
-        {
+        {            
             this.slow(200);
             for (const name in manifest)
             {
@@ -329,7 +330,7 @@ module.exports = function(libraryPath, useLegacy)
                     expect(resources[name].data).to.be.instanceof(ClassRef);
                     expect(resources[name].sound).to.be.ok;
                     const sound = resources[name].sound;
-                    expect(sound).to.be.instanceof(library.BaseSound);
+                    expect(sound).to.be.instanceof(library.Sound);
                     expect(sound.isLoaded).to.be.true;
                     expect(sound.isPlayable).to.be.true;
                 }

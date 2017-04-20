@@ -87,6 +87,7 @@ export default class SoundLibrary
         this.htmlaudio = htmlaudio;
         this.webaudio = webaudio;
         this.Sound = Sound;
+        this.SoundLibrary = SoundLibrary;
         this.Filterable = Filterable;
     }
 

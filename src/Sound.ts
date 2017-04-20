@@ -254,16 +254,13 @@ export default class Sound
     {
         this.media = media;
         this.options = options;
+        this._instances = [];
+        this._sprites = {};
 
-        if (options.sprites)
-        {
-            this.addSprites(options.sprites);
-        }
+        this.media.init(this);
 
         const complete = options.complete;
         this._autoPlayOptions = complete ? { complete } : null;
-        this._instances = [];
-        this._sprites = {};
         this.isLoaded = false;
         this.isPlaying = false;
         this.autoPlay = options.autoPlay;
@@ -274,7 +271,10 @@ export default class Sound
         this.volume = options.volume;
         this.loop = options.loop;
 
-        this.media.init(this);
+        if (options.sprites)
+        {
+            this.addSprites(options.sprites);
+        }
 
         if (this.preload)
         {
@@ -290,7 +290,7 @@ export default class Sound
      */
     public get context(): IMediaContext
     {
-        return this.media.context;
+        return soundLibrary.context;
     }
 
     /**

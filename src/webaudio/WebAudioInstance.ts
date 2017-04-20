@@ -449,7 +449,7 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
             this._source = null;
 
             // Reset the volume
-            this._media.volume = this._media.volume;
+            this._media.volume = this._media.parent.volume;
         }
     }
 
