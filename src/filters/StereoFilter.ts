@@ -36,6 +36,12 @@ export default class StereoFilter extends Filter
 
     constructor(pan:number = 0)
     {
+        if (SoundLibrary.instance.useLegacy)
+        {
+            super(null);
+            return;
+        }
+
         let stereo:StereoPannerNode;
         let panner:PannerNode;
         let destination:AudioNode;

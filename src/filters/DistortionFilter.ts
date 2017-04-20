@@ -1,5 +1,5 @@
 import Filter from './Filter';
-import SoundLibary from '../SoundLibrary';
+import SoundLibrary from '../SoundLibrary';
 
 /**
  * Filter for adding adding delaynode.
@@ -28,7 +28,13 @@ export default class DistortionFilter extends Filter
 
     constructor(amount:number = 0)
     {
-        const context = SoundLibary.instance.context;
+        if (SoundLibrary.instance.useLegacy)
+        {
+            super(null);
+            return;
+        }
+        
+        const context = SoundLibrary.instance.context;
         const distortion:WaveShaperNode = context.audioContext.createWaveShaper();
 
         super(distortion);

@@ -44,6 +44,12 @@ export default class ReverbFilter extends Filter
 
     constructor(seconds:number = 3, decay:number = 2, reverse:boolean = false)
     {
+        if (SoundLibrary.instance.useLegacy)
+        {
+            super(null);
+            return;
+        }
+
         const convolver:ConvolverNode = SoundLibrary.instance.context.audioContext.createConvolver();
 
         super(convolver);

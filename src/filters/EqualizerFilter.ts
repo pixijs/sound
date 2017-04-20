@@ -124,6 +124,12 @@ export default class EqualizerFilter extends Filter
     constructor(f32:number = 0, f64:number = 0, f125:number = 0, f250:number = 0, f500:number = 0,
         f1k:number = 0, f2k:number = 0, f4k:number = 0, f8k:number = 0, f16k:number = 0)
     {
+        if (SoundLibrary.instance.useLegacy)
+        {
+            super(null);
+            return;
+        }
+
         const equalizerBands:Band[] = [
             {
                 f: EqualizerFilter.F32,
@@ -176,7 +182,6 @@ export default class EqualizerFilter extends Filter
                 gain: f16k
             }
         ];
-
         
         const bands:BiquadFilterNode[] = equalizerBands.map(function (band:Band)
         {
