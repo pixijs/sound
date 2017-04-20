@@ -25,7 +25,7 @@ PIXI.loader.load(function(loader, resources) {
     const stops = $$('button[data-stop]');
     for (let i = 0; i < stops.length; i++) {
         const button = stops[i];
-        const progressBar = $('#progress-${button.dataset.stop}');
+        const progressBar = $('#progress-' + button.dataset.stop);
         button.addEventListener('click', function() {
             const sound = resources[this.dataset.stop].sound;
             sound.stop();
@@ -36,7 +36,7 @@ PIXI.loader.load(function(loader, resources) {
     const plays = $$('button[data-play]');
     for (let i = 0; i < plays.length; i++) {
         const button = plays[i];
-        const progressBar = $('#progress-'+button.dataset.play);
+        const progressBar = $('#progress-' + button.dataset.play);
         button.addEventListener('click', function() {
             const sound = resources[this.dataset.play].sound;
             sound.filters = [stereo, equalizer, distort];
