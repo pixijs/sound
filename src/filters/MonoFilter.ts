@@ -1,5 +1,5 @@
 import Filter from './Filter';
-import soundLibrary from '../index';
+import SoundLibrary from '../SoundLibrary';
 
 /**
  * Combine all channels into mono channel.
@@ -19,7 +19,11 @@ export default class MonoFilter extends Filter
 
     constructor()
     {
-        const audioContext:AudioContext = soundLibrary.context.audioContext;
+        if (SoundLibrary.instance.useLegacy)
+        {
+            super(null);
+        }
+        const audioContext:AudioContext = SoundLibrary.instance.context.audioContext;
         const splitter:ChannelSplitterNode = audioContext.createChannelSplitter();
         const merger:ChannelMergerNode = audioContext.createChannelMerger();
         merger.connect(splitter);
