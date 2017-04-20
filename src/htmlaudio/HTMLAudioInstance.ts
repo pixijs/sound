@@ -157,7 +157,8 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
     {
         this._playing = false;
         this._duration = parent.source.duration;
-        const source = this._source = parent.source.cloneNode() as HTMLAudioElement;
+        const source = this._source = parent.source.cloneNode(false) as HTMLAudioElement;
+        source.src = parent.parent.url;
         source.ontimeupdate = this._onUpdate.bind(this);
         source.onplay = this._onPlay.bind(this);
         source.onpause = this._onPause.bind(this);

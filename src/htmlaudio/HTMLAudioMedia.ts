@@ -127,7 +127,7 @@ export default class HTMLAudioMedia implements IMedia
             {
                 setTimeout(() =>
                 {
-                    callback(null, sound, instance)
+                    callback(null, sound, instance);
                 }, 0);
             }
             return;
