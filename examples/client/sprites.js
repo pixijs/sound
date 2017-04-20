@@ -49,7 +49,7 @@ const sound = PIXI.sound.Sound.from({
     sprites: sprites,
     singleInstance: true,
     preload: true,
-    loaded: () => {
+    loaded: function() {
         const app = new PIXI.Application(1024, 100, {
             backgroundColor: 0xffffff,
             view: document.getElementById('waveform')

@@ -45,10 +45,10 @@ PIXI.loader.load(function(loader, resources) {
             sound.loop = !!this.dataset.loop;
             sound.speed = parseFloat(speed.value);
             const instance = sound.play();
-            instance.on('progress', (value) => {
+            instance.on('progress', function(value) {
                 progressBar.style.width = `${value * 100}%`;
             });
-            instance.on('end', () => {
+            instance.on('end', function() {
                 progressBar.style.width = '';
             });
         });
