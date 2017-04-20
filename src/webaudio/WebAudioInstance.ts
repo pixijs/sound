@@ -387,7 +387,7 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
                 {
                     const position: number = progress * duration;
                     const gain = this._media.nodes.gain.gain;
-                    const maxVolume = this._media.volume;
+                    const maxVolume = this._media.parent.volume;
 
                     if (this._fadeIn)
                     {
