@@ -313,7 +313,6 @@ export default class SoundLibrary
 
     /**
      * Set the global volume for all sounds. To set per-sound volume see {@link PIXI.sound#volume}.
-     * **Only supported with WebAudio.**
      * @name PIXI.sound#volumeAll
      * @type {Number}
      */
@@ -327,7 +326,17 @@ export default class SoundLibrary
     }
 
     /**
-     * Pauses any playing sounds. **Only supported with WebAudio.**
+     * Toggle paused property for all sounds.
+     * @method PIXI.sound#togglePauseAll
+     * @return {Boolean} `true` if all sounds are paused.
+     */
+    public togglePauseAll(): boolean
+    {
+        return this._context.togglePause();
+    }
+
+    /**
+     * Pauses any playing sounds.
      * @method PIXI.sound#pauseAll
      * @return {PIXI.sound} Instance for chaining.
      */
@@ -338,7 +347,7 @@ export default class SoundLibrary
     }
 
     /**
-     * Resumes any sounds. **Only supported with WebAudio.**
+     * Resumes any sounds.
      * @method PIXI.sound#resumeAll
      * @return {PIXI.sound} Instance for chaining.
      */
@@ -349,7 +358,17 @@ export default class SoundLibrary
     }
 
     /**
-     * Mutes all playing sounds. **Only supported with WebAudio.**
+     * Toggle muted property for all sounds.
+     * @method PIXI.sound#toggleMuteAll
+     * @return {Boolean} `true` if all sounds are muted.
+     */
+    public toggleMuteAll(): boolean
+    {
+        return this._context.toggleMute();
+    }
+
+    /**
+     * Mutes all playing sounds.
      * @method PIXI.sound#muteAll
      * @return {PIXI.sound} Instance for chaining.
      */
@@ -360,7 +379,7 @@ export default class SoundLibrary
     }
 
     /**
-     * Unmutes all playing sounds.  **Only supported with WebAudio.**
+     * Unmutes all playing sounds.
      * @method PIXI.sound#unmuteAll
      * @return {PIXI.sound} Instance for chaining.
      */

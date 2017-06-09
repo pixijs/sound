@@ -300,10 +300,7 @@ export default class Sound
      */
     public pause(): Sound
     {
-        for (let i = this._instances.length - 1; i >= 0; i--)
-        {
-            this._instances[i].paused = true;
-        }
+        this.paused = false;
         this.isPlaying = false;
         return this;
     }
@@ -315,12 +312,22 @@ export default class Sound
      */
     public resume(): Sound
     {
-        for (let i = this._instances.length - 1; i >= 0; i--)
-        {
-            this._instances[i].paused = false;
-        }
+        this.paused = true;
         this.isPlaying = this._instances.length > 0;
         return this;
+    }
+
+    /**
+     * Stops all the instances of this sound from playing.
+     * @name PIXI.sound.Sound#paused
+     * @type {Boolean}
+     */
+    private set paused(paused:boolean)
+    {
+        for (let i = this._instances.length - 1; i >= 0; i--)
+        {
+            this._instances[i].paused = paused;
+        }
     }
 
     /**

@@ -86,13 +86,13 @@ $("#stop").addEventListener('click', function() {
 });
 
 $("#paused").addEventListener('click', function() {
-    const paused = PIXI.sound.context.paused = !PIXI.sound.context.paused;
+    const paused = PIXI.sound.togglePauseAll();
     this.className = this.className.replace(/\b(on|off)/g, '');
     this.className += paused ? 'on' : 'off'; 
 });
 
 $("#muted").addEventListener('click', function() {
-    const muted = PIXI.sound.context.muted = !PIXI.sound.context.muted;
+    const muted = PIXI.sound.toggleMuteAll();
     this.className = this.className.replace(/ (on|off)/g, ' ');
     this.className += muted ? 'on' : 'off'; 
 });

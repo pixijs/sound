@@ -316,6 +316,17 @@ export default class WebAudioContext extends Filterable implements IMediaContext
     }
 
     /**
+     * Toggles the paused state.
+     * @method PIXI.sound.webaudio.WebAudioContext#togglePause
+     * @return {Boolean} The current muted state.
+     */
+    public togglePause(): boolean
+    {
+        this.paused = !this.paused;
+        return this._paused;
+    }
+
+    /**
      * Decode the audio data
      * @method decode
      * @param {ArrayBuffer} arrayBuffer Buffer from loader

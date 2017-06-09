@@ -14,7 +14,7 @@ import Filter from "../filters/Filter";
  * @param {HTMLAudioElement|String|Object} options Either the path or url to the source file.
  *        or the object of options to use. See {@link PIXI.sound.Sound.from}
  */
-export default class HTMLAudioMedia implements IMedia
+export default class HTMLAudioMedia extends PIXI.utils.EventEmitter implements IMedia
 {
     public parent: Sound;
     private _source: HTMLAudioElement;
@@ -45,7 +45,17 @@ export default class HTMLAudioMedia implements IMedia
     // Implement volume
     public set volume(volume:number)
     {
+        const oldVolume = this.volume;
+
         this._source.volume = volume;
+        if (volume !== oldVolume)
+        {
+            this.emit('volume', volume);
+        }
+    }
+    public get volume():number
+    {
+        return this._source.volume;
     }
 
     // Implement loop
@@ -61,7 +71,13 @@ export default class HTMLAudioMedia implements IMedia
     }
     public set speed(value: number)
     {
+        const oldSpeed = this.speed;
+
         this._source.playbackRate = value;
+        if (value != oldSpeed)
+        {
+            this.emit('speed', value);
+        }
     }
 
     // Implement duration
@@ -91,6 +107,8 @@ export default class HTMLAudioMedia implements IMedia
     // Override the destroy
     public destroy(): void
     {
+        this.removeAllListeners();
+
         this.parent = null;
 
         if (this._source)
