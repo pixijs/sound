@@ -300,7 +300,7 @@ export default class Sound
      */
     public pause(): Sound
     {
-        this.paused = false;
+        this.paused = true;
         this.isPlaying = false;
         return this;
     }
@@ -312,7 +312,7 @@ export default class Sound
      */
     public resume(): Sound
     {
-        this.paused = true;
+        this.paused = false;
         this.isPlaying = this._instances.length > 0;
         return this;
     }

@@ -287,10 +287,13 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
         this._end = Math.min(this._end + HTMLAudioInstance.PADDING, this._duration);
 
         this._source.onloadedmetadata = () => {
-            this._source.currentTime = start;
-            this._source.onloadedmetadata = null;
-            this.emit("progress", start, this._duration);
-            PIXI.ticker.shared.add(this._onUpdate, this);
+            if (this._source)
+            {
+                this._source.currentTime = start;
+                this._source.onloadedmetadata = null;
+                this.emit("progress", start, this._duration);
+                PIXI.ticker.shared.add(this._onUpdate, this);
+            }
         };
         this._source.onended = this._onComplete.bind(this);
         this._source.play();
@@ -371,7 +374,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
             parent.context.off('volume', this._onVolumeChanged);
             parent.context.off('paused', this._onPausedChanged);
         }
-        
+
         this._parent = null;
         this._onVolumeChanged = null;
         this._onPausedChanged = null;
