@@ -322,7 +322,7 @@ export default class Sound
      * @name PIXI.sound.Sound#paused
      * @type {Boolean}
      */
-    private set paused(paused:boolean)
+    private set paused(paused: boolean)
     {
         for (let i = this._instances.length - 1; i >= 0; i--)
         {
