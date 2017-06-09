@@ -363,10 +363,15 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
         // Remove parent listener for volume changes
         const parent = this._parent;
-        parent.off('volume', this._onVolumeChanged);
-        parent.context.off('muted', this._onVolumeChanged);
-        parent.context.off('volume', this._onVolumeChanged);
-        parent.context.off('paused', this._onPausedChanged);
+
+        if (parent)
+        {
+            parent.off('volume', this._onVolumeChanged);
+            parent.context.off('muted', this._onVolumeChanged);
+            parent.context.off('volume', this._onVolumeChanged);
+            parent.context.off('paused', this._onPausedChanged);
+        }
+        
         this._parent = null;
         this._onVolumeChanged = null;
         this._onPausedChanged = null;

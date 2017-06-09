@@ -407,13 +407,11 @@ export default class Sound
      */
     public destroy(): void
     {
+        this._removeInstances();
+        this.removeSprites();
         this.media.destroy();
         this.media = null;
-
-        this.removeSprites();
         this._sprites = null;
-
-        this._removeInstances();
         this._instances = null;
     }
 
@@ -459,7 +457,7 @@ export default class Sound
      */
     public get isPlayable(): boolean
     {
-        return this.isLoaded && this.media.isPlayable;
+        return this.isLoaded && this.media && this.media.isPlayable;
     }
 
     /**
