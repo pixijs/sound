@@ -186,7 +186,7 @@ export default class EqualizerFilter extends Filter
         const bands:BiquadFilterNode[] = equalizerBands.map(function (band:Band)
         {
             const filter:BiquadFilterNode = SoundLibrary.instance.context.audioContext.createBiquadFilter();
-            filter.type = band.type;
+            filter.type = band.type as BiquadFilterType;
             filter.gain.value = band.gain;
             filter.Q.value = 1;
             filter.frequency.value = band.f;
