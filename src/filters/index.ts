@@ -4,6 +4,8 @@ import DistortionFilter from './DistortionFilter';
 import StereoFilter from './StereoFilter';
 import ReverbFilter from './ReverbFilter';
 import MonoFilter from './MonoFilter';
+import TelephoneFilter from './TelephoneFilter';
+import PitchShiftFilter from './PitchShiftFilter';
 
 /**
  * Set of dynamic filters to be applied to PIXI.sound.Sound.
@@ -21,5 +23,7 @@ export {
     DistortionFilter,
     StereoFilter,
     ReverbFilter,
-    MonoFilter
+    MonoFilter,
+    TelephoneFilter,
+    PitchShiftFilter
 };
