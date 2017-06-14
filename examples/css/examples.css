@@ -71,3 +71,13 @@ pre code {
 .sprites .btn {
     margin-bottom:10px;
 }
+
+.sortable-placeholder {
+    list-style-type: none;
+}
+
+.handle {
+    margin-right:10px;
+    cursor: move;
+    user-select:none;
+}

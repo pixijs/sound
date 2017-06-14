@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="css/examples.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/languages/javascript.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html5sortable/0.6.0/html.sortable.min.js"></script>
         <script src="https://d157l7jdn8e5sf.cloudfront.net/dev/pixi.min.js"></script>
         <script src="../dist/pixi-sound.min.js"></script>
     </head>
@@ -29,56 +30,107 @@
                     </ul>
                 </div>
             </nav>
+
             <div class="well">
                 <h3 id="section-filters"><small><a href="#section-filters"><span class="glyphicon glyphicon-link"></span></a></small> Filters</h3>
-                <p>Original sound.</p>
-                <pre><code id="original" class="javascript">const sound = PIXI.sound.add('music', 'resources/musical.mp3');
-sound.play();</code></pre>
-                <button class="btn btn-primary" data-code="#original">
-                    <span class="glyphicon glyphicon-play"></span> Play
-                </button>
-                <p>Reverb filter is available.</p>
-                <pre><code id="reverb" class="javascript">const sound = PIXI.sound.add('music', 'resources/musical.mp3');
-sound.filters = [new PIXI.sound.filters.ReverbFilter()];
-sound.play();</code></pre>
-                <button class="btn btn-primary" data-code="#reverb">
-                    <span class="glyphicon glyphicon-play"></span> Play
-                </button>
-                <p>DistortionFilter can be used to create some distortion effect on the sound.</p>
-                <pre><code id="distortion" class="javascript">const sound = PIXI.sound.add('music', 'resources/musical.mp3');
-sound.filters = [new PIXI.sound.filters.DistortionFilter(0.5)];
-sound.play();</code></pre>
-                <button class="btn btn-primary" data-code="#distortion">
-                    <span class="glyphicon glyphicon-play"></span> Play
-                </button>
-                <p>Telephone filter</p>
-                <pre><code id="telephone" class="javascript">const sound = PIXI.sound.add('music', 'resources/musical.mp3');
-sound.filters = [new PIXI.sound.filters.TelephoneFilter()];
-sound.play();</code></pre>
-                <button class="btn btn-primary" data-code="#telephone">
-                    <span class="glyphicon glyphicon-play"></span> Play
-                </button>
-                <p>StereoFilter can be used to adjust the stereo panning.</p>
-                <pre><code id="stereo" class="javascript">const sound = PIXI.sound.add('music', 'resources/musical.mp3');
-const filter = new PIXI.sound.filters.StereoFilter(-1); // left-only
-sound.filters = [filter];
-sound.play();</code></pre>
-                <button class="btn btn-primary" data-code="#stereo">
-                    <span class="glyphicon glyphicon-play"></span> Play
-                </button>
-                <p>Multiple filters can be layered, in the case combining both the reverb and stereo panning filters.</p>
-                <pre><code id="multifilters" class="javascript">const sound = PIXI.sound.add('music', 'resources/musical.mp3');
-sound.filters = [
-    new PIXI.sound.filters.ReverbFilter(),
-    new PIXI.sound.filters.StereoFilter(1)
-];
-sound.play();</code></pre>
-                <button class="btn btn-primary" data-code="#multifilters">
-                    <span class="glyphicon glyphicon-play"></span> Play
-                </button>
+                <div class="btn-group btn-group-justified">
+                    <div class="btn-group">
+                        <button class="btn btn-primary btn-lg" id="play">
+                            <span class="glyphicon glyphicon-play"></span> Play
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary btn-lg" id="stop">
+                            <span class="glyphicon glyphicon-stop"></span> Stop
+                        </button>
+                    </div>
+                </div>
+                <br />
+                <ul class="filter-list list-group">
+                    <li class="list-group-item" data-id="DistortionFilter">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button class="handle btn btn-default btn-sm">
+                                    <span class="glyphicon glyphicon-resize-vertical"></span>
+                                </button>
+                                <div class="checkbox-inline">
+                                    <label>
+                                        <input class="filter" data-filter="DistortionFilter" type="checkbox"> 
+                                        <strong>DistortionFilter</strong>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item" data-id="TelephoneFilter">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button class="handle btn btn-default btn-sm">
+                                    <span class="glyphicon glyphicon-resize-vertical"></span>
+                                </button>
+                                <div class="checkbox-inline">
+                                    <label>
+                                        <input class="filter" data-filter="TelephoneFilter" type="checkbox"> 
+                                        <strong>TelephoneFilter</strong>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item" data-id="StereoFilter">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button class="handle btn btn-default btn-sm">
+                                    <span class="glyphicon glyphicon-resize-vertical"></span>
+                                </button>
+                                <div class="checkbox-inline">
+                                    <label>
+                                        <input class="filter" data-filter="StereoFilter" type="checkbox"> 
+                                        <strong>StereoFilter</strong>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item" data-id="ReverbFilter">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button class="handle btn btn-default btn-sm">
+                                    <span class="glyphicon glyphicon-resize-vertical"></span>
+                                </button>
+                                <div class="checkbox-inline">
+                                    <label>
+                                        <input class="filter" data-filter="ReverbFilter" type="checkbox"> 
+                                        <strong>ReverbFilter</strong>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item" data-id="EqualizerFilter">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button class="handle btn btn-default btn-sm">
+                                    <span class="glyphicon glyphicon-resize-vertical"></span>
+                                </button>
+                                <div class="checkbox-inline">
+                                    <label>
+                                        <input class="filter" data-filter="EqualizerFilter" type="checkbox"> 
+                                        <strong>EqualizerFilter</strong>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </li>
+                </ul>
+                <pre><code id="output" class="javascript"></code></pre>
             </div>
-            
         </div>
-        <script src="./client/index.js"></script>
+        <script src="./client/filters.js"></script>
     </body>
 </html>
