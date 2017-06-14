@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>PIXI.sound Filters</title>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/examples.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/languages/javascript.min.js"></script>
+        <script src="https://d157l7jdn8e5sf.cloudfront.net/dev/pixi.min.js"></script>
+        <script src="../dist/pixi-sound.min.js"></script>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <h1>PIXI.sound Filters</h1>
+            <nav class="navbar navbar-inverse">
+                <div class="container-fluid">
+                    <ul class="nav navbar-nav">
+                        <li><a href="index.html">Basics</a></li>
+                        <li><a href="sprites.html">Sprites</a></li>
+                        <li class="active"><a href="filters.html">Filters</a></li>
+                        <li><a href="app.html">App</a></li>
+                        <li><a href="../docs/index.html">API Docs</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="https://github.com/pixijs/pixi-sound">Github</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="well">
+                <h3 id="section-filters"><small><a href="#section-filters"><span class="glyphicon glyphicon-link"></span></a></small> Filters</h3>
+                <p>Original sound.</p>
+                <pre><code id="original" class="javascript">const sound = PIXI.sound.add('music', 'resources/musical.mp3');
+sound.play();</code></pre>
+                <button class="btn btn-primary" data-code="#original">
+                    <span class="glyphicon glyphicon-play"></span> Play
+                </button>
+                <p>Reverb filter is available.</p>
+                <pre><code id="reverb" class="javascript">const sound = PIXI.sound.add('music', 'resources/musical.mp3');
+sound.filters = [new PIXI.sound.filters.ReverbFilter()];
+sound.play();</code></pre>
+                <button class="btn btn-primary" data-code="#reverb">
+                    <span class="glyphicon glyphicon-play"></span> Play
+                </button>
+                <p>DistortionFilter can be used to create some distortion effect on the sound.</p>
+                <pre><code id="distortion" class="javascript">const sound = PIXI.sound.add('music', 'resources/musical.mp3');
+sound.filters = [new PIXI.sound.filters.DistortionFilter(0.5)];
+sound.play();</code></pre>
+                <button class="btn btn-primary" data-code="#distortion">
+                    <span class="glyphicon glyphicon-play"></span> Play
+                </button>
+                <p>Telephone filter</p>
+                <pre><code id="telephone" class="javascript">const sound = PIXI.sound.add('music', 'resources/musical.mp3');
+sound.filters = [new PIXI.sound.filters.TelephoneFilter()];
+sound.play();</code></pre>
+                <button class="btn btn-primary" data-code="#telephone">
+                    <span class="glyphicon glyphicon-play"></span> Play
+                </button>
+                <p>StereoFilter can be used to adjust the stereo panning.</p>
+                <pre><code id="stereo" class="javascript">const sound = PIXI.sound.add('music', 'resources/musical.mp3');
+const filter = new PIXI.sound.filters.StereoFilter(-1); // left-only
+sound.filters = [filter];
+sound.play();</code></pre>
+                <button class="btn btn-primary" data-code="#stereo">
+                    <span class="glyphicon glyphicon-play"></span> Play
+                </button>
+                <p>Multiple filters can be layered, in the case combining both the reverb and stereo panning filters.</p>
+                <pre><code id="multifilters" class="javascript">const sound = PIXI.sound.add('music', 'resources/musical.mp3');
+sound.filters = [
+    new PIXI.sound.filters.ReverbFilter(),
+    new PIXI.sound.filters.StereoFilter(1)
+];
+sound.play();</code></pre>
+                <button class="btn btn-primary" data-code="#multifilters">
+                    <span class="glyphicon glyphicon-play"></span> Play
+                </button>
+            </div>
+            
+        </div>
+        <script src="./client/index.js"></script>
+    </body>
+</html>

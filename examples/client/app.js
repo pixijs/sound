@@ -6,7 +6,8 @@ const manifest = {
     bird: 'resources/bird.mp3',
     boing: 'resources/boing.mp3',
     mechanical: 'resources/mechanical.mp3',
-    whistle: 'resources/whistle.mp3'
+    whistle: 'resources/whistle.mp3',
+    musical: 'resources/musical.mp3'
 };
 
 for (let name in manifest) {
