@@ -1,7 +1,7 @@
 {
   "name": "pixi-sound",
   "version": "1.4.1",
-  "description": "WebAudio API playback without any Flash shims or HTML Audio fallback",
+  "description": "WebAudio API playback library with filters",
   "main": "lib/index.js",
   "scripts": {
     "test": "npm run test:lib && npm run test:lib:legacy && npm run test:dist && npm run test:dist:legacy && npm run test:dist:min && npm run test:dist:min:legacy",

@@ -1,6 +1,6 @@
 # PIXI.sound
 
-WebAudio API playback without any Flash shims or HTML Audio fallback. Modern audio playback for modern browsers. 
+WebAudio API playback library, with filters. Modern audio playback for modern browsers. 
 
 [![Build Status](https://travis-ci.org/pixijs/pixi-sound.svg?branch=master)](https://travis-ci.org/pixijs/pixi-sound)
 
@@ -16,6 +16,7 @@ WebAudio API playback without any Flash shims or HTML Audio fallback. Modern aud
     * DistortionFilter
     * EqualizerFilter
     * StereoFilter
+    * TelephoneFilter
 
 **Known Compatibility**
 
@@ -35,9 +36,10 @@ npm i pixi-sound --save
 ### Resources
 
 * [Releases](https://github.com/pixijs/pixi-sound/releases)
-* [Examples](https://pixijs.github.io/pixi-sound/examples/index.html)
-* [Sprites Example](https://pixijs.github.io/pixi-sound/examples/sprites.html)
-* [App Example](https://pixijs.github.io/pixi-sound/examples/app.html)
+* [Basics](https://pixijs.github.io/pixi-sound/examples/index.html)
+* [Sprites](https://pixijs.github.io/pixi-sound/examples/sprites.html)
+* [Filters](https://pixijs.github.io/pixi-sound/examples/filters.html)
+* [Demo](https://pixijs.github.io/pixi-sound/examples/demo.html)
 * [API Documentation](https://pixijs.github.io/pixi-sound/docs/index.html)
 
 ## License
