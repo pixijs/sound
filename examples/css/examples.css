@@ -63,6 +63,7 @@
 
 pre {
     padding: 0;
+    border:0;
 }
 pre code {
     margin: 0;
@@ -80,4 +81,8 @@ pre code {
     margin-right:10px;
     cursor: move;
     user-select:none;
+}
+
+button.play {
+    margin-left: 10px;
 }

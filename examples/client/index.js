@@ -1,4 +1,6 @@
 
+jQuery('.section-tabs').stickyTabs();
+
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 
