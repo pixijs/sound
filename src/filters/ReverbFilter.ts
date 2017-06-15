@@ -76,7 +76,7 @@ export default class ReverbFilter extends Filter
     }
 
     /**
-     * Decay value from 1 to 50
+     * Length of reverb in seconds from 1 to 50
      * @name PIXI.sound.filters.ReverbFilter#decay
      * @type {Number}
      * @default 3

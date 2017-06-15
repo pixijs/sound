@@ -1,4 +1,3 @@
-
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 
@@ -33,7 +32,7 @@ const filtersMap = {};
 const checks = $$('.filter');
 for (let i = 0; i < checks.length; i++) {
     const filter = checks[i];
-    const name = filter.dataset.filter;
+    const name = filter.dataset.id;
     const controller = {
         name: name,
         filter: new PIXI.sound.filters[name](),
@@ -47,11 +46,19 @@ for (let i = 0; i < checks.length; i++) {
         refresh();
     });
 }
-console.log(filtersMap);
 
 const output = $('#output');
+const ranges = $$('input[type="range"]');
 
 function refresh() {
+
+    for (let i = 0; i < ranges.length; i++) {
+        const range = ranges[i];
+        const controller = filtersMap[range.dataset.id];
+        if (controller.enabled) {
+            controller.filter[range.dataset.prop] = parseFloat(range.value);
+        }
+    }
 
     let buffer = "const sound = PIXI.sound.add('music', 'resources/musical.mp3');\n";
     let inserts = [];
@@ -61,7 +68,19 @@ function refresh() {
     }).filter(function(controller) {
         return controller.enabled;
     }).map(function(controller) {
-        inserts.push('new PIXI.sound.filters.' + controller.name + '()');
+        let args = [];
+        let show = false;
+        for (let i = 0; i < ranges.length; i++) {
+            const range = ranges[i];
+            if (range.dataset.id !== controller.name) {
+                continue;
+            }
+            if (range.value !== range.dataset.default) {
+                show = true;
+            }
+            args[parseInt(range.dataset.index)] = range.value;
+        }
+        inserts.push('new PIXI.sound.filters.' + controller.name + '(' + (show ? args.join(', ') : '') + ')');
         return controller.filter;
     });
     if (inserts.length) {
@@ -75,4 +94,11 @@ function refresh() {
 }
 
 refresh();
+
+for (let i = 0; i < ranges.length; i++) {
+    ranges[i].addEventListener('change', refresh, false);
+    ranges[i].addEventListener('input', refresh, false);
+}
+
+console.log($$('input[data-id="EqualizerFilter"]'));
 

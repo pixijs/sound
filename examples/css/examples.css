@@ -1,9 +1,44 @@
-.eq {
-    display: inline-block !important;
-    -webkit-appearance: slider-vertical;
-    width: 8% !important;
-    height: 150px;
-    margin:10px 0;
+
+.eq-sliders {
+    margin-bottom:15px;
+}
+.range-group {
+    height:30px;
+}
+.range-group label {
+    display:block;
+    float:left;
+    width:20%;
+    margin-right:5%;
+    padding:5px 10px;
+    color:#999;
+    border-radius:4px;
+    text-align:center;
+    position: relative;
+    background: #ddd;
+    font-size:80%;
+}
+.range-group label:after {
+    left: 100%;
+    top: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: transparent;
+    border-left-color: #ddd;
+    border-width: 6px;
+    margin-top: -6px;
+}
+
+.range-group input {
+    display:block;
+    float: left;
+    width:75%;
+    margin:0;
+    height:30px;
 }
 
 .sound-list {
@@ -67,6 +102,10 @@ pre {
 }
 pre code {
     margin: 0;
+}
+
+.code-md {
+    min-height:160px;
 }
 
 .sprites .btn {

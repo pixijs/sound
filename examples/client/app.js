@@ -14,10 +14,6 @@ for (let name in manifest) {
     PIXI.loader.add(name, manifest[name]);
 }
 
-const distort = new PIXI.sound.filters.DistortionFilter();
-const stereo = new PIXI.sound.filters.StereoFilter();
-const equalizer = new PIXI.sound.filters.EqualizerFilter();
-
 PIXI.loader.load(function(loader, resources) {
     const singleInstance = $("#singleInstance");
     const loop = $("#loop");
@@ -40,7 +36,6 @@ PIXI.loader.load(function(loader, resources) {
         const progressBar = $('#progress-' + button.dataset.play);
         button.addEventListener('click', function() {
             const sound = resources[this.dataset.play].sound;
-            sound.filters = [stereo, equalizer, distort];
             sound.singleInstance = singleInstance.checked;
             sound.volume = parseFloat(volume.value);
             sound.loop = !!this.dataset.loop;
@@ -54,22 +49,6 @@ PIXI.loader.load(function(loader, resources) {
             });
         });
     }
-});
-
-const bands = $$('.eq');
-for (let i = 0; i < bands.length; i++) {
-    const eq = bands[i];
-    eq.addEventListener('input', function() {
-        equalizer.setGain(PIXI.sound.filters.EqualizerFilter[this.id], parseFloat(this.value));
-    });
-}
-
-$('#panning').addEventListener('input', function() {
-    stereo.pan = parseFloat(this.value);
-});
-
-$('#distortion').addEventListener('input', function() {
-    distort.amount = parseFloat(this.value);
 });
 
 $('#globalVolume').addEventListener('input', function() {

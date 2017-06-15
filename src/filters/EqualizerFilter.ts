@@ -231,6 +231,170 @@ export default class EqualizerFilter extends Filter
     }
 
     /**
+     * Get gain amount on a specific frequency.
+     * @method PIXI.sound.filters.EqualizerFilter#getGain
+     * @return {number} The amount of gain set.
+     */
+    getGain(frequency:number): number
+    {
+        if (!this.bandsMap[frequency])
+        {
+            throw 'No band found for frequency ' + frequency;
+        }
+        return this.bandsMap[frequency].gain.value;
+    }
+
+    /**
+     * Gain at 32 Hz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f32
+     * @type {number}
+     * @default 0
+     */
+    public set f32(value:number)
+    {
+        this.setGain(EqualizerFilter.F32, value);
+    }
+    public get f32(): number
+    {
+        return this.getGain(EqualizerFilter.F32);
+    }
+
+    /**
+     * Gain at 64 Hz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f64
+     * @type {number}
+     * @default 0
+     */
+    public set f64(value:number)
+    {
+        this.setGain(EqualizerFilter.F64, value);
+    }
+    public get f64(): number
+    {
+        return this.getGain(EqualizerFilter.F64);
+    }
+
+    /**
+     * Gain at 125 Hz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f125
+     * @type {number}
+     * @default 0
+     */
+    public set f125(value:number)
+    {
+        this.setGain(EqualizerFilter.F125, value);
+    }
+    public get f125(): number
+    {
+        return this.getGain(EqualizerFilter.F125);
+    }
+
+    /**
+     * Gain at 250 Hz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f250
+     * @type {number}
+     * @default 0
+     */
+    public set f250(value:number)
+    {
+        this.setGain(EqualizerFilter.F250, value);
+    }
+    public get f250(): number
+    {
+        return this.getGain(EqualizerFilter.F250);
+    }
+
+    /**
+     * Gain at 500 Hz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f500
+     * @type {number}
+     * @default 0
+     */
+    public set f500(value:number)
+    {
+        this.setGain(EqualizerFilter.F500, value);
+    }
+    public get f500(): number
+    {
+        return this.getGain(EqualizerFilter.F500);
+    }
+
+    /**
+     * Gain at 1 KHz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f1k
+     * @type {number}
+     * @default 0
+     */
+    public set f1k(value:number)
+    {
+        this.setGain(EqualizerFilter.F1K, value);
+    }
+    public get f1k(): number
+    {
+        return this.getGain(EqualizerFilter.F1K);
+    }
+
+    /**
+     * Gain at 2 KHz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f2k
+     * @type {number}
+     * @default 0
+     */
+    public set f2k(value:number)
+    {
+        this.setGain(EqualizerFilter.F2K, value);
+    }
+    public get f2k(): number
+    {
+        return this.getGain(EqualizerFilter.F2K);
+    }
+
+    /**
+     * Gain at 4 KHz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f4k
+     * @type {number}
+     * @default 0
+     */
+    public set f4k(value:number)
+    {
+        this.setGain(EqualizerFilter.F4K, value);
+    }
+    public get f4k(): number
+    {
+        return this.getGain(EqualizerFilter.F4K);
+    }
+
+    /**
+     * Gain at 8 KHz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f8k
+     * @type {number}
+     * @default 0
+     */
+    public set f8k(value:number)
+    {
+        this.setGain(EqualizerFilter.F8K, value);
+    }
+    public get f8k(): number
+    {
+        return this.getGain(EqualizerFilter.F8K);
+    }
+
+    /**
+     * Gain at 16 KHz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f16k
+     * @type {number}
+     * @default 0
+     */
+    public set f16k(value:number)
+    {
+        this.setGain(EqualizerFilter.F16K, value);
+    }
+    public get f16k(): number
+    {
+        return this.getGain(EqualizerFilter.F16K);
+    }
+
+    /**
      * Reset all frequency bands to have gain of 0
      * @method PIXI.sound.filters.EqualizerFilter#reset
      */

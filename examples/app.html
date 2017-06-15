@@ -6,8 +6,9 @@
         <title>PIXI.sound App</title>
         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/examples.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+        <link rel="stylesheet" href="css/range.css">
+        <link rel="stylesheet" href="css/examples.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/languages/javascript.min.js"></script>
         <script src="https://d157l7jdn8e5sf.cloudfront.net/dev/pixi.min.js"></script>
         <script src="../dist/pixi-sound.min.js"></script>
@@ -236,36 +237,6 @@
                 <h3>Global Volume</h3>
                 <input id="globalVolume" type="range" class="range" step="0.01" value="1" min="0" max="1" />
                 <pre><code class="javascript code-block">PIXI.sound.volumeAll = 0.5;</code></pre>
-            </div>
-            <div class="well">
-                <h3>Global StereoFilter</h3>
-                <input id="panning" type="range" class="range" value="0" step="0.1" min="-1" max="1" />
-                <pre><code class="javascript code-block">const stereo = new PIXI.sound.filters.StereoFilter(-1);
-PIXI.sound.find('bird').filters = [stereo];
-                </code></pre>
-            </div>
-            <div class="well">
-                <h3>Global DistortionFilter</h3>
-                <input id="distortion" type="range" class="range" value="0" step="0.01" min="0" max="1" />
-                <pre><code class="javascript code-block">const distortion = new PIXI.sound.filters.DistortionFilter(0.5);
-PIXI.sound.find('bird').filters = [distortion];</code></pre>
-            </div>
-            <div class="well">
-                <h3>Global EqualizerFilter</h3>
-                <div class="text-center">
-                    <input id="F32" title="32 Hz" class="eq" type="range" class="range" min="-40" max="40" orient="vertical">
-                    <input id="F64" title="64 Hz" class="eq" type="range" class="range" min="-40" max="40" orient="vertical">
-                    <input id="F125" title="125 Hz" class="eq" type="range" class="range" min="-40" max="40" orient="vertical">
-                    <input id="F250" title="250 Hz" class="eq" type="range" class="range" min="-40" max="40" orient="vertical">
-                    <input id="F500" title="500 Hz" class="eq" type="range" class="range" min="-40" max="40" orient="vertical">
-                    <input id="F1K" title="1000 Hz" class="eq" type="range" class="range" min="-40" max="40" orient="vertical">
-                    <input id="F2K" title="2000 Hz" class="eq" type="range" class="range" min="-40" max="40" orient="vertical">
-                    <input id="F4K" title="4000 Hz" class="eq" type="range" class="range" min="-40" max="40" orient="vertical">
-                    <input id="F8K" title="8000 Hz" class="eq" type="range" class="range" min="-40" max="40" orient="vertical">
-                    <input id="F16K" title="16000 Hz" class="eq" type="range" class="range" min="-40" max="40" orient="vertical">
-                </div>
-                <pre><code class="javascript code-block">const eq = new PIXI.sound.filters.EqualizerFilter();
-PIXI.sound.find('bird').filters = [eq];</code></pre>
             </div>
             <div class="well">
                 <h3>Applied Per Sound</h3>
