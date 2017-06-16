@@ -72,8 +72,8 @@
 }
 
 .progress {
-    height: 10px;
-    margin: 10px 0 0;
+    height: 4px;
+    margin: 10px 0 5px;
 }
 
 .range {
@@ -124,4 +124,40 @@ pre code {
 
 button.play {
     margin-left: 10px;
+}
+
+.loop {
+    margin-bottom:20px;
+}
+.loop.play {
+    margin-left:0;
+}
+
+.loop .glyphicon {
+    display:block;
+    margin:10px auto;
+}
+.loop.play .stop, 
+.loop.stop .play {
+    display:none
+}
+
+.volume-group .range {
+    width:120px;
+    display:inline-block;
+    margin: 0 0 0 10px;
+    vertical-align: middle;
+}
+.volume-group label {
+    font-weight:normal;
+}
+
+.volume-group {
+    border: 1px solid #ccc;
+    border-left:0;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    padding: 2px 16px;
+    font-size: 18px;
+    line-height: 1.3333333;
 }
