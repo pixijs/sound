@@ -1,10 +1,14 @@
-const $ = document.querySelector.bind(document);
-const $$ = document.querySelectorAll.bind(document);
+var $ = document.querySelector.bind(document);
+var $$ = document.querySelectorAll.bind(document);
 
-const sound = PIXI.sound.add('music', {
+var sound = PIXI.sound.add('music', {
     url: 'resources/musical.mp3',
+    singleInstance: true,
     loop: true
 });
+
+var allFilters = [];
+var allFiltersMap = {};
 
 $('#play').addEventListener('click', function() {
     sound.play();
@@ -18,60 +22,58 @@ sortable('.filter-list', {
     forcePlaceholderSize: true,
     handle: '.handle'
 })[0].addEventListener('sortupdate', function(e) {
-    const ul = e.detail.startparent;
-    for (let i = 0; i < ul.children.length; i++) {
-        const li = ul.children[i];
-        filtersMap[li.dataset.id].index = i;
+    var ul = e.detail.startparent;
+    for (var i = 0; i < ul.children.length; i++) {
+        var li = ul.children[i];
+        allFiltersMap[li.dataset.id].index = i;
     }
     refresh();
 });
 
-const filters = [];
-const filtersMap = {};
-
-const checks = $$('.filter');
-for (let i = 0; i < checks.length; i++) {
-    const filter = checks[i];
-    const name = filter.dataset.id;
-    const controller = {
-        name: name,
-        filter: new PIXI.sound.filters[name](),
+var checks = $$('.filter');
+for (var i = 0; i < checks.length; i++) {
+    var filter = checks[i];
+    var controller = {
+        name: filter.dataset.id,
+        filter: new PIXI.sound.filters[filter.dataset.id](),
         index: i,
         enabled: false
     };
-    filtersMap[name] = controller;
-    filters.push(controller);
-    filter.addEventListener('change', function(e) {
-        controller.enabled = e.currentTarget.checked;
-        refresh();
-    });
+    allFiltersMap[filter.dataset.id] = controller;
+    allFilters.push(controller);
+    filter.addEventListener('change', toggle.bind(null, controller));
 }
 
-const output = $('#output');
-const ranges = $$('input[type="range"]');
+function toggle(controller, e) {
+    controller.enabled = e.currentTarget.checked;
+    refresh();
+}
+
+var output = $('#output');
+var ranges = $$('input[type="range"]');
 
 function refresh() {
 
-    for (let i = 0; i < ranges.length; i++) {
-        const range = ranges[i];
-        const controller = filtersMap[range.dataset.id];
+    for (var i = 0; i < ranges.length; i++) {
+        var range = ranges[i];
+        var controller = allFiltersMap[range.dataset.id];
         if (controller.enabled) {
             controller.filter[range.dataset.prop] = parseFloat(range.value);
         }
     }
 
-    let buffer = "const sound = PIXI.sound.add('music', 'resources/musical.mp3');\n";
-    let inserts = [];
+    var buffer = "var sound = PIXI.sound.add('music', 'resources/musical.mp3');\n";
+    var inserts = [];
 
-    sound.filters = filters.sort(function(a, b) {
+    sound.filters = allFilters.sort(function(a, b) {
         return a.index - b.index;
     }).filter(function(controller) {
         return controller.enabled;
     }).map(function(controller) {
-        let args = [];
-        let show = false;
-        for (let i = 0; i < ranges.length; i++) {
-            const range = ranges[i];
+        var args = [];
+        var show = false;
+        for (var i = 0; i < ranges.length; i++) {
+            var range = ranges[i];
             if (range.dataset.id !== controller.name) {
                 continue;
             }
@@ -84,8 +86,8 @@ function refresh() {
         return controller.filter;
     });
     if (inserts.length) {
-        const nl = inserts.length > 1 ? '\n' : '';
-        const spacer = inserts.length > 1 ? '  ': '';
+        var nl = inserts.length > 1 ? '\n' : '';
+        var spacer = inserts.length > 1 ? '  ': '';
         buffer += 'sound.filters = [' + nl + spacer + inserts.join(',\n' + spacer) + nl + '];\n';
     }
     buffer += "sound.play();";
@@ -95,10 +97,7 @@ function refresh() {
 
 refresh();
 
-for (let i = 0; i < ranges.length; i++) {
+for (var i = 0; i < ranges.length; i++) {
     ranges[i].addEventListener('change', refresh, false);
     ranges[i].addEventListener('input', refresh, false);
 }
-
-console.log($$('input[data-id="EqualizerFilter"]'));
-

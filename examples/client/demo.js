@@ -1,4 +1,4 @@
-const manifest = {
+var manifest = {
     loop1: 'resources/loops/loop1.mp3',
     loop2: 'resources/loops/loop2.mp3',
     loop3: 'resources/loops/loop3.mp3',
@@ -13,51 +13,58 @@ const manifest = {
     whistle: 'resources/whistle.mp3'
 };
 
-for (let name in manifest) {
+for (var name in manifest) {
     PIXI.loader.add(name, manifest[name]);
 }
 
 PIXI.loader.load(function(loader, resources) {
-    const plays = document.querySelectorAll('button[data-sound]');
-    for (let i = 0; i < plays.length; i++) {
-        const button = plays[i];
-        const alias = button.dataset.sound;
-        const sound = resources[alias].sound;
-        button.addEventListener('mousedown', function() {
-            const button = this;
-            const sound = resources[button.dataset.sound].sound;
-            const loop = !!button.dataset.loop;
-            const playing = !parseInt(button.dataset.playing);
-            if (loop) {
-                togglePlaying(button);
-                sound.stop();
-                progressBar(button, 0);
-            }
-            if (playing) {
-                const instance = sound.play({
-                    loop: loop,
-                    singleInstance: loop
-                });
-                instance.on('progress', function(progress, duration) {
-                    progressBar(button, progress);
-                });
-                instance.on('end', function() {
-                    progressBar(button, 0);
-                });
-            }
-        });
+    var plays = document.querySelectorAll('button[data-sound]');
+    for (var i = 0; i < plays.length; i++) {
+        var button = plays[i];
+        var alias = button.dataset.sound;
+        var sound = resources[alias].sound;
+        if ('ontouchstart' in window) {
+            button.addEventListener('touchstart', play, false);
+        }
+        else {
+            button.addEventListener('mousedown', play, false);
+        }
     }
 });
 
+function play() {
+    var button = this;
+    var sound = PIXI.loader.resources[button.dataset.sound].sound;
+    var loop = !!button.dataset.loop;
+    var playing = !parseInt(button.dataset.playing);
+    if (loop) {
+        togglePlaying(button);
+        sound.stop();
+        progressBar(button, 0);
+    }
+    if (playing) {
+        var instance = sound.play({
+            loop: loop,
+            singleInstance: loop
+        });
+        instance.on('progress', function(progress, duration) {
+            progressBar(button, progress);
+        });
+        instance.on('end', function() {
+            progressBar(button, 0);
+        });
+    }
+}
+
 function togglePlaying(button) {
-    const playing = !parseInt(button.dataset.playing);
+    var playing = !parseInt(button.dataset.playing);
     button.className = button.className.replace(/ (play|stop) btn\-(info|default)/, '');
     button.className += playing ? ' stop btn-info' : ' play btn-default';
     button.dataset.playing = playing ? 1 : 0;
 }
 
 function progressBar(button, progress) {
-    const bar = button.querySelector('.progress-bar');
+    var bar = button.querySelector('.progress-bar');
     bar.style.width = (progress * 100) + '%';
 }
 
@@ -69,9 +76,9 @@ document.querySelector('#volume').addEventListener('input', function() {
 
 document.querySelector("#stop").addEventListener('click', function() {
     PIXI.sound.stopAll();
-    const plays = document.querySelectorAll('button[data-sound]');
-    for (let i = 0; i < plays.length; i++) {
-        const button = plays[i];
+    var plays = document.querySelectorAll('button[data-sound]');
+    for (var i = 0; i < plays.length; i++) {
+        var button = plays[i];
         if (button.dataset.playing === "1") {
             togglePlaying(button);
         }
@@ -80,13 +87,13 @@ document.querySelector("#stop").addEventListener('click', function() {
 });
 
 document.querySelector("#paused").addEventListener('click', function() {
-    const paused = PIXI.sound.togglePauseAll();
+    var paused = PIXI.sound.togglePauseAll();
     this.className = this.className.replace(/\b(on|off)/g, '');
     this.className += paused ? 'on' : 'off'; 
 });
 
 document.querySelector("#muted").addEventListener('click', function() {
-    const muted = PIXI.sound.toggleMuteAll();
+    var muted = PIXI.sound.toggleMuteAll();
     this.className = this.className.replace(/ (on|off)/g, ' ');
     this.className += muted ? 'on' : 'off'; 
 });
