@@ -242,7 +242,15 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         this._lastUpdate = this._now();
         this._elapsed = start;
         this._source.onended = this._onComplete.bind(this);
-        this._source.start(0, start, (end ? end - start : undefined));
+
+        if (end)
+        {
+            this._source.start(0, start, end - start);
+        }
+        else
+        {
+            this._source.start(0, start);
+        }
 
         /**
          * The sound is started.

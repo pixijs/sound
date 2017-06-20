@@ -1,15 +1,15 @@
 
-const $ = document.querySelector.bind(document);
-const $$ = document.querySelectorAll.bind(document);
+var $ = document.querySelector.bind(document);
+var $$ = document.querySelectorAll.bind(document);
 
-const autorun = $$('code[data-autorun]');
-for (let i = 0; i < autorun.length; i++) {
+var autorun = $$('code[data-autorun]');
+for (var i = 0; i < autorun.length; i++) {
     eval(autorun[i].innerHTML);
 }
 
-const buttons = $$('button[data-code]');
-for (let i = 0; i < buttons.length; i++) {
-    const button = buttons[i];
+var buttons = $$('button[data-code]');
+for (var i = 0; i < buttons.length; i++) {
+    var button = buttons[i];
     button.dataset.codeContent = $(button.dataset.code).innerHTML;
     if (button.dataset.beforecode) {
         button.dataset.beforecodeContent = $(button.dataset.beforecode).innerHTML;

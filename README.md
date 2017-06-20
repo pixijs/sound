@@ -22,7 +22,7 @@ WebAudio API playback without any Flash shims or HTML Audio fallback. Modern aud
 * Chrome 58+
 * Firefox 49+
 * Safari 10+
-* iOS 10+
+* iOS 9+
 
 ## Usage
 
