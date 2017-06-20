@@ -1,8 +1,8 @@
 
-const $ = document.querySelector.bind(document);
-const $$ = document.querySelectorAll.bind(document);
+var $ = document.querySelector.bind(document);
+var $$ = document.querySelectorAll.bind(document);
 
-const sprites = {
+var sprites = {
     'alien death': {
         start: 1, 
         end: 2
@@ -40,21 +40,21 @@ const sprites = {
         end:  19.3
     }
 };
-let playhead = new PIXI.Graphics()
+var playhead = new PIXI.Graphics()
     .beginFill(0xff0000)
     .drawRect(0, 0, 1, 100);
 playhead.x = -1;
-const sound = PIXI.sound.Sound.from({
+var sound = PIXI.sound.Sound.from({
     src: 'resources/sprite.mp3',
     sprites: sprites,
     singleInstance: true,
     preload: true,
-    loaded: () => {
-        const app = new PIXI.Application(1024, 100, {
+    loaded: function() {
+        var app = new PIXI.Application(1024, 100, {
             backgroundColor: 0xffffff,
             view: document.getElementById('waveform')
         });
-        const baseTexture = PIXI.sound.utils.render(sound, {
+        var baseTexture = PIXI.sound.utils.render(sound, {
             width: 1024,
             height: 100,
             fill: '#ccc'
@@ -63,9 +63,9 @@ const sound = PIXI.sound.Sound.from({
     }
 });
 
-const buttons = $$('button[data-sprite]');
-for (let i = 0; i < buttons.length; i++) {
-    const button = buttons[i];
+var buttons = $$('button[data-sprite]');
+for (var i = 0; i < buttons.length; i++) {
+    var button = buttons[i];
     button.addEventListener('click', function() {
         sound.play(this.dataset.sprite).on('progress', function(value)
         {

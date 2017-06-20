@@ -57,6 +57,7 @@
   },
   "homepage": "https://github.com/pixijs/pixi-sound#readme",
   "devDependencies": {
+    "@types/node": "^8.0.0",
     "browserify": "^14.0.0",
     "electron": "^1.4.15",
     "floss": "^2.0.1",
