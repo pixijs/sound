@@ -1,4 +1,3 @@
-
 jQuery('.section-tabs').stickyTabs();
 
 var $ = document.querySelector.bind(document);
