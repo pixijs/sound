@@ -15,7 +15,7 @@
     "clean": "rimraf dist/**",
     "start": "npm run watch",
     "watch": "npm run build:dev -- --watch",
-    "lint": "tslint examples/**.js test/*.js src/**.ts --format=stylish --fix",
+    "lint": "tslint examples/**.js test/*.js src/**.ts rollup.config.js --format=stylish --fix",
     "prebuild": "npm run clean && npm run lint",
     "build": "npm run build:dev && npm run build:prod && npm run build:es:dev && npm run build:es:prod",
     "build:dev": "rollup -c --environment BUILD:dev",

@@ -1,17 +1,17 @@
-import typescript from 'rollup-plugin-typescript2';
-import uglify from 'rollup-plugin-uglify-es';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import pkg from './package.json';
+import typescript from "rollup-plugin-typescript2";
+import uglify from "rollup-plugin-uglify-es";
+import resolve from "rollup-plugin-node-resolve";
+import commonjs from "rollup-plugin-commonjs";
+import pkg from "./package.json";
 
-const prod = process.env.BUILD === 'prod';
-const suffix = prod ? '.min' : '';
+const prod = process.env.BUILD === "prod";
+const suffix = prod ? ".min" : "";
 const plugins = [
     typescript(),
     resolve({ jsnext: true }),
-    commonjs()
+    commonjs(),
 ];
-const compiled = (new Date()).toUTCString().replace(/GMT/g, 'UTC');
+const compiled = (new Date()).toUTCString().replace(/GMT/g, "UTC");
 
 // Minify output for production
 if (prod) {
@@ -32,12 +32,12 @@ const banner = `/*!
  * of the library, ideally included using the <script> element
  */
 export default {
-    entry: 'src/index.ts',
+    entry: "src/index.ts",
     sourceMap: true,
-    moduleName: 'PixiSound',
+    moduleName: "PixiSound",
     intro: 'if (typeof PIXI === "undefined") { throw "PixiJS required"; }',
     banner,
     dest: `dist/pixi-sound${suffix}.js`,
-    format: 'umd',
-    plugins
+    format: "umd",
+    plugins,
 };
