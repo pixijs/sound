@@ -519,7 +519,7 @@ export default class Sound
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
      */
-    public play(source?: PlayOptions|CompleteCallback,
+    public play(source?: string|PlayOptions|CompleteCallback,
                 callback?: CompleteCallback): IMediaInstance|Promise<IMediaInstance>;
 
     // Overloaded function

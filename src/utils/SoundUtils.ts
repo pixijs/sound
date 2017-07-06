@@ -1,4 +1,3 @@
-import uuid = require("uuid/v4");
 import SoundLibrary from "../SoundLibrary";
 import Sound from "../Sound";
 import WebAudioMedia from "../webaudio/WebAudioMedia";
@@ -16,6 +15,14 @@ export interface RenderOptions {
  */
 export default class SoundUtils
 {
+    /**
+     * Increment the alias for play once
+     * @static
+     * @private
+     * @default 0
+     */
+    private static PLAY_ID = 0;
+
     /**
      * Create a new sound for a sine wave-based tone.  **Only supported with WebAudio**
      * @method PIXI.sound.utils.sineTone
@@ -137,7 +144,7 @@ export default class SoundUtils
      */
     public static playOnce(url: string, callback?: (err?: Error) => void): string
     {
-        const alias = uuid();
+        const alias = `alias${SoundUtils.PLAY_ID++}`;
 
         SoundLibrary.instance.add(alias, {
             url,

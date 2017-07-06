@@ -2,16 +2,23 @@ import Filterable from "./Filterable";
 import * as filters from "./filters";
 import Filter from "./filters/Filter";
 import * as htmlaudio from "./htmlaudio";
+import {HTMLAudioContext} from "./htmlaudio";
 import {IMediaContext} from "./interfaces/IMediaContext";
 import {IMediaInstance} from "./interfaces/IMediaInstance";
 import LoaderMiddleware from "./loader";
 import {CompleteCallback, Options, PlayOptions} from "./Sound";
 import Sound from "./Sound";
 import SoundSprite from "./sprites/SoundSprite";
-import SoundUtils from "./utils/SoundUtils";
+import utils from "./utils/SoundUtils";
+import {WebAudioContext} from "./webaudio";
 import * as webaudio from "./webaudio";
 
 export type SoundMap = {[id: string]: Options|string|ArrayBuffer|HTMLAudioElement};
+
+/**
+ * Playing sound files with WebAudio API
+ * @namespace PIXI.sound
+ */
 
 /**
  * @description Manages the playback of sounds.
@@ -25,16 +32,6 @@ export default class SoundLibrary
      * Singleton instance
      */
     public static instance: SoundLibrary;
-
-    // These are already documented else where
-    public Sound: typeof Sound;
-    public SoundLibrary: typeof SoundLibrary;
-    public SoundSprite: typeof SoundSprite;
-    public Filterable: typeof Filterable;
-    public filters: typeof filters;
-    public utils: typeof SoundUtils;
-    public htmlaudio: typeof htmlaudio;
-    public webaudio: typeof webaudio;
 
     /**
      * For legacy approach for Audio. Instead of using WebAudio API
@@ -60,7 +57,7 @@ export default class SoundLibrary
      * @type {PIXI.sound.webaudio.WebAudioContext}
      * @private
      */
-    private _webAudioContext: webaudio.WebAudioContext;
+    private _webAudioContext: WebAudioContext;
 
     /**
      * The HTML Audio (legacy) context.
@@ -68,7 +65,7 @@ export default class SoundLibrary
      * @type {PIXI.sound.webaudio.WebAudioContext}
      * @private
      */
-    private _htmlAudioContext: htmlaudio.HTMLAudioContext;
+    private _htmlAudioContext: HTMLAudioContext;
 
     /**
      * The map of all sounds by alias.
@@ -82,18 +79,11 @@ export default class SoundLibrary
     {
         if (this.supported)
         {
-            this._webAudioContext = new webaudio.WebAudioContext();
+            this._webAudioContext = new WebAudioContext();
         }
-        this._htmlAudioContext = new htmlaudio.HTMLAudioContext();
+        this._htmlAudioContext = new HTMLAudioContext();
         this._sounds = {};
         this.useLegacy = !this.supported;
-        this.utils = SoundUtils;
-        this.filters = filters;
-        this.htmlaudio = htmlaudio;
-        this.webaudio = webaudio;
-        this.Sound = Sound;
-        this.SoundLibrary = SoundLibrary;
-        this.Filterable = Filterable;
     }
 
     /**
@@ -120,6 +110,41 @@ export default class SoundLibrary
         }
         SoundLibrary.instance = new SoundLibrary();
         return SoundLibrary.instance;
+    }
+
+    /**
+     * Set the `PIXI.sound` window namespace object. By default
+     * the global namespace is disabled, so `PIXI.sound` would not
+     * be accessible in environments like Electron and Webpack.
+     * Not necessary when using the browser-based build.
+     * @method PIXI.sound#global
+     * @example
+     * import {sound} from 'pixi-sound';
+     * sound.global(); // Now can use PIXI.sound
+     */
+    public global(): void
+    {
+        const PixiJS = PIXI as any;
+
+        if (!PixiJS.sound)
+        {
+            Object.defineProperty(PixiJS, "sound",
+            {
+                get() { return SoundLibrary.instance; },
+            });
+
+            Object.defineProperties(PixiJS.sound,
+            {
+                filters: { get() { return filters; } },
+                htmlaudio: { get() { return htmlaudio; } },
+                webaudio: { get() { return webaudio; } },
+                utils: { get() { return utils; } },
+                Sound: { get() { return Sound; } },
+                SoundSprite: { get() { return SoundSprite; } },
+                Filterable: { get() { return Filterable; } },
+                SoundLibrary: { get() { return SoundLibrary; } },
+            });
+        }
     }
 
     /**
@@ -158,7 +183,7 @@ export default class SoundLibrary
      */
     public get supported(): boolean
     {
-        return webaudio.WebAudioContext.AudioContext !== null;
+        return WebAudioContext.AudioContext !== null;
     }
 
     /**

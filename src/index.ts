@@ -1,39 +1,21 @@
-import LoaderMiddleware from "./loader";
+import sound from "./browser";
+import Filterable from "./Filterable";
+import * as filters from "./filters";
+import * as htmlaudio from "./htmlaudio";
+import Sound from "./Sound";
 import SoundLibrary from "./SoundLibrary";
-import "./utils/polyfills";
+import SoundSprite from "./sprites/SoundSprite";
+import utils from "./utils/SoundUtils";
+import * as webaudio from "./webaudio";
 
-// Mixin any deprecations
-import "./deprecations";
-
-// Create instance of the library
-const sound = SoundLibrary.init();
-
-/**
- * @namespace PIXI
- */
-
-// There's no PIXI object, create it
-// library doesn't depend on PIXI strictly
-if ((global as any).PIXI === undefined)
-{
-    throw new Error("pixi.js is required");
-}
-
-if (PIXI.loaders !== undefined)
-{
-    // Install the middleware to support
-    // PIXI.loader and new PIXI.loaders.Loader
-    LoaderMiddleware.install(sound);
-}
-
-/**
- * Playing sound files with WebAudio API
- * @namespace PIXI.sound
- */
-Object.defineProperty(PIXI, "sound",
-{
-    get() { return sound; },
-});
-
-// Export the default plugin instance
-export default sound;
+export {
+    filters,
+    htmlaudio,
+    webaudio,
+    sound,
+    utils,
+    Sound,
+    SoundSprite,
+    Filterable,
+    SoundLibrary
+};

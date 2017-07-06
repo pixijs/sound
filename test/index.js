@@ -4,14 +4,20 @@ require("pixi.js");
 // Import the library
 module.exports = function(libraryPath, useLegacy)
 {
-    const library = require(libraryPath).default;
+    const {
+        Sound,
+        utils,
+        webaudio,
+        htmlaudio,
+        SoundLibrary,
+        filters,
+        sound,
+    } = require(libraryPath);
+
     const path = require("path");
 
     // Global reference to the resources
     global.__resources = path.join(__dirname, "resources");
-
-    // Set the legacy
-    library.useLegacy = useLegacy;
 
     function webAudioOnly(fn) {
         return !useLegacy ? fn : undefined;
@@ -27,13 +33,27 @@ module.exports = function(libraryPath, useLegacy)
 
     describe("PIXI.sound", function()
     {
+        before(function()
+        {
+            // Set the legacy
+            sound.useLegacy = !!useLegacy;
+        });
+
         after(function()
         {
-            library.removeAll();
+            PIXI.loader.reset();
+            sound.removeAll();
+        });
+
+        afterEach(function()
+        {
+            Sound._pool.length = 0;
         });
 
         it("should have the correct classes", function()
         {
+            sound.global(); // Install globally at PIXI.sound
+
             expect(PIXI.sound).to.be.a.function;
             expect(PIXI.sound.Sound).to.be.a.function;
             expect(PIXI.sound.utils).to.be.a.function;
@@ -46,24 +66,28 @@ module.exports = function(libraryPath, useLegacy)
             expect(PIXI.sound.filters.ReverbFilter).to.be.a.function;
             expect(PIXI.sound.filters.StereoFilter).to.be.a.function;
             expect(PIXI.sound).to.be.instanceof(PIXI.sound.SoundLibrary);
-            expect(library).to.equal(PIXI.sound);
+
+            expect(sound).to.equal(PIXI.sound);
+            expect(filters).to.equal(PIXI.sound.filters);
+            expect(webaudio).to.equal(PIXI.sound.webaudio);
+            expect(htmlaudio).to.equal(PIXI.sound.htmlaudio);
         });
 
         it("should load file with Node's filesystem", webAudioOnly(function(done)
         {
-            library.add("silence",
+            sound.add("silence",
             {
                 preload: true,
                 url: manifest.silence,
                 useXHR: false,
-                loaded: (err, sound) => {
-                    expect(sound.isLoaded).to.be.true;
-                    expect(sound.isPlayable).to.be.true;
-                    expect(sound.autoPlay).to.be.false;
-                    expect(sound.loop).to.be.false;
-                    expect(sound.preload).to.be.true;
-                    expect(sound).to.be.instanceof(library.Sound);
-                    library.removeAll();
+                loaded: (err, s) => {
+                    expect(s.isLoaded).to.be.true;
+                    expect(s.isPlayable).to.be.true;
+                    expect(s.autoPlay).to.be.false;
+                    expect(s.loop).to.be.false;
+                    expect(s.preload).to.be.true;
+                    expect(s).to.be.instanceof(Sound);
+                    sound.removeAll();
                     done();
                 },
             });
@@ -73,15 +97,15 @@ module.exports = function(libraryPath, useLegacy)
         {
             this.slow(200);
             let counter = 0;
-            const results = library.add(manifest, {
+            const results = sound.add(manifest, {
                 preload: true,
-                loaded: (err, sound) => {
-                    expect(sound.isLoaded).to.be.true;
-                    expect(sound.isPlayable).to.be.true;
-                    expect(sound.autoPlay).to.be.false;
-                    expect(sound.loop).to.be.false;
-                    expect(sound.preload).to.be.true;
-                    expect(sound).to.be.instanceof(library.Sound);
+                loaded: (err, s) => {
+                    expect(s.isLoaded).to.be.true;
+                    expect(s.isPlayable).to.be.true;
+                    expect(s.autoPlay).to.be.false;
+                    expect(s.loop).to.be.false;
+                    expect(s.preload).to.be.true;
+                    expect(s).to.be.instanceof(Sound);
                     counter++;
                     if (counter === Object.keys(manifest).length)
                     {
@@ -90,62 +114,62 @@ module.exports = function(libraryPath, useLegacy)
                 },
             });
             expect(results).to.be.an.object;
-            expect(results["alert-4"]).to.be.instanceof(library.Sound);
-            expect(results["alert-7"]).to.be.instanceof(library.Sound);
-            expect(results["alert-12"]).to.be.instanceof(library.Sound);
-            expect(results["musical-11"]).to.be.instanceof(library.Sound);
-            expect(results.silence).to.be.instanceof(library.Sound);
+            expect(results["alert-4"]).to.be.instanceof(Sound);
+            expect(results["alert-7"]).to.be.instanceof(Sound);
+            expect(results["alert-12"]).to.be.instanceof(Sound);
+            expect(results["musical-11"]).to.be.instanceof(Sound);
+            expect(results.silence).to.be.instanceof(Sound);
         });
 
         it("should get a reference by alias", function()
         {
-            const sound = library.find("alert-7");
-            expect(sound).to.not.be.undefined;
-            expect(sound).to.be.instanceof(library.Sound);
+            const s = sound.find("alert-7");
+            expect(s).to.not.be.undefined;
+            expect(s).to.be.instanceof(Sound);
         });
 
         it("should play multiple at once", function()
         {
-            const sound = library.find("alert-12");
-            sound.play();
-            sound.play();
-            sound.play();
-            sound.play();
-            expect(sound.instances.length).to.equal(4);
-            sound.stop();
-            expect(sound.instances.length).to.equal(0);
+            const s = sound.find("alert-12");
+            s.play();
+            s.play();
+            s.play();
+            s.play();
+            expect(s.instances.length).to.equal(4);
+            s.stop();
+            expect(s.instances.length).to.equal(0);
         });
 
         it("should play with blocking", function()
         {
-            const sound = library.find("alert-4");
-            sound.singleInstance = true;
-            sound.play();
-            sound.play();
-            sound.play();
-            sound.play();
-            expect(sound.instances.length).to.equal(1);
-            sound.stop();
-            expect(sound.instances.length).to.equal(0);
-            sound.singleInstance = false;
+            const s = sound.find("alert-4");
+            s.singleInstance = true;
+            s.play();
+            s.play();
+            s.play();
+            s.play();
+            expect(s.instances.length).to.equal(1);
+            s.stop();
+            expect(s.instances.length).to.equal(0);
+            s.singleInstance = false;
         });
 
         it("should play with stopping single instance", function()
         {
-            const sound = library.find("alert-4");
-            sound.play();
-            sound.play();
-            sound.play();
-            const instance = sound.play();
+            const s = sound.find("alert-4");
+            s.play();
+            s.play();
+            s.play();
+            const instance = s.play();
             instance.stop();
-            expect(sound.instances.length).to.equal(3);
-            sound.stop();
-            expect(sound.instances.length).to.equal(0);
+            expect(s.instances.length).to.equal(3);
+            s.stop();
+            expect(s.instances.length).to.equal(0);
         });
 
         it("should play a sound by alias", function(done)
         {
-            library.play("silence", {
+            sound.play("silence", {
                 complete: function()
                 {
                     done();
@@ -155,71 +179,71 @@ module.exports = function(libraryPath, useLegacy)
 
         it("should remove all sounds", function()
         {
-            library.removeAll();
-            expect(Object.keys(library._sounds).length).to.equal(0);
+            sound.removeAll();
+            expect(Object.keys(sound._sounds).length).to.equal(0);
         });
 
         it("should load a sound file", function(done)
         {
             const alias = "silence";
-            const sound = library.add(alias, {
+            const s = sound.add(alias, {
                 url: manifest[alias],
                 volume: 0,
                 preload: true,
                 loaded: (err, instance) =>
                 {
                     expect(err).to.be.null;
-                    expect(instance).to.equal(sound);
+                    expect(instance).to.equal(s);
                     expect(instance.isPlayable).to.be.true;
-                    expect(library.exists(alias)).to.be.true;
-                    library.remove(alias);
-                    expect(library.exists(alias)).to.be.false;
+                    expect(sound.exists(alias)).to.be.true;
+                    sound.remove(alias);
+                    expect(sound.exists(alias)).to.be.false;
                     done();
                 },
             });
-            expect(sound.isLoaded).to.be.false;
-            expect(sound.isPlayable).to.be.false;
+            expect(s.isLoaded).to.be.false;
+            expect(s.isPlayable).to.be.false;
         });
 
         it("should play a file", function(done)
         {
             const alias = "silence";
-            const sound = library.add(alias, {
+            const s = sound.add(alias, {
                 url: manifest[alias],
                 preload: true,
                 loaded: () =>
                 {
-                    expect(library.volume(alias)).to.equal(1);
-                    library.volume(alias, 0);
-                    expect(library.volume(alias)).to.equal(0);
-                    expect(sound.volume).to.equal(0);
+                    expect(sound.volume(alias)).to.equal(1);
+                    sound.volume(alias, 0);
+                    expect(sound.volume(alias)).to.equal(0);
+                    expect(s.volume).to.equal(0);
 
-                    const instance = library.play(alias, () =>
+                    const instance = sound.play(alias, () =>
                     {
                         expect(instance.progress).to.equal(1);
-                        library.remove(alias);
+                        sound.remove(alias);
                         done();
                     });
 
                     expect(instance.progress).to.equal(0);
 
                     // Pause
-                    library.pause(alias);
-                    expect(sound.isPlaying).to.be.false;
+                    sound.pause(alias);
+                    expect(s.isPlaying).to.be.false;
 
                     // Resume
-                    library.resume(alias);
-                    expect(sound.isPlaying).to.be.true;
+                    sound.resume(alias);
+                    expect(s.isPlaying).to.be.true;
                 },
             });
         });
 
         it("sound play once a file", function(done)
         {
-            const alias = library.utils.playOnce(manifest.silence, (err) =>
+            const alias = utils.playOnce(manifest.silence, (err) =>
             {
                 expect(alias).to.be.ok;
-                expect(library.exists(alias)).to.be.false;
+                expect(sound.exists(alias)).to.be.false;
                 expect(err).to.be.null;
                 done();
             });
@@ -228,17 +252,17 @@ module.exports = function(libraryPath, useLegacy)
         it("should play a sine tone", webAudioOnly(function(done)
         {
             this.slow(300);
-            const sound = library.utils.sineTone(200, 0.1);
-            sound.volume = 0;
-            sound.play(() => {
+            const s = utils.sineTone(200, 0.1);
+            s.volume = 0;
+            s.play(() => {
                 done();
             });
-            expect(sound.isPlaying);
+            expect(s.isPlaying);
         }));
 
         it("should setup sprites", function() {
             const alias = "musical-11";
-            const sound = library.add(alias, {
+            const s = sound.add(alias, {
                 url: manifest[alias],
                 sprites: {
                     foo: {
@@ -251,15 +275,15 @@ module.exports = function(libraryPath, useLegacy)
                     },
                 },
             });
-            expect(Object.keys(sound.sprites).length).to.equal(2);
-            expect(sound.sprites.foo.start).to.equal(0);
-            expect(sound.sprites.foo.end).to.equal(2);
-            expect(sound.sprites.foo.duration).to.equal(2);
-            expect(sound.sprites.bar.start).to.equal(3);
-            expect(sound.sprites.bar.end).to.equal(5);
-            expect(sound.sprites.bar.duration).to.equal(2);
-            expect(sound.sprites.foo.parent).to.equal(sound);
-            expect(sound.sprites.bar.parent).to.equal(sound);
+            expect(Object.keys(s.sprites).length).to.equal(2);
+            expect(s.sprites.foo.start).to.equal(0);
+            expect(s.sprites.foo.end).to.equal(2);
+            expect(s.sprites.foo.duration).to.equal(2);
+            expect(s.sprites.bar.start).to.equal(3);
+            expect(s.sprites.bar.end).to.equal(5);
+            expect(s.sprites.bar.duration).to.equal(2);
+            expect(s.sprites.foo.parent).to.equal(s);
+            expect(s.sprites.bar.parent).to.equal(s);
         });
     });
 
@@ -267,18 +291,17 @@ module.exports = function(libraryPath, useLegacy)
     {
         afterEach(function()
         {
-            library.removeAll();
+            sound.removeAll();
         });
 
         it("should return Promise for playing unloaded sound", function(done)
         {
-            const Sound = library.Sound;
             const SoundInstance = useLegacy ?
-                library.htmlaudio.HTMLAudioInstance :
-                library.webaudio.WebAudioInstance;
-            const sound = Sound.from(manifest.silence);
-            expect(sound).to.be.instanceof(library.Sound);
-            const promise = sound.play();
+                htmlaudio.HTMLAudioInstance :
+                webaudio.WebAudioInstance;
+            const s = Sound.from(manifest.silence);
+            expect(s).to.be.instanceof(Sound);
+            const promise = s.play();
             promise.then((instance) => {
                 expect(instance).to.be.instanceof(SoundInstance);
                 done();
@@ -289,16 +312,16 @@ module.exports = function(libraryPath, useLegacy)
         it("should return instance for playing loaded sound", function(done)
         {
             const SoundInstance = useLegacy ?
-                library.htmlaudio.HTMLAudioInstance :
-                library.webaudio.WebAudioInstance;
-            const sound = library.Sound.from({
+                htmlaudio.HTMLAudioInstance :
+                webaudio.WebAudioInstance;
+            const s = Sound.from({
                 url: manifest.silence,
                 preload: true,
                 loaded: (err) => {
                     expect(err).to.be.null;
-                    expect(sound.isLoaded).to.be.true;
-                    expect(sound.isPlayable).to.be.true;
-                    const instance = sound.play();
+                    expect(s.isLoaded).to.be.true;
+                    expect(s.isPlayable).to.be.true;
+                    const instance = s.play();
                     expect(instance).to.be.instanceof(SoundInstance);
                     done();
                 },
@@ -310,7 +333,7 @@ module.exports = function(libraryPath, useLegacy)
     {
         afterEach(function()
         {
-            library.removeAll();
+            sound.removeAll();
         });
 
         it("should load files with the PIXI.loader", function(done)
@@ -329,10 +352,10 @@ module.exports = function(libraryPath, useLegacy)
                     const ClassRef = useLegacy ? HTMLAudioElement : ArrayBuffer;
                     expect(resources[name].data).to.be.instanceof(ClassRef);
                     expect(resources[name].sound).to.be.ok;
-                    const sound = resources[name].sound;
-                    expect(sound).to.be.instanceof(library.Sound);
-                    expect(sound.isLoaded).to.be.true;
-                    expect(sound.isPlayable).to.be.true;
+                    const s = resources[name].sound;
+                    expect(s).to.be.instanceof(Sound);
+                    expect(s.isLoaded).to.be.true;
+                    expect(s.isPlayable).to.be.true;
                 }
                 done();
             });

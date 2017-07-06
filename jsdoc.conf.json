@@ -21,7 +21,12 @@
         "applicationName": "PIXI.sound",
         "footer"        : "Made with ♥ by Matt Karl (github.com/bigtimebuddy)",
         "copyright"     : "PIXI Copyright &copy; 2017 Matt Karl.",
-        "linenums"      : false
+        "linenums"      : false,
+        "meta": {
+            "title": "PIXI.sound API Documentation",
+            "description": "Documentation for PIXI.sound library",
+            "keyword": "docs, documentation, pixi, pixijs, webaudio, html5, audio, javascript, jsdoc"
+        }
     },
     "markdown"  : {
         "parser"        : "gfm",

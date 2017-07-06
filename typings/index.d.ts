@@ -1,3 +1,2 @@
-/// <reference path="globals/es6-shim/index.d.ts" />
-/// <reference path="globals/pixi.js/index.d.ts" />
-/// <reference path="globals/uuid/index.d.ts" />
+declare module 'es6-object-assign';
+declare module 'promise-polyfill';

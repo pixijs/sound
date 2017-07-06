@@ -1,4 +1,8 @@
-
+.github img {
+    width:20px;
+    height:20px;
+    margin-right:5px;
+}
 .eq-sliders {
     margin-bottom:15px;
 }
