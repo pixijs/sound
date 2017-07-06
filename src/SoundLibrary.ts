@@ -1,3 +1,5 @@
+import ObjectAssign from "es6-object-assign";
+import PromisePolyfill from "promise-polyfill";
 import Filterable from "./Filterable";
 import * as filters from "./filters";
 import Filter from "./filters/Filter";
@@ -108,8 +110,35 @@ export default class SoundLibrary
         {
             throw new Error("SoundLibrary is already created");
         }
-        SoundLibrary.instance = new SoundLibrary();
-        return SoundLibrary.instance;
+        const instance = SoundLibrary.instance = new SoundLibrary();
+
+        // Apply polyfills
+        if (typeof Object.assign === "undefined")
+        {
+            ObjectAssign.polyfill();
+        }
+
+        if (typeof Promise === "undefined")
+        {
+            (window as any).Promise = PromisePolyfill;
+        }
+
+        // In some cases loaders can be not included
+        // the the bundle for PixiJS, custom builds
+        if (typeof PIXI.loaders !== "undefined")
+        {
+            // Install the middleware to support
+            // PIXI.loader and new PIXI.loaders.Loader
+            LoaderMiddleware.install(instance);
+        }
+
+        // Browser environments, don't auto expose globals
+        if (typeof module === "undefined")
+        {
+            instance.global();
+        }
+
+        return instance;
     }
 
     /**
@@ -133,7 +162,7 @@ export default class SoundLibrary
                 get() { return SoundLibrary.instance; },
             });
 
-            Object.defineProperties(PixiJS.sound,
+            Object.defineProperties(SoundLibrary.instance,
             {
                 filters: { get() { return filters; } },
                 htmlaudio: { get() { return htmlaudio; } },

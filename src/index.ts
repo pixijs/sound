@@ -1,4 +1,3 @@
-import sound from "./browser";
 import Filterable from "./Filterable";
 import * as filters from "./filters";
 import * as htmlaudio from "./htmlaudio";
@@ -7,6 +6,8 @@ import SoundLibrary from "./SoundLibrary";
 import SoundSprite from "./sprites/SoundSprite";
 import utils from "./utils/SoundUtils";
 import * as webaudio from "./webaudio";
+
+const sound = SoundLibrary.init();
 
 export {
     filters,

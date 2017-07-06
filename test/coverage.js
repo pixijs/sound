@@ -1,2 +1,2 @@
-require("./module");
-require("./module.legacy");
+require("./")("../coverage/pixi-sound");
+require("./")("../coverage/pixi-sound");

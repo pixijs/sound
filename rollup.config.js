@@ -32,12 +32,12 @@ const banner = `/*!
  * of the library, ideally included using the <script> element
  */
 export default {
-    entry: 'src/browser.ts',
+    entry: 'src/index.ts',
     sourceMap: true,
     moduleName: 'PixiSound',
     intro: 'if (typeof PIXI === "undefined") { throw "PixiJS required"; }',
     banner,
     dest: `dist/pixi-sound${suffix}.js`,
-    format: 'iife',
+    format: 'umd',
     plugins
 };
