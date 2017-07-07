@@ -34,7 +34,7 @@ const banner = `/*!
 export default {
     entry: "src/index.ts",
     sourceMap: true,
-    moduleName: "PixiSound",
+    moduleName: "__pixiSound",
     intro: 'if (typeof PIXI === "undefined") { throw "PixiJS required"; }',
     banner,
     dest: `dist/pixi-sound${suffix}.js`,

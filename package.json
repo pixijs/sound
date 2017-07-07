@@ -7,9 +7,7 @@
   "types": "dist/types/index.d.ts",
   "scripts": {
     "pretest": "npm run build",
-    "test": "npm run test:module && npm run test:module:legacy",
-    "test:module": "floss --path=test/module.js",
-    "test:module:legacy": "floss --path=test/module.legacy.js",
+    "test": "floss --path=test/dist.js",
     "precoverage": "npm run build:dev -- -o coverage/pixi-sound.js -f cjs -e es6-object-assign,promise-polyfill",
     "coverage": "floss --path=test/coverage.js -c \"coverage/pixi-sound.js\" -s",
     "clean": "rimraf dist/**",

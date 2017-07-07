@@ -132,7 +132,16 @@ export default class SoundLibrary
             LoaderMiddleware.install(instance);
         }
 
-        // Browser environments, don't auto expose globals
+        // Remove the global namespace created by rollup
+        // makes it possible for users to opt-in to exposing
+        // the library globally
+        if (typeof (window as any).__pixiSound === "undefined")
+        {
+            delete (window as any).__pixiSound;
+        }
+
+        // Webpack and NodeJS-like environments will not expose
+        // the library to the window by default, user must opt-in
         if (typeof module === "undefined")
         {
             instance.global();
@@ -143,9 +152,11 @@ export default class SoundLibrary
 
     /**
      * Set the `PIXI.sound` window namespace object. By default
-     * the global namespace is disabled, so `PIXI.sound` would not
-     * be accessible in environments like Electron and Webpack.
-     * Not necessary when using the browser-based build.
+     * the global namespace is disabled in environments that use
+     * require/module (e.g. Webpack), so `PIXI.sound` would not
+     * be accessible these environments. Window environments
+     * will automatically expose the window object, calling this
+     * method will do nothing.
      * @method PIXI.sound#global
      * @example
      * import {sound} from 'pixi-sound';

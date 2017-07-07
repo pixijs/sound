@@ -15,6 +15,7 @@ module.exports = function(libraryPath, useLegacy)
     } = require(libraryPath);
 
     const path = require("path");
+    const suffix = useLegacy ? " (legacy)" : "";
 
     // Global reference to the resources
     global.__resources = path.join(__dirname, "resources");
@@ -31,7 +32,7 @@ module.exports = function(libraryPath, useLegacy)
         "silence": path.join(__resources, "silence.mp3"),
     };
 
-    describe("PIXI.sound", function()
+    describe("PIXI.sound" + suffix, function()
     {
         before(function()
         {
@@ -287,7 +288,7 @@ module.exports = function(libraryPath, useLegacy)
         });
     });
 
-    describe("PIXI.sound.SoundInstance", function()
+    describe("PIXI.sound.SoundInstance" + suffix, function()
     {
         afterEach(function()
         {
@@ -329,7 +330,7 @@ module.exports = function(libraryPath, useLegacy)
         });
     });
 
-    describe("PIXI.loader", function()
+    describe("PIXI.loader" + suffix, function()
     {
         afterEach(function()
         {
