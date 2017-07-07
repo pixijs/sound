@@ -18,28 +18,35 @@ $('#stop').addEventListener('click', function() {
     sound.stop();
 });
 
-sortable('.filter-list', {
-    forcePlaceholderSize: true,
-    handle: '.handle'
-})[0].addEventListener('sortupdate', function(e) {
-    var ul = e.detail.startparent;
-    for (var i = 0; i < ul.children.length; i++) {
-        var li = ul.children[i];
-        allFiltersMap[li.dataset.id].index = i;
-    }
-    refresh();
-});
+try {
+    sortable('.filter-list', {
+        forcePlaceholderSize: true,
+        handle: '.handle'
+    })[0].addEventListener('sortupdate', function(e) {
+        var ul = e.detail.startparent;
+        for (var i = 0; i < ul.children.length; i++) {
+            var li = ul.children[i];
+            allFiltersMap[li.getAttribute('data-id')].index = i;
+        }
+        refresh();
+    });
+}
+catch(e) {
+    // not support in IE 9
+    console.warn('Sortable not supported in this browser');
+}
+
 
 var checks = $$('.filter');
 for (var i = 0; i < checks.length; i++) {
     var filter = checks[i];
     var controller = {
-        name: filter.dataset.id,
-        filter: new PIXI.sound.filters[filter.dataset.id](),
+        name: filter.getAttribute('data-id'),
+        filter: new PIXI.sound.filters[filter.getAttribute('data-id')](),
         index: i,
         enabled: false
     };
-    allFiltersMap[filter.dataset.id] = controller;
+    allFiltersMap[filter.getAttribute('data-id')] = controller;
     allFilters.push(controller);
     filter.addEventListener('change', toggle.bind(null, controller));
 }
@@ -56,13 +63,13 @@ function refresh() {
 
     for (var i = 0; i < ranges.length; i++) {
         var range = ranges[i];
-        var controller = allFiltersMap[range.dataset.id];
+        var controller = allFiltersMap[range.getAttribute('data-id')];
         if (controller.enabled) {
-            controller.filter[range.dataset.prop] = parseFloat(range.value);
+            controller.filter[range.getAttribute('data-prop')] = parseFloat(range.value);
         }
     }
 
-    var buffer = "var sound = PIXI.sound.add('music', 'resources/musical.mp3');\n";
+    var buffer = "const sound = PIXI.sound.add('music', 'resources/musical.mp3');\n";
     var inserts = [];
 
     sound.filters = allFilters.sort(function(a, b) {
@@ -74,13 +81,13 @@ function refresh() {
         var show = false;
         for (var i = 0; i < ranges.length; i++) {
             var range = ranges[i];
-            if (range.dataset.id !== controller.name) {
+            if (range.getAttribute('data-id') !== controller.name) {
                 continue;
             }
-            if (range.value !== range.dataset.default) {
+            if (range.value !== range.getAttribute('data-default')) {
                 show = true;
             }
-            args[parseInt(range.dataset.index)] = range.value;
+            args[parseInt(range.getAttribute('data-index'))] = range.value;
         }
         inserts.push('new PIXI.sound.filters.' + controller.name + '(' + (show ? args.join(', ') : '') + ')');
         return controller.filter;

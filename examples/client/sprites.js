@@ -67,7 +67,7 @@ var buttons = $$('button[data-sprite]');
 for (var i = 0; i < buttons.length; i++) {
     var button = buttons[i];
     button.addEventListener('click', function() {
-        sound.play(this.dataset.sprite).on('progress', function(value)
+        sound.play(this.getAttribute('data-sprite')).on('progress', function(value)
         {
             playhead.x = 1024 * value;
         });

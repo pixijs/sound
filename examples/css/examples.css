@@ -8,6 +8,8 @@
 }
 .range-group {
     height:30px;
+    display:block;
+    clear:both;
 }
 .range-group label {
     display:block;
@@ -42,7 +44,8 @@
     float: left;
     width:75%;
     margin:0;
-    height:30px;
+    min-height: auto;
+    height: 30px;
 }
 
 .sound-list {

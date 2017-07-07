@@ -21,7 +21,7 @@ PIXI.loader.load(function(loader, resources) {
     var plays = document.querySelectorAll('button[data-sound]');
     for (var i = 0; i < plays.length; i++) {
         var button = plays[i];
-        var alias = button.dataset.sound;
+        var alias = button.getAttribute('data-sound');
         var sound = resources[alias].sound;
         if ('ontouchstart' in window) {
             button.addEventListener('touchstart', play, false);
@@ -34,9 +34,9 @@ PIXI.loader.load(function(loader, resources) {
 
 function play() {
     var button = this;
-    var sound = PIXI.loader.resources[button.dataset.sound].sound;
-    var loop = !!button.dataset.loop;
-    var playing = !parseInt(button.dataset.playing);
+    var sound = PIXI.loader.resources[button.getAttribute('data-sound')].sound;
+    var loop = !!button.getAttribute('data-loop');
+    var playing = !parseInt(button.getAttribute('data-playing'));
     if (loop) {
         togglePlaying(button);
         sound.stop();
@@ -57,10 +57,10 @@ function play() {
 }
 
 function togglePlaying(button) {
-    var playing = !parseInt(button.dataset.playing);
+    var playing = !parseInt(button.getAttribute('data-playing'));
     button.className = button.className.replace(/ (play|stop) btn\-(info|default)/, '');
     button.className += playing ? ' stop btn-info' : ' play btn-default';
-    button.dataset.playing = playing ? 1 : 0;
+    button.setAttribute('data-playing', playing ? 1 : 0);
 }
 
 function progressBar(button, progress) {
@@ -79,7 +79,7 @@ document.querySelector("#stop").addEventListener('click', function() {
     var plays = document.querySelectorAll('button[data-sound]');
     for (var i = 0; i < plays.length; i++) {
         var button = plays[i];
-        if (button.dataset.playing === "1") {
+        if (button.getAttribute('data-playing') === "1") {
             togglePlaying(button);
         }
         progressBar(button, 0);
