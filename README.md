@@ -24,7 +24,7 @@ WebAudio API playback library, with filters. Modern audio playback for modern br
 * Firefox 49+
 * Safari 10+
 * iOS 9+
-* IE 11+
+* IE 9+
 
 ## Usage
 
