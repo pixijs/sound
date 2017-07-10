@@ -107,6 +107,14 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
     private _progress: number;
 
     /**
+     * Callback for update listener
+     * @type {EventListener}
+     * @name PIXI.sound.webaudio.WebAudioInstance#_updateListener
+     * @private
+     */   
+    private _updateListener: EventListener;
+
+    /**
      * Audio buffer source clone from Sound object.
      * @type {AudioBufferSourceNode}
      * @name PIXI.sound.webaudio.WebAudioInstance#_source
@@ -122,6 +130,7 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
         this._media = null;
         this._paused = false;
         this._elapsed = 0;
+        this._updateListener = this._update.bind(this) as EventListener;
 
         // Initialize
         this.init(media);
@@ -260,9 +269,14 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
      */
     private set _enabled(enabled: boolean)
     {
-        this._media.nodes.script.onaudioprocess = !enabled ? null : () => {
-            this._update();
-        };
+        const script = this._media.nodes.script;
+
+        script.removeEventListener('audioprocess', this._updateListener);
+
+        if (enabled)
+        {
+            script.addEventListener('audioprocess', this._updateListener);
+        }
     }
 
     /**
