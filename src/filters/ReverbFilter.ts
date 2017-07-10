@@ -1,5 +1,5 @@
 import Filter from './Filter';
-import soundLibrary from '../index';
+import SoundLibrary from '../SoundLibrary';
 
 /**
  * Filter for adding reverb. Refactored from 
@@ -44,7 +44,13 @@ export default class ReverbFilter extends Filter
 
     constructor(seconds:number = 3, decay:number = 2, reverse:boolean = false)
     {
-        const convolver:ConvolverNode = soundLibrary.context.audioContext.createConvolver();
+        if (SoundLibrary.instance.useLegacy)
+        {
+            super(null);
+            return;
+        }
+
+        const convolver:ConvolverNode = SoundLibrary.instance.context.audioContext.createConvolver();
 
         super(convolver);
 
@@ -70,7 +76,7 @@ export default class ReverbFilter extends Filter
     }
 
     /**
-     * Decay value from 1 to 50
+     * Length of reverb in seconds from 1 to 50
      * @name PIXI.sound.filters.ReverbFilter#decay
      * @type {Number}
      * @default 3
@@ -125,7 +131,7 @@ export default class ReverbFilter extends Filter
      */
     private _rebuild(): void
     {
-        const context = soundLibrary.context.audioContext;
+        const context = SoundLibrary.instance.context.audioContext;
         const rate:number = context.sampleRate;
         const length:number = rate * this._seconds;
         const impulse:AudioBuffer = context.createBuffer(2, length, rate);

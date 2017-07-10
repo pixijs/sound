@@ -1,12 +1,16 @@
-import Sound from "./Sound";
-import {CompleteCallback} from "./Sound";
-import SoundInstance from "./SoundInstance";
+import Sound from "../Sound";
+import {CompleteCallback} from "../Sound";
+import {IMediaInstance} from '../interfaces/IMediaInstance';
 
+// Sound sprite data setup
 export interface SoundSpriteData {
     start: number;
     end: number;
     speed?: number;
 }
+
+// Collection of sound sprites
+export type SoundSprites = {[id: string]: SoundSprite};
 
 /**
  * Object that represents a single Sound's sprite.
@@ -25,7 +29,7 @@ export default class SoundSprite
      * The reference sound
      * @name PIXI.sound.SoundSprite#parent
      * @type {PIXI.sound.Sound}
-     * @readOnly
+     * @readonly
      */
     public parent: Sound;
 
@@ -33,7 +37,7 @@ export default class SoundSprite
      * The starting location in seconds.
      * @name PIXI.sound.SoundSprite#start
      * @type {Number}
-     * @readOnly
+     * @readonly
      */
     public start: number;
 
@@ -41,7 +45,7 @@ export default class SoundSprite
      * The ending location in seconds
      * @name PIXI.sound.SoundSprite#end
      * @type {Number}
-     * @readOnly
+     * @readonly
      */
     public end: number;
 
@@ -49,7 +53,7 @@ export default class SoundSprite
      * The speed override where 1 is 100% speed playback.
      * @name PIXI.sound.SoundSprite#speed
      * @type {Number}
-     * @readOnly
+     * @readonly
      */
     public speed: number;
 
@@ -57,7 +61,7 @@ export default class SoundSprite
      * The duration of the sound in seconds.
      * @name PIXI.sound.SoundSprite#duration
      * @type {Number}
-     * @readOnly
+     * @readonly
      */
     public duration: number;
 
@@ -81,7 +85,7 @@ export default class SoundSprite
      * @param {PIXI.sound.Sound~completeCallback} [complete] Function call when complete
      * @return {PIXI.sound.SoundInstance|Promise<PIXI.sound.SoundInstance>} Sound instance being played.
      */
-    public play(complete?: CompleteCallback): SoundInstance|Promise<SoundInstance>
+    public play(complete?: CompleteCallback): IMediaInstance|Promise<IMediaInstance>
     {
         return this.parent.play(Object.assign({
             complete,

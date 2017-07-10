@@ -1,14 +1,14 @@
 {
     "compilerOptions": {
-        "module": "CommonJS",
+        "moduleResolution": "node",
         "target": "es5",
         "removeComments": true,
         "noImplicitAny": true,
         "preserveConstEnums": true,
-        "outDir": "lib",
         "sourceMap": true,
         "inlineSources": true,
-        "declaration": true
+        "declaration": true,
+        "declarationDir": "dist/types"
     },
     "files": [
         "typings/index.d.ts"
@@ -17,7 +17,6 @@
         "src/**/*"
     ],
     "exclude": [
-        "node_modules",
-        "lib"
+        "node_modules"
     ]
 }

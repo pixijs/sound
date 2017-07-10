@@ -1,5 +1,5 @@
 import Filter from './Filter';
-import soundLibrary from '../index';
+import SoundLibrary from '../SoundLibrary';
 
 interface Band {
     f:number;
@@ -29,7 +29,7 @@ export default class EqualizerFilter extends Filter
      * Band at 32 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F32
      * @type {Number}
-     * @readOnly
+     * @readonly
      */
     public static F32:number = 32;
 
@@ -37,7 +37,7 @@ export default class EqualizerFilter extends Filter
      * Band at 64 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F64
      * @type {Number}
-     * @readOnly
+     * @readonly
      */
     public static F64:number = 64;
     
@@ -45,7 +45,7 @@ export default class EqualizerFilter extends Filter
      * Band at 125 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F125
      * @type {Number}
-     * @readOnly
+     * @readonly
      */
     public static F125:number = 125;
     
@@ -53,7 +53,7 @@ export default class EqualizerFilter extends Filter
      * Band at 250 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F250
      * @type {Number}
-     * @readOnly
+     * @readonly
      */
     public static F250:number = 250;
     
@@ -61,7 +61,7 @@ export default class EqualizerFilter extends Filter
      * Band at 500 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F500
      * @type {Number}
-     * @readOnly
+     * @readonly
      */
     public static F500:number = 500;
     
@@ -69,7 +69,7 @@ export default class EqualizerFilter extends Filter
      * Band at 1000 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F1K
      * @type {Number}
-     * @readOnly
+     * @readonly
      */
     public static F1K:number = 1000;
     
@@ -77,7 +77,7 @@ export default class EqualizerFilter extends Filter
      * Band at 2000 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F2K
      * @type {Number}
-     * @readOnly
+     * @readonly
      */
     public static F2K:number = 2000;
     
@@ -85,7 +85,7 @@ export default class EqualizerFilter extends Filter
      * Band at 4000 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F4K
      * @type {Number}
-     * @readOnly
+     * @readonly
      */
     public static F4K:number = 4000;
     
@@ -93,7 +93,7 @@ export default class EqualizerFilter extends Filter
      * Band at 8000 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F8K
      * @type {Number}
-     * @readOnly
+     * @readonly
      */
     public static F8K:number = 8000;
     
@@ -101,7 +101,7 @@ export default class EqualizerFilter extends Filter
      * Band at 16000 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F16K
      * @type {Number}
-     * @readOnly
+     * @readonly
      */
     public static F16K:number = 16000;
 
@@ -109,7 +109,7 @@ export default class EqualizerFilter extends Filter
      * The list of bands 
      * @name PIXI.sounds.filters.EqualizerFilter#bands
      * @type {BiquadFilterNode[]}
-     * @readOnly
+     * @readonly
      */
     public bands:BiquadFilterNode[];
 
@@ -117,13 +117,19 @@ export default class EqualizerFilter extends Filter
      * The map of bands to frequency
      * @name PIXI.sounds.filters.EqualizerFilter#bandsMap
      * @type {Object}
-     * @readOnly
+     * @readonly
      */
     public bandsMap:{[id:number]:BiquadFilterNode};
 
     constructor(f32:number = 0, f64:number = 0, f125:number = 0, f250:number = 0, f500:number = 0,
         f1k:number = 0, f2k:number = 0, f4k:number = 0, f8k:number = 0, f16k:number = 0)
     {
+        if (SoundLibrary.instance.useLegacy)
+        {
+            super(null);
+            return;
+        }
+
         const equalizerBands:Band[] = [
             {
                 f: EqualizerFilter.F32,
@@ -176,11 +182,10 @@ export default class EqualizerFilter extends Filter
                 gain: f16k
             }
         ];
-
         
         const bands:BiquadFilterNode[] = equalizerBands.map(function (band:Band)
         {
-            const filter:BiquadFilterNode = soundLibrary.context.audioContext.createBiquadFilter();
+            const filter:BiquadFilterNode = SoundLibrary.instance.context.audioContext.createBiquadFilter();
             filter.type = band.type as BiquadFilterType;
             filter.gain.value = band.gain;
             filter.Q.value = 1;
@@ -223,6 +228,170 @@ export default class EqualizerFilter extends Filter
             throw 'No band found for frequency ' + frequency;
         }
         this.bandsMap[frequency].gain.value = gain;
+    }
+
+    /**
+     * Get gain amount on a specific frequency.
+     * @method PIXI.sound.filters.EqualizerFilter#getGain
+     * @return {number} The amount of gain set.
+     */
+    getGain(frequency:number): number
+    {
+        if (!this.bandsMap[frequency])
+        {
+            throw 'No band found for frequency ' + frequency;
+        }
+        return this.bandsMap[frequency].gain.value;
+    }
+
+    /**
+     * Gain at 32 Hz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f32
+     * @type {number}
+     * @default 0
+     */
+    public set f32(value:number)
+    {
+        this.setGain(EqualizerFilter.F32, value);
+    }
+    public get f32(): number
+    {
+        return this.getGain(EqualizerFilter.F32);
+    }
+
+    /**
+     * Gain at 64 Hz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f64
+     * @type {number}
+     * @default 0
+     */
+    public set f64(value:number)
+    {
+        this.setGain(EqualizerFilter.F64, value);
+    }
+    public get f64(): number
+    {
+        return this.getGain(EqualizerFilter.F64);
+    }
+
+    /**
+     * Gain at 125 Hz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f125
+     * @type {number}
+     * @default 0
+     */
+    public set f125(value:number)
+    {
+        this.setGain(EqualizerFilter.F125, value);
+    }
+    public get f125(): number
+    {
+        return this.getGain(EqualizerFilter.F125);
+    }
+
+    /**
+     * Gain at 250 Hz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f250
+     * @type {number}
+     * @default 0
+     */
+    public set f250(value:number)
+    {
+        this.setGain(EqualizerFilter.F250, value);
+    }
+    public get f250(): number
+    {
+        return this.getGain(EqualizerFilter.F250);
+    }
+
+    /**
+     * Gain at 500 Hz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f500
+     * @type {number}
+     * @default 0
+     */
+    public set f500(value:number)
+    {
+        this.setGain(EqualizerFilter.F500, value);
+    }
+    public get f500(): number
+    {
+        return this.getGain(EqualizerFilter.F500);
+    }
+
+    /**
+     * Gain at 1 KHz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f1k
+     * @type {number}
+     * @default 0
+     */
+    public set f1k(value:number)
+    {
+        this.setGain(EqualizerFilter.F1K, value);
+    }
+    public get f1k(): number
+    {
+        return this.getGain(EqualizerFilter.F1K);
+    }
+
+    /**
+     * Gain at 2 KHz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f2k
+     * @type {number}
+     * @default 0
+     */
+    public set f2k(value:number)
+    {
+        this.setGain(EqualizerFilter.F2K, value);
+    }
+    public get f2k(): number
+    {
+        return this.getGain(EqualizerFilter.F2K);
+    }
+
+    /**
+     * Gain at 4 KHz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f4k
+     * @type {number}
+     * @default 0
+     */
+    public set f4k(value:number)
+    {
+        this.setGain(EqualizerFilter.F4K, value);
+    }
+    public get f4k(): number
+    {
+        return this.getGain(EqualizerFilter.F4K);
+    }
+
+    /**
+     * Gain at 8 KHz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f8k
+     * @type {number}
+     * @default 0
+     */
+    public set f8k(value:number)
+    {
+        this.setGain(EqualizerFilter.F8K, value);
+    }
+    public get f8k(): number
+    {
+        return this.getGain(EqualizerFilter.F8K);
+    }
+
+    /**
+     * Gain at 16 KHz frequencey.
+     * @name PIXI.sound.filters.EqualizerFilter#f16k
+     * @type {number}
+     * @default 0
+     */
+    public set f16k(value:number)
+    {
+        this.setGain(EqualizerFilter.F16K, value);
+    }
+    public get f16k(): number
+    {
+        return this.getGain(EqualizerFilter.F16K);
     }
 
     /**

@@ -1,9 +1,51 @@
-.eq {
-    display: inline-block !important;
-    -webkit-appearance: slider-vertical;
-    width: 8% !important;
-    height: 150px;
-    margin:10px 0;
+.github img {
+    width:20px;
+    height:20px;
+    margin-right:5px;
+}
+.eq-sliders {
+    margin-bottom:15px;
+}
+.range-group {
+    height:30px;
+    display:block;
+    clear:both;
+}
+.range-group label {
+    display:block;
+    float:left;
+    width:20%;
+    margin-right:5%;
+    padding:5px 10px;
+    color:#999;
+    border-radius:4px;
+    text-align:center;
+    position: relative;
+    background: #ddd;
+    font-size:80%;
+}
+.range-group label:after {
+    left: 100%;
+    top: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: transparent;
+    border-left-color: #ddd;
+    border-width: 6px;
+    margin-top: -6px;
+}
+
+.range-group input {
+    display:block;
+    float: left;
+    width:75%;
+    margin:0;
+    min-height: auto;
+    height: 30px;
 }
 
 .sound-list {
@@ -37,8 +79,8 @@
 }
 
 .progress {
-    height: 10px;
-    margin: 10px 0 0;
+    height: 4px;
+    margin: 10px 0 5px;
 }
 
 .range {
@@ -63,11 +105,66 @@
 
 pre {
     padding: 0;
+    border:0;
 }
 pre code {
     margin: 0;
 }
 
+.code-md {
+    min-height:160px;
+}
+
 .sprites .btn {
     margin-bottom:10px;
+}
+
+.sortable-placeholder {
+    list-style-type: none;
+}
+
+.handle {
+    margin-right:10px;
+    cursor: move;
+    user-select:none;
+}
+
+button.play {
+    margin-left: 10px;
+}
+
+.loop {
+    margin-bottom:20px;
+}
+.loop.play {
+    margin-left:0;
+}
+
+.loop .glyphicon {
+    display:block;
+    margin:10px auto;
+}
+.loop.play .stop, 
+.loop.stop .play {
+    display:none
+}
+
+.volume-group .range {
+    width:120px;
+    display:inline-block;
+    margin: 0 0 0 10px;
+    vertical-align: middle;
+}
+.volume-group label {
+    font-weight:normal;
+}
+
+.volume-group {
+    border: 1px solid #ccc;
+    border-left:0;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    padding: 2px 16px;
+    font-size: 18px;
+    line-height: 1.3333333;
 }

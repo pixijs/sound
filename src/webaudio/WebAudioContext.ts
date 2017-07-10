@@ -1,42 +1,43 @@
-import Filterable from "./Filterable";
+import Filterable from "../Filterable";
+import { IMediaContext } from "../interfaces/IMediaContext";
 
 /**
  * @description Main class to handle WebAudio API. There's a simple chain
  * of AudioNode elements: analyser > gainNode > compressor > context.destination.
  * any filters that are added are inserted between the analyser and gainNode nodes
- * @class SoundContext
+ * @class WebAudioContext
  * @extends PIXI.sound.Filterable
- * @memberof PIXI.sound
+ * @memberof PIXI.sound.webaudio
  */
-export default class SoundContext extends Filterable
+export default class WebAudioContext extends Filterable implements IMediaContext
 {
     /**
      * Handle the volume.
-     * @name PIXI.sound.SoundContext#gain
+     * @name PIXI.sound.webaudio.WebAudioContext#gain
      * @type {GainNode}
-     * @readOnly
+     * @readonly
      */
     public gain: GainNode;
 
     /**
      * Context Compressor node
-     * @name PIXI.sound.SoundContext#compressor
+     * @name PIXI.sound.webaudio.WebAudioContext#compressor
      * @type {DynamicsCompressorNode}
-     * @readOnly
+     * @readonly
      */
     public compressor: DynamicsCompressorNode;
 
     /**
      * Context Analyser node
-     * @name PIXI.sound.SoundContext#analyser
+     * @name PIXI.sound.webaudio.WebAudioContext#analyser
      * @type {AnalyserNode}
-     * @readOnly
+     * @readonly
      */
     public analyser: AnalyserNode;
 
     /**
      * The instance of the AudioContext for WebAudio API.
-     * @name PIXI.sound.SoundContext#_ctx
+     * @name PIXI.sound.webaudio.WebAudioContext#_ctx
      * @type {AudioContext}
      * @private
      */
@@ -44,7 +45,7 @@ export default class SoundContext extends Filterable
 
     /**
      * The instance of the OfflineAudioContext for fast decoding audio.
-     * @name PIXI.sound.SoundContext#_offlineCtx
+     * @name PIXI.sound.webaudio.WebAudioContext#_offlineCtx
      * @type {OfflineAudioContext}
      * @private
      */
@@ -52,7 +53,7 @@ export default class SoundContext extends Filterable
 
     /**
      * Current muted status of the context
-     * @name PIXI.sound.SoundContext#_muted
+     * @name PIXI.sound.webaudio.WebAudioContext#_muted
      * @type {Boolean}
      * @private
      * @default false
@@ -61,7 +62,7 @@ export default class SoundContext extends Filterable
 
     /**
      * Current volume from 0 to 1
-     * @name PIXI.sound.SoundContext#_volume
+     * @name PIXI.sound.webaudio.WebAudioContext#_volume
      * @type {Number}
      * @private
      * @default 1
@@ -70,7 +71,7 @@ export default class SoundContext extends Filterable
 
     /**
      * Current paused status
-     * @name PIXI.sound.SoundContext#_paused
+     * @name PIXI.sound.webaudio.WebAudioContext#_paused
      * @type {Boolean}
      * @private
      * @default false
@@ -80,7 +81,7 @@ export default class SoundContext extends Filterable
     /**
      * Indicated whether audio on iOS has been unlocked, which requires a touchend/mousedown event that plays an
      * empty sound.
-     * @name PIXI.sound.SoundContext#_unlocked
+     * @name PIXI.sound.webaudio.WebAudioContext#_unlocked
      * @type {boolean}
      * @private
      */
@@ -88,7 +89,7 @@ export default class SoundContext extends Filterable
 
     constructor()
     {
-        const ctx = new SoundContext.AudioContext();
+        const ctx = new WebAudioContext.AudioContext();
         const gain: GainNode = ctx.createGain();
         const compressor: DynamicsCompressorNode = ctx.createDynamicsCompressor();
         const analyser: AnalyserNode = ctx.createAnalyser();
@@ -101,7 +102,7 @@ export default class SoundContext extends Filterable
         super(analyser, gain);
 
         this._ctx = ctx;
-        this._offlineCtx = new SoundContext.OfflineAudioContext(1, 2, ctx.sampleRate);
+        this._offlineCtx = new WebAudioContext.OfflineAudioContext(1, 2, ctx.sampleRate);
         this._unlocked = false;
 
         this.gain = gain;
@@ -132,7 +133,7 @@ export default class SoundContext extends Filterable
      * Note that earlier versions of iOS supported `touchstart` for this, but iOS9 removed this functionality. Adding
      * a `touchstart` event to support older platforms may preclude a `mousedown` even from getting fired on iOS9, so we
      * stick with `mousedown` and `touchend`.
-     * @method PIXI.sound.SoundContext#_unlock
+     * @method PIXI.sound.webaudio.WebAudioContext#_unlock
      * @private
      */
     private _unlock(): void
@@ -154,7 +155,7 @@ export default class SoundContext extends Filterable
     /**
      * Plays an empty sound in the web audio context.  This is used to enable web audio on iOS devices, as they
      * require the first sound to be played inside of a user initiated event (touch/click).
-     * @method PIXI.sound.SoundContext#playEmptySound
+     * @method PIXI.sound.webaudio.WebAudioContext#playEmptySound
      */
     public playEmptySound(): void
     {
@@ -166,7 +167,7 @@ export default class SoundContext extends Filterable
 
     /**
      * Get AudioContext class, if not supported returns `null`
-     * @name PIXI.sound.SoundContext.AudioContext
+     * @name PIXI.sound.webaudio.WebAudioContext.AudioContext
      * @type {Function}
      * @static
      */
@@ -182,7 +183,7 @@ export default class SoundContext extends Filterable
 
     /**
      * Get OfflineAudioContext class, if not supported returns `null`
-     * @name PIXI.sound.SoundContext.OfflineAudioContext
+     * @name PIXI.sound.webaudio.WebAudioContext.OfflineAudioContext
      * @type {Function}
      * @static
      */
@@ -198,7 +199,7 @@ export default class SoundContext extends Filterable
 
     /**
      * Destroy this context.
-     * @method PIXI.sound.SoundContext#destroy
+     * @method PIXI.sound.webaudio.WebAudioContext#destroy
      */
     public destroy()
     {
@@ -222,9 +223,9 @@ export default class SoundContext extends Filterable
 
     /**
      * The WebAudio API AudioContext object.
-     * @name PIXI.sound.SoundContext#audioContext
+     * @name PIXI.sound.webaudio.WebAudioContext#audioContext
      * @type {AudioContext}
-     * @readOnly
+     * @readonly
      */
     public get audioContext(): AudioContext
     {
@@ -233,9 +234,9 @@ export default class SoundContext extends Filterable
 
     /**
      * The WebAudio API OfflineAudioContext object.
-     * @name PIXI.sound.SoundContext#offlineContext
+     * @name PIXI.sound.webaudio.WebAudioContext#offlineContext
      * @type {OfflineAudioContext}
-     * @readOnly
+     * @readonly
      */
     public get offlineContext(): OfflineAudioContext
     {
@@ -245,7 +246,7 @@ export default class SoundContext extends Filterable
     /**
      * Sets the muted state.
      * @type {Boolean}
-     * @name PIXI.sound.SoundContext#muted
+     * @name PIXI.sound.webaudio.WebAudioContext#muted
      * @default false
      */
     public get muted(): boolean
@@ -261,7 +262,7 @@ export default class SoundContext extends Filterable
     /**
      * Sets the volume from 0 to 1.
      * @type {Number}
-     * @name PIXI.sound.SoundContext#volume
+     * @name PIXI.sound.webaudio.WebAudioContext#volume
      * @default 1
      */
     public set volume(volume: number)
@@ -283,7 +284,7 @@ export default class SoundContext extends Filterable
     /**
      * Pauses all sounds.
      * @type {Boolean}
-     * @name PIXI.sound.SoundContext#paused
+     * @name PIXI.sound.webaudio.WebAudioContext#paused
      * @default false
      */
     public set paused(paused: boolean)
@@ -305,13 +306,24 @@ export default class SoundContext extends Filterable
 
     /**
      * Toggles the muted state.
-     * @method PIXI.sound.SoundContext#toggleMute
+     * @method PIXI.sound.webaudio.WebAudioContext#toggleMute
      * @return {Boolean} The current muted state.
      */
     public toggleMute(): boolean
     {
         this.muted = !this.muted;
         return this._muted;
+    }
+
+    /**
+     * Toggles the paused state.
+     * @method PIXI.sound.webaudio.WebAudioContext#togglePause
+     * @return {Boolean} The current muted state.
+     */
+    public togglePause(): boolean
+    {
+        this.paused = !this.paused;
+        return this._paused;
     }
 
     /**

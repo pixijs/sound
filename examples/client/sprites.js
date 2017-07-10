@@ -45,7 +45,7 @@ var playhead = new PIXI.Graphics()
     .drawRect(0, 0, 1, 100);
 playhead.x = -1;
 var sound = PIXI.sound.Sound.from({
-    src: 'resources/sprite.mp3',
+    url: 'resources/sprite.mp3',
     sprites: sprites,
     singleInstance: true,
     preload: true,
@@ -67,7 +67,7 @@ var buttons = $$('button[data-sprite]');
 for (var i = 0; i < buttons.length; i++) {
     var button = buttons[i];
     button.addEventListener('click', function() {
-        sound.play(this.dataset.sprite).on('progress', function(value)
+        sound.play(this.getAttribute('data-sprite')).on('progress', function(value)
         {
             playhead.x = 1024 * value;
         });

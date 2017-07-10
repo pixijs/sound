@@ -1,25 +1,25 @@
 {
   "name": "pixi-sound",
   "version": "1.4.2",
-  "description": "WebAudio API playback without any Flash shims or HTML Audio fallback",
-  "main": "lib/index.js",
+  "description": "WebAudio API playback library with filters",
+  "main": "dist/pixi-sound.min.js",
+  "module": "dist/pixi-sound.es.min.js",
+  "types": "dist/types/index.d.ts",
   "scripts": {
-    "test": "npm run test:lib && npm run test:dist && npm run test:dist:min",
-    "test:lib": "floss --path=test/lib.js",
-    "test:dist": "floss --path=test/dist.js",
-    "test:dist:min": "floss --path=test/dist.min.js",
-    "coverage": "npm run test:lib -- -c \"lib/**.js\" -s",
-    "precoverage:report": "rimraf coverage",
-    "coverage:report": "npm run coverage -- -h",
-    "clean": "rimraf lib/** dist/** && mkdirp lib dist",
+    "pretest": "npm run build",
+    "test": "floss --path=test/dist.js",
+    "precoverage": "npm run build:dev -- -o coverage/pixi-sound.js -f cjs -e es6-object-assign,promise-polyfill",
+    "coverage": "floss --path=test/coverage.js -c \"coverage/pixi-sound.js\" -s",
+    "clean": "rimraf dist/**",
     "start": "npm run watch",
-    "watch": "tsc -w",
-    "lint": "tslint examples/**.js test/*.js src/**.ts --format=stylish",
+    "watch": "npm run build:dev -- --watch",
+    "lint": "tslint examples/**.js test/*.js src/**.ts rollup.config.js --format=stylish --fix",
     "prebuild": "npm run clean && npm run lint",
-    "build": "tsc",
-    "postbuild": "npm run dist",
-    "dist": "browserify --no-builtins -d -s Sound -e ./lib/index.js -o ./dist/pixi-sound.js",
-    "postdist": "uglifyjs --mangle --compress drop_console=true,warnings=false --output ./dist/pixi-sound.min.js -- ./dist/pixi-sound.js",
+    "build": "npm run build:dev && npm run build:prod && npm run build:es:dev && npm run build:es:prod",
+    "build:dev": "rollup -c --environment BUILD:dev",
+    "build:prod": "rollup -c --environment BUILD:prod",
+    "build:es:dev": "npm run build:dev -- -f es -o dist/pixi-sound.es.js",
+    "build:es:prod": "npm run build:prod -- -f es -o dist/pixi-sound.es.min.js",
     "predocs": "rimraf docs/** .docs && gulp comments",
     "docs": "jsdoc -c jsdoc.conf.json -R README.md",
     "postdocs": "rimraf .docs",
@@ -33,14 +33,12 @@
     "publish:skip": "npm run build && npm test && npm publish",
     "postpublish": "npm run deploy && git push && git push --tags"
   },
-  "typings": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pixijs/pixi-sound.git"
   },
   "files": [
     "dist/",
-    "lib/",
     "LICENSE",
     "package.json",
     "README.md"
@@ -58,25 +56,29 @@
   "homepage": "https://github.com/pixijs/pixi-sound#readme",
   "devDependencies": {
     "@types/node": "^8.0.0",
-    "browserify": "^14.0.0",
+    "@types/pixi.js": "^4.5.1",
+    "@types/es6-shim": "^0.31.34",
     "electron": "^1.4.15",
+    "es6-object-assign": "^1.1.0",
     "floss": "^2.0.1",
     "gh-pages": "^0.12.0",
     "gulp": "^3.9.1",
     "gulp-comments": "^1.2.0",
     "jaguarjs-jsdoc": "^1.0.2",
     "jsdoc": "^3.4.3",
-    "mkdirp": "^0.5.1",
     "pixi.js": "^4.3.4",
+    "promise-polyfill": "^6.0.2",
     "rimraf": "^2.5.4",
+    "rollup": "^0.43.0",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-typescript2": "^0.4.6",
+    "rollup-plugin-uglify-es": "0.0.1",
+    "rollup-watch": "^4.0.0",
     "tslint": "^4.4.2",
-    "typescript": "^2.1.5",
-    "uglify-js": "^2.7.5"
+    "typescript": "^2.1.5"
   },
   "peerDependencies": {
     "pixi.js": "^4.3.4"
-  },
-  "dependencies": {
-    "uuid": "^3.0.1"
   }
 }

@@ -1,43 +1,35 @@
-import Sound from "./Sound";
+import WebAudioMedia from "./WebAudioMedia";
+import {IMediaInstance} from "../interfaces/IMediaInstance";
 
 let id = 0;
 
 /**
  * A single play instance that handles the AudioBufferSourceNode.
- * @class SoundInstance
- * @memberof PIXI.sound
+ * @class WebAudioInstance
+ * @memberof PIXI.sound.webaudio
  * @param {SoundNodes} source Reference to the SoundNodes.
  */
-export default class SoundInstance extends PIXI.utils.EventEmitter
+export default class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaInstance
 {
     /**
-     * Recycle instance, because they will be created many times.
-     * @type {Array}
-     * @name PIXI.sound.SoundInstance._pool
-     * @static
-     * @private
-     */
-    private static _pool: SoundInstance[] = [];
-
-    /**
      * The current unique ID for this instance.
-     * @name PIXI.sound.SoundInstance#id
-     * @readOnly
+     * @name PIXI.sound.webaudio.WebAudioInstance#id
+     * @readonly
      */
     public id: number;
 
     /**
      * The source Sound.
-     * @type {SoundNodes}
-     * @name PIXI.sound.SoundInstance#_parent
+     * @type {PIXI.sound.webaudio.WebAudioMedia}
+     * @name PIXI.sound.webaudio.WebAudioInstance#_media
      * @private
      */
-    private _parent: Sound;
+    private _media: WebAudioMedia;
 
     /**
      * true if paused.
      * @type {Boolean}
-     * @name PIXI.sound.SoundInstance#_paused
+     * @name PIXI.sound.webaudio.WebAudioInstance#_paused
      * @private
      */
     private _paused: boolean;
@@ -45,7 +37,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     /**
      * Last update frame number.
      * @type {Number}
-     * @name PIXI.sound.SoundInstance#_lastUpdate
+     * @name PIXI.sound.webaudio.WebAudioInstance#_lastUpdate
      * @private
      */
     private _lastUpdate: number;
@@ -53,7 +45,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     /**
      * The total number of seconds elapsed in playback.
      * @type {Number}
-     * @name PIXI.sound.SoundInstance#_elapsed
+     * @name PIXI.sound.webaudio.WebAudioInstance#_elapsed
      * @private
      */
     private _elapsed: number;
@@ -61,7 +53,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     /**
      * The number of time in seconds to fade in.
      * @type {Number}
-     * @name PIXI.sound.SoundInstance#_fadeIn
+     * @name PIXI.sound.webaudio.WebAudioInstance#_fadeIn
      * @private
      */
     private _fadeIn: number;
@@ -69,7 +61,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     /**
      * The number of time in seconds to fade out.
      * @type {Number}
-     * @name PIXI.sound.SoundInstance#_fadeOut
+     * @name PIXI.sound.webaudio.WebAudioInstance#_fadeOut
      * @private
      */
     private _fadeOut: number;
@@ -77,7 +69,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     /**
      * Playback rate, where 1 is 100%.
      * @type {Number}
-     * @name PIXI.sound.SoundInstance#_speed
+     * @name PIXI.sound.webaudio.WebAudioInstance#_speed
      * @private
      */
     private _speed: number;
@@ -85,7 +77,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     /**
      * Playback rate, where 1 is 100%.
      * @type {Number}
-     * @name PIXI.sound.SoundInstance#_end
+     * @name PIXI.sound.webaudio.WebAudioInstance#_end
      * @private
      */
     private _end: number;
@@ -93,7 +85,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     /**
      * `true` if should be looping.
      * @type {Boolean}
-     * @name PIXI.sound.SoundInstance#_loop
+     * @name PIXI.sound.webaudio.WebAudioInstance#_loop
      * @private
      */
     private _loop: boolean;
@@ -101,7 +93,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     /**
      * Length of the sound in seconds.
      * @type {Number}
-     * @name PIXI.sound.SoundInstance#_duration
+     * @name PIXI.sound.webaudio.WebAudioInstance#_duration
      * @private
      */
     private _duration: number;
@@ -109,56 +101,44 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     /**
      * The progress of the sound from 0 to 1.
      * @type {Number}
-     * @name PIXI.sound.SoundInstance#_progress
+     * @name PIXI.sound.webaudio.WebAudioInstance#_progress
      * @private
      */
     private _progress: number;
 
     /**
+     * Callback for update listener
+     * @type {EventListener}
+     * @name PIXI.sound.webaudio.WebAudioInstance#_updateListener
+     * @private
+     */   
+    private _updateListener: EventListener;
+
+    /**
      * Audio buffer source clone from Sound object.
      * @type {AudioBufferSourceNode}
-     * @name PIXI.sound.SoundInstance#_source
+     * @name PIXI.sound.webaudio.WebAudioInstance#_source
      * @private
      */
     private _source: AudioBufferSourceNode;
 
-    /**
-     * Recycle instance, because they will be created many times.
-     * @method PIXI.sound.SoundInstance.create
-     * @static
-     * @private
-     * @param {PIXI.sound.Sound} parent Parent sound object
-     */
-    public static create(parent: Sound): SoundInstance
-    {
-        if (SoundInstance._pool.length > 0)
-        {
-            const sound = SoundInstance._pool.pop();
-            sound._init(parent);
-            return sound;
-        }
-        else
-        {
-            return new SoundInstance(parent);
-        }
-    }
-
-    constructor(parent: Sound)
+    constructor(media: WebAudioMedia)
     {
         super();
 
         this.id = id++;
-        this._parent = null;
+        this._media = null;
         this._paused = false;
         this._elapsed = 0;
+        this._updateListener = this._update.bind(this) as EventListener;
 
         // Initialize
-        this._init(parent);
+        this.init(media);
     }
 
     /**
      * Stops the instance, don't use after this.
-     * @method PIXI.sound.SoundInstance#stop
+     * @method PIXI.sound.webaudio.WebAudioInstance#stop
      */
     public stop(): void
     {
@@ -168,7 +148,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
 
             /**
              * The sound is stopped. Don't use after this is called.
-             * @event PIXI.sound.SoundInstance#stop
+             * @event PIXI.sound.webaudio.WebAudioInstance#stop
              */
             this.emit("stop");
         }
@@ -176,7 +156,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
 
     /**
      * Plays the sound.
-     * @method PIXI.sound.SoundInstance#play
+     * @method PIXI.sound.webaudio.WebAudioInstance#play
      * @param {Number} [start=0] The position to start playing, in seconds.
      * @param {Number} [end] The ending position in seconds.
      * @param {Number} [speed] Override the default speed.
@@ -193,7 +173,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         }
         // @endif
         this._paused = false;
-        this._source = this._parent.nodes.cloneBufferSource();
+        this._source = this._media.nodes.cloneBufferSource();
         if (speed !== undefined)
         {
             this._source.playbackRate.value = speed;
@@ -242,7 +222,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         this._lastUpdate = this._now();
         this._elapsed = start;
         this._source.onended = this._onComplete.bind(this);
-
+        
         if (end)
         {
             this._source.start(0, start, end - start);
@@ -254,7 +234,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
 
         /**
          * The sound is started.
-         * @event PIXI.sound.SoundInstance#start
+         * @event PIXI.sound.webaudio.WebAudioInstance#start
          */
         this.emit("start");
 
@@ -267,7 +247,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
 
     /**
      * Utility to convert time in millseconds or seconds
-     * @method PIXI.sound.SoundInstance#_toSec
+     * @method PIXI.sound.webaudio.WebAudioInstance#_toSec
      * @private
      * @param {Number} [time] Time in either ms or sec
      * @return {Number} Time in seconds
@@ -283,21 +263,26 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
 
     /**
      * Start the update progress.
-     * @name PIXI.sound.SoundInstance#_enabled
+     * @name PIXI.sound.webaudio.WebAudioInstance#_enabled
      * @type {Boolean}
      * @private
      */
     private set _enabled(enabled: boolean)
     {
-        this._parent.nodes.script.onaudioprocess = !enabled ? null : () => {
-            this._update();
-        };
+        const script = this._media.nodes.script;
+
+        script.removeEventListener('audioprocess', this._updateListener);
+
+        if (enabled)
+        {
+            script.addEventListener('audioprocess', this._updateListener);
+        }
     }
 
     /**
      * The current playback progress from 0 to 1.
      * @type {Number}
-     * @name PIXI.sound.SoundInstance#progress
+     * @name PIXI.sound.webaudio.WebAudioInstance#progress
      */
     public get progress(): number
     {
@@ -307,7 +292,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
     /**
      * Pauses the sound.
      * @type {Boolean}
-     * @name PIXI.sound.SoundInstance#paused
+     * @name PIXI.sound.webaudio.WebAudioInstance#paused
      */
     public get paused(): boolean
     {
@@ -327,7 +312,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
 
                 /**
                  * The sound is paused.
-                 * @event PIXI.sound.SoundInstance#paused
+                 * @event PIXI.sound.webaudio.WebAudioInstance#paused
                  */
                 this.emit("paused");
             }
@@ -335,7 +320,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
             {
                 /**
                  * The sound is unpaused.
-                 * @event PIXI.sound.SoundInstance#resumed
+                 * @event PIXI.sound.webaudio.WebAudioInstance#resumed
                  */
                 this.emit("resumed");
 
@@ -352,7 +337,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
 
             /**
              * The sound is paused or unpaused.
-             * @event PIXI.sound.SoundInstance#pause
+             * @event PIXI.sound.webaudio.WebAudioInstance#pause
              * @property {Boolean} paused If the instance was paused or not.
              */
             this.emit("pause", paused);
@@ -361,7 +346,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
 
     /**
      * Don't use after this.
-     * @method PIXI.sound.SoundInstance#destroy
+     * @method PIXI.sound.webaudio.WebAudioInstance#destroy
      */
     public destroy(): void
     {
@@ -370,24 +355,18 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         this._source = null;
         this._speed = 0;
         this._end = 0;
-        this._parent = null;
+        this._media = null;
         this._elapsed = 0;
         this._duration = 0;
         this._loop = false;
         this._fadeIn = 0;
         this._fadeOut = 0;
         this._paused = false;
-
-        // Add it if it isn't already added
-        if (SoundInstance._pool.indexOf(this) < 0)
-        {
-            SoundInstance._pool.push(this);
-        }
     }
 
     /**
      * To string method for instance.
-     * @method PIXI.sound.SoundInstance#toString
+     * @method PIXI.sound.webaudio.WebAudioInstance#toString
      * @return {String} The string representation of instance.
      * @private
      */
@@ -398,18 +377,18 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
 
     /**
      * Get the current time in seconds.
-     * @method PIXI.sound.SoundInstance#_now
+     * @method PIXI.sound.webaudio.WebAudioInstance#_now
      * @private
      * @return {Number} Seconds since start of context
      */
     private _now(): number
     {
-        return this._parent.context.audioContext.currentTime;
+        return this._media.context.audioContext.currentTime;
     }
 
     /**
      * Internal update the progress.
-     * @method PIXI.sound.SoundInstance#_update
+     * @method PIXI.sound.webaudio.WebAudioInstance#_update
      * @private
      */
     private _update(force: boolean = false): void
@@ -429,8 +408,8 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
                 if (this._fadeIn || this._fadeOut)
                 {
                     const position: number = progress * duration;
-                    const gain = this._parent.nodes.gain.gain;
-                    const maxVolume = this._parent.volume;
+                    const gain = this._media.nodes.gain.gain;
+                    const maxVolume = this._media.parent.volume;
 
                     if (this._fadeIn)
                     {
@@ -459,7 +438,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
 
                 /**
                  * The sound progress is updated.
-                 * @event PIXI.sound.SoundInstance#progress
+                 * @event PIXI.sound.webaudio.WebAudioInstance#progress
                  * @property {Number} progress Amount progressed from 0 to 1
                  * @property {Number} duration The total playback in seconds
                  */
@@ -470,17 +449,16 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
 
     /**
      * Initializes the instance.
-     * @method PIXI.sound.SoundInstance#init
-     * @private
+     * @method PIXI.sound.webaudio.WebAudioInstance#init
      */
-    private _init(parent: Sound): void
+    public init(media: WebAudioMedia): void
     {
-        this._parent = parent;
+        this._media = media;
     }
 
     /**
      * Stops the instance.
-     * @method PIXI.sound.SoundInstance#_internalStop
+     * @method PIXI.sound.webaudio.WebAudioInstance#_internalStop
      * @private
      */
     private _internalStop(): void
@@ -493,13 +471,13 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
             this._source = null;
 
             // Reset the volume
-            this._parent.volume = this._parent.volume;
+            this._media.volume = this._media.parent.volume;
         }
     }
 
     /**
      * Callback when completed.
-     * @method PIXI.sound.SoundInstance#_onComplete
+     * @method PIXI.sound.webaudio.WebAudioInstance#_onComplete
      * @private
      */
     private _onComplete(): void
@@ -514,7 +492,7 @@ export default class SoundInstance extends PIXI.utils.EventEmitter
         this.emit("progress", 1, this._duration);
         /**
          * The sound ends, don't use after this
-         * @event PIXI.sound.SoundInstance#end
+         * @event PIXI.sound.webaudio.WebAudioInstance#end
          */
         this.emit("end", this);
     }

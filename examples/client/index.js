@@ -1,3 +1,4 @@
+jQuery('.section-tabs').stickyTabs();
 
 var $ = document.querySelector.bind(document);
 var $$ = document.querySelectorAll.bind(document);
@@ -10,18 +11,22 @@ for (var i = 0; i < autorun.length; i++) {
 var buttons = $$('button[data-code]');
 for (var i = 0; i < buttons.length; i++) {
     var button = buttons[i];
-    button.dataset.codeContent = $(button.dataset.code).innerHTML;
-    if (button.dataset.beforecode) {
-        button.dataset.beforecodeContent = $(button.dataset.beforecode).innerHTML;
+    var beforecode = button.getAttribute('data-beforecode');
+    var code = button.getAttribute('data-code');
+    button.setAttribute('data-codeContent', $(code).innerHTML);
+    if (beforecode) {
+        button.setAttribute('data-beforecodeContent', $(beforecode).innerHTML);
     }
     button.addEventListener('click', function(){
         PIXI.loader.reset();
         PIXI.sound.stopAll();
         PIXI.sound.removeAll();
-        if (button.dataset.beforecodeContent) {
-            eval(this.dataset.beforecodeContent);
+        var beforecodeContent = this.getAttribute('data-beforecodeContent');
+        var codeContent = this.getAttribute('data-codeContent');
+        if (beforecodeContent) {
+            eval(beforecodeContent);
         }
-        eval(this.dataset.codeContent);
+        eval(codeContent.replace(/const /g, 'var '));
     });
 }
 

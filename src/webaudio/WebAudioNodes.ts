@@ -1,15 +1,15 @@
-import Filterable from "./Filterable";
-import Filter from "./filters/Filter";
-import SoundContext from "./SoundContext";
+import Filterable from "../Filterable";
+import Filter from "../filters/Filter";
+import WebAudioContext from "./WebAudioContext";
 
 /**
- * @class SoundNodes
+ * @class WebAudioNodes
  * @extends PIXI.sound.Filterable
  * @private
- * @memberof PIXI.sound
- * @param {SoundContext} audioContext The audio context.
+ * @memberof PIXI.sound.webaudio
+ * @param {PIXI.sound.webaudio.WebAudioContext} audioContext The audio context.
  */
-export default class SoundNodes extends Filterable
+export default class WebAudioNodes extends Filterable
 {
     /**
      * The buffer size for script processor
@@ -23,7 +23,7 @@ export default class SoundNodes extends Filterable
      * Get the buffer source node
      * @name PIXI.sound.SoundNodes#bufferSource
      * @type {AudioBufferSourceNode}
-     * @readOnly
+     * @readonly
      */
     public bufferSource: AudioBufferSourceNode;
 
@@ -31,7 +31,7 @@ export default class SoundNodes extends Filterable
      * Get the script processor node.
      * @name PIXI.sound.SoundNodes#script
      * @type {ScriptProcessorNode}
-     * @readOnly
+     * @readonly
      */
     public script: ScriptProcessorNode;
 
@@ -39,7 +39,7 @@ export default class SoundNodes extends Filterable
      * Get the gain node
      * @name PIXI.sound.SoundNodes#gain
      * @type {GainNode}
-     * @readOnly
+     * @readonly
      */
     public gain: GainNode;
 
@@ -47,24 +47,24 @@ export default class SoundNodes extends Filterable
      * Get the analyser node
      * @name PIXI.sound.SoundNodes#analyser
      * @type {AnalyserNode}
-     * @readOnly
+     * @readonly
      */
     public analyser: AnalyserNode;
 
     /**
      * Reference to the SoundContext
      * @name PIXI.sound.SoundNodes#context
-     * @type {PIXI.sound.SoundContext}
-     * @readOnly
+     * @type {PIXI.sound.webaudio.WebAudioContext}
+     * @readonly
      */
-    public context: SoundContext;
+    public context: WebAudioContext;
 
-    constructor(context: SoundContext)
+    constructor(context: WebAudioContext)
     {
         const audioContext: AudioContext = context.audioContext;
 
         const bufferSource: AudioBufferSourceNode = audioContext.createBufferSource();
-        const script: ScriptProcessorNode = audioContext.createScriptProcessor(SoundNodes.BUFFER_SIZE);
+        const script: ScriptProcessorNode = audioContext.createScriptProcessor(WebAudioNodes.BUFFER_SIZE);
         const gain: GainNode = audioContext.createGain();
         const analyser: AnalyserNode = audioContext.createAnalyser();
 

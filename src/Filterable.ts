@@ -45,7 +45,7 @@ export default class Filterable
      * The destination output audio node
      * @name PIXI.sound.Filterable#destination
      * @type {AudioNode}
-     * @readOnly
+     * @readonly
      */
     get destination(): AudioNode
     {

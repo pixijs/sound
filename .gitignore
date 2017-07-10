@@ -1,6 +1,6 @@
 node_modules
-lib
-docs
-dist
+/dist
+/docs
+/coverage
 .docs
-coverage
+.rpt2_cache

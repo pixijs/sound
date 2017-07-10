@@ -1,5 +1,5 @@
 import Filter from './Filter';
-import soundLibrary from '../index';
+import SoundLibrary from '../SoundLibrary';
 
 /**
  * Filter for adding Stereo panning.
@@ -36,10 +36,16 @@ export default class StereoFilter extends Filter
 
     constructor(pan:number = 0)
     {
+        if (SoundLibrary.instance.useLegacy)
+        {
+            super(null);
+            return;
+        }
+
         let stereo:StereoPannerNode;
         let panner:PannerNode;
         let destination:AudioNode;
-        const audioContext = soundLibrary.context.audioContext;
+        const audioContext = SoundLibrary.instance.context.audioContext;
 
         if (audioContext.createStereoPanner)
         {
