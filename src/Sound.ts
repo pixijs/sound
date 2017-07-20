@@ -6,6 +6,7 @@ import {IMediaInstance} from "./interfaces/IMediaInstance";
 import SoundLibrary from "./SoundLibrary";
 import SoundSprite from "./sprites/SoundSprite";
 import {SoundSpriteData, SoundSprites} from "./sprites/SoundSprite";
+import SoundUtils from "./utils/SoundUtils";
 import WebAudioMedia from "./webaudio/WebAudioMedia";
 
 // Constructor options
@@ -225,7 +226,7 @@ export default class Sound
         }
 
         // Default settings
-        options = Object.freeze(Object.assign({
+        options = Object.assign({
             autoPlay: false,
             singleInstance: false,
             url: null,
@@ -237,7 +238,15 @@ export default class Sound
             loaded: null,
             loop: false,
             useXHR: true,
-        }, options));
+        }, options);
+
+        // Resolve url in-case it has a special format
+        if (options.url)
+        {
+            options.url = SoundUtils.resolveUrl(options.url);
+        }
+
+        Object.freeze(options);
 
         const media: IMedia = SoundLibrary.instance.useLegacy ?
             new HTMLAudioMedia() :

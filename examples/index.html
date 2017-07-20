@@ -40,6 +40,7 @@
         <ul class="section-tabs nav nav-pills nav-stacked">
             <li class="active"><a data-toggle="tab" href="#section-playing">Playing</a></li>
             <li><a data-toggle="tab" href="#section-preloading">Preloading</a></li>
+            <li><a data-toggle="tab" href="#section-filetypes">Filetypes</a></li>
             <li><a data-toggle="tab" href="#section-volume">Volume</a></li>
             <li><a data-toggle="tab" href="#section-events">Events</a></li>
             <li><a data-toggle="tab" href="#section-library">Library</a></li>
@@ -77,6 +78,22 @@ sound.play();</code></pre>
                 <pre><code id="autoplay-global" class="javascript">PIXI.sound.add('bird', 'resources/bird.mp3');
 PIXI.sound.play('bird');</code></pre>
             </div>
+            <div class="tab-pane fade" id="section-filetypes">
+                <p>Not all web-browsers support different file extensions for audio playback. Setup fallback formats easily by useing the a glob-like expression for the file extension. This will prioritize format from left to right.</p>
+                <button class="btn btn-danger btn-lg pull-right play" data-code="#filetypes1">
+                    <span class="glyphicon glyphicon-play"></span> Run
+                </button>
+                <pre><code id="filetypes1" class="javascript">PIXI.loader.add('applause', 'resources/applause.{ogg,mp3}');
+PIXI.loader.load(function(loader, resources) {
+    resources.applause.sound.play();
+});</code></pre>
+                <p>Also supported loading with the <code>PIXI.sound</code> object.</p>
+                <button class="btn btn-danger btn-lg pull-right play" data-code="#filetypes2">
+                    <span class="glyphicon glyphicon-play"></span> Run
+                </button>
+                <pre><code id="filetypes2" class="javascript">PIXI.sound.add('applause', 'resources/applause.{ogg,mp3}');
+PIXI.sound.play('applause');</code></pre>
+            </div>
             <div class="tab-pane fade" id="section-preloading">
                 <h3>Preloading</h3>
                 <p>Preloading a sound can be enabled by passing in the <code>preload</code> flag. You can listen for when the sound is loaded by using the <code>loaded</code> callback.</p>
@@ -96,6 +113,15 @@ PIXI.sound.play('bird');</code></pre>
                 </button>
                 <pre><code id="loaded2" class="javascript">PIXI.loader.add('bird', 'resources/bird.mp3');
 PIXI.loader.load(function(loader, resources) {
+    resources.bird.sound.play();
+});</code></pre>
+            <p>Alternatively, use the <code>PIXI.loaders.Loader</code>, if you don't want to use the shared loader.</p>
+                <button class="btn btn-danger btn-lg pull-right play" data-code="#loaded3">
+                    <span class="glyphicon glyphicon-play"></span> Run
+                </button>
+                <pre><code id="loaded3" class="javascript">const loader = new PIXI.loaders.Loader();
+loader.add('bird', 'resources/bird.mp3');
+loader.load(function(loader, resources) {
     resources.bird.sound.play();
 });</code></pre>
             </div>
@@ -140,6 +166,12 @@ sound.play();</code></pre>
             </div>
             <div class="tab-pane fade" id="section-library">
                 <h3>Library</h3>
+                <p>Library is the simplest way to create a cache of sounds.</p>
+                <button class="btn btn-danger btn-lg pull-right play" data-code="#library-simple">
+                    <span class="glyphicon glyphicon-play"></span> Run
+                </button>
+                <pre><code id="library-simple" class="javascript">PIXI.sound.add('boing', 'resources/boing.mp3');
+PIXI.sound.play('boing');</code></pre>
                 <p>Library utilities are available to help manage the cache of sounds.</p>
                 <button class="btn btn-danger btn-lg pull-right play" data-code="#library-map">
                     <span class="glyphicon glyphicon-play"></span> Run
