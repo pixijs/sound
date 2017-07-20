@@ -250,6 +250,22 @@ module.exports = function(libraryPath, useLegacy)
             });
         });
 
+        it("should resolve a file url", function()
+        {
+            const url = "file.{mp3,ogg}";
+            expect(utils.resolveUrl(url)).to.equal("file.mp3");
+        });
+
+        it("should resolve a file url with object", function()
+        {
+            const object = {
+                url: "file.{mp3,ogg}",
+            };
+            expect(utils.resolveUrl(object)).to.equal("file.mp3");
+            expect(object.url).to.equal("file.mp3");
+            expect(object.extension).to.equal("mp3");
+        });
+
         it("should play a sine tone", webAudioOnly(function(done)
         {
             this.slow(300);
