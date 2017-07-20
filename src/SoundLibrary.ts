@@ -388,6 +388,22 @@ export default class SoundLibrary
     public set volumeAll(volume: number)
     {
         this._context.volume = volume;
+        this._context.refresh();
+    }
+
+    /**
+     * Set the global speed for all sounds. To set per-sound speed see {@link PIXI.sound#speed}.
+     * @name PIXI.sound#speedAll
+     * @type {Number}
+     */
+    public get speedAll(): number
+    {
+        return this._context.speed;
+    }
+    public set speedAll(speed: number)
+    {
+        this._context.speed = speed;
+        this._context.refresh();
     }
 
     /**
@@ -408,6 +424,7 @@ export default class SoundLibrary
     public pauseAll(): SoundLibrary
     {
         this._context.paused = true;
+        this._context.refresh();
         return this;
     }
 
@@ -419,6 +436,7 @@ export default class SoundLibrary
     public resumeAll(): SoundLibrary
     {
         this._context.paused = false;
+        this._context.refresh();
         return this;
     }
 
@@ -440,6 +458,7 @@ export default class SoundLibrary
     public muteAll(): SoundLibrary
     {
         this._context.muted = true;
+        this._context.refresh();
         return this;
     }
 
@@ -451,6 +470,7 @@ export default class SoundLibrary
     public unmuteAll(): SoundLibrary
     {
         this._context.muted = false;
+        this._context.refresh();
         return this;
     }
 
@@ -587,6 +607,22 @@ export default class SoundLibrary
             sound.volume = volume;
         }
         return sound.volume;
+    }
+
+    /**
+     * Get or set the speed for a sound.
+     * @method PIXI.sound#speed
+     * @param {String} alias The sound alias reference.
+     * @param {Number} [speed] Optional current speed to set.
+     * @return {Number} The current speed.
+     */
+    public speed(alias: string, speed?: number): number
+    {
+        const sound = this.find(alias);
+        if (speed !== undefined) {
+            sound.speed = speed;
+        }
+        return sound.speed;
     }
 
     /**

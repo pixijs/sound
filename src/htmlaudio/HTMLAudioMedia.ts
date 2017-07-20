@@ -23,7 +23,6 @@ export default class HTMLAudioMedia extends PIXI.utils.EventEmitter implements I
     {
         this.parent = parent;
         this._source = parent.options.source as HTMLAudioElement || new Audio();
-        this.speed = parent.options.speed;
         if (parent.url)
         {
             this._source.src = parent.url;
@@ -40,44 +39,6 @@ export default class HTMLAudioMedia extends PIXI.utils.EventEmitter implements I
     public get isPlayable(): boolean
     {
         return !!this._source && this._source.readyState === 4;
-    }
-
-    // Implement volume
-    public set volume(volume:number)
-    {
-        const oldVolume = this.volume;
-
-        this._source.volume = volume;
-        if (volume !== oldVolume)
-        {
-            this.emit('volume', volume);
-        }
-    }
-    public get volume():number
-    {
-        return this._source.volume;
-    }
-
-    // Implement loop
-    public set loop(loop:boolean)
-    {
-        this._source.loop = loop;
-    }
-
-    // Implement speed
-    public get speed(): number
-    {
-        return this._source.playbackRate;
-    }
-    public set speed(value: number)
-    {
-        const oldSpeed = this.speed;
-
-        this._source.playbackRate = value;
-        if (value != oldSpeed)
-        {
-            this.emit('speed', value);
-        }
     }
 
     // Implement duration

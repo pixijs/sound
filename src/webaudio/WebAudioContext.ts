@@ -3,22 +3,14 @@ import { IMediaContext } from "../interfaces/IMediaContext";
 
 /**
  * @description Main class to handle WebAudio API. There's a simple chain
- * of AudioNode elements: analyser > gainNode > compressor > context.destination.
- * any filters that are added are inserted between the analyser and gainNode nodes
+ * of AudioNode elements: analyser > compressor > context.destination.
+ * any filters that are added are inserted between the analyser and compressor nodes
  * @class WebAudioContext
  * @extends PIXI.sound.Filterable
  * @memberof PIXI.sound.webaudio
  */
 export default class WebAudioContext extends Filterable implements IMediaContext
 {
-    /**
-     * Handle the volume.
-     * @name PIXI.sound.webaudio.WebAudioContext#gain
-     * @type {GainNode}
-     * @readonly
-     */
-    public gain: GainNode;
-
     /**
      * Context Compressor node
      * @name PIXI.sound.webaudio.WebAudioContext#compressor
@@ -36,6 +28,38 @@ export default class WebAudioContext extends Filterable implements IMediaContext
     public analyser: AnalyserNode;
 
     /**
+     * Global speed of all sounds
+     * @name PIXI.sound.webaudio.WebAudioContext#speed
+     * @type {AnalyserNode}
+     * @readonly
+     */
+    public speed: number;
+
+    /**
+     * Sets the muted state.
+     * @type {Boolean}
+     * @name PIXI.sound.webaudio.WebAudioContext#muted
+     * @default false
+     */
+    public muted: boolean;
+
+    /**
+     * Sets the volume from 0 to 1.
+     * @type {Number}
+     * @name PIXI.sound.webaudio.WebAudioContext#volume
+     * @default 1
+     */
+    public volume: number;
+
+    /**
+     * Handle global events
+     * @type {PIXI.utils.EventEmitter}
+     * @name PIXI.sound.webaudio.WebAudioContext#events
+     * @default 1
+     */
+    public events: PIXI.utils.EventEmitter;
+
+    /**
      * The instance of the AudioContext for WebAudio API.
      * @name PIXI.sound.webaudio.WebAudioContext#_ctx
      * @type {AudioContext}
@@ -50,24 +74,6 @@ export default class WebAudioContext extends Filterable implements IMediaContext
      * @private
      */
     private _offlineCtx: OfflineAudioContext;
-
-    /**
-     * Current muted status of the context
-     * @name PIXI.sound.webaudio.WebAudioContext#_muted
-     * @type {Boolean}
-     * @private
-     * @default false
-     */
-    private _muted: boolean;
-
-    /**
-     * Current volume from 0 to 1
-     * @name PIXI.sound.webaudio.WebAudioContext#_volume
-     * @type {Number}
-     * @private
-     * @default 1
-     */
-    private _volume: number;
 
     /**
      * Current paused status
@@ -90,27 +96,26 @@ export default class WebAudioContext extends Filterable implements IMediaContext
     constructor()
     {
         const ctx = new WebAudioContext.AudioContext();
-        const gain: GainNode = ctx.createGain();
         const compressor: DynamicsCompressorNode = ctx.createDynamicsCompressor();
         const analyser: AnalyserNode = ctx.createAnalyser();
 
         // setup the end of the node chain
-        analyser.connect(gain);
-        gain.connect(compressor);
+        analyser.connect(compressor);
         compressor.connect(ctx.destination);
 
-        super(analyser, gain);
+        super(analyser, compressor);
 
         this._ctx = ctx;
         this._offlineCtx = new WebAudioContext.OfflineAudioContext(1, 2, ctx.sampleRate);
         this._unlocked = false;
 
-        this.gain = gain;
         this.compressor = compressor;
         this.analyser = analyser;
+        this.events = new PIXI.utils.EventEmitter();
 
         // Set the defaults
         this.volume = 1;
+        this.speed = 1;
         this.muted = false;
         this.paused = false;
 
@@ -211,12 +216,12 @@ export default class WebAudioContext extends Filterable implements IMediaContext
         {
             ctx.close();
         }
+        this.events.removeAllListeners();
         this.analyser.disconnect();
-        this.gain.disconnect();
         this.compressor.disconnect();
-        this.gain = null;
         this.analyser = null;
         this.compressor = null;
+        this.events = null;
         this._offlineCtx = null;
         this._ctx = null;
     }
@@ -244,45 +249,9 @@ export default class WebAudioContext extends Filterable implements IMediaContext
     }
 
     /**
-     * Sets the muted state.
-     * @type {Boolean}
-     * @name PIXI.sound.webaudio.WebAudioContext#muted
-     * @default false
-     */
-    public get muted(): boolean
-    {
-        return this._muted;
-    }
-    public set muted(muted: boolean)
-    {
-        this._muted = !!muted;
-        this.gain.gain.value = this._muted ? 0 : this._volume;
-    }
-
-    /**
-     * Sets the volume from 0 to 1.
-     * @type {Number}
-     * @name PIXI.sound.webaudio.WebAudioContext#volume
-     * @default 1
-     */
-    public set volume(volume: number)
-    {
-        // update volume
-        this._volume = volume;
-
-        // update actual volume IIF not muted
-        if (!this._muted)
-        {
-            this.gain.gain.value = this._volume;
-        }
-    }
-    public get volume(): number
-    {
-        return this._volume;
-    }
-
-    /**
-     * Pauses all sounds.
+     * Pauses all sounds, even though we handle this at the instance
+     * level, we'll also pause the audioContext so that the 
+     * time used to compute progress isn't messed up.
      * @type {Boolean}
      * @name PIXI.sound.webaudio.WebAudioContext#paused
      * @default false
@@ -305,6 +274,27 @@ export default class WebAudioContext extends Filterable implements IMediaContext
     }
 
     /**
+     * Emit event when muted, volume or speed changes
+     * @method PIXI.sound.webaudio.WebAudioContext#refresh
+     * @private
+     */
+    public refresh(): void
+    {
+        this.events.emit('refresh');
+    }
+
+    /**
+     * Emit event when muted, volume or speed changes
+     * @method PIXI.sound.webaudio.WebAudioContext#refreshPaused
+     * @private
+     */
+    public refreshPaused(): void
+    {
+        this.events.emit('refreshPaused');
+    }
+
+
+    /**
      * Toggles the muted state.
      * @method PIXI.sound.webaudio.WebAudioContext#toggleMute
      * @return {Boolean} The current muted state.
@@ -312,7 +302,8 @@ export default class WebAudioContext extends Filterable implements IMediaContext
     public toggleMute(): boolean
     {
         this.muted = !this.muted;
-        return this._muted;
+        this.refresh();
+        return this.muted;
     }
 
     /**
@@ -323,6 +314,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
     public togglePause(): boolean
     {
         this.paused = !this.paused;
+        this.refreshPaused();
         return this._paused;
     }
 

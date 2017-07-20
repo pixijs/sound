@@ -74,6 +74,12 @@ document.querySelector('#volume').addEventListener('input', function() {
     );
 });
 
+document.querySelector('#speed').addEventListener('input', function() {
+    PIXI.sound.speedAll = Math.max(0, 
+        Math.min(1, parseFloat(this.value))
+    );
+});
+
 document.querySelector("#stop").addEventListener('click', function() {
     PIXI.sound.stopAll();
     var plays = document.querySelectorAll('button[data-sound]');

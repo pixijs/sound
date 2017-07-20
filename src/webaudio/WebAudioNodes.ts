@@ -3,6 +3,17 @@ import Filter from "../filters/Filter";
 import WebAudioContext from "./WebAudioContext";
 
 /**
+ * Output for cloneing node
+ * @interface PIXI.sound.SoundNodes~SourceClone
+ * @property {AudioBufferSourceNode} source Cloned audio buffer source
+ * @property {GainNode} gain Independent volume control
+ */
+export interface SourceClone {
+    source: AudioBufferSourceNode;
+    gain: GainNode;
+};
+
+/**
  * @class WebAudioNodes
  * @extends PIXI.sound.Filterable
  * @private
@@ -106,16 +117,19 @@ export default class WebAudioNodes extends Filterable
     /**
      * Clones the bufferSource. Used just before playing a sound.
      * @method PIXI.sound.SoundNodes#cloneBufferSource
-     * @returns {AudioBufferSourceNode} The clone AudioBufferSourceNode.
+     * @returns {PIXI.sound.SoundNodes~SourceClone} The clone AudioBufferSourceNode.
      */
-    public cloneBufferSource(): AudioBufferSourceNode
+    public cloneBufferSource(): SourceClone
     {
         const orig: AudioBufferSourceNode = this.bufferSource;
-        const clone: AudioBufferSourceNode = this.context.audioContext.createBufferSource();
-        clone.buffer = orig.buffer;
-        clone.playbackRate.value = orig.playbackRate.value;
-        clone.loop = orig.loop;
-        clone.connect(this.destination);
-        return clone;
+        const source: AudioBufferSourceNode = this.context.audioContext.createBufferSource();
+        source.buffer = orig.buffer;
+        source.playbackRate.value = orig.playbackRate.value;
+        source.loop = orig.loop;
+
+        const gain: GainNode = this.context.audioContext.createGain();
+        source.connect(gain);
+        gain.connect(this.destination);
+        return { source, gain };
     }
 }

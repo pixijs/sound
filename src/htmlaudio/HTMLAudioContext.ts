@@ -10,120 +10,65 @@ import Filter from "../filters/Filter";
 export default class HTMLAudioContext extends PIXI.utils.EventEmitter implements IMediaContext
 {
     /**
+     * Current global speed from 0 to 1
+     * @name PIXI.sound.htmlaudio.HTMLAudioContext#speed
+     * @type {Number}
+     * @default 1
+     */
+    public speed: number;
+
+    /**
      * Current muted status of the context
-     * @name PIXI.sound.htmlaudio.HTMLAudioContext#_muted
+     * @name PIXI.sound.htmlaudio.HTMLAudioContext#muted
      * @type {Boolean}
-     * @private
      * @default false
      */
-    private _muted: boolean;
+    public muted: boolean;
 
     /**
      * Current volume from 0 to 1
-     * @name PIXI.sound.htmlaudio.HTMLAudioContext#_volume
+     * @name PIXI.sound.htmlaudio.HTMLAudioContext#volume
      * @type {Number}
-     * @private
      * @default 1
      */
-    private _volume: number;
+    public volume: number;
 
     /**
      * Current paused status
-     * @name PIXI.sound.htmlaudio.HTMLAudioContext#_paused
+     * @name PIXI.sound.htmlaudio.HTMLAudioContext#paused
      * @type {Boolean}
-     * @private
      * @default false
      */
-    private _paused: boolean;
+    public paused: boolean;
 
     constructor()
     {
         super();
 
-        this._volume = 1;
-        this._muted = false;
-        this._paused = false;
+        this.speed = 1;
+        this.volume = 1;
+        this.muted = false;
+        this.paused = false;
     }
 
     /**
-     * Pauses all sounds.
-     * @type {Boolean}
-     * @name PIXI.sound.htmlaudio.HTMLAudioContext#paused
-     * @default false
+     * Internal trigger when volume, mute or speed changes
+     * @method PIXI.sound.htmlaudio.HTMLAudioContext#refresh
+     * @private
      */
-    public set paused(paused: boolean)
+    public refresh(): void
     {
-        const oldPaused = this._paused;
-
-        this._paused = paused;
-        if (paused !== oldPaused)
-        {
-            /**
-             * Fired when paused state changes
-             * @event PIXI.sound.htmlaudio.HTMLAudioContext#paused
-             * @param {Boolean} paused - Paused state of context
-             * @private
-             */
-            this.emit('paused', paused);
-        }
-    }
-    public get paused(): boolean
-    {
-        return this._paused;
+        this.emit('refresh');
     }
 
     /**
-     * Sets the muted state.
-     * @type {Boolean}
-     * @name PIXI.sound.htmlaudio.HTMLAudioContext#muted
-     * @default false
+     * Internal trigger paused changes
+     * @method PIXI.sound.htmlaudio.HTMLAudioContext#refreshPaused
+     * @private
      */
-    public set muted(muted: boolean)
+    public refreshPaused(): void
     {
-        const oldMuted = this._muted;
-
-        this._muted = muted;
-        if (muted !== oldMuted)
-        {
-            /**
-             * Fired when muted state changes
-             * @event PIXI.sound.htmlaudio.HTMLAudioContext#muted
-             * @param {Boolean} muted - Muted state of context
-             * @private
-             */
-            this.emit('muted', muted);
-        }
-    }
-    public get muted(): boolean
-    {
-        return this._muted;
-    }
-
-    /**
-     * Sets the volume from 0 to 1.
-     * @type {Number}
-     * @name PIXI.sound.htmlaudio.HTMLAudioContext#volume
-     * @default 1
-     */
-    public set volume(volume: number)
-    {
-        const oldVolume = this._volume;
-        
-        this._volume = volume;
-        if (volume !== oldVolume)
-        {
-            /**
-             * Fired when volume changes
-             * @event PIXI.sound.htmlaudio.HTMLAudioContext#volume
-             * @param {Boolean} volume - Current context volume
-             * @private
-             */
-            this.emit('volume', volume);
-        }
-    }
-    public get volume(): number
-    {
-        return this._volume;
+        this.emit('refreshPaused');
     }
 
     /**
@@ -169,7 +114,8 @@ export default class HTMLAudioContext extends PIXI.utils.EventEmitter implements
     public toggleMute(): boolean
     {
         this.muted = !this.muted;
-        return this._muted;
+        this.refresh();
+        return this.muted;
     }
 
     /**
@@ -180,7 +126,8 @@ export default class HTMLAudioContext extends PIXI.utils.EventEmitter implements
     public togglePause(): boolean
     {
         this.paused = !this.paused;
-        return this._paused;
+        this.refreshPaused();
+        return this.paused;
     }
 
     /**

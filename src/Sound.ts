@@ -32,8 +32,7 @@ export interface PlayOptions {
     end?: number;
     speed?: number;
     loop?: boolean;
-    fadeIn?: number;
-    fadeOut?: number;
+    volume?: number;
     sprite?: string;
     complete?: CompleteCallback;
     loaded?: LoadedCallback;
@@ -168,6 +167,22 @@ export default class Sound
      * @private
      */
     private _volume: number;
+
+    /**
+     * The internal paused state.
+     * @name PIXI.sound.Sound#_paused
+     * @type {Boolean}
+     * @private
+     */
+    private _paused: boolean;
+
+    /**
+     * The internal muted state.
+     * @name PIXI.sound.Sound#_muted
+     * @type {Boolean}
+     * @private
+     */
+    private _muted: boolean;
 
     /**
      * The internal volume.
@@ -309,8 +324,8 @@ export default class Sound
      */
     public pause(): Sound
     {
-        this.paused = true;
         this.isPlaying = false;
+        this.paused = true;
         return this;
     }
 
@@ -321,8 +336,8 @@ export default class Sound
      */
     public resume(): Sound
     {
-        this.paused = false;
         this.isPlaying = this._instances.length > 0;
+        this.paused = false;
         return this;
     }
 
@@ -330,13 +345,16 @@ export default class Sound
      * Stops all the instances of this sound from playing.
      * @name PIXI.sound.Sound#paused
      * @type {Boolean}
+     * @readonly
      */
-    private set paused(paused: boolean)
+    public get paused(): boolean
     {
-        for (let i = this._instances.length - 1; i >= 0; i--)
-        {
-            this._instances[i].paused = paused;
-        }
+        return this._paused;
+    }
+    public set paused(paused: boolean)
+    {
+        this._paused = paused;
+        this.refreshPaused();
     }
 
     /**
@@ -350,7 +368,8 @@ export default class Sound
     }
     public set speed(speed: number)
     {
-        this._speed = this.media.speed = speed;
+        this._speed = speed;
+        this.refresh();
     }
 
     /**
@@ -515,11 +534,8 @@ export default class Sound
      * @param {Number} [options.start=0] Time when to play the sound in seconds.
      * @param {Number} [options.end] Time to end playing in seconds.
      * @param {String} [options.sprite] Play a named sprite. Will override end, start and speed options.
-     * @param {Number} [options.fadeIn] Amount of time to fade in volume. If less than 10,
-     *        considered seconds or else milliseconds.
-     * @param {Number} [options.fadeOut] Amount of time to fade out volume. If less than 10,
-     *        considered seconds or else milliseconds.
      * @param {Number} [options.speed] Override default speed, default to the Sound's speed setting.
+     * @param {Number} [options.volume] Current volume amount for instance.
      * @param {Boolean} [options.loop] Override default loop, default to the Sound's loop setting.
      * @param {PIXI.sound.Sound~completeCallback} [options.complete] Callback when complete.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded] If the sound isn't already preloaded, callback when
@@ -555,9 +571,11 @@ export default class Sound
             complete: null,
             loaded: null,
             sprite: null,
+            end: null,
             start: 0,
-            fadeIn: 0,
-            fadeOut: 0,
+            volume: 1,
+            speed: 1,
+            loop: false,
         }, options || {});
 
         // A sprite is specified, add the options
@@ -570,7 +588,7 @@ export default class Sound
             const sprite: SoundSprite = this._sprites[alias];
             options.start = sprite.start;
             options.end = sprite.end;
-            options.speed = sprite.speed;
+            options.speed = sprite.speed || 1;
             delete options.sprite;
         }
 
@@ -626,15 +644,37 @@ export default class Sound
             this._onComplete(instance);
         });
 
-        instance.play(
-            options.start,
-            options.end,
-            options.speed,
-            options.loop,
-            options.fadeIn,
-            options.fadeOut,
-        );
+        instance.play(options);
+
         return instance;
+    }
+
+    /**
+     * Internal only, speed, loop, volume change occured.
+     * @method refresh
+     * @private
+     */
+    public refresh(): void
+    {
+        const len = this._instances.length;
+        for (let i = 0; i < len; i++)
+        {
+            this._instances[i].refresh();
+        }
+    }
+
+    /**
+     * Handle changes in paused state. Internal only.
+     * @method refreshPaused
+     * @private
+     */
+    public refreshPaused(): void
+    {
+        const len = this._instances.length;
+        for (let i = 0; i < len; i++)
+        {
+            this._instances[i].refreshPaused();
+        }
     }
 
     /**
@@ -648,7 +688,23 @@ export default class Sound
     }
     public set volume(volume: number)
     {
-        this._volume = this.media.volume = volume;
+        this._volume = volume;
+        this.refresh();
+    }
+
+    /**
+     * Gets and sets the muted flag.
+     * @name PIXI.sound.Sound#muted
+     * @type {Number}
+     */
+    public get muted(): boolean
+    {
+        return this._muted;
+    }
+    public set muted(muted: boolean)
+    {
+        this._muted = muted;
+        this.refresh();
     }
 
     /**
@@ -662,7 +718,8 @@ export default class Sound
     }
     public set loop(loop: boolean)
     {
-        this._loop = this.media.loop = loop;
+        this._loop = loop;
+        this.refresh();
     }
 
     /**

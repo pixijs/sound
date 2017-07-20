@@ -99,24 +99,6 @@ export default class WebAudioMedia implements IMedia
     {
         return !!this._source && !!this._source.buffer;
     }
-
-    // Implements volume
-    public set volume(volume: number)
-    {
-        this._nodes.gain.gain.value = volume;
-    }
-
-    // Implements looping
-    public set loop(loop: boolean)
-    {
-        this._source.loop = loop;
-    }
-
-    // Implements speed
-    public set speed(value: number)
-    {
-        this._source.playbackRate.value = value;
-    }
     
     // Implement filters
     public get filters(): Filter[]
