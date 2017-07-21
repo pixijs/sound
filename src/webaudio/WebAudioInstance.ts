@@ -481,11 +481,11 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
 
             if (delta > 0 || force)
             {
-                this._elapsed += delta;
-                this._lastUpdate = now;
                 const speed: number = this._source.playbackRate.value;
+                this._elapsed += delta * speed;
+                this._lastUpdate = now;
                 const duration: number = this._duration;
-                const progress: number = ((this._elapsed * speed) % duration) / duration;
+                const progress: number = (this._elapsed % duration) / duration;
 
                 // Update the progress
                 this._progress = progress;
