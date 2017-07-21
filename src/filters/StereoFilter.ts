@@ -6,7 +6,7 @@ import SoundLibrary from '../SoundLibrary';
  *
  * @class StereoFilter
  * @memberof PIXI.sound.filters
- * @param {Number} [pan=0] The amount of panning, -1 is left, 1 is right, 0 is centered.
+ * @param {number} [pan=0] The amount of panning, -1 is left, 1 is right, 0 is centered.
  */
 export default class StereoFilter extends Filter
 {
@@ -29,7 +29,7 @@ export default class StereoFilter extends Filter
     /**
      * The amount of panning, -1 is left, 1 is right, 0 is centered
      * @name PIXI.sound.filters.StereoFilter#_pan
-     * @type {Number}
+     * @type {number}
      * @private
      */
     private _pan:number;
@@ -70,7 +70,7 @@ export default class StereoFilter extends Filter
     /**
      * Set the amount of panning, where -1 is left, 1 is right, and 0 is centered
      * @name PIXI.sound.filters.StereoFilter#pan
-     * @type {Number}
+     * @type {number}
      */
     set pan(value:number)
     {

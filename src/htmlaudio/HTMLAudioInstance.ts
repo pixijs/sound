@@ -6,6 +6,7 @@ let id = 0;
 
 /**
  * Instance which wraps the `<audio>` element playback.
+ * @private
  * @class HTMLAudioInstance
  * @memberof PIXI.sound.htmlaudio
  */
@@ -44,7 +45,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
     /**
      * Playback rate, where 1 is 100%.
-     * @type {Number}
+     * @type {number}
      * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_end
      * @private
      */
@@ -52,15 +53,23 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
     /**
      * Current instance paused state.
-     * @type {Boolean}
+     * @type {boolean}
      * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_paused
      * @private
      */
     private _paused: boolean;
 
     /**
+     * Current instance muted state.
+     * @type {boolean}
+     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_muted
+     * @private
+     */
+    private _muted: boolean;
+
+    /**
      * Current actual paused state.
-     * @type {Boolean}
+     * @type {boolean}
      * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_pausedReal
      * @private
      */
@@ -68,7 +77,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
     /**
      * Total length of the audio.
-     * @type {Number}
+     * @type {number}
      * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_duration
      * @private
      */
@@ -76,7 +85,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
     /**
      * Playback rate, where 1 is 100%.
-     * @type {Number}
+     * @type {number}
      * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_start
      * @private
      */
@@ -84,7 +93,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
     /**
      * `true` if the audio is actually playing.
-     * @type {Boolean}
+     * @type {boolean}
      * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_playing
      * @private
      */
@@ -92,7 +101,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
     /**
      * Volume for the instance.
-     * @type {Number}
+     * @type {number}
      * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_volume
      * @private
      */
@@ -100,7 +109,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
     /**
      * Speed for the instance.
-     * @type {Number}
+     * @type {number}
      * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_speed
      * @private
      */
@@ -108,7 +117,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
     /**
      * `true` for looping the playback
-     * @type {Boolean}
+     * @type {boolean}
      * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_loop
      * @private
      */
@@ -125,7 +134,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
     /**
      * The current playback progress from 0 to 1.
-     * @type {Number}
+     * @type {number}
      * @name PIXI.sound.htmlaudio.HTMLAudioInstance#progress
      */
     public get progress(): number
@@ -136,7 +145,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
     /**
      * Pauses the sound.
-     * @type {Boolean}
+     * @type {boolean}
      * @name PIXI.sound.htmlaudio.HTMLAudioInstance#paused
      */
     public get paused(): boolean
@@ -213,7 +222,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
     /**
      * Set the instance speed from 0 to 1
-     * @member {Number} PIXI.sound.htmlaudio.HTMLAudioInstance#speed
+     * @member {number} PIXI.sound.htmlaudio.HTMLAudioInstance#speed
      */
     public get speed(): number
     {
@@ -227,7 +236,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
     /**
      * Get the set the volume for this instance from 0 to 1
-     * @member {Number} PIXI.sound.htmlaudio.HTMLAudioInstance#volume
+     * @member {number} PIXI.sound.htmlaudio.HTMLAudioInstance#volume
      */
     public get volume(): number
     {
@@ -241,7 +250,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
     /**
      * If the sound instance should loop playback
-     * @member {Boolean} PIXI.sound.htmlaudio.HTMLAudioInstance#loop
+     * @member {boolean} PIXI.sound.htmlaudio.HTMLAudioInstance#loop
      */
     public get loop(): boolean
     {
@@ -250,6 +259,20 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
     public set loop(loop: boolean)
     {
         this._loop = loop;
+        this.refresh();
+    }
+
+    /**
+     * `true` if the sound is muted
+     * @member {boolean} PIXI.sound.htmlaudio.HTMLAudioInstance#muted
+     */
+    public get muted(): boolean
+    {
+        return this._muted;
+    }
+    public set muted(muted: boolean)
+    {
+        this._muted = muted;
         this.refresh();
     }
 
@@ -268,7 +291,8 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
         // Update the volume
         const globalVolume = global.volume * (global.muted ? 0 : 1);
         const soundVolume = sound.volume * (sound.muted ? 0 : 1);
-        this._source.volume = this._volume * globalVolume * soundVolume;
+        const instanceVolume = this._volume * (this._muted ? 0 : 1);
+        this._source.volume = instanceVolume * globalVolume * soundVolume;
 
         // Update the speed
         this._source.playbackRate = this._speed * global.speed * sound.speed;
@@ -321,7 +345,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
             /**
              * The sound is paused or unpaused.
              * @event PIXI.sound.htmlaudio.HTMLAudioInstance#pause
-             * @property {Boolean} paused If the instance was paused or not.
+             * @property {boolean} paused If the instance was paused or not.
              */
             this.emit("pause", pausedReal);
         }
@@ -333,7 +357,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
      */
     public play(options: PlayOptions): void
     {
-        const {start, end, speed, loop, volume} = options;
+        const {start, end, speed, loop, volume, muted} = options;
 
         // @if DEBUG
         if (end)
@@ -345,6 +369,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
         this._speed = speed;
         this._volume = volume;
         this._loop = !!loop;
+        this._muted = muted;
         this.refresh();
 
         // WebAudio doesn't support looping when a duration is set
@@ -447,6 +472,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
         this._playing = false;
         this._pausedReal = false;
         this._paused = false;
+        this._muted = false;
 
         if (this._media)
         {

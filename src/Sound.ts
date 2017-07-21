@@ -34,6 +34,7 @@ export interface PlayOptions {
     loop?: boolean;
     volume?: number;
     sprite?: string;
+    muted?: boolean;
     complete?: CompleteCallback;
     loaded?: LoadedCallback;
 }
@@ -43,7 +44,7 @@ export interface PlayOptions {
  * @callback PIXI.sound.Sound~loadedCallback
  * @param {Error} err The callback error.
  * @param {PIXI.sound.Sound} sound The instance of new sound.
- * @param {PIXI.sound.SoundInstance} instance The instance of auto-played sound.
+ * @param {PIXI.sound.IMediaInstance} instance The instance of auto-played sound.
  */
 export declare type LoadedCallback = (err: Error, sound?: Sound, instance?: IMediaInstance) => void;
 
@@ -55,7 +56,8 @@ export declare type LoadedCallback = (err: Error, sound?: Sound, instance?: IMed
 export declare type CompleteCallback = (sound: Sound) => void;
 
 /**
- * Abstract base class for LegacySound and Sound.
+ * Sound represents a single piece of loaded media. When playing a sound {@link PIXI.sound.IMediaInstance} objects
+ * are created. Properties such a `volume`, `pause`, `mute`, `speed`, etc will have an effect on all instances.
  * @class Sound
  * @memberof PIXI.sound
  */
@@ -72,7 +74,7 @@ export default class Sound
     /**
      * `true` if the buffer is loaded.
      * @name PIXI.sound.Sound#isLoaded
-     * @type {Boolean}
+     * @type {boolean}
      * @default false
      */
     public isLoaded: boolean;
@@ -80,7 +82,7 @@ export default class Sound
     /**
      * `true` if the sound is currently being played.
      * @name PIXI.sound.Sound#isPlaying
-     * @type {Boolean}
+     * @type {boolean}
      * @default false
      * @readonly
      */
@@ -89,7 +91,7 @@ export default class Sound
     /**
      * true to start playing immediate after load.
      * @name PIXI.sound.Sound#autoPlay
-     * @type {Boolean}
+     * @type {boolean}
      * @default false
      * @readonly
      */
@@ -98,7 +100,7 @@ export default class Sound
     /**
      * `true` to disallow playing multiple layered instances at once.
      * @name PIXI.sound.Sound#singleInstance
-     * @type {Boolean}
+     * @type {boolean}
      * @default false
      */
     public singleInstance: boolean;
@@ -106,7 +108,7 @@ export default class Sound
     /**
      * `true` to immediately start preloading.
      * @name PIXI.sound.Sound#preload
-     * @type {Boolean}
+     * @type {boolean}
      * @default false
      * @readonly
      */
@@ -163,7 +165,7 @@ export default class Sound
     /**
      * The internal volume.
      * @name PIXI.sound.Sound#_volume
-     * @type {Number}
+     * @type {number}
      * @private
      */
     private _volume: number;
@@ -171,7 +173,7 @@ export default class Sound
     /**
      * The internal paused state.
      * @name PIXI.sound.Sound#_paused
-     * @type {Boolean}
+     * @type {boolean}
      * @private
      */
     private _paused: boolean;
@@ -179,7 +181,7 @@ export default class Sound
     /**
      * The internal muted state.
      * @name PIXI.sound.Sound#_muted
-     * @type {Boolean}
+     * @type {boolean}
      * @private
      */
     private _muted: boolean;
@@ -187,7 +189,7 @@ export default class Sound
     /**
      * The internal volume.
      * @name PIXI.sound.Sound#_loop
-     * @type {Boolean}
+     * @type {boolean}
      * @private
      */
     private _loop: boolean;
@@ -195,7 +197,7 @@ export default class Sound
     /**
      * The internal playbackRate
      * @name PIXI.sound.Sound#_speed
-     * @type {Number}
+     * @type {number}
      * @private
      */
     private _speed: number;
@@ -207,20 +209,20 @@ export default class Sound
      *        or the object of options to use.
      * @param {String} [options.url] If `options` is an object, the source of file.
      * @param {HTMLAudioElement|ArrayBuffer} [options.source] The source, if already preloaded.
-     * @param {Boolean} [options.autoPlay=false] true to play after loading.
-     * @param {Boolean} [options.preload=false] true to immediately start preloading.
-     * @param {Boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
-     * @param {Number} [options.volume=1] The amount of volume 1 = 100%.
-     * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false,
+     * @param {boolean} [options.autoPlay=false] true to play after loading.
+     * @param {boolean} [options.preload=false] true to immediately start preloading.
+     * @param {boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
+     * @param {number} [options.volume=1] The amount of volume 1 = 100%.
+     * @param {boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false,
      *        loaded with NodeJS's `fs` module.
-     * @param {Number} [options.speed=1] The playback rate where 1 is 100% speed.
+     * @param {number} [options.speed=1] The playback rate where 1 is 100% speed.
      * @param {Object} [options.sprites] The map of sprite data. Where a sprite is an object
      *        with a `start` and `end`, which are the times in seconds. Optionally, can include
      *        a `speed` amount where 1 is 100% speed.
      * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback
      *        when play is finished.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
-     * @param {Boolean} [options.loop=false] true to loop the audio playback.
+     * @param {boolean} [options.loop=false] true to loop the audio playback.
      * @return {PIXI.sound.Sound} Created sound instance.
      */
     public static from(source: string|Options|ArrayBuffer|HTMLAudioElement): Sound
@@ -344,7 +346,7 @@ export default class Sound
     /**
      * Stops all the instances of this sound from playing.
      * @name PIXI.sound.Sound#paused
-     * @type {Boolean}
+     * @type {boolean}
      * @readonly
      */
     public get paused(): boolean
@@ -360,7 +362,7 @@ export default class Sound
     /**
      * The playback rate
      * @name PIXI.sound.Sound#speed
-     * @type {Number}
+     * @type {number}
      */
     public get speed(): number
     {
@@ -392,9 +394,9 @@ export default class Sound
      * @method PIXI.sound.Sound#addSprites
      * @param {String} alias The unique name of the sound sprite.
      * @param {object} data Either completed function or play options.
-     * @param {Number} data.start Time when to play the sound in seconds.
-     * @param {Number} data.end Time to end playing in seconds.
-     * @param {Number} [data.speed] Override default speed, default to the Sound's speed setting.
+     * @param {number} data.start Time when to play the sound in seconds.
+     * @param {number} data.end Time to end playing in seconds.
+     * @param {number} [data.speed] Override default speed, default to the Sound's speed setting.
      * @return {PIXI.sound.SoundSprite} Sound sprite result.
      */
     public addSprites(alias: string, data: SoundSpriteData): SoundSprite;
@@ -480,7 +482,7 @@ export default class Sound
     /**
      * If the current sound is playable (loaded).
      * @name PIXI.sound.Sound#isPlayable
-     * @type {Boolean}
+     * @type {boolean}
      * @readonly
      */
     public get isPlayable(): boolean
@@ -517,11 +519,11 @@ export default class Sound
      * @method PIXI.sound.Sound#play
      * @param {String} alias The unique name of the sound sprite.
      * @param {object} data Either completed function or play options.
-     * @param {Number} data.start Time when to play the sound in seconds.
-     * @param {Number} data.end Time to end playing in seconds.
-     * @param {Number} [data.speed] Override default speed, default to the Sound's speed setting.
+     * @param {number} data.start Time when to play the sound in seconds.
+     * @param {number} data.end Time to end playing in seconds.
+     * @param {number} [data.speed] Override default speed, default to the Sound's speed setting.
      * @param {PIXI.sound.Sound~completeCallback} [callback] Callback when completed.
-     * @return {PIXI.sound.SoundInstance|Promise<PIXI.sound.SoundInstance>} The sound instance,
+     * @return {PIXI.sound.IMediaInstance|Promise<PIXI.sound.IMediaInstance>} The sound instance,
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
      */
@@ -531,16 +533,17 @@ export default class Sound
      * Plays the sound.
      * @method PIXI.sound.Sound#play
      * @param {PIXI.sound.Sound~completeCallback|object} options Either completed function or play options.
-     * @param {Number} [options.start=0] Time when to play the sound in seconds.
-     * @param {Number} [options.end] Time to end playing in seconds.
+     * @param {number} [options.start=0] Time when to play the sound in seconds.
+     * @param {number} [options.end] Time to end playing in seconds.
      * @param {String} [options.sprite] Play a named sprite. Will override end, start and speed options.
-     * @param {Number} [options.speed] Override default speed, default to the Sound's speed setting.
-     * @param {Number} [options.volume] Current volume amount for instance.
-     * @param {Boolean} [options.loop] Override default loop, default to the Sound's loop setting.
+     * @param {number} [options.speed] Override default speed, default to the Sound's speed setting.
+     * @param {number} [options.volume] Current volume amount for instance.
+     * @param {boolean} [options.muted] Override default muted, default to the Sound's muted setting.
+     * @param {boolean} [options.loop] Override default loop, default to the Sound's loop setting.
      * @param {PIXI.sound.Sound~completeCallback} [options.complete] Callback when complete.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded] If the sound isn't already preloaded, callback when
      *        the audio has completely finished loading and decoded.
-     * @return {PIXI.sound.SoundInstance|Promise<PIXI.sound.SoundInstance>} The sound instance,
+     * @return {PIXI.sound.IMediaInstance|Promise<PIXI.sound.IMediaInstance>} The sound instance,
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
      */
@@ -575,6 +578,7 @@ export default class Sound
             start: 0,
             volume: 1,
             speed: 1,
+            muted: false,
             loop: false,
         }, options || {});
 
@@ -680,7 +684,7 @@ export default class Sound
     /**
      * Gets and sets the volume.
      * @name PIXI.sound.Sound#volume
-     * @type {Number}
+     * @type {number}
      */
     public get volume(): number
     {
@@ -695,7 +699,7 @@ export default class Sound
     /**
      * Gets and sets the muted flag.
      * @name PIXI.sound.Sound#muted
-     * @type {Number}
+     * @type {number}
      */
     public get muted(): boolean
     {
@@ -710,7 +714,7 @@ export default class Sound
     /**
      * Gets and sets the looping.
      * @name PIXI.sound.Sound#loop
-     * @type {Boolean}
+     * @type {boolean}
      */
     public get loop(): boolean
     {
@@ -735,7 +739,7 @@ export default class Sound
     /**
      * Gets the list of instances that are currently being played of this sound.
      * @name PIXI.sound.Sound#instances
-     * @type {Array<SoundInstance>}
+     * @type {Array<PIXI.sound.IMediaInstance>}
      * @readonly
      */
     public get instances(): IMediaInstance[]
@@ -757,7 +761,7 @@ export default class Sound
     /**
      * Get the duration of the audio in seconds.
      * @name PIXI.sound.Sound#duration
-     * @type {Number}
+     * @type {number}
      */
     public get duration(): number
     {
@@ -798,7 +802,7 @@ export default class Sound
      * Sound instance completed.
      * @method PIXI.sound.Sound#_onComplete
      * @private
-     * @param {PIXI.sound.SoundInstance} instance
+     * @param {PIXI.sound.IMediaInstance} instance
      */
     private _onComplete(instance: IMediaInstance): void
     {

@@ -18,7 +18,8 @@ import * as webaudio from "./webaudio";
 export type SoundMap = {[id: string]: Options|string|ArrayBuffer|HTMLAudioElement};
 
 /**
- * Playing sound files with WebAudio API
+ * Contains all of the functionality for using the **pixi-sound** library.
+ * This is deisnged to play audio with WebAudio and fallback to HTML5.
  * @namespace PIXI.sound
  */
 
@@ -39,7 +40,7 @@ export default class SoundLibrary
      * For legacy approach for Audio. Instead of using WebAudio API
      * for playback of sounds, it will use HTML5 `<audio>` element.
      * @name PIXI.sound#_useLegacy
-     * @type {Boolean}
+     * @type {boolean}
      * @default false
      * @private
      */
@@ -92,7 +93,7 @@ export default class SoundLibrary
      * The global context to use.
      * @name PIXI.sound#context
      * @readonly
-     * @type {PIXI.sound.webaudio.WebAudioContext}
+     * @type {PIXI.sound.IMediaContext}
      */
     public get context(): IMediaContext
     {
@@ -219,7 +220,7 @@ export default class SoundLibrary
      * `true` if WebAudio is supported on the current browser.
      * @name PIXI.sound#supported
      * @readonly
-     * @type {Boolean}
+     * @type {boolean}
      */
     public get supported(): boolean
     {
@@ -242,12 +243,12 @@ export default class SoundLibrary
      *        or the object of options to use.
      * @param {String} [options.url] If `options` is an object, the source of file.
      * @param {ArrayBuffer|HTMLAudioElement} [options.source] If sound is already preloaded, available.
-     * @param {Boolean} [options.autoPlay=false] true to play after loading.
-     * @param {Boolean} [options.preload=false] true to immediately start preloading.
-     * @param {Boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
-     * @param {Number} [options.volume=1] The amount of volume 1 = 100%.
-     * @param {Number} [options.speed=1] The playback rate where 1 is 100% speed.
-     * @param {Boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false,
+     * @param {boolean} [options.autoPlay=false] true to play after loading.
+     * @param {boolean} [options.preload=false] true to immediately start preloading.
+     * @param {boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
+     * @param {number} [options.volume=1] The amount of volume 1 = 100%.
+     * @param {number} [options.speed=1] The playback rate where 1 is 100% speed.
+     * @param {boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false,
      *        loaded with NodeJS's `fs` module.
      * @param {Object} [options.sprites] The map of sprite data. Where a sprite is an object
      *        with a `start` and `end`, which are the times in seconds. Optionally, can include
@@ -338,9 +339,9 @@ export default class SoundLibrary
     }
 
     /**
-     * Do not use WebAudio, force the use of legacy.
+     * Do not use WebAudio, force the use of legacy. This **must** be called before loading any files.
      * @name PIXI.sound#useLegacy
-     * @type {Boolean}
+     * @type {boolean}
      */
     public get useLegacy(): boolean
     {
@@ -379,7 +380,7 @@ export default class SoundLibrary
     /**
      * Set the global volume for all sounds. To set per-sound volume see {@link PIXI.sound#volume}.
      * @name PIXI.sound#volumeAll
-     * @type {Number}
+     * @type {number}
      */
     public get volumeAll(): number
     {
@@ -394,7 +395,7 @@ export default class SoundLibrary
     /**
      * Set the global speed for all sounds. To set per-sound speed see {@link PIXI.sound#speed}.
      * @name PIXI.sound#speedAll
-     * @type {Number}
+     * @type {number}
      */
     public get speedAll(): number
     {
@@ -409,7 +410,7 @@ export default class SoundLibrary
     /**
      * Toggle paused property for all sounds.
      * @method PIXI.sound#togglePauseAll
-     * @return {Boolean} `true` if all sounds are paused.
+     * @return {boolean} `true` if all sounds are paused.
      */
     public togglePauseAll(): boolean
     {
@@ -443,7 +444,7 @@ export default class SoundLibrary
     /**
      * Toggle muted property for all sounds.
      * @method PIXI.sound#toggleMuteAll
-     * @return {Boolean} `true` if all sounds are muted.
+     * @return {boolean} `true` if all sounds are muted.
      */
     public toggleMuteAll(): boolean
     {
@@ -507,7 +508,7 @@ export default class SoundLibrary
      * Checks if a sound by alias exists.
      * @method PIXI.sound#exists
      * @param {String} alias Check for alias.
-     * @return {Boolean} true if the sound exists.
+     * @return {boolean} true if the sound exists.
      */
     public exists(alias: string, assert: boolean= false): boolean
     {
@@ -536,7 +537,7 @@ export default class SoundLibrary
      * @method PIXI.sound#play
      * @param {String} alias The sound alias reference.
      * @param {String} sprite The alias of the sprite to play.
-     * @return {PIXI.sound.SoundInstance|null} The sound instance, this cannot be reused
+     * @return {PIXI.sound.IMediaInstance|null} The sound instance, this cannot be reused
      *         after it is done playing. Returns `null` if the sound has not yet loaded.
      */
 
@@ -547,11 +548,11 @@ export default class SoundLibrary
      * @param {Object|Function} options The options or callback when done.
      * @param {Function} [options.complete] When completed.
      * @param {Function} [options.loaded] If not already preloaded, callback when finishes load.
-     * @param {Number} [options.start=0] Start time offset.
-     * @param {Number} [options.end] End time offset.
-     * @param {Number} [options.speed] Override default speed, default to the Sound's speed setting.
-     * @param {Boolean} [options.loop] Override default loop, default to the Sound's loop setting.
-     * @return {PIXI.sound.SoundInstance|Promise<PIXI.sound.SoundInstance>} The sound instance,
+     * @param {number} [options.start=0] Start time offset.
+     * @param {number} [options.end] End time offset.
+     * @param {number} [options.speed] Override default speed, default to the Sound's speed setting.
+     * @param {boolean} [options.loop] Override default loop, default to the Sound's loop setting.
+     * @return {PIXI.sound.IMediaInstance|Promise<PIXI.sound.IMediaInstance>} The sound instance,
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
      */
@@ -597,8 +598,8 @@ export default class SoundLibrary
      * Get or set the volume for a sound.
      * @method PIXI.sound#volume
      * @param {String} alias The sound alias reference.
-     * @param {Number} [volume] Optional current volume to set.
-     * @return {Number} The current volume.
+     * @param {number} [volume] Optional current volume to set.
+     * @return {number} The current volume.
      */
     public volume(alias: string, volume?: number): number
     {
@@ -613,8 +614,8 @@ export default class SoundLibrary
      * Get or set the speed for a sound.
      * @method PIXI.sound#speed
      * @param {String} alias The sound alias reference.
-     * @param {Number} [speed] Optional current speed to set.
-     * @return {Number} The current speed.
+     * @param {number} [speed] Optional current speed to set.
+     * @return {number} The current speed.
      */
     public speed(alias: string, speed?: number): number
     {
@@ -629,7 +630,7 @@ export default class SoundLibrary
      * Get the length of a sound in seconds.
      * @method PIXI.sound#duration
      * @param {String} alias The sound alias reference.
-     * @return {Number} The current duration in seconds.
+     * @return {number} The current duration in seconds.
      */
     public duration(alias: string): number
     {

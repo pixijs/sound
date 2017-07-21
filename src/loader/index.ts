@@ -4,13 +4,15 @@ import SoundUtils from "../utils/SoundUtils";
 /**
  * Sound middleware installation utilities for PIXI.loaders.Loader
  * @namespace PIXI.sound.loader
+ * @private
  */
 export default class LoaderMiddleware
 {
     /**
-     * @name PIXI.sound.loader.EXTENSION
-     * @type {PIXI.sound.SoundLibrary}
+     * @name PIXI.sound.loader._sound
+     * @type {PIXI.sound}
      * @static
+     * @private
      */
     static _sound: SoundLibrary;
 
@@ -43,7 +45,8 @@ export default class LoaderMiddleware
     /**
      * Set the legacy mode
      * @name PIXI.sound.loader.legacy
-     * @type {Boolean}
+     * @type {boolean}
+     * @private
      */
     static set legacy(legacy:boolean)
     {

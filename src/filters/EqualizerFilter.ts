@@ -28,7 +28,7 @@ export default class EqualizerFilter extends Filter
     /**
      * Band at 32 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F32
-     * @type {Number}
+     * @type {number}
      * @readonly
      */
     public static F32:number = 32;
@@ -36,7 +36,7 @@ export default class EqualizerFilter extends Filter
     /**
      * Band at 64 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F64
-     * @type {Number}
+     * @type {number}
      * @readonly
      */
     public static F64:number = 64;
@@ -44,7 +44,7 @@ export default class EqualizerFilter extends Filter
     /**
      * Band at 125 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F125
-     * @type {Number}
+     * @type {number}
      * @readonly
      */
     public static F125:number = 125;
@@ -52,7 +52,7 @@ export default class EqualizerFilter extends Filter
     /**
      * Band at 250 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F250
-     * @type {Number}
+     * @type {number}
      * @readonly
      */
     public static F250:number = 250;
@@ -60,7 +60,7 @@ export default class EqualizerFilter extends Filter
     /**
      * Band at 500 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F500
-     * @type {Number}
+     * @type {number}
      * @readonly
      */
     public static F500:number = 500;
@@ -68,7 +68,7 @@ export default class EqualizerFilter extends Filter
     /**
      * Band at 1000 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F1K
-     * @type {Number}
+     * @type {number}
      * @readonly
      */
     public static F1K:number = 1000;
@@ -76,7 +76,7 @@ export default class EqualizerFilter extends Filter
     /**
      * Band at 2000 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F2K
-     * @type {Number}
+     * @type {number}
      * @readonly
      */
     public static F2K:number = 2000;
@@ -84,7 +84,7 @@ export default class EqualizerFilter extends Filter
     /**
      * Band at 4000 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F4K
-     * @type {Number}
+     * @type {number}
      * @readonly
      */
     public static F4K:number = 4000;
@@ -92,7 +92,7 @@ export default class EqualizerFilter extends Filter
     /**
      * Band at 8000 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F8K
-     * @type {Number}
+     * @type {number}
      * @readonly
      */
     public static F8K:number = 8000;
@@ -100,7 +100,7 @@ export default class EqualizerFilter extends Filter
     /**
      * Band at 16000 Hz
      * @name PIXI.sound.filters.EqualizerFilter.F16K
-     * @type {Number}
+     * @type {number}
      * @readonly
      */
     public static F16K:number = 16000;

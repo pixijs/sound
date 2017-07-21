@@ -9,6 +9,7 @@ import Filter from "../filters/Filter";
 
 /**
  * The fallback version of Sound which uses `<audio>` instead of WebAudio API.
+ * @private
  * @class HTMLAudioMedia
  * @memberof PIXI.sound.htmlaudio
  * @param {HTMLAudioElement|String|Object} options Either the path or url to the source file.

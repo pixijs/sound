@@ -2,9 +2,10 @@ import Filterable from "../Filterable";
 import { IMediaContext } from "../interfaces/IMediaContext";
 
 /**
- * @description Main class to handle WebAudio API. There's a simple chain
+ * Main class to handle WebAudio API. There's a simple chain
  * of AudioNode elements: analyser > compressor > context.destination.
  * any filters that are added are inserted between the analyser and compressor nodes
+ * @private
  * @class WebAudioContext
  * @extends PIXI.sound.Filterable
  * @memberof PIXI.sound.webaudio
@@ -37,7 +38,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
 
     /**
      * Sets the muted state.
-     * @type {Boolean}
+     * @type {boolean}
      * @name PIXI.sound.webaudio.WebAudioContext#muted
      * @default false
      */
@@ -45,7 +46,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
 
     /**
      * Sets the volume from 0 to 1.
-     * @type {Number}
+     * @type {number}
      * @name PIXI.sound.webaudio.WebAudioContext#volume
      * @default 1
      */
@@ -78,7 +79,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
     /**
      * Current paused status
      * @name PIXI.sound.webaudio.WebAudioContext#_paused
-     * @type {Boolean}
+     * @type {boolean}
      * @private
      * @default false
      */
@@ -252,7 +253,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
      * Pauses all sounds, even though we handle this at the instance
      * level, we'll also pause the audioContext so that the 
      * time used to compute progress isn't messed up.
-     * @type {Boolean}
+     * @type {boolean}
      * @name PIXI.sound.webaudio.WebAudioContext#paused
      * @default false
      */
@@ -297,7 +298,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
     /**
      * Toggles the muted state.
      * @method PIXI.sound.webaudio.WebAudioContext#toggleMute
-     * @return {Boolean} The current muted state.
+     * @return {boolean} The current muted state.
      */
     public toggleMute(): boolean
     {
@@ -309,7 +310,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
     /**
      * Toggles the paused state.
      * @method PIXI.sound.webaudio.WebAudioContext#togglePause
-     * @return {Boolean} The current muted state.
+     * @return {boolean} The current muted state.
      */
     public togglePause(): boolean
     {

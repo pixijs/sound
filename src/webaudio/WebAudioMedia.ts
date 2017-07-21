@@ -11,7 +11,7 @@ import {Options, PlayOptions, LoadedCallback, CompleteCallback} from "../Sound";
 
 /**
  * Represents a single sound element. Can be used to play, pause, etc. sound instances.
- *
+ * @private
  * @class WebAudioMedia
  * @memberof PIXI.sound.webaudio
  * @param {PIXI.sound.Sound} parent - Instance of parent Sound container
@@ -38,7 +38,7 @@ export default class WebAudioMedia implements IMedia
      * `true` to use XMLHttpRequest object to load.
      * Default is to use NodeJS's fs module to read the sound.
      * @name PIXI.sound.webaudio.WebAudioMedia#useXHR
-     * @type {Boolean}
+     * @type {boolean}
      * @default false
      */
     public useXHR: boolean;

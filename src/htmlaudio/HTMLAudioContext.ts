@@ -3,6 +3,7 @@ import Filter from "../filters/Filter";
 
 /**
  * The fallback version of WebAudioContext which uses `<audio>` instead of WebAudio API.
+ * @private
  * @class HTMLAudioContext
  * @extends PIXI.util.EventEmitter
  * @memberof PIXI.sound.htmlaudio
@@ -12,7 +13,7 @@ export default class HTMLAudioContext extends PIXI.utils.EventEmitter implements
     /**
      * Current global speed from 0 to 1
      * @name PIXI.sound.htmlaudio.HTMLAudioContext#speed
-     * @type {Number}
+     * @type {number}
      * @default 1
      */
     public speed: number;
@@ -20,7 +21,7 @@ export default class HTMLAudioContext extends PIXI.utils.EventEmitter implements
     /**
      * Current muted status of the context
      * @name PIXI.sound.htmlaudio.HTMLAudioContext#muted
-     * @type {Boolean}
+     * @type {boolean}
      * @default false
      */
     public muted: boolean;
@@ -28,7 +29,7 @@ export default class HTMLAudioContext extends PIXI.utils.EventEmitter implements
     /**
      * Current volume from 0 to 1
      * @name PIXI.sound.htmlaudio.HTMLAudioContext#volume
-     * @type {Number}
+     * @type {number}
      * @default 1
      */
     public volume: number;
@@ -36,7 +37,7 @@ export default class HTMLAudioContext extends PIXI.utils.EventEmitter implements
     /**
      * Current paused status
      * @name PIXI.sound.htmlaudio.HTMLAudioContext#paused
-     * @type {Boolean}
+     * @type {boolean}
      * @default false
      */
     public paused: boolean;
@@ -109,7 +110,7 @@ export default class HTMLAudioContext extends PIXI.utils.EventEmitter implements
     /**
      * Toggles the muted state.
      * @method PIXI.sound.htmlaudio.HTMLAudioContext#toggleMute
-     * @return {Boolean} The current muted state.
+     * @return {boolean} The current muted state.
      */
     public toggleMute(): boolean
     {
@@ -121,7 +122,7 @@ export default class HTMLAudioContext extends PIXI.utils.EventEmitter implements
     /**
      * Toggles the paused state.
      * @method PIXI.sound.htmlaudio.HTMLAudioContext#togglePause
-     * @return {Boolean} The current paused state.
+     * @return {boolean} The current paused state.
      */
     public togglePause(): boolean
     {

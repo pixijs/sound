@@ -235,10 +235,7 @@ console.log('Sound: ', PIXI.sound.find('boing'));</code></pre>
                     <span class="glyphicon glyphicon-play"></span> Run
                 </button>
                 <pre><code id="sine-tone" class="javascript">const sound = PIXI.sound.utils.sineTone(523.251, 3);
-sound.play({
-    fadeIn: 1,
-    fadeOut: 1
-});</code></pre>
+sound.play();</code></pre>
 
                 <p>There's a utility method for playing a sound once. It is immediately destroyed and after this.</p>
                 <button class="btn btn-danger btn-lg pull-right play" data-code="#autoplay2">

@@ -8,6 +8,7 @@ import Filter from "./filters/Filter";
  * @memberof PIXI.sound
  * @param {AudioNode} source The source audio node
  * @param {AudioNode} destination The output audio node
+ * @private
  */
 export default class Filterable
 {

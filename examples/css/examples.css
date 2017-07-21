@@ -149,22 +149,25 @@ button.play {
     display:none
 }
 
-.volume-group .range {
+.btn-range-group .range {
     width:120px;
     display:inline-block;
     margin: 0 0 0 10px;
     vertical-align: middle;
 }
-.volume-group label {
+.btn-range-group label {
     font-weight:normal;
 }
 
-.volume-group {
+.btn-range-group {
     border: 1px solid #ccc;
     border-left:0;
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
     padding: 2px 16px;
     font-size: 18px;
     line-height: 1.3333333;
+}
+
+.speed-group {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
 }

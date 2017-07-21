@@ -135,8 +135,8 @@ export default class SoundUtils
     /**
      * Create a new sound for a sine wave-based tone.  **Only supported with WebAudio**
      * @method PIXI.sound.utils.sineTone
-     * @param {Number} [hertz=200] Frequency of sound.
-     * @param {Number} [seconds=1] Duration of sound in seconds.
+     * @param {number} [hertz=200] Frequency of sound.
+     * @param {number} [seconds=1] Duration of sound in seconds.
      * @return {PIXI.sound.Sound} New sound.
      */
     public static sineTone(hertz: number = 200, seconds: number = 1): Sound
@@ -185,8 +185,8 @@ export default class SoundUtils
      * @method PIXI.sound.utils.render
      * @param {PIXI.sound.Sound} sound Instance of sound to render
      * @param {Object} [options] Custom rendering options
-     * @param {Number} [options.width=512] Width of the render
-     * @param {Number} [options.height=128] Height of the render
+     * @param {number} [options.width=512] Width of the render
+     * @param {number} [options.height=128] Height of the render
      * @param {string|CanvasPattern|CanvasGradient} [options.fill='black'] Fill style for waveform
      * @return {PIXI.Texture} Result texture
      */

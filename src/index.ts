@@ -7,6 +7,11 @@ import SoundSprite from "./sprites/SoundSprite";
 import utils from "./utils/SoundUtils";
 import * as webaudio from "./webaudio";
 
+/**
+ * Global namespace provided by the PixiJS project.
+ * @namespace PIXI
+ * @see https://github.com/pixijs/pixi.js
+ */
 const sound = SoundLibrary.init();
 
 export {

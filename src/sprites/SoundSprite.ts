@@ -18,9 +18,9 @@ export type SoundSprites = {[id: string]: SoundSprite};
  * @memberof PIXI.sound
  * @param {PIXI.sound.Sound} parent The parent sound
  * @param {Object} options Data associated with object.
- * @param {Number} options.start The start time in seconds.
- * @param {Number} options.end The end time in seconds.
- * @param {Number} [options.speed] The optional speed, if not speed, uses
+ * @param {number} options.start The start time in seconds.
+ * @param {number} options.end The end time in seconds.
+ * @param {number} [options.speed] The optional speed, if not speed, uses
  *        the default speed of the parent.
  */
 export default class SoundSprite
@@ -36,7 +36,7 @@ export default class SoundSprite
     /**
      * The starting location in seconds.
      * @name PIXI.sound.SoundSprite#start
-     * @type {Number}
+     * @type {number}
      * @readonly
      */
     public start: number;
@@ -44,7 +44,7 @@ export default class SoundSprite
     /**
      * The ending location in seconds
      * @name PIXI.sound.SoundSprite#end
-     * @type {Number}
+     * @type {number}
      * @readonly
      */
     public end: number;
@@ -52,7 +52,7 @@ export default class SoundSprite
     /**
      * The speed override where 1 is 100% speed playback.
      * @name PIXI.sound.SoundSprite#speed
-     * @type {Number}
+     * @type {number}
      * @readonly
      */
     public speed: number;
@@ -60,7 +60,7 @@ export default class SoundSprite
     /**
      * The duration of the sound in seconds.
      * @name PIXI.sound.SoundSprite#duration
-     * @type {Number}
+     * @type {number}
      * @readonly
      */
     public duration: number;
@@ -83,7 +83,7 @@ export default class SoundSprite
      * Play the sound sprite.
      * @method PIXI.sound.SoundSprite#play
      * @param {PIXI.sound.Sound~completeCallback} [complete] Function call when complete
-     * @return {PIXI.sound.SoundInstance|Promise<PIXI.sound.SoundInstance>} Sound instance being played.
+     * @return {PIXI.sound.IMediaInstance|Promise<PIXI.sound.IMediaInstance>} Sound instance being played.
      */
     public play(complete?: CompleteCallback): IMediaInstance|Promise<IMediaInstance>
     {

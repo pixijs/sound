@@ -14,6 +14,7 @@ export interface SourceClone {
 };
 
 /**
+ * @private
  * @class WebAudioNodes
  * @extends PIXI.sound.Filterable
  * @private
@@ -25,7 +26,7 @@ export default class WebAudioNodes extends Filterable
     /**
      * The buffer size for script processor
      * @name PIXI.sound.SoundNodes.BUFFER_SIZE
-     * @type {Number}
+     * @type {number}
      * @default 256
      */
     public static BUFFER_SIZE: number = 256;

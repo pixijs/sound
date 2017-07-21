@@ -6,7 +6,7 @@ import SoundLibrary from '../SoundLibrary';
  *
  * @class DistortionFilter
  * @memberof PIXI.sound.filters
- * @param {Number} [amount=0] The amount of distoration from 0 to 1.
+ * @param {number} [amount=0] The amount of distoration from 0 to 1.
  */
 export default class DistortionFilter extends Filter
 {
@@ -21,7 +21,7 @@ export default class DistortionFilter extends Filter
     /**
      * The amount of distoration
      * @name PIXI.sound.filters.DistortionFilter#_amount
-     * @type {Number}
+     * @type {number}
      * @private
      */
     private _amount:number;
@@ -46,7 +46,7 @@ export default class DistortionFilter extends Filter
 
     /**
      * @name PIXI.sound.filters.Distoration#amount
-     * @type {Number}
+     * @type {number}
      */
     set amount(value:number)
     {
