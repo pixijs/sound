@@ -1,3 +1,7 @@
+.container-fluid.frame {
+    max-width: 980px;
+}
+
 .github img {
     width:20px;
     height:20px;
