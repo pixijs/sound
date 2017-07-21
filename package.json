@@ -1,6 +1,6 @@
 {
   "name": "pixi-sound",
-  "version": "1.4.2",
+  "version": "2.0.0-alpha",
   "description": "WebAudio API playback library with filters",
   "main": "dist/pixi-sound.min.js",
   "module": "dist/pixi-sound.es.min.js",
