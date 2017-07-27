@@ -74,26 +74,6 @@ module.exports = function(libraryPath, useLegacy)
             expect(htmlaudio).to.equal(PIXI.sound.htmlaudio);
         });
 
-        it("should load file with Node's filesystem", webAudioOnly(function(done)
-        {
-            sound.add("silence",
-            {
-                preload: true,
-                url: manifest.silence,
-                useXHR: false,
-                loaded: (err, s) => {
-                    expect(s.isLoaded).to.be.true;
-                    expect(s.isPlayable).to.be.true;
-                    expect(s.autoPlay).to.be.false;
-                    expect(s.loop).to.be.false;
-                    expect(s.preload).to.be.true;
-                    expect(s).to.be.instanceof(Sound);
-                    sound.removeAll();
-                    done();
-                },
-            });
-        }));
-
         it("should load a manifest", function(done)
         {
             this.slow(200);

@@ -248,8 +248,6 @@ export default class SoundLibrary
      * @param {boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
      * @param {number} [options.volume=1] The amount of volume 1 = 100%.
      * @param {number} [options.speed=1] The playback rate where 1 is 100% speed.
-     * @param {boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false,
-     *        loaded with NodeJS's `fs` module.
      * @param {Object} [options.sprites] The map of sprite data. Where a sprite is an object
      *        with a `start` and `end`, which are the times in seconds. Optionally, can include
      *        a `speed` amount where 1 is 100% speed.

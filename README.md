@@ -8,7 +8,6 @@ WebAudio API playback library, with filters. Modern audio playback for modern br
 
 * Pausing and resuming
 * Independent volume control
-* Loading with XMLHttpRequest or Node's `fs` module
 * Support blocking or layered sounds (multiple instances)
 * Support for `PIXI.loader` system
 * Dynamic filters:

@@ -35,15 +35,6 @@ export default class WebAudioMedia implements IMedia
     public source: ArrayBuffer;
 
     /**
-     * `true` to use XMLHttpRequest object to load.
-     * Default is to use NodeJS's fs module to read the sound.
-     * @name PIXI.sound.webaudio.WebAudioMedia#useXHR
-     * @type {boolean}
-     * @default false
-     */
-    public useXHR: boolean;
-
-    /**
      * Instance of the chain builder.
      * @name PIXI.sound.webaudio.WebAudioMedia#_nodes
      * @type {PIXI.sound.webaudio.WebAudioNodes}
@@ -65,7 +56,6 @@ export default class WebAudioMedia implements IMedia
         this._nodes = new WebAudioNodes(this.context);
         this._source = this._nodes.bufferSource;
         this.source = parent.options.source as ArrayBuffer;
-        this.useXHR = parent.options.useXHR;
     }
 
     /**
@@ -150,7 +140,7 @@ export default class WebAudioMedia implements IMedia
         // Load from the file path
         if (this.parent.url)
         {
-            this.useXHR ? this._loadUrl(callback) : this._loadPath(callback);
+            this._loadUrl(callback);
         }
         // Load from the arraybuffer, incase it was loaded outside
         else if (this.source)
@@ -187,38 +177,6 @@ export default class WebAudioMedia implements IMedia
 
         // actually start the request
         request.send();
-    }
-
-    /**
-     * Loads using the file system (NodeJS's fs module).
-     * @method PIXI.sound.webaudio.WebAudioMedia#_loadPath
-     * @private
-     */
-    private _loadPath(callback?: LoadedCallback)
-    {
-        const fs = require("fs");
-        const url: string = this.parent.url;
-        fs.readFile(url, (err: Error, data: Buffer) => {
-            if (err)
-            {
-                // @if DEBUG
-                console.error(err);
-                // @endif
-                if (callback)
-                {
-                    callback(new Error(`File not found ${this.parent.url}`));
-                }
-                return;
-            }
-            const arrayBuffer = new ArrayBuffer(data.length);
-            const view = new Uint8Array(arrayBuffer);
-            for (let i = 0; i < data.length; ++i)
-            {
-                view[i] = data[i];
-            }
-            this.source = arrayBuffer;
-            this._decode(arrayBuffer, callback);
-        });
     }
 
     /**

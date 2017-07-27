@@ -22,7 +22,6 @@ export interface Options {
     loop?: boolean;
     url?: string;
     source?: ArrayBuffer|HTMLAudioElement;
-    useXHR?: boolean;
     sprites?: {[id: string]: SoundSpriteData};
 }
 
@@ -213,8 +212,6 @@ export default class Sound
      * @param {boolean} [options.preload=false] true to immediately start preloading.
      * @param {boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
      * @param {number} [options.volume=1] The amount of volume 1 = 100%.
-     * @param {boolean} [options.useXHR=true] true to use XMLHttpRequest to load the sound. Default is false,
-     *        loaded with NodeJS's `fs` module.
      * @param {number} [options.speed=1] The playback rate where 1 is 100% speed.
      * @param {Object} [options.sprites] The map of sprite data. Where a sprite is an object
      *        with a `start` and `end`, which are the times in seconds. Optionally, can include
@@ -254,7 +251,6 @@ export default class Sound
             complete: null,
             loaded: null,
             loop: false,
-            useXHR: true,
         }, options);
 
         // Resolve url in-case it has a special format
