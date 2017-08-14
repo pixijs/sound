@@ -22,6 +22,7 @@
         "footer": "Made with ♥ by Matt Karl (github.com/bigtimebuddy)",
         "copyright": "PIXI Copyright &copy; 2017 Matt Karl.",
         "linenums": false,
+        "googleAnalytics": "UA-103772589-1",
         "meta": {
             "title": "PIXI.sound API Documentation",
             "description": "Documentation for PIXI.sound library",
