@@ -8,9 +8,6 @@
         "sourceMap": true,
         "inlineSources": true
     },
-    "files": [
-        "typings/index.d.ts"
-    ],
     "include": [
         "src/**/*"
     ],

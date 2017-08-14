@@ -4,7 +4,7 @@
   "description": "WebAudio API playback library with filters",
   "main": "dist/pixi-sound.umd.js",
   "module": "dist/pixi-sound.es.js",
-  "types": "dist/types/index.d.ts",
+  "types": "pixi-sound.d.ts",
   "scripts": {
     "pretest": "npm run build",
     "test": "npm run unit-test",
@@ -38,6 +38,7 @@
   },
   "files": [
     "dist/",
+    "pixi-sound.d.ts",
     "LICENSE",
     "package.json",
     "README.md"
