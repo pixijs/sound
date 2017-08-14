@@ -40,7 +40,5 @@ export default {
     moduleName: "__pixiSound",
     intro: 'if (typeof PIXI === "undefined") { throw "PixiJS required"; }',
     banner,
-    dest: `dist/pixi-sound.js`,
-    format: "umd",
     plugins,
 };
