@@ -4,20 +4,23 @@ import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import pkg from "./package.json";
 
-const prod = process.env.BUILD === "prod";
-const suffix = prod ? ".min" : "";
 const plugins = [
     typescript(),
     resolve({ jsnext: true }),
     commonjs(),
 ];
-const compiled = (new Date()).toUTCString().replace(/GMT/g, "UTC");
 
-// Minify output for production
-if (prod) {
-    plugins.push(uglify());
+// Disabling minification makes faster
+// watch and better coverage debugging
+if (!process.env.DEV) {
+    plugins.push(uglify({
+        output: {
+            comments: /^!/,
+        },
+    }));
 }
 
+const compiled = (new Date()).toUTCString().replace(/GMT/g, "UTC");
 const banner = `/*!
  * ${pkg.name} - v${pkg.version}
  * https://github.com/pixijs/pixi-sound
@@ -37,7 +40,7 @@ export default {
     moduleName: "__pixiSound",
     intro: 'if (typeof PIXI === "undefined") { throw "PixiJS required"; }',
     banner,
-    dest: `dist/pixi-sound${suffix}.js`,
+    dest: `dist/pixi-sound.js`,
     format: "umd",
     plugins,
 };

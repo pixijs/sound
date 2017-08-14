@@ -6,13 +6,8 @@
         "noImplicitAny": true,
         "preserveConstEnums": true,
         "sourceMap": true,
-        "inlineSources": true,
-        "declaration": true,
-        "declarationDir": "dist/types"
+        "inlineSources": true
     },
-    "files": [
-        "typings/index.d.ts"
-    ],
     "include": [
         "src/**/*"
     ],

@@ -1,4 +1,3 @@
-import ObjectAssign from "es6-object-assign";
 import PromisePolyfill from "promise-polyfill";
 import Filterable from "./Filterable";
 import * as filters from "./filters";
@@ -112,12 +111,6 @@ export default class SoundLibrary
             throw new Error("SoundLibrary is already created");
         }
         const instance = SoundLibrary.instance = new SoundLibrary();
-
-        // Apply polyfills
-        if (typeof Object.assign === "undefined")
-        {
-            ObjectAssign.polyfill();
-        }
 
         if (typeof Promise === "undefined")
         {
