@@ -2,7 +2,7 @@
   "name": "pixi-sound",
   "version": "2.0.0-alpha.2",
   "description": "WebAudio API playback library with filters",
-  "main": "dist/pixi-sound.umd.js",
+  "main": "dist/pixi-sound.js",
   "module": "dist/pixi-sound.es.js",
   "types": "pixi-sound.d.ts",
   "scripts": {
