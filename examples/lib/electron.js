@@ -15,10 +15,13 @@ module.exports = function(file)
     
     app.on('ready', () => {
         mainWindow = new BrowserWindow({
-            width: 800,
+            width: 1000,
             height: 600,
             useContentSize: true,
-            resizable: true
+            resizable: true,
+            webPreferences: {
+                nodeIntegration: false
+            }
         });
 
         mainWindow.loadURL(`file://${path.dirname(__dirname)}/${file}`);

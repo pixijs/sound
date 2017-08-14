@@ -25,7 +25,6 @@
     "predeploy": "npm run docs",
     "deploy": "gulp deploy",
     "examples": "electron examples/index",
-    "app": "electron examples/app",
     "publish:patch": "npm version patch && npm run publish:skip",
     "publish:minor": "npm version minor && npm run publish:skip",
     "publish:major": "npm version major && npm run publish:skip",
