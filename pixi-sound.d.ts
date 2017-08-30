@@ -3,7 +3,6 @@ declare namespace PIXI.sound {
     // SoundLibrary
     const context: IMediaContext;
     const supported: boolean;
-    function global(): void;
     let useLegacy: boolean;
     let volumeAll: number;
     let speedAll: number;
@@ -31,6 +30,8 @@ declare namespace PIXI.sound {
     function volume(alias: string, volume?: number): number;
     function speed(alias: string, speed?: number): number;
     function duration(alias: string): number;
+    function init(): typeof PIXI.sound;
+    function close(): typeof PIXI.sound;
     // end: SoundLibrary
     class Filter {
         destination: AudioNode;
