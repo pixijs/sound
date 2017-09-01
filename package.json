@@ -54,9 +54,10 @@
   },
   "homepage": "https://github.com/pixijs/pixi-sound#readme",
   "devDependencies": {
+    "@types/es6-shim": "^0.31.34",
     "@types/node": "^8.0.0",
     "@types/pixi.js": "^4.5.1",
-    "@types/es6-shim": "^0.31.34",
+    "checkpack": "~0.2.1",
     "electron": "^1.4.15",
     "floss": "^2.0.1",
     "gh-pages": "^0.12.0",

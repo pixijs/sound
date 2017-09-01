@@ -1,6 +1,8 @@
 language: node_js
 node_js:
-    - "4"
+    - "6"
+
+dist: trusty
 
 env:
   - CXX=g++-4.8
@@ -20,6 +22,9 @@ cache:
   directories:
     - node_modules
 
+addons:
+  chrome: stable
+
 before_script:
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 -extension RANDR &
@@ -28,3 +33,6 @@ script:
   - xvfb-maybe npm test
   - xvfb-maybe npm run coverage
   - npm run docs
+  - checkpack webpack -e test/checkpack.ts --validate
+  - checkpack browserify -e test/checkpack.ts --validate
+  - checkpack vanillajs -e test/checkpack.ts --validate
