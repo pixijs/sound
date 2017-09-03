@@ -1,9 +1,10 @@
 import SoundLibrary from "../SoundLibrary";
 import SoundUtils from "../utils/SoundUtils";
+import Loader from "./Loader";
 
 /**
  * Sound middleware installation utilities for PIXI.loaders.Loader
- * @namespace PIXI.sound.loader
+ * @class
  * @private
  */
 export default class LoaderMiddleware
@@ -26,16 +27,9 @@ export default class LoaderMiddleware
         LoaderMiddleware._sound = sound;
         LoaderMiddleware.legacy = sound.useLegacy;
 
-        // Monkey-patch the PIXI.loaders.Loader class
+        // Replace the PIXI.loaders.Loader class
         // to support using the resolve loader middleware
-        const Loader = PIXI.loaders.Loader;
-        const SoundLoader = function(baseUrl?:string, concurrency?:number) {
-            Loader.call(this, baseUrl, concurrency);
-            this.use(LoaderMiddleware.plugin);
-            this.pre(LoaderMiddleware.resolve);
-        };
-        SoundLoader.prototype = Loader.prototype;
-        (PIXI.loaders as any).Loader = SoundLoader;
+        PIXI.loaders.Loader = Loader;
 
         // Install middleware on the default loader
         PIXI.loader.use(LoaderMiddleware.plugin);
@@ -76,7 +70,7 @@ export default class LoaderMiddleware
     /**
      * Handle the preprocessing of file paths
      */
-    private static resolve(resource: PIXI.loaders.Resource, next: () => void): void
+    static resolve(resource: PIXI.loaders.Resource, next: () => void): void
     {
         SoundUtils.resolveUrl(resource);
         next();
@@ -85,7 +79,7 @@ export default class LoaderMiddleware
     /**
      * Actual resource-loader middleware for sound class
      */
-    private static plugin(resource: PIXI.loaders.Resource, next: () => void): void
+    static plugin(resource: PIXI.loaders.Resource, next: () => void): void
     {
         if (resource.data && SoundUtils.extensions.indexOf(resource.extension) > -1)
         {

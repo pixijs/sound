@@ -6,7 +6,7 @@ import * as htmlaudio from "./htmlaudio";
 import {HTMLAudioContext} from "./htmlaudio";
 import {IMediaContext} from "./interfaces/IMediaContext";
 import {IMediaInstance} from "./interfaces/IMediaInstance";
-import LoaderMiddleware from "./loader";
+import LoaderMiddleware from "./loader/LoaderMiddleware";
 import {CompleteCallback, Options, PlayOptions} from "./Sound";
 import Sound from "./Sound";
 import SoundSprite from "./sprites/SoundSprite";
