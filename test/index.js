@@ -53,8 +53,6 @@ module.exports = function(libraryPath, useLegacy)
 
         it("should have the correct classes", function()
         {
-            sound.global(); // Install globally at PIXI.sound
-
             expect(PIXI.sound).to.be.a.function;
             expect(PIXI.sound.Sound).to.be.a.function;
             expect(PIXI.sound.utils).to.be.a.function;
@@ -72,6 +70,12 @@ module.exports = function(libraryPath, useLegacy)
             expect(filters).to.equal(PIXI.sound.filters);
             expect(webaudio).to.equal(PIXI.sound.webaudio);
             expect(htmlaudio).to.equal(PIXI.sound.htmlaudio);
+        });
+
+        it("should recreate the library", function()
+        {
+            PIXI.sound.close().init();
+            PIXI.sound.useLegacy = !!useLegacy;
         });
 
         it("should load a manifest", function(done)

@@ -6,7 +6,7 @@ import * as htmlaudio from "./htmlaudio";
 import {HTMLAudioContext} from "./htmlaudio";
 import {IMediaContext} from "./interfaces/IMediaContext";
 import {IMediaInstance} from "./interfaces/IMediaInstance";
-import LoaderMiddleware from "./loader";
+import LoaderMiddleware from "./loader/LoaderMiddleware";
 import {CompleteCallback, Options, PlayOptions} from "./Sound";
 import Sound from "./Sound";
 import SoundSprite from "./sprites/SoundSprite";
@@ -79,6 +79,18 @@ export default class SoundLibrary
 
     constructor()
     {
+        this.init();
+    }
+
+    /**
+     * Re-initialize the sound library, this will
+     * recreate the AudioContext. If there's a hardware-failure
+     * call `close` and then `init`.
+     * @method PIXI.sound#init
+     * @return {PIXI.sound} Sound instance
+     */
+    public init(): SoundLibrary
+    {
         if (this.supported)
         {
             this._webAudioContext = new WebAudioContext();
@@ -86,6 +98,7 @@ export default class SoundLibrary
         this._htmlAudioContext = new HTMLAudioContext();
         this._sounds = {};
         this.useLegacy = !this.supported;
+        return this;
     }
 
     /**
@@ -134,40 +147,18 @@ export default class SoundLibrary
             delete (window as any).__pixiSound;
         }
 
-        // Webpack and NodeJS-like environments will not expose
-        // the library to the window by default, user must opt-in
-        if (typeof module === "undefined")
-        {
-            instance.global();
-        }
-
-        return instance;
-    }
-
-    /**
-     * Set the `PIXI.sound` window namespace object. By default
-     * the global namespace is disabled in environments that use
-     * require/module (e.g. Webpack), so `PIXI.sound` would not
-     * be accessible these environments. Window environments
-     * will automatically expose the window object, calling this
-     * method will do nothing.
-     * @method PIXI.sound#global
-     * @example
-     * import {sound} from 'pixi-sound';
-     * sound.global(); // Now can use PIXI.sound
-     */
-    public global(): void
-    {
+        // Expose to PIXI.sound to the window PIXI object
         const PixiJS = PIXI as any;
 
+        // Check incase sound has already used
         if (!PixiJS.sound)
         {
             Object.defineProperty(PixiJS, "sound",
             {
-                get() { return SoundLibrary.instance; },
+                get() { return instance; },
             });
 
-            Object.defineProperties(SoundLibrary.instance,
+            Object.defineProperties(instance,
             {
                 filters: { get() { return filters; } },
                 htmlaudio: { get() { return htmlaudio; } },
@@ -179,6 +170,8 @@ export default class SoundLibrary
                 SoundLibrary: { get() { return SoundLibrary; } },
             });
         }
+
+        return instance;
     }
 
     /**
@@ -629,14 +622,27 @@ export default class SoundLibrary
     }
 
     /**
-     * Destroys the sound module.
-     * @method PIXI.sound#destroy
-     * @private
+     * Closes the sound library. This will release/destroy
+     * the AudioContext(s). Can be used safely if you want to
+     * initialize the sound library later. Use `init` method.
+     * @method PIXI.sound#close
+     * @return {PIXI.sound}
      */
-    public destroy(): void
+    public close(): SoundLibrary
     {
         this.removeAll();
         this._sounds = null;
+        if (this._webAudioContext)
+        {
+            this._webAudioContext.destroy();
+            this._webAudioContext = null;
+        }
+        if (this._htmlAudioContext)
+        {
+            this._htmlAudioContext.destroy();
+            this._htmlAudioContext = null;
+        }
         this._context = null;
+        return this;
     }
 }
