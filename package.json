@@ -7,8 +7,12 @@
   "types": "pixi-sound.d.ts",
   "scripts": {
     "pretest": "npm run build",
-    "test": "npm run unit-test",
+    "test": "npm run unit-test && npm run integrations",
     "unit-test": "floss --path=test/dist.js",
+    "integrations": "npm run integration:webpack && npm run integration:browserify && npm run integration:vanillajs",
+    "integration:webpack": "checkpack webpack -e test/integration.ts --validate",
+    "integration:browserify": "checkpack browserify -e test/integration.ts --validate",
+    "integration:vanillajs": "checkpack vanillajs -e test/integration.ts --validate",
     "precoverage": "rollup -c -o coverage/pixi-sound.js -f cjs -e promise-polyfill --environment DEV",
     "coverage": "floss --path=test/coverage.js -c \"coverage/pixi-sound.js\" -s",
     "clean": "rimraf dist/**",
