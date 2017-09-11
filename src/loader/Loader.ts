@@ -30,6 +30,6 @@ export default class Loader extends PIXI.loaders.Loader
      */
     static addPixiMiddleware(fn: () => void): void
     {
-        PIXI.loaders.Loader.addPixiMiddleware(fn);
+        super.addPixiMiddleware(fn);
     }
 }
