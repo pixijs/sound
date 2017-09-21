@@ -1,4 +1,4 @@
-# PIXI.sound
+# PixiJS Sound
 
 WebAudio API playback library, with filters. Modern audio playback for modern browsers. 
 
