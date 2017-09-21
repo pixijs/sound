@@ -59,6 +59,7 @@
   },
   "homepage": "https://github.com/pixijs/pixi-sound#readme",
   "devDependencies": {
+    "@pixi/jsdoc-template": "^2.0.0",
     "@types/es6-shim": "^0.31.34",
     "@types/node": "^8.0.0",
     "@types/pixi.js": "^4.5.1",
@@ -67,7 +68,6 @@
     "gh-pages": "^0.12.0",
     "gulp": "^3.9.1",
     "gulp-comments": "^1.2.0",
-    "jaguarjs-jsdoc": "^1.0.2",
     "jsdoc": "^3.4.3",
     "pixi.js": "^4.3.4",
     "promise-polyfill": "^6.0.2",

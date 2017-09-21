@@ -18,7 +18,7 @@
         "default": {
             "outputSourceFiles": false
         },
-        "applicationName": "PIXI.sound",
+        "applicationName": "PixiJS Sound",
         "footer": "Made with ♥ by Matt Karl (github.com/bigtimebuddy)",
         "copyright": "PIXI Copyright &copy; 2017 Matt Karl.",
         "linenums": false,
@@ -39,6 +39,6 @@
         "private": false,
         "lenient": true,
         "destination": "./docs",
-        "template": "./node_modules/jaguarjs-jsdoc"
+        "template": "./node_modules/@pixi/jsdoc-template"
     }
 }
