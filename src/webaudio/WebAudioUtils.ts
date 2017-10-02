@@ -23,7 +23,7 @@ export default class WebAudioUtils
     {
         if (param.setValueAtTime)
         {
-        	const context = SoundLibrary.instance.context as WebAudioContext;
+            const context = SoundLibrary.instance.context as WebAudioContext;
             param.setValueAtTime(value, context.audioContext.currentTime);
         }
         else
