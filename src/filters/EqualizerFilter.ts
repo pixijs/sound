@@ -1,5 +1,6 @@
 import Filter from './Filter';
 import SoundLibrary from '../SoundLibrary';
+import WebAudioUtils from '../webaudio/WebAudioUtils';
 
 interface Band {
     f:number;
@@ -187,9 +188,9 @@ export default class EqualizerFilter extends Filter
         {
             const filter:BiquadFilterNode = SoundLibrary.instance.context.audioContext.createBiquadFilter();
             filter.type = band.type as BiquadFilterType;
-            filter.gain.value = band.gain;
-            filter.Q.value = 1;
-            filter.frequency.value = band.f;
+            WebAudioUtils.setParamValue(filter.gain, band.gain);
+            WebAudioUtils.setParamValue(filter.Q, 1);
+            WebAudioUtils.setParamValue(filter.frequency, band.f);
             return filter;
         });
 
@@ -227,7 +228,7 @@ export default class EqualizerFilter extends Filter
         {
             throw 'No band found for frequency ' + frequency;
         }
-        this.bandsMap[frequency].gain.value = gain;
+        WebAudioUtils.setParamValue(this.bandsMap[frequency].gain, gain);
     }
 
     /**
@@ -401,7 +402,7 @@ export default class EqualizerFilter extends Filter
     reset(): void
     {
         this.bands.forEach((band:BiquadFilterNode) => {
-            band.gain.value = 0;
+            WebAudioUtils.setParamValue(band.gain, 0);
         });
     }
 

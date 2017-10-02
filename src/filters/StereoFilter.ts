@@ -1,5 +1,6 @@
 import Filter from './Filter';
 import SoundLibrary from '../SoundLibrary';
+import WebAudioUtils from '../webaudio/WebAudioUtils';
 
 /**
  * Filter for adding Stereo panning.
@@ -77,7 +78,7 @@ export default class StereoFilter extends Filter
         this._pan = value;
         if (this._stereo)
         {
-            this._stereo.pan.value = value;
+            WebAudioUtils.setParamValue(this._stereo.pan, value);
         }
         else
         {

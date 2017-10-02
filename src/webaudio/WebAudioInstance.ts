@@ -1,6 +1,7 @@
 import WebAudioMedia from "./WebAudioMedia";
 import {IMediaInstance} from "../interfaces/IMediaInstance";
 import {PlayOptions} from "../Sound";
+import WebAudioUtils from "./WebAudioUtils";
 
 let id = 0;
 
@@ -246,10 +247,10 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
         const globalVolume = global.volume * (global.muted ? 0 : 1);
         const soundVolume = sound.volume * (sound.muted ? 0 : 1);
         const instanceVolume = this._volume * (this._muted ? 0 : 1);
-        this._gain.gain.value = instanceVolume * soundVolume * globalVolume;
+        WebAudioUtils.setParamValue(this._gain.gain, instanceVolume * soundVolume * globalVolume);
 
         // Update the speed
-        this._source.playbackRate.value = this._speed * sound.speed * global.speed ;
+        WebAudioUtils.setParamValue(this._source.playbackRate, this._speed * sound.speed * global.speed);
     }
 
     /**
