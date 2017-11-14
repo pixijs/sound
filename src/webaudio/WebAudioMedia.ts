@@ -137,15 +137,15 @@ export default class WebAudioMedia implements IMedia
     // Implements load
     public load(callback?: LoadedCallback): void
     {
-        // Load from the file path
-        if (this.parent.url)
-        {
-            this._loadUrl(callback);
-        }
         // Load from the arraybuffer, incase it was loaded outside
-        else if (this.source)
+        if (this.source)
         {
             this._decode(this.source, callback);
+        }
+        // Load from the file path
+        else if (this.parent.url)
+        {
+            this._loadUrl(callback);
         }
         else if (callback)
         {
