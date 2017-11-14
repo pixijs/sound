@@ -1,6 +1,7 @@
 import Filterable from "../Filterable";
 import Filter from "../filters/Filter";
 import WebAudioContext from "./WebAudioContext";
+import WebAudioUtils from "./WebAudioUtils";
 
 /**
  * Output for cloneing node
@@ -125,7 +126,7 @@ export default class WebAudioNodes extends Filterable
         const orig: AudioBufferSourceNode = this.bufferSource;
         const source: AudioBufferSourceNode = this.context.audioContext.createBufferSource();
         source.buffer = orig.buffer;
-        source.playbackRate.value = orig.playbackRate.value;
+        WebAudioUtils.setParamValue(source.playbackRate, orig.playbackRate.value);
         source.loop = orig.loop;
 
         const gain: GainNode = this.context.audioContext.createGain();
