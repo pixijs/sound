@@ -1,11 +1,3 @@
-import Filter from './Filter';
-import EqualizerFilter from './EqualizerFilter';
-import DistortionFilter from './DistortionFilter';
-import StereoFilter from './StereoFilter';
-import ReverbFilter from './ReverbFilter';
-import MonoFilter from './MonoFilter';
-import TelephoneFilter from './TelephoneFilter';
-
 /**
  * Set of dynamic filters to be applied to PIXI.sound.Sound.
  * @example
@@ -16,12 +8,10 @@ import TelephoneFilter from './TelephoneFilter';
  * ];
  * @namespace PIXI.sound.filters
  */
-export {
-    Filter,
-    EqualizerFilter,
-    DistortionFilter,
-    StereoFilter,
-    ReverbFilter,
-    MonoFilter,
-    TelephoneFilter
-};
+export { default as Filter } from './Filter';
+export { default as EqualizerFilter } from './EqualizerFilter';
+export { default as DistortionFilter } from './DistortionFilter';
+export { default as StereoFilter } from './StereoFilter';
+export { default as ReverbFilter } from './ReverbFilter';
+export { default as MonoFilter } from './MonoFilter';
+export { default as TelephoneFilter } from './TelephoneFilter';
