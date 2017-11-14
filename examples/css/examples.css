@@ -1,3 +1,38 @@
+body {
+    font-family: 'Libre Franklin', sans-serif;
+    background-color: #ecedf1;
+    color: #333;
+}
+
+h1, h2, h3, h4 {
+    font-weight: 700;
+}
+
+.navbar-inverse {
+    background-color: #272d37;
+    border:0;
+}
+
+.navbar-inverse .navbar-nav>.active>a,
+.navbar-inverse .navbar-nav>.active>a:focus,
+.navbar-inverse .navbar-nav>.active>a:hover {
+    color: #fff;
+    background-color: #14171d;
+}
+
+.hljs {
+    background: #14171d;
+}
+
+.section-tabs>li>a {
+    color: #c2185b;
+}
+.section-tabs>li.active>a,
+.section-tabs>li.active>a:focus,
+.section-tabs>li.active>a:hover {
+    background: #c2185b;
+}
+
 .container-fluid.frame {
     max-width: 980px;
 }
@@ -153,6 +188,10 @@ button.play {
     display:none
 }
 
+.btn-range-group {
+    background-color:#fff;
+    margin-left:0 !important;
+}
 .btn-range-group .range {
     width:120px;
     display:inline-block;
