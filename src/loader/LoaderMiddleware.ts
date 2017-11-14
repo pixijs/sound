@@ -84,15 +84,11 @@ export default class LoaderMiddleware
         if (resource.data && SoundUtils.extensions.indexOf(resource.extension) > -1)
         {
             (resource as any).sound = LoaderMiddleware._sound.add(resource.name, {
-                loaded: next,
-                preload: true,
                 url: resource.url,
                 source: resource.data,
             });
         }
-        else
-        {
-            next();
-        }
+
+        next();
     }
 }
