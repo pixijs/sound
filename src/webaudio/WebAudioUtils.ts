@@ -9,7 +9,7 @@ import WebAudioContext from './WebAudioContext';
  */
 export default class WebAudioUtils
 {
-	/**
+    /**
      * Dezippering is removed in the future Web Audio API, instead
      * we use the `setValueAtTime` method, however, this is not available
      * in all environments (e.g., Android webview), so we fallback to the `value` setter.
