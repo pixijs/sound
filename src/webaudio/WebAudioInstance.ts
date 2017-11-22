@@ -552,7 +552,7 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
         {
             this._enabled = false;
             this._source.onended = null;
-            this._source.stop();
+            this._source.stop(0); // param needed for iOS 8 bug
             this._source = null;
         }
     }
