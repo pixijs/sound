@@ -169,6 +169,10 @@ export default class WebAudioContext extends Filterable implements IMediaContext
         source.buffer = this._ctx.createBuffer(1, 1, 22050);
         source.connect(this._ctx.destination);
         source.start(0, 0, 0);
+        if (source.context.state === 'suspended')
+        {
+            source.context.resume();
+        }
     }
 
     /**
