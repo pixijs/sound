@@ -31,7 +31,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
     /**
      * Global speed of all sounds
      * @name PIXI.sound.webaudio.WebAudioContext#speed
-     * @type {AnalyserNode}
+     * @type {number}
      * @readonly
      */
     public speed: number;
