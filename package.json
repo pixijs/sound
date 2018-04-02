@@ -10,7 +10,7 @@
     "test": "npm run unit-test",
     "unit-test": "floss --path=test/dist.js",
     "preintegrations": "npm install checkpack@^0.2.1",
-    "integrations": "npm run integration:webpack && npm run integration:browserify && npm run integration:vanillajs",
+    "integrations": "npm run integration:webpack && npm run integration:browserify",
     "integration:webpack": "checkpack webpack -e test/integration.ts --validate",
     "integration:browserify": "checkpack browserify -e test/integration.ts --validate",
     "integration:vanillajs": "checkpack vanillajs -e test/integration.ts --validate",
