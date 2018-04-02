@@ -32,5 +32,5 @@ before_script:
 script:
   - xvfb-maybe npm test
   - xvfb-maybe npm run coverage
-  - npm run integrations
+  #- npm run integrations
   - npm run docs
