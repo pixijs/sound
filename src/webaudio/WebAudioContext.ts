@@ -31,7 +31,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
     /**
      * Global speed of all sounds
      * @name PIXI.sound.webaudio.WebAudioContext#speed
-     * @type {AnalyserNode}
+     * @type {number}
      * @readonly
      */
     public speed: number;
@@ -120,8 +120,8 @@ export default class WebAudioContext extends Filterable implements IMediaContext
         this.muted = false;
         this.paused = false;
 
-        // Listen for document level clicks to unlock WebAudio on iOS. See the _unlock method.
-        if ("ontouchstart" in window && ctx.state !== "running")
+        // Listen for document level clicks to unlock WebAudio. See the _unlock method.
+        if (ctx.state !== "running")
         {
             this._unlock(); // When played inside of a touch event, this will enable audio on iOS immediately.
             this._unlock = this._unlock.bind(this);
