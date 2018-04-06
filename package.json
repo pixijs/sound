@@ -24,11 +24,11 @@
     "build": "npm run build:umd && npm run build:es",
     "build:umd": "rollup -c -f umd -o dist/pixi-sound.js",
     "build:es": "rollup -c -f es -o dist/pixi-sound.es.js",
-    "predocs": "rimraf docs/** .docs && gulp comments",
+    "predocs": "rimraf docs/** .docs && comments -d .docs \"src/**/*.{ts,js}\"",
     "docs": "jsdoc -c jsdoc.conf.json -R README.md",
     "postdocs": "rimraf .docs",
     "predeploy": "npm run docs",
-    "deploy": "gulp deploy",
+    "deploy": "gh-pages -d . -s \"{dist,examples,docs}/**\"",
     "examples": "electron examples/index",
     "publish:patch": "npm version patch && npm run publish:skip",
     "publish:minor": "npm version minor && npm run publish:skip",
@@ -59,6 +59,7 @@
   },
   "homepage": "https://github.com/pixijs/pixi-sound#readme",
   "devDependencies": {
+    "@pixi/jsdoc-comments": "^1.0.0",
     "@pixi/jsdoc-template": "^2.0.0",
     "@types/es6-shim": "^0.31.34",
     "@types/node": "^8.0.0",
@@ -66,8 +67,6 @@
     "electron": "^1.4.15",
     "floss": "^2.0.1",
     "gh-pages": "^0.12.0",
-    "gulp": "^3.9.1",
-    "gulp-comments": "^1.2.0",
     "jsdoc": "^3.4.3",
     "pixi.js": "^4.3.4",
     "promise-polyfill": "^6.0.2",
@@ -83,5 +82,6 @@
   },
   "peerDependencies": {
     "pixi.js": "^4.3.4"
-  }
+  },
+  "dependencies": {}
 }
