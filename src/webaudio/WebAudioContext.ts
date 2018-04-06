@@ -325,7 +325,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
 
     /**
      * Decode the audio data
-     * @method decode
+     * @method PIXI.sound.webaudio.WebAudioContext#decode
      * @param {ArrayBuffer} arrayBuffer Buffer from loader
      * @param {Function} callback When completed, error and audioBuffer are parameters.
      */
