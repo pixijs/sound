@@ -108,7 +108,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
         super(analyser, compressor);
 
         this._ctx = ctx;
-        this._offlineCtx = new WebAudioContext.OfflineAudioContext(1, 2, (win.webkitAudioContext)? 44100 : ctx.sampleRate);
+        this._offlineCtx = new WebAudioContext.OfflineAudioContext(1, 2, (win.OfflineAudioContext)? ctx.sampleRate: 44100);
         this._unlocked = false;
 
         this.compressor = compressor;
