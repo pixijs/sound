@@ -96,6 +96,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
 
     constructor()
     {
+        const win: any = window as any;
         const ctx = new WebAudioContext.AudioContext();
         const compressor: DynamicsCompressorNode = ctx.createDynamicsCompressor();
         const analyser: AnalyserNode = ctx.createAnalyser();
@@ -107,7 +108,8 @@ export default class WebAudioContext extends Filterable implements IMediaContext
         super(analyser, compressor);
 
         this._ctx = ctx;
-        this._offlineCtx = new WebAudioContext.OfflineAudioContext(1, 2, ctx.sampleRate);
+        // ios11 safari's webkitOfflineAudioContext allows only 44100 Hz sample rate
+        this._offlineCtx = new WebAudioContext.OfflineAudioContext(1, 2, (win.OfflineAudioContext)? ctx.sampleRate: 44100);
         this._unlocked = false;
 
         this.compressor = compressor;
