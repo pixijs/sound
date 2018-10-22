@@ -237,6 +237,10 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
      */
     public refresh(): void
     {
+        // Sound could be paused
+        if (!this._source) {
+            return;
+        }
         const global = this._media.context;
         const sound = this._media.parent;
 

@@ -152,6 +152,18 @@ module.exports = function(libraryPath, useLegacy)
             expect(s.instances.length).to.equal(0);
         });
 
+        it("should support volume change when instance is paused", function(done)
+        {
+            this.slow(200);
+            const s = sound.find("alert-4");
+            const i = s.play({ volume: 0 });
+            setTimeout(() => {
+                i.paused = true;
+                i.volume = 0.2;
+                done();
+            }, 100);
+        });
+
         it("should play a sound by alias", function(done)
         {
             sound.play("silence", {
