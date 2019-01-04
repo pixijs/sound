@@ -65,6 +65,14 @@ export default class SoundSprite
      */
     public duration: number;
 
+     /**
+     * Whether to loop the sound sprite.
+     * @name PIXI.sound.SoundSprite#loop
+     * @type {boolean}
+     * @readonly
+     */
+    public loop: boolean;
+
     /**
      * Constructor
      */
@@ -92,6 +100,7 @@ export default class SoundSprite
             speed: this.speed || this.parent.speed,
             end: this.end,
             start: this.start,
+            loop: this.loop
         }));
     }
 

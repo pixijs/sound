@@ -343,25 +343,20 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
         this._muted = muted;
         this.refresh();
 
-        // WebAudio doesn't support looping when a duration is set
-        // we'll set this just for the heck of it
-        if (this.loop && end !== null)
-        {
-            // @if DEBUG
-            console.warn('Looping not support when specifying an "end" time');
-            // @endif
-            this.loop = false;
-        }
-        this._end = end;
-
         const duration: number = this._source.buffer.duration;
-
         this._duration = duration;
+        this._end = end;
         this._lastUpdate = this._now();
         this._elapsed = start;
         this._source.onended = this._onComplete.bind(this);
-        
-        if (end)
+       
+        if (this._loop)
+        {
+            this._source.loopEnd = end;
+            this._source.loopStart = start;
+            this._source.start(0, start);
+        }
+        else if (end)
         {
             this._source.start(0, start, end - start);
         }
@@ -518,8 +513,17 @@ export default class WebAudioInstance extends PIXI.utils.EventEmitter implements
                 this._elapsed += delta * speed;
                 this._lastUpdate = now;
                 const duration: number = this._duration;
-                const progress: number = (this._elapsed % duration) / duration;
-
+                let progress: number;
+                if(this._source.loopStart)
+                {
+                    const soundLength = this._source.loopEnd - this._source.loopStart;
+                    progress = (this._source.loopStart + this._elapsed % soundLength) / duration;
+                }
+                else
+                {
+                    progress = (this._elapsed % duration) / duration;
+                }
+                
                 // Update the progress
                 this._progress = progress;
 

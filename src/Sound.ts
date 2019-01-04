@@ -554,7 +554,7 @@ export default class Sound
         if (typeof source === "string")
         {
             const sprite: string = source as string;
-            options = { sprite, complete };
+            options = { sprite, loop: this.loop, complete };
         }
         else if (typeof source === "function")
         {
@@ -589,6 +589,7 @@ export default class Sound
             options.start = sprite.start;
             options.end = sprite.end;
             options.speed = sprite.speed || 1;
+            options.loop = sprite.loop || options.loop;
             delete options.sprite;
         }
 
