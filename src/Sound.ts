@@ -4,8 +4,7 @@ import {IMedia} from "./interfaces/IMedia";
 import {IMediaContext} from "./interfaces/IMediaContext";
 import {IMediaInstance} from "./interfaces/IMediaInstance";
 import SoundLibrary from "./SoundLibrary";
-import SoundSprite from "./sprites/SoundSprite";
-import {SoundSpriteData, SoundSprites} from "./sprites/SoundSprite";
+import SoundSprite, {SoundSpriteData, SoundSprites} from "./sprites/SoundSprite";
 import SoundUtils from "./utils/SoundUtils";
 import WebAudioMedia from "./webaudio/WebAudioMedia";
 
@@ -21,7 +20,7 @@ export interface Options {
     preload?: boolean;
     loop?: boolean;
     url?: string;
-    source?: ArrayBuffer|HTMLAudioElement;
+    source?: ArrayBuffer | HTMLAudioElement;
     sprites?: {[id: string]: SoundSpriteData};
 }
 
@@ -222,7 +221,7 @@ export default class Sound
      * @param {boolean} [options.loop=false] true to loop the audio playback.
      * @return {PIXI.sound.Sound} Created sound instance.
      */
-    public static from(source: string|Options|ArrayBuffer|HTMLAudioElement): Sound
+    public static from(source: string | Options | ArrayBuffer | HTMLAudioElement): Sound
     {
         let options: Options = {};
 
@@ -240,7 +239,7 @@ export default class Sound
         }
 
         // Default settings
-        options = Object.assign({
+        options = {
             autoPlay: false,
             singleInstance: false,
             url: null,
@@ -250,8 +249,7 @@ export default class Sound
             speed: 1,
             complete: null,
             loaded: null,
-            loop: false,
-        }, options);
+            loop: false, ...options};
 
         // Resolve url in-case it has a special format
         if (options.url)
@@ -407,7 +405,9 @@ export default class Sound
     public addSprites(sprites: {[id: string]: SoundSpriteData}): SoundSprites;
 
     // Actual implementation
-    public addSprites(source: string|{[id: string]: SoundSpriteData}, data?: SoundSpriteData): SoundSprite|SoundSprites
+    public addSprites(
+        source: string | {[id: string]: SoundSpriteData},
+        data?: SoundSpriteData): SoundSprite | SoundSprites
     {
         if (typeof source === "object")
         {
@@ -420,7 +420,10 @@ export default class Sound
         }
         else if (typeof source === "string")
         {
+            // @if DEBUG
+            // tslint:disable-next-line no-console
             console.assert(!this._sprites[source], `Alias ${source} is already taken`);
+            // @endif
             const sprite = new SoundSprite(this, data);
             this._sprites[source] = sprite;
             return sprite;
@@ -523,7 +526,7 @@ export default class Sound
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
      */
-    public play(alias: string, callback?: CompleteCallback): IMediaInstance|Promise<IMediaInstance>;
+    public play(alias: string, callback?: CompleteCallback): IMediaInstance | Promise<IMediaInstance>;
 
     /**
      * Plays the sound.
@@ -543,11 +546,11 @@ export default class Sound
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
      */
-    public play(source?: string|PlayOptions|CompleteCallback,
-                callback?: CompleteCallback): IMediaInstance|Promise<IMediaInstance>;
+    public play(source?: string | PlayOptions | CompleteCallback,
+                callback?: CompleteCallback): IMediaInstance | Promise<IMediaInstance>;
 
     // Overloaded function
-    public play(source?: any, complete?: CompleteCallback): IMediaInstance|Promise<IMediaInstance>
+    public play(source?: any, complete?: CompleteCallback): IMediaInstance | Promise<IMediaInstance>
     {
         let options: PlayOptions;
 
@@ -566,7 +569,7 @@ export default class Sound
             options = source as PlayOptions;
         }
 
-        options = Object.assign({
+        options = {
             complete: null,
             loaded: null,
             sprite: null,
@@ -575,14 +578,14 @@ export default class Sound
             volume: 1,
             speed: 1,
             muted: false,
-            loop: false,
-        }, options || {});
+            loop: false, ...(options || {})};
 
         // A sprite is specified, add the options
         if (options.sprite)
         {
             const alias: string = options.sprite;
             // @if DEBUG
+            // tslint:disable-next-line no-console
             console.assert(!!this._sprites[alias], `Alias ${alias} is not available`);
             // @endif
             const sprite: SoundSprite = this._sprites[alias];
@@ -606,7 +609,7 @@ export default class Sound
             {
                 this.autoPlay = true;
                 this._autoPlayOptions = options;
-                this._preload((err: Error, sound: Sound, instance: IMediaInstance) =>
+                this._preload((err: Error, sound: Sound, media: IMediaInstance) =>
                 {
                     if (err)
                     {
@@ -616,9 +619,9 @@ export default class Sound
                     {
                         if (options.loaded)
                         {
-                            options.loaded(err, sound, instance);
+                            options.loaded(err, sound, media);
                         }
-                        resolve(instance);
+                        resolve(media);
                     }
                 });
             });

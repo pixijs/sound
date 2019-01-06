@@ -3,18 +3,15 @@ import Filterable from "./Filterable";
 import * as filters from "./filters";
 import Filter from "./filters/Filter";
 import * as htmlaudio from "./htmlaudio";
-import {HTMLAudioContext} from "./htmlaudio";
 import {IMediaContext} from "./interfaces/IMediaContext";
 import {IMediaInstance} from "./interfaces/IMediaInstance";
 import LoaderMiddleware from "./loader/LoaderMiddleware";
-import {CompleteCallback, Options, PlayOptions} from "./Sound";
-import Sound from "./Sound";
+import Sound, {CompleteCallback, Options, PlayOptions} from "./Sound";
 import SoundSprite from "./sprites/SoundSprite";
 import utils from "./utils/SoundUtils";
-import {WebAudioContext} from "./webaudio";
 import * as webaudio from "./webaudio";
 
-export type SoundMap = {[id: string]: Options|string|ArrayBuffer|HTMLAudioElement};
+export type SoundMap = {[id: string]: Options | string | ArrayBuffer | HTMLAudioElement};
 
 /**
  * Contains all of the functionality for using the **pixi-sound** library.
@@ -59,7 +56,7 @@ export default class SoundLibrary
      * @type {PIXI.sound.webaudio.WebAudioContext}
      * @private
      */
-    private _webAudioContext: WebAudioContext;
+    private _webAudioContext: webaudio.WebAudioContext;
 
     /**
      * The HTML Audio (legacy) context.
@@ -67,7 +64,7 @@ export default class SoundLibrary
      * @type {PIXI.sound.webaudio.WebAudioContext}
      * @private
      */
-    private _htmlAudioContext: HTMLAudioContext;
+    private _htmlAudioContext: htmlaudio.HTMLAudioContext;
 
     /**
      * The map of all sounds by alias.
@@ -93,9 +90,9 @@ export default class SoundLibrary
     {
         if (this.supported)
         {
-            this._webAudioContext = new WebAudioContext();
+            this._webAudioContext = new webaudio.WebAudioContext();
         }
-        this._htmlAudioContext = new HTMLAudioContext();
+        this._htmlAudioContext = new htmlaudio.HTMLAudioContext();
         this._sounds = {};
         this.useLegacy = !this.supported;
         return this;
@@ -194,11 +191,11 @@ export default class SoundLibrary
         }
         return [];
     }
-    public set filtersAll(filters: Filter[])
+    public set filtersAll(filtersAll: Filter[])
     {
         if (!this.useLegacy)
         {
-            this._context.filters = filters;
+            this._context.filters = filtersAll;
         }
     }
 
@@ -210,7 +207,7 @@ export default class SoundLibrary
      */
     public get supported(): boolean
     {
-        return WebAudioContext.AudioContext !== null;
+        return webaudio.WebAudioContext.AudioContext !== null;
     }
 
     /**
@@ -242,7 +239,7 @@ export default class SoundLibrary
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
      * @return {PIXI.sound.Sound} Instance of the Sound object.
      */
-    public add(alias: string, options: Options|string|ArrayBuffer|HTMLAudioElement|Sound): Sound;
+    public add(alias: string, options: Options | string | ArrayBuffer | HTMLAudioElement | Sound): Sound;
 
     /**
      * Adds multiple sounds at once.
@@ -257,8 +254,8 @@ export default class SoundLibrary
     public add(map: SoundMap, globalOptions?: Options): {[id: string]: Sound};
 
     // Actual method
-    public add(source: string|SoundMap, sourceOptions?: Options|string|ArrayBuffer|HTMLAudioElement|Sound):
-        {[id: string]: Sound}|Sound
+    public add(source: string | SoundMap, sourceOptions?: Options | string | ArrayBuffer | HTMLAudioElement | Sound):
+        {[id: string]: Sound} | Sound
     {
         if (typeof source === "object")
         {
@@ -277,6 +274,7 @@ export default class SoundLibrary
         else if (typeof source === "string")
         {
             // @if DEBUG
+            // tslint:disable-next-line no-console
             console.assert(!this._sounds[source], `Sound with alias ${source} already exists.`);
             // @endif
 
@@ -303,7 +301,7 @@ export default class SoundLibrary
      * @param {Object} [overrides] Override default options
      * @return {Object} The construction options
      */
-    private _getOptions(source: string|ArrayBuffer|HTMLAudioElement|Options, overrides?: Options): Options
+    private _getOptions(source: string | ArrayBuffer | HTMLAudioElement | Options, overrides?: Options): Options
     {
         let options: Options;
 
@@ -319,7 +317,9 @@ export default class SoundLibrary
         {
             options = source as Options;
         }
-        return Object.assign(options, overrides || {}) as Options;
+        options = {...options, ...(overrides || {})};
+
+        return options;
     }
 
     /**
@@ -337,14 +337,9 @@ export default class SoundLibrary
         this._useLegacy = legacy;
 
         // Set the context to use
-        if (!legacy && this.supported)
-        {
-            this._context = this._webAudioContext;
-        }
-        else
-        {
-            this._context = this._htmlAudioContext;
-        }
+        this._context = (!legacy && this.supported) ?
+            this._webAudioContext :
+            this._htmlAudioContext;
     }
 
     /**
@@ -497,10 +492,13 @@ export default class SoundLibrary
     public exists(alias: string, assert: boolean= false): boolean
     {
         const exists = !!this._sounds[alias];
+        // @if DEBUG
         if (assert)
         {
+            // tslint:disable-next-line no-console
             console.assert(exists, `No sound matching alias '${alias}'.`);
         }
+        // @endif
         return exists;
     }
 
@@ -540,7 +538,9 @@ export default class SoundLibrary
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
      */
-    public play(alias: string, options?: PlayOptions|CompleteCallback|string): IMediaInstance|Promise<IMediaInstance>
+    public play(
+        alias: string,
+        options?: PlayOptions | CompleteCallback | string): IMediaInstance | Promise<IMediaInstance>
     {
         return this.find(alias).play(options);
     }

@@ -1,3 +1,4 @@
+/* tslint:disable:no-unused-expression */
 // Require pixi
 require("pixi.js");
 
