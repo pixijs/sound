@@ -162,6 +162,7 @@ declare namespace PIXI.sound {
         start: number;
         end: number;
         speed?: number;
+        loop?: boolean;
     }
     type SoundSprites = {
         [id: string]: SoundSprite;
@@ -171,6 +172,7 @@ declare namespace PIXI.sound {
         start: number;
         end: number;
         speed: number;
+        loop: boolean;
         duration: number;
         constructor(parent: Sound, options: SoundSpriteData);
         play(complete?: CompleteCallback): IMediaInstance | Promise<IMediaInstance>;
