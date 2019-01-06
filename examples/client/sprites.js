@@ -5,7 +5,8 @@ var $$ = document.querySelectorAll.bind(document);
 var sprites = {
     'alien death': {
         start: 1, 
-        end: 2
+        end: 2,
+        loop: true
     },
     'boss hit': {
         start: 3, 
