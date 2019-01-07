@@ -1,39 +1,22 @@
-import SoundLibrary from "../SoundLibrary";
-import SoundUtils from "../utils/SoundUtils";
-import Loader from "./Loader";
+import { getInstance } from "../instance";
+import { resolveUrl } from "../utils/resolveUrl";
+import { extensions } from "../utils/supported";
 
 /**
  * Sound middleware installation utilities for PIXI.loaders.Loader
  * @class
  * @private
  */
-export default class LoaderMiddleware
+export class LoaderMiddleware
 {
     /**
-     * @name PIXI.sound.loader._sound
-     * @type {PIXI.sound}
-     * @static
-     * @private
-     */
-    static _sound: SoundLibrary;
-
-    /**
      * Install the middleware
-     * @method PIXI.sound.loader.install
+     * @method PIXI.sound.loader.add
      * @param {PIXI.sound.SoundLibrary} sound - Instance of sound library
      */
-    static install(sound:SoundLibrary)
+    public static add()
     {
-        LoaderMiddleware._sound = sound;
-        LoaderMiddleware.legacy = sound.useLegacy;
-
-        // Replace the PIXI.loaders.Loader class
-        // to support using the resolve loader middleware
-        PIXI.loaders.Loader = Loader;
-
-        // Install middleware on the default loader
-        PIXI.loader.use(LoaderMiddleware.plugin);
-        PIXI.loader.pre(LoaderMiddleware.resolve);
+        LoaderMiddleware.legacy = getInstance().useLegacy;
     }
 
     /**
@@ -42,11 +25,11 @@ export default class LoaderMiddleware
      * @type {boolean}
      * @private
      */
-    static set legacy(legacy:boolean)
+    static set legacy(legacy: boolean)
     {
         // Configure PIXI Loader to handle audio files correctly
         const Resource = PIXI.loaders.Resource;
-        const exts = SoundUtils.extensions;
+        const exts = extensions;
 
         // Make sure we support webaudio
         if (!legacy)
@@ -70,20 +53,20 @@ export default class LoaderMiddleware
     /**
      * Handle the preprocessing of file paths
      */
-    static resolve(resource: PIXI.loaders.Resource, next: () => void): void
+    public static pre(resource: PIXI.loaders.Resource, next: () => void): void
     {
-        SoundUtils.resolveUrl(resource);
+        resolveUrl(resource);
         next();
     }
 
     /**
      * Actual resource-loader middleware for sound class
      */
-    static plugin(resource: PIXI.loaders.Resource, next: () => void): void
+    public static use(resource: PIXI.loaders.Resource, next: () => void): void
     {
-        if (resource.data && SoundUtils.extensions.indexOf(resource.extension) > -1)
+        if (resource.data && extensions.indexOf(resource.extension) > -1)
         {
-            (resource as any).sound = LoaderMiddleware._sound.add(resource.name, {
+            (resource as any).sound = getInstance().add(resource.name, {
                 loaded: next,
                 preload: true,
                 url: resource.url,

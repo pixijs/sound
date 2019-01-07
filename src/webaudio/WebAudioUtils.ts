@@ -1,5 +1,5 @@
-import SoundLibrary from '../SoundLibrary';
-import WebAudioContext from './WebAudioContext';
+import { getInstance } from "../instance";
+import { WebAudioContext } from "./WebAudioContext";
 
 /**
  * Internal class for Web Audio abstractions and convenience methods.
@@ -7,7 +7,7 @@ import WebAudioContext from './WebAudioContext';
  * @class WebAudioUtils
  * @memberof PIXI.sound.webaudio
  */
-export default class WebAudioUtils
+export class WebAudioUtils
 {
     /**
      * Dezippering is removed in the future Web Audio API, instead
@@ -23,7 +23,7 @@ export default class WebAudioUtils
     {
         if (param.setValueAtTime)
         {
-            const context = SoundLibrary.instance.context as WebAudioContext;
+            const context = getInstance().context as WebAudioContext;
             param.setValueAtTime(value, context.audioContext.currentTime);
         }
         else

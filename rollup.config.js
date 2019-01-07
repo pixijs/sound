@@ -1,5 +1,5 @@
-import typescript from "rollup-plugin-typescript2";
-import uglify from "rollup-plugin-uglify-es";
+import typescript from "rollup-plugin-typescript";
+import {terser} from "rollup-plugin-terser";
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import pkg from "./package.json";
@@ -12,10 +12,15 @@ const plugins = [
 
 // Disabling minification makes faster
 // watch and better coverage debugging
-if (!process.env.DEV) {
-    plugins.push(uglify({
+if (process.env.NODE_ENV === "production") {
+    plugins.push(terser({
         output: {
-            comments: /^!/,
+            comments(node, comment) {
+                return comment.line === 1;
+            },
+        },
+        compress: {
+            drop_console: true,
         },
     }));
 }
@@ -35,10 +40,12 @@ const banner = `/*!
  * of the library, ideally included using the <script> element
  */
 export default {
-    entry: "src/index.ts",
-    sourceMap: true,
-    moduleName: "__pixiSound",
-    intro: 'if (typeof PIXI === "undefined") { throw "PixiJS required"; }',
-    banner,
+    input: "src/index.ts",
+    output: {
+        banner,
+        intro: 'if (typeof PIXI === "undefined") { throw "PixiJS required"; }',
+        name: "__pixiSound",
+        sourcemap: true,
+    },
     plugins,
 };

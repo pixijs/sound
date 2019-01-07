@@ -1,11 +1,9 @@
-import {Options, LoadedCallback, CompleteCallback, PlayOptions} from '../Sound';
-import Sound from "../Sound";
-import {SoundSpriteData, SoundSprites} from "../sprites/SoundSprite";
-import SoundSprite from "../sprites/SoundSprite";
-import {IMedia} from '../interfaces/IMedia';
-import HTMLAudioContext from "./HTMLAudioContext";
-import HTMLAudioInstance from "./HTMLAudioInstance";
-import Filter from "../filters/Filter";
+import { Filter } from "../filters/Filter";
+import { IMedia } from "../interfaces/IMedia";
+import { CompleteCallback, LoadedCallback, Options, PlayOptions, Sound } from "../Sound";
+import { SoundSpriteData, SoundSprites } from "../sprites";
+import { HTMLAudioContext } from "./HTMLAudioContext";
+import { HTMLAudioInstance } from "./HTMLAudioInstance";
 
 /**
  * The fallback version of Sound which uses `<audio>` instead of WebAudio API.
@@ -15,12 +13,12 @@ import Filter from "../filters/Filter";
  * @param {HTMLAudioElement|String|Object} options Either the path or url to the source file.
  *        or the object of options to use. See {@link PIXI.sound.Sound.from}
  */
-export default class HTMLAudioMedia extends PIXI.utils.EventEmitter implements IMedia
+export class HTMLAudioMedia extends PIXI.utils.EventEmitter implements IMedia
 {
     public parent: Sound;
     private _source: HTMLAudioElement;
 
-    init(parent: Sound): void
+    public init(parent: Sound): void
     {
         this.parent = parent;
         this._source = parent.options.source as HTMLAudioElement || new Audio();
@@ -61,9 +59,7 @@ export default class HTMLAudioMedia extends PIXI.utils.EventEmitter implements I
     }
     public set filters(filters: Filter[])
     {
-        // @if DEBUG
-        console.warn('HTML Audio does not support filters');
-        // @endif
+        console.warn("HTML Audio does not support filters");
     }
 
     // Override the destroy
@@ -126,10 +122,10 @@ export default class HTMLAudioMedia extends PIXI.utils.EventEmitter implements I
         const removeListeners = () =>
         {
             // Listen for callback
-            source.removeEventListener('canplaythrough', onLoad);
-            source.removeEventListener('load', onLoad);
-            source.removeEventListener('abort', onAbort);
-            source.removeEventListener('error', onError);
+            source.removeEventListener("canplaythrough", onLoad);
+            source.removeEventListener("load", onLoad);
+            source.removeEventListener("abort", onAbort);
+            source.removeEventListener("error", onError);
         };
 
         const onLoad = () =>
@@ -148,7 +144,7 @@ export default class HTMLAudioMedia extends PIXI.utils.EventEmitter implements I
             removeListeners();
             if (callback)
             {
-                callback(new Error('Sound loading has been aborted'));
+                callback(new Error("Sound loading has been aborted"));
             }
         };
 
@@ -167,10 +163,10 @@ export default class HTMLAudioMedia extends PIXI.utils.EventEmitter implements I
         };
 
         // Listen for callback
-        source.addEventListener('canplaythrough', onLoad, false);
-        source.addEventListener('load', onLoad, false);
-        source.addEventListener('abort', onAbort, false);
-        source.addEventListener('error', onError, false);
+        source.addEventListener("canplaythrough", onLoad, false);
+        source.addEventListener("load", onLoad, false);
+        source.addEventListener("abort", onAbort, false);
+        source.addEventListener("error", onError, false);
 
         // Begin the loading
         source.load();

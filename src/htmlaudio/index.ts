@@ -3,6 +3,6 @@
  * @namespace PIXI.sound.htmlaudio
  * @private
  */
-export { default as HTMLAudioMedia } from "./HTMLAudioMedia";
-export { default as HTMLAudioInstance } from "./HTMLAudioInstance";
-export { default as HTMLAudioContext } from "./HTMLAudioContext";
+export { HTMLAudioMedia } from "./HTMLAudioMedia";
+export { HTMLAudioInstance } from "./HTMLAudioInstance";
+export { HTMLAudioContext } from "./HTMLAudioContext";

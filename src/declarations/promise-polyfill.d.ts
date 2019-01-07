@@ -1,1 +1,1 @@
-declare module 'promise-polyfill';
+declare module "promise-polyfill";

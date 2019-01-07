@@ -1,5 +1,5 @@
-import Filterable from "../Filterable";
-import { IMediaContext } from "../interfaces/IMediaContext";
+import { Filterable } from "../Filterable";
+import { IMediaContext } from "../interfaces";
 
 /**
  * Main class to handle WebAudio API. There's a simple chain
@@ -10,7 +10,7 @@ import { IMediaContext } from "../interfaces/IMediaContext";
  * @extends PIXI.sound.Filterable
  * @memberof PIXI.sound.webaudio
  */
-export default class WebAudioContext extends Filterable implements IMediaContext
+export class WebAudioContext extends Filterable implements IMediaContext
 {
     /**
      * Context Compressor node
@@ -109,7 +109,8 @@ export default class WebAudioContext extends Filterable implements IMediaContext
 
         this._ctx = ctx;
         // ios11 safari's webkitOfflineAudioContext allows only 44100 Hz sample rate
-        this._offlineCtx = new WebAudioContext.OfflineAudioContext(1, 2, (win.OfflineAudioContext)? ctx.sampleRate: 44100);
+        this._offlineCtx = new WebAudioContext.OfflineAudioContext(1, 2,
+            (win.OfflineAudioContext) ? ctx.sampleRate : 44100);
         this._unlocked = false;
 
         this.compressor = compressor;
@@ -171,7 +172,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
         source.buffer = this._ctx.createBuffer(1, 1, 22050);
         source.connect(this._ctx.destination);
         source.start(0, 0, 0);
-        if (source.context.state === 'suspended')
+        if (source.context.state === "suspended")
         {
             source.context.resume();
         }
@@ -257,7 +258,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
 
     /**
      * Pauses all sounds, even though we handle this at the instance
-     * level, we'll also pause the audioContext so that the 
+     * level, we'll also pause the audioContext so that the
      * time used to compute progress isn't messed up.
      * @type {boolean}
      * @name PIXI.sound.webaudio.WebAudioContext#paused
@@ -287,7 +288,7 @@ export default class WebAudioContext extends Filterable implements IMediaContext
      */
     public refresh(): void
     {
-        this.events.emit('refresh');
+        this.events.emit("refresh");
     }
 
     /**
@@ -297,9 +298,8 @@ export default class WebAudioContext extends Filterable implements IMediaContext
      */
     public refreshPaused(): void
     {
-        this.events.emit('refreshPaused');
+        this.events.emit("refreshPaused");
     }
-
 
     /**
      * Toggles the muted state.

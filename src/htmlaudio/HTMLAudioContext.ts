@@ -1,5 +1,5 @@
-import {IMediaContext} from "../interfaces/IMediaContext";
-import Filter from "../filters/Filter";
+import { Filter } from "../filters/Filter";
+import { IMediaContext } from "../interfaces/IMediaContext";
 
 /**
  * The fallback version of WebAudioContext which uses `<audio>` instead of WebAudio API.
@@ -8,7 +8,7 @@ import Filter from "../filters/Filter";
  * @extends PIXI.util.EventEmitter
  * @memberof PIXI.sound.htmlaudio
  */
-export default class HTMLAudioContext extends PIXI.utils.EventEmitter implements IMediaContext
+export class HTMLAudioContext extends PIXI.utils.EventEmitter implements IMediaContext
 {
     /**
      * Current global speed from 0 to 1
@@ -59,7 +59,7 @@ export default class HTMLAudioContext extends PIXI.utils.EventEmitter implements
      */
     public refresh(): void
     {
-        this.emit('refresh');
+        this.emit("refresh");
     }
 
     /**
@@ -69,7 +69,7 @@ export default class HTMLAudioContext extends PIXI.utils.EventEmitter implements
      */
     public refreshPaused(): void
     {
-        this.emit('refreshPaused');
+        this.emit("refreshPaused");
     }
 
     /**
@@ -80,16 +80,12 @@ export default class HTMLAudioContext extends PIXI.utils.EventEmitter implements
      */
     public get filters(): Filter[]
     {
-        // @if DEBUG
-        console.warn('HTML Audio does not support filters');
-        // @endif
+        console.warn("HTML Audio does not support filters");
         return null;
     }
     public set filters(filters: Filter[])
     {
-        // @if DEBUG
-        console.warn('HTML Audio does not support filters');
-        // @endif
+        console.warn("HTML Audio does not support filters");
     }
 
     /**
@@ -101,9 +97,7 @@ export default class HTMLAudioContext extends PIXI.utils.EventEmitter implements
      */
     public get audioContext(): AudioContext
     {
-        // @if DEBUG
-        console.warn('HTML Audio does not support audioContext');
-        // @endif
+        console.warn("HTML Audio does not support audioContext");
         return null;
     }
 

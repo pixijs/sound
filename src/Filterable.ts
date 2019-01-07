@@ -1,4 +1,4 @@
-import Filter from "./filters/Filter";
+import { Filter } from "./filters/Filter";
 
 /**
  * Abstract class which SoundNodes and SoundContext
@@ -10,7 +10,7 @@ import Filter from "./filters/Filter";
  * @param {AudioNode} destination The output audio node
  * @private
  */
-export default class Filterable
+export class Filterable
 {
     /**
      * Get the gain node

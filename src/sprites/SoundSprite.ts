@@ -1,6 +1,5 @@
-import Sound from "../Sound";
-import {CompleteCallback} from "../Sound";
-import {IMediaInstance} from '../interfaces/IMediaInstance';
+import { IMediaInstance } from "../interfaces";
+import { CompleteCallback, Sound } from "../Sound";
 
 // Sound sprite data setup
 export interface SoundSpriteData {
@@ -23,7 +22,7 @@ export type SoundSprites = {[id: string]: SoundSprite};
  * @param {number} [options.speed] The optional speed, if not speed, uses
  *        the default speed of the parent.
  */
-export default class SoundSprite
+export class SoundSprite
 {
     /**
      * The reference sound
@@ -65,7 +64,7 @@ export default class SoundSprite
      */
     public duration: number;
 
-     /**
+    /**
      * Whether to loop the sound sprite.
      * @name PIXI.sound.SoundSprite#loop
      * @type {boolean}
@@ -82,9 +81,7 @@ export default class SoundSprite
         Object.assign(this, options);
         this.duration = this.end - this.start;
 
-        // @if DEBUG
         console.assert(this.duration > 0, "End time must be after start time");
-        // @endif
     }
 
     /**
@@ -93,15 +90,14 @@ export default class SoundSprite
      * @param {PIXI.sound.Sound~completeCallback} [complete] Function call when complete
      * @return {PIXI.sound.IMediaInstance|Promise<PIXI.sound.IMediaInstance>} Sound instance being played.
      */
-    public play(complete?: CompleteCallback): IMediaInstance|Promise<IMediaInstance>
+    public play(complete?: CompleteCallback): IMediaInstance | Promise<IMediaInstance>
     {
-        return this.parent.play(Object.assign({
+        return this.parent.play({
             complete,
             speed: this.speed || this.parent.speed,
             end: this.end,
             start: this.start,
-            loop: this.loop
-        }));
+            loop: this.loop});
     }
 
     /**

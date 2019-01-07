@@ -1,7 +1,7 @@
-import Filterable from "../Filterable";
-import Filter from "../filters/Filter";
-import WebAudioContext from "./WebAudioContext";
-import WebAudioUtils from "./WebAudioUtils";
+import { Filterable } from "../Filterable";
+import { Filter } from "../filters/Filter";
+import { WebAudioContext } from "./WebAudioContext";
+import { WebAudioUtils } from "./WebAudioUtils";
 
 /**
  * Output for cloneing node
@@ -12,7 +12,7 @@ import WebAudioUtils from "./WebAudioUtils";
 export interface SourceClone {
     source: AudioBufferSourceNode;
     gain: GainNode;
-};
+}
 
 /**
  * @private
@@ -22,7 +22,7 @@ export interface SourceClone {
  * @memberof PIXI.sound.webaudio
  * @param {PIXI.sound.webaudio.WebAudioContext} audioContext The audio context.
  */
-export default class WebAudioNodes extends Filterable
+export class WebAudioNodes extends Filterable
 {
     /**
      * The buffer size for script processor

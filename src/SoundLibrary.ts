@@ -1,20 +1,13 @@
-import PromisePolyfill from "promise-polyfill";
-import Filterable from "./Filterable";
-import * as filters from "./filters";
-import Filter from "./filters/Filter";
+import { Filterable } from "./Filterable";
+import { Filter } from "./filters";
 import * as htmlaudio from "./htmlaudio";
-import {HTMLAudioContext} from "./htmlaudio";
-import {IMediaContext} from "./interfaces/IMediaContext";
-import {IMediaInstance} from "./interfaces/IMediaInstance";
-import LoaderMiddleware from "./loader/LoaderMiddleware";
-import {CompleteCallback, Options, PlayOptions} from "./Sound";
-import Sound from "./Sound";
-import SoundSprite from "./sprites/SoundSprite";
-import utils from "./utils/SoundUtils";
-import {WebAudioContext} from "./webaudio";
+import { getInstance } from "./instance";
+import { IMediaContext, IMediaInstance } from "./interfaces";
+import { LoaderMiddleware } from "./loader";
+import { CompleteCallback, Options, PlayOptions, Sound } from "./Sound";
 import * as webaudio from "./webaudio";
 
-export type SoundMap = {[id: string]: Options|string|ArrayBuffer|HTMLAudioElement};
+export type SoundMap = {[id: string]: Options | string | ArrayBuffer | HTMLAudioElement};
 
 /**
  * Contains all of the functionality for using the **pixi-sound** library.
@@ -28,13 +21,8 @@ export type SoundMap = {[id: string]: Options|string|ArrayBuffer|HTMLAudioElemen
  * @memberof PIXI.sound
  * @private
  */
-export default class SoundLibrary
+export class SoundLibrary
 {
-    /**
-     * Singleton instance
-     */
-    public static instance: SoundLibrary;
-
     /**
      * For legacy approach for Audio. Instead of using WebAudio API
      * for playback of sounds, it will use HTML5 `<audio>` element.
@@ -59,7 +47,7 @@ export default class SoundLibrary
      * @type {PIXI.sound.webaudio.WebAudioContext}
      * @private
      */
-    private _webAudioContext: WebAudioContext;
+    private _webAudioContext: webaudio.WebAudioContext;
 
     /**
      * The HTML Audio (legacy) context.
@@ -67,7 +55,7 @@ export default class SoundLibrary
      * @type {PIXI.sound.webaudio.WebAudioContext}
      * @private
      */
-    private _htmlAudioContext: HTMLAudioContext;
+    private _htmlAudioContext: htmlaudio.HTMLAudioContext;
 
     /**
      * The map of all sounds by alias.
@@ -93,9 +81,9 @@ export default class SoundLibrary
     {
         if (this.supported)
         {
-            this._webAudioContext = new WebAudioContext();
+            this._webAudioContext = new webaudio.WebAudioContext();
         }
-        this._htmlAudioContext = new HTMLAudioContext();
+        this._htmlAudioContext = new htmlaudio.HTMLAudioContext();
         this._sounds = {};
         this.useLegacy = !this.supported;
         return this;
@@ -110,68 +98,6 @@ export default class SoundLibrary
     public get context(): IMediaContext
     {
         return this._context;
-    }
-
-    /**
-     * Initialize the singleton of the library
-     * @method PIXI.sound.SoundLibrary.init
-     * @return {PIXI.sound}
-     */
-    public static init(): SoundLibrary
-    {
-        if (SoundLibrary.instance)
-        {
-            throw new Error("SoundLibrary is already created");
-        }
-        const instance = SoundLibrary.instance = new SoundLibrary();
-
-        if (typeof Promise === "undefined")
-        {
-            (window as any).Promise = PromisePolyfill;
-        }
-
-        // In some cases loaders can be not included
-        // the the bundle for PixiJS, custom builds
-        if (typeof PIXI.loaders !== "undefined")
-        {
-            // Install the middleware to support
-            // PIXI.loader and new PIXI.loaders.Loader
-            LoaderMiddleware.install(instance);
-        }
-
-        // Remove the global namespace created by rollup
-        // makes it possible for users to opt-in to exposing
-        // the library globally
-        if (typeof (window as any).__pixiSound === "undefined")
-        {
-            delete (window as any).__pixiSound;
-        }
-
-        // Expose to PIXI.sound to the window PIXI object
-        const PixiJS = PIXI as any;
-
-        // Check incase sound has already used
-        if (!PixiJS.sound)
-        {
-            Object.defineProperty(PixiJS, "sound",
-            {
-                get() { return instance; },
-            });
-
-            Object.defineProperties(instance,
-            {
-                filters: { get() { return filters; } },
-                htmlaudio: { get() { return htmlaudio; } },
-                webaudio: { get() { return webaudio; } },
-                utils: { get() { return utils; } },
-                Sound: { get() { return Sound; } },
-                SoundSprite: { get() { return SoundSprite; } },
-                Filterable: { get() { return Filterable; } },
-                SoundLibrary: { get() { return SoundLibrary; } },
-            });
-        }
-
-        return instance;
     }
 
     /**
@@ -194,11 +120,11 @@ export default class SoundLibrary
         }
         return [];
     }
-    public set filtersAll(filters: Filter[])
+    public set filtersAll(filtersAll: Filter[])
     {
         if (!this.useLegacy)
         {
-            this._context.filters = filters;
+            this._context.filters = filtersAll;
         }
     }
 
@@ -210,7 +136,7 @@ export default class SoundLibrary
      */
     public get supported(): boolean
     {
-        return WebAudioContext.AudioContext !== null;
+        return webaudio.WebAudioContext.AudioContext !== null;
     }
 
     /**
@@ -242,7 +168,7 @@ export default class SoundLibrary
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
      * @return {PIXI.sound.Sound} Instance of the Sound object.
      */
-    public add(alias: string, options: Options|string|ArrayBuffer|HTMLAudioElement|Sound): Sound;
+    public add(alias: string, options: Options | string | ArrayBuffer | HTMLAudioElement | Sound): Sound;
 
     /**
      * Adds multiple sounds at once.
@@ -257,8 +183,8 @@ export default class SoundLibrary
     public add(map: SoundMap, globalOptions?: Options): {[id: string]: Sound};
 
     // Actual method
-    public add(source: string|SoundMap, sourceOptions?: Options|string|ArrayBuffer|HTMLAudioElement|Sound):
-        {[id: string]: Sound}|Sound
+    public add(source: string | SoundMap, sourceOptions?: Options | string | ArrayBuffer | HTMLAudioElement | Sound):
+        {[id: string]: Sound} | Sound
     {
         if (typeof source === "object")
         {
@@ -276,9 +202,8 @@ export default class SoundLibrary
         }
         else if (typeof source === "string")
         {
-            // @if DEBUG
+            // tslint:disable-next-line no-console
             console.assert(!this._sounds[source], `Sound with alias ${source} already exists.`);
-            // @endif
 
             if (sourceOptions instanceof Sound)
             {
@@ -303,7 +228,7 @@ export default class SoundLibrary
      * @param {Object} [overrides] Override default options
      * @return {Object} The construction options
      */
-    private _getOptions(source: string|ArrayBuffer|HTMLAudioElement|Options, overrides?: Options): Options
+    private _getOptions(source: string | ArrayBuffer | HTMLAudioElement | Options, overrides?: Options): Options
     {
         let options: Options;
 
@@ -319,7 +244,9 @@ export default class SoundLibrary
         {
             options = source as Options;
         }
-        return Object.assign(options, overrides || {}) as Options;
+        options = {...options, ...(overrides || {})};
+
+        return options;
     }
 
     /**
@@ -337,14 +264,9 @@ export default class SoundLibrary
         this._useLegacy = legacy;
 
         // Set the context to use
-        if (!legacy && this.supported)
-        {
-            this._context = this._webAudioContext;
-        }
-        else
-        {
-            this._context = this._htmlAudioContext;
-        }
+        this._context = (!legacy && this.supported) ?
+            this._webAudioContext :
+            this._htmlAudioContext;
     }
 
     /**
@@ -499,6 +421,7 @@ export default class SoundLibrary
         const exists = !!this._sounds[alias];
         if (assert)
         {
+            // tslint:disable-next-line no-console
             console.assert(exists, `No sound matching alias '${alias}'.`);
         }
         return exists;
@@ -540,7 +463,9 @@ export default class SoundLibrary
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
      */
-    public play(alias: string, options?: PlayOptions|CompleteCallback|string): IMediaInstance|Promise<IMediaInstance>
+    public play(
+        alias: string,
+        options?: PlayOptions | CompleteCallback | string): IMediaInstance | Promise<IMediaInstance>
     {
         return this.find(alias).play(options);
     }

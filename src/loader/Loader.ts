@@ -1,4 +1,4 @@
-import LoaderMiddleware from './LoaderMiddleware';
+import { LoaderMiddleware } from "./LoaderMiddleware";
 
 /**
  * Loader to replace the default PIXI Loader, this will
@@ -8,18 +8,18 @@ import LoaderMiddleware from './LoaderMiddleware';
  * @class
  * @private
  */
-export default class Loader extends PIXI.loaders.Loader
+export class Loader extends PIXI.loaders.Loader
 {
     /**
      * @param {string} [baseUrl=''] - The base url for all resources loaded by this loader.
      * @param {number} [concurrency=10] - The number of resources to load concurrently.
      */
-    constructor(baseUrl?:string, concurrency?:number)
+    constructor(baseUrl?: string, concurrency?: number)
     {
         super(baseUrl, concurrency);
 
-        this.use(LoaderMiddleware.plugin);
-        this.pre(LoaderMiddleware.resolve);
+        this.use(LoaderMiddleware.use);
+        this.pre(LoaderMiddleware.pre);
     }
 
     /**
@@ -28,7 +28,7 @@ export default class Loader extends PIXI.loaders.Loader
      * @static
      * @param {Function} fn - The middleware to add.
      */
-    static addPixiMiddleware(fn: () => void): void
+    public static addPixiMiddleware(fn: () => void): void
     {
         super.addPixiMiddleware(fn);
     }

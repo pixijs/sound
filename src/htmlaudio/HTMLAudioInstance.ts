@@ -1,6 +1,6 @@
-import HTMLAudioMedia from "./HTMLAudioMedia";
-import {IMediaInstance} from "../interfaces/IMediaInstance";
-import {PlayOptions} from "../Sound";
+import { IMediaInstance } from "../interfaces/IMediaInstance";
+import { PlayOptions } from "../Sound";
+import { HTMLAudioMedia } from "./HTMLAudioMedia";
 
 let id = 0;
 
@@ -10,7 +10,7 @@ let id = 0;
  * @class HTMLAudioInstance
  * @memberof PIXI.sound.htmlaudio
  */
-export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMediaInstance
+export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMediaInstance
 {
     /**
      * Extra padding, in seconds, to deal with low-latecy of HTMLAudio.
@@ -129,7 +129,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
         this.id = id++;
 
-        this.init(parent);  
+        this.init(parent);
     }
 
     /**
@@ -187,8 +187,8 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
         source.src = media.parent.url;
         source.onplay = this._onPlay.bind(this);
         source.onpause = this._onPause.bind(this);
-        media.context.on('refresh', this.refresh, this);
-        media.context.on('refreshPaused', this.refreshPaused, this);
+        media.context.on("refresh", this.refresh, this);
+        media.context.on("refreshPaused", this.refreshPaused, this);
         this._media = media;
     }
 
@@ -280,7 +280,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
      * Call whenever the loop, speed or volume changes
      * @method PIXI.sound.htmlaudio.HTMLAudioInstance#refresh
      */
-    public refresh(): void 
+    public refresh(): void
     {
         const global = this._media.context;
         const sound = this._media.parent;
@@ -338,7 +338,7 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
                     end: this._end,
                     volume: this._volume,
                     speed: this._speed,
-                    loop: this._loop
+                    loop: this._loop,
                 });
             }
 
@@ -359,13 +359,11 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
     {
         const {start, end, speed, loop, volume, muted} = options;
 
-        // @if DEBUG
         if (end)
         {
             console.assert(end > start, "End time is before start time");
         }
-        // @endif
-        
+
         this._speed = speed;
         this._volume = volume;
         this._loop = !!loop;
@@ -376,12 +374,10 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
         // we'll set this just for the heck of it
         if (this.loop && end !== null)
         {
-            // @if DEBUG
             console.warn('Looping not support when specifying an "end" time');
-            // @endif
             this.loop = false;
         }
-        
+
         this._start = start;
         this._end = end || this._duration;
 
@@ -476,8 +472,8 @@ export default class HTMLAudioInstance extends PIXI.utils.EventEmitter implement
 
         if (this._media)
         {
-            this._media.context.off('refresh', this.refresh, this);
-            this._media.context.off('refreshPaused', this.refreshPaused, this);
+            this._media.context.off("refresh", this.refresh, this);
+            this._media.context.off("refreshPaused", this.refreshPaused, this);
             this._media = null;
         }
     }
