@@ -102,7 +102,7 @@ export interface IMediaInstance
     play(options: PlayOptions): void;
     destroy(): void;
     toString(): string;
-    once(event: string, fn: Function, context?: any): this;
-    on(event: string, fn: Function, context?: any): this;
-    off(event: string, fn: Function, context?: any, once?: boolean): this;
+    once(event: string, fn: () => void, context?: any): this;
+    on(event: string, fn: () => void, context?: any): this;
+    off(event: string, fn: () => void, context?: any, once?: boolean): this;
 }

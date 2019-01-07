@@ -359,12 +359,10 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
     {
         const {start, end, speed, loop, volume, muted} = options;
 
-        // @if DEBUG
         if (end)
         {
             console.assert(end > start, "End time is before start time");
         }
-        // @endif
 
         this._speed = speed;
         this._volume = volume;
@@ -376,9 +374,7 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
         // we'll set this just for the heck of it
         if (this.loop && end !== null)
         {
-            // @if DEBUG
             console.warn('Looping not support when specifying an "end" time');
-            // @endif
             this.loop = false;
         }
 

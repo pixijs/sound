@@ -18,8 +18,8 @@ export class Loader extends PIXI.loaders.Loader
     {
         super(baseUrl, concurrency);
 
-        this.use(LoaderMiddleware.plugin);
-        this.pre(LoaderMiddleware.resolve);
+        this.use(LoaderMiddleware.use);
+        this.pre(LoaderMiddleware.pre);
     }
 
     /**

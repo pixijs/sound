@@ -202,10 +202,8 @@ export class SoundLibrary
         }
         else if (typeof source === "string")
         {
-            // @if DEBUG
             // tslint:disable-next-line no-console
             console.assert(!this._sounds[source], `Sound with alias ${source} already exists.`);
-            // @endif
 
             if (sourceOptions instanceof Sound)
             {
@@ -421,13 +419,11 @@ export class SoundLibrary
     public exists(alias: string, assert: boolean= false): boolean
     {
         const exists = !!this._sounds[alias];
-        // @if DEBUG
         if (assert)
         {
             // tslint:disable-next-line no-console
             console.assert(exists, `No sound matching alias '${alias}'.`);
         }
-        // @endif
         return exists;
     }
 

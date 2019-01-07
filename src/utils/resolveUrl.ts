@@ -1,4 +1,4 @@
-import { supported } from './supported';
+import { supported } from "./supported";
 
 /**
  * RegExp for looking for format patterns.

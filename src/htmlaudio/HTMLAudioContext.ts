@@ -80,16 +80,12 @@ export class HTMLAudioContext extends PIXI.utils.EventEmitter implements IMediaC
      */
     public get filters(): Filter[]
     {
-        // @if DEBUG
         console.warn("HTML Audio does not support filters");
-        // @endif
         return null;
     }
     public set filters(filters: Filter[])
     {
-        // @if DEBUG
         console.warn("HTML Audio does not support filters");
-        // @endif
     }
 
     /**
@@ -101,9 +97,7 @@ export class HTMLAudioContext extends PIXI.utils.EventEmitter implements IMediaC
      */
     public get audioContext(): AudioContext
     {
-        // @if DEBUG
         console.warn("HTML Audio does not support audioContext");
-        // @endif
         return null;
     }
 

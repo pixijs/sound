@@ -1,6 +1,7 @@
 {
   "extends": "tslint:latest",
   "rules": {
+    "no-console": { "severity": "warning" },
     "one-line": [true, "check-whitespace"],
     "member-ordering": false,
     "forin": false,
@@ -11,6 +12,7 @@
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"]
   },
   "jsRules": {
+    "no-console": { "severity": "warning" },
     "object-literal-sort-keys": false,
     "one-line": [true, "check-whitespace"],
     "forin": false

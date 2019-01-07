@@ -418,10 +418,8 @@ export class Sound
         }
         else if (typeof source === "string")
         {
-            // @if DEBUG
             // tslint:disable-next-line no-console
             console.assert(!this._sprites[source], `Alias ${source} is already taken`);
-            // @endif
             const sprite = new SoundSprite(this, data);
             this._sprites[source] = sprite;
             return sprite;
@@ -582,10 +580,8 @@ export class Sound
         if (options.sprite)
         {
             const alias: string = options.sprite;
-            // @if DEBUG
             // tslint:disable-next-line no-console
             console.assert(!!this._sprites[alias], `Alias ${alias} is not available`);
-            // @endif
             const sprite: SoundSprite = this._sprites[alias];
             options.start = sprite.start;
             options.end = sprite.end;

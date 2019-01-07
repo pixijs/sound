@@ -11,10 +11,10 @@ export class LoaderMiddleware
 {
     /**
      * Install the middleware
-     * @method PIXI.sound.loader.install
+     * @method PIXI.sound.loader.add
      * @param {PIXI.sound.SoundLibrary} sound - Instance of sound library
      */
-    public static install()
+    public static add()
     {
         LoaderMiddleware.legacy = getInstance().useLegacy;
     }
@@ -53,7 +53,7 @@ export class LoaderMiddleware
     /**
      * Handle the preprocessing of file paths
      */
-    public static resolve(resource: PIXI.loaders.Resource, next: () => void): void
+    public static pre(resource: PIXI.loaders.Resource, next: () => void): void
     {
         resolveUrl(resource);
         next();
@@ -62,7 +62,7 @@ export class LoaderMiddleware
     /**
      * Actual resource-loader middleware for sound class
      */
-    public static plugin(resource: PIXI.loaders.Resource, next: () => void): void
+    public static use(resource: PIXI.loaders.Resource, next: () => void): void
     {
         if (resource.data && extensions.indexOf(resource.extension) > -1)
         {

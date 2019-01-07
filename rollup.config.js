@@ -12,12 +12,15 @@ const plugins = [
 
 // Disabling minification makes faster
 // watch and better coverage debugging
-if (!process.env.DEV) {
+if (process.env.NODE_ENV === "production") {
     plugins.push(terser({
         output: {
             comments(node, comment) {
                 return comment.line === 1;
             },
+        },
+        compress: {
+            drop_console: true,
         },
     }));
 }

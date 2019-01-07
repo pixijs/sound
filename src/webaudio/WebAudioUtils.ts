@@ -1,5 +1,5 @@
-import { getInstance } from '../instance';
-import { WebAudioContext } from './WebAudioContext';
+import { getInstance } from "../instance";
+import { WebAudioContext } from "./WebAudioContext";
 
 /**
  * Internal class for Web Audio abstractions and convenience methods.

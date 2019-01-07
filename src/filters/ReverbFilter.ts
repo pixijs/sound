@@ -1,8 +1,8 @@
-import { Filter } from './Filter';
-import { getInstance } from '../instance';
+import { getInstance } from "../instance";
+import { Filter } from "./Filter";
 
 /**
- * Filter for adding reverb. Refactored from 
+ * Filter for adding reverb. Refactored from
  * https://github.com/web-audio-components/simple-reverb/
  *
  * @class ReverbFilter
@@ -18,23 +18,23 @@ export class ReverbFilter extends Filter
      * @type {number}
      * @private
      */
-    private _seconds:number;
+    private _seconds: number;
 
     /**
      * @name PIXI.sound.filters.ReverbFilter#_decay
      * @type {number}
      * @private
      */
-    private _decay:number;
+    private _decay: number;
 
     /**
      * @name PIXI.sound.filters.ReverbFilter#_reverse
      * @type {number}
      * @private
      */
-    private _reverse:boolean;
+    private _reverse: boolean;
 
-    constructor(seconds:number = 3, decay:number = 2, reverse:boolean = false)
+    constructor(seconds: number = 3, decay: number = 2, reverse: boolean = false)
     {
         if (getInstance().useLegacy)
         {
@@ -52,14 +52,14 @@ export class ReverbFilter extends Filter
 
     /**
      * Clamp a value
-     * @method PIXI.sound.filters.ReverbFilter#_clamp 
+     * @method PIXI.sound.filters.ReverbFilter#_clamp
      * @private
      * @param {number} value
      * @param {number} min Minimum value
      * @param {number} max Maximum value
      * @return {number} Clamped number
      */
-    private _clamp(value:number, min:number, max:number): number
+    private _clamp(value: number, min: number, max: number): number
     {
         return Math.min(max, Math.max(min, value));
     }
@@ -70,11 +70,11 @@ export class ReverbFilter extends Filter
      * @type {number}
      * @default 3
      */
-    get seconds():number
+    get seconds(): number
     {
         return this._seconds;
     }
-    set seconds(seconds:number)
+    set seconds(seconds: number)
     {
         this._seconds = this._clamp(seconds, 1, 50);
         this._rebuild();
@@ -86,11 +86,11 @@ export class ReverbFilter extends Filter
      * @type {number}
      * @default 2
      */
-    get decay():number
+    get decay(): number
     {
         return this._decay;
     }
-    set decay(decay:number)
+    set decay(decay: number)
     {
         this._decay = this._clamp(decay, 0, 100);
         this._rebuild();
@@ -102,11 +102,11 @@ export class ReverbFilter extends Filter
      * @type {boolean}
      * @default false
      */
-    get reverse():boolean
+    get reverse(): boolean
     {
         return this._reverse;
     }
-    set reverse(reverse:boolean)
+    set reverse(reverse: boolean)
     {
         this._reverse = reverse;
         this._rebuild();
@@ -121,14 +121,14 @@ export class ReverbFilter extends Filter
     private _rebuild(): void
     {
         const context = getInstance().context.audioContext;
-        const rate:number = context.sampleRate;
-        const length:number = rate * this._seconds;
-        const impulse:AudioBuffer = context.createBuffer(2, length, rate);
-        const impulseL:Float32Array = impulse.getChannelData(0);
-        const impulseR:Float32Array = impulse.getChannelData(1);
-        let n:number;
+        const rate: number = context.sampleRate;
+        const length: number = rate * this._seconds;
+        const impulse: AudioBuffer = context.createBuffer(2, length, rate);
+        const impulseL: Float32Array = impulse.getChannelData(0);
+        const impulseR: Float32Array = impulse.getChannelData(1);
+        let n: number;
 
-        for (let i:number = 0; i < length; i++)
+        for (let i: number = 0; i < length; i++)
         {
             n = this._reverse ? length - i : i;
             impulseL[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, this._decay);

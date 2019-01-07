@@ -1,6 +1,5 @@
-import { IMediaInstance } from "../interfaces/IMediaInstance";
-import { Sound } from "../Sound";
-import { CompleteCallback } from "../Sound";
+import { IMediaInstance } from "../interfaces";
+import { CompleteCallback, Sound } from "../Sound";
 
 // Sound sprite data setup
 export interface SoundSpriteData {
@@ -65,7 +64,7 @@ export class SoundSprite
      */
     public duration: number;
 
-     /**
+    /**
      * Whether to loop the sound sprite.
      * @name PIXI.sound.SoundSprite#loop
      * @type {boolean}
@@ -82,9 +81,7 @@ export class SoundSprite
         Object.assign(this, options);
         this.duration = this.end - this.start;
 
-        // @if DEBUG
         console.assert(this.duration > 0, "End time must be after start time");
-        // @endif
     }
 
     /**

@@ -1,13 +1,11 @@
 import * as path from "path";
-import { Filter } from "../filters/Filter";
+import { Filter } from "../filters";
+import { IMedia } from "../interfaces";
+import { CompleteCallback, LoadedCallback, Options, PlayOptions, Sound } from "../Sound";
+import { SoundSprite, SoundSpriteData, SoundSprites } from "../sprites";
 import { WebAudioContext } from "./WebAudioContext";
 import { WebAudioInstance } from "./WebAudioInstance";
 import { WebAudioNodes } from "./WebAudioNodes";
-import { SoundSprite } from "../sprites/SoundSprite";
-import { SoundSpriteData, SoundSprites } from "../sprites/SoundSprite";
-import { Sound } from "../Sound";
-import { IMedia } from "../interfaces/IMedia";
-import { Options, PlayOptions, LoadedCallback, CompleteCallback } from "../Sound";
 
 /**
  * Represents a single sound element. Can be used to play, pause, etc. sound instances.
@@ -50,7 +48,7 @@ export class WebAudioMedia implements IMedia
      */
     private _source: AudioBufferSourceNode;
 
-    init(parent:Sound): void
+    public init(parent: Sound): void
     {
         this.parent = parent;
         this._nodes = new WebAudioNodes(this.context);
@@ -83,13 +81,13 @@ export class WebAudioMedia implements IMedia
     {
         return this.parent.context as WebAudioContext;
     }
-    
+
     // Implement isPlayable
     public get isPlayable(): boolean
     {
         return !!this._source && !!this._source.buffer;
     }
-    
+
     // Implement filters
     public get filters(): Filter[]
     {
@@ -103,9 +101,7 @@ export class WebAudioMedia implements IMedia
     // Implements duration
     public get duration(): number
     {
-        // @if DEBUG
         console.assert(this.isPlayable, "Sound not yet playable, no duration");
-        // @endif
         return this._source.buffer.duration;
     }
 

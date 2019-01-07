@@ -12,7 +12,7 @@ import { WebAudioUtils } from "./WebAudioUtils";
 export interface SourceClone {
     source: AudioBufferSourceNode;
     gain: GainNode;
-};
+}
 
 /**
  * @private

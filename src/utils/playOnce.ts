@@ -1,4 +1,4 @@
-import { getInstance } from '../instance';
+import { getInstance } from "../instance";
 
 /**
  * Increment the alias for play once

@@ -17,50 +17,54 @@ import * as webaudio from "./webaudio";
 
 // Create the singleton instance of library
 const sound = setInstance(new SoundLibrary());
+const win = window as any;
+
+// Expose to PIXI.sound to the window PIXI object
+const PIXI_UNTYPED = PIXI as any;
 
 // Check for environments without promises
 if (typeof Promise === "undefined")
 {
-    (window as any).Promise = PromisePolyfill;
+    win.Promise = PromisePolyfill;
 }
 
 // In some cases loaders can be not included
 // the the bundle for PixiJS, custom builds
 if (typeof PIXI.loaders !== "undefined")
 {
-    // Install the middleware to support
-    // PIXI.loader and new PIXI.loaders.Loader
-    LoaderMiddleware.install();
+    const majorVersion = parseInt(PIXI.VERSION.split(".")[0], 10);
 
-    // Hack for version 4.x of PixiJS
-    if (PIXI.VERSION.split(".")[0] === "4")
+    // Hack for version 4.x of PixiJS to support in future loaders
+    // as well as the existing default shared loader
+    if (majorVersion === 4)
     {
         // Replace the PIXI.loaders.Loader class
         // to support using the resolve loader middleware
         PIXI.loaders.Loader = Loader;
 
         // Install middleware on the default loader
-        PIXI.loader.use(LoaderMiddleware.plugin);
-        PIXI.loader.pre(LoaderMiddleware.resolve);
+        LoaderMiddleware.add();
+        PIXI.loader.use(LoaderMiddleware.use);
+        PIXI.loader.pre(LoaderMiddleware.pre);
+    }
+    else if (majorVersion >= 5)
+    {
+        PIXI_UNTYPED.Loader.registerPlugin(LoaderMiddleware);
     }
 }
 
 // Remove the global namespace created by rollup
 // makes it possible for users to opt-in to exposing
 // the library globally
-const root = window as any;
-if (typeof root.__pixiSound === "undefined")
+if (typeof win.__pixiSound === "undefined")
 {
-    delete root.__pixiSound;
+    delete win.__pixiSound;
 }
 
-// Expose to PIXI.sound to the window PIXI object
-const PixiJS = (PIXI as any);
-
 // Check incase sound has already used
-if (!PixiJS.sound)
+if (!PIXI_UNTYPED.sound)
 {
-    Object.defineProperty(PixiJS, "sound",
+    Object.defineProperty(PIXI_UNTYPED, "sound",
     {
         get() { return sound; },
     });

@@ -1,11 +1,10 @@
 import { Sound } from "../Sound";
-import { WebAudioMedia } from "../webaudio/WebAudioMedia";
-import { WebAudioContext } from "../webaudio/WebAudioContext";
+import { WebAudioContext, WebAudioMedia } from "../webaudio";
 
 export interface RenderOptions {
     width?: number;
     height?: number;
-    fill?: string|CanvasPattern|CanvasGradient;
+    fill?: string | CanvasPattern | CanvasGradient;
 }
 
 /**
@@ -22,11 +21,10 @@ export function render(sound: Sound, options?: RenderOptions): PIXI.BaseTexture
 {
     const canvas: HTMLCanvasElement = document.createElement("canvas");
 
-    options = Object.assign({
+    options = {
         width: 512,
         height: 128,
-        fill: "black",
-    }, options || {});
+        fill: "black", ...(options || {})};
 
     canvas.width = options.width;
     canvas.height = options.height;
@@ -39,8 +37,8 @@ export function render(sound: Sound, options?: RenderOptions): PIXI.BaseTexture
     }
 
     const media: WebAudioMedia = sound.media as WebAudioMedia;
-
-    console.assert(!!media.buffer, "No buffer found, load first");        
+    // tslint:disable-next-line no-console
+    console.assert(!!media.buffer, "No buffer found, load first");
 
     const context: CanvasRenderingContext2D = canvas.getContext("2d");
     context.fillStyle = options.fill;

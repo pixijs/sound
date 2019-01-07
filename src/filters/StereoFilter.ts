@@ -1,6 +1,6 @@
-import { Filter } from './Filter';
-import { getInstance } from '../instance';
-import { WebAudioUtils } from '../webaudio';
+import { getInstance } from "../instance";
+import { WebAudioUtils } from "../webaudio";
+import { Filter } from "./Filter";
 
 /**
  * Filter for adding Stereo panning.
@@ -17,7 +17,7 @@ export class StereoFilter extends Filter
      * @type {StereoPannerNode}
      * @private
      */
-    private _stereo:StereoPannerNode;
+    private _stereo: StereoPannerNode;
 
     /**
      * The stereo panning node
@@ -25,7 +25,7 @@ export class StereoFilter extends Filter
      * @type {PannerNode}
      * @private
      */
-    private _panner:PannerNode;
+    private _panner: PannerNode;
 
     /**
      * The amount of panning, -1 is left, 1 is right, 0 is centered
@@ -33,9 +33,9 @@ export class StereoFilter extends Filter
      * @type {number}
      * @private
      */
-    private _pan:number;
+    private _pan: number;
 
-    constructor(pan:number = 0)
+    constructor(pan: number = 0)
     {
         if (getInstance().useLegacy)
         {
@@ -43,9 +43,9 @@ export class StereoFilter extends Filter
             return;
         }
 
-        let stereo:StereoPannerNode;
-        let panner:PannerNode;
-        let destination:AudioNode;
+        let stereo: StereoPannerNode;
+        let panner: PannerNode;
+        let destination: AudioNode;
         const {audioContext} = getInstance().context;
 
         if (audioContext.createStereoPanner)
@@ -56,7 +56,7 @@ export class StereoFilter extends Filter
         else
         {
             panner = audioContext.createPanner();
-            panner.panningModel = 'equalpower';
+            panner.panningModel = "equalpower";
             destination = panner;
         }
 
@@ -73,7 +73,7 @@ export class StereoFilter extends Filter
      * @name PIXI.sound.filters.StereoFilter#pan
      * @type {number}
      */
-    set pan(value:number)
+    set pan(value: number)
     {
         this._pan = value;
         if (this._stereo)
@@ -90,7 +90,7 @@ export class StereoFilter extends Filter
         return this._pan;
     }
 
-    destroy(): void
+    public destroy(): void
     {
         super.destroy();
         this._stereo = null;

@@ -1,9 +1,7 @@
 import { Filter } from "../filters/Filter";
 import { IMedia } from "../interfaces/IMedia";
-import { CompleteCallback, LoadedCallback, Options, PlayOptions } from "../Sound";
-import { Sound } from "../Sound";
-import { SoundSpriteData, SoundSprites } from "../sprites/SoundSprite";
-import { SoundSprite } from "../sprites/SoundSprite";
+import { CompleteCallback, LoadedCallback, Options, PlayOptions, Sound } from "../Sound";
+import { SoundSpriteData, SoundSprites } from "../sprites";
 import { HTMLAudioContext } from "./HTMLAudioContext";
 import { HTMLAudioInstance } from "./HTMLAudioInstance";
 
@@ -61,9 +59,7 @@ export class HTMLAudioMedia extends PIXI.utils.EventEmitter implements IMedia
     }
     public set filters(filters: Filter[])
     {
-        // @if DEBUG
         console.warn("HTML Audio does not support filters");
-        // @endif
     }
 
     // Override the destroy

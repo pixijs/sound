@@ -109,7 +109,8 @@ export class WebAudioContext extends Filterable implements IMediaContext
 
         this._ctx = ctx;
         // ios11 safari's webkitOfflineAudioContext allows only 44100 Hz sample rate
-        this._offlineCtx = new WebAudioContext.OfflineAudioContext(1, 2, (win.OfflineAudioContext) ? ctx.sampleRate : 44100);
+        this._offlineCtx = new WebAudioContext.OfflineAudioContext(1, 2,
+            (win.OfflineAudioContext) ? ctx.sampleRate : 44100);
         this._unlocked = false;
 
         this.compressor = compressor;

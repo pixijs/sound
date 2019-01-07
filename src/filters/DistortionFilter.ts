@@ -1,5 +1,5 @@
-import { Filter } from './Filter';
-import { getInstance } from '../instance';
+import { getInstance } from "../instance";
+import { Filter } from "./Filter";
 
 /**
  * Filter for adding adding delaynode.
@@ -16,7 +16,7 @@ export class DistortionFilter extends Filter
      * @type {WaveShaperNode}
      * @private
      */
-    private _distortion:WaveShaperNode;
+    private _distortion: WaveShaperNode;
 
     /**
      * The amount of distoration
@@ -24,18 +24,18 @@ export class DistortionFilter extends Filter
      * @type {number}
      * @private
      */
-    private _amount:number;
+    private _amount: number;
 
-    constructor(amount:number = 0)
+    constructor(amount: number = 0)
     {
         if (getInstance().useLegacy)
         {
             super(null);
             return;
         }
-        
+
         const {context} = getInstance();
-        const distortion:WaveShaperNode = context.audioContext.createWaveShaper();
+        const distortion: WaveShaperNode = context.audioContext.createWaveShaper();
 
         super(distortion);
 
@@ -48,31 +48,31 @@ export class DistortionFilter extends Filter
      * @name PIXI.sound.filters.Distoration#amount
      * @type {number}
      */
-    set amount(value:number)
+    set amount(value: number)
     {
         value *= 1000;
         this._amount = value;
-        const samples:number = 44100;
-        const curve:Float32Array = new Float32Array(samples);
-        const deg:number = Math.PI / 180;
+        const samples: number = 44100;
+        const curve: Float32Array = new Float32Array(samples);
+        const deg: number = Math.PI / 180;
 
-        let i:number = 0;
-        let x:number;
+        let i: number = 0;
+        let x: number;
 
-        for ( ; i < samples; ++i )
+        for (; i < samples; ++i)
         {
             x = i * 2 / samples - 1;
-            curve[i] = ( 3 + value ) * x * 20 * deg / ( Math.PI + value * Math.abs(x) );
+            curve[i] = (3 + value) * x * 20 * deg / (Math.PI + value * Math.abs(x));
         }
         this._distortion.curve = curve;
-        this._distortion.oversample = '4x';
+        this._distortion.oversample = "4x";
     }
     get amount(): number
     {
         return this._amount;
     }
 
-    destroy(): void
+    public destroy(): void
     {
         this._distortion = null;
         super.destroy();
