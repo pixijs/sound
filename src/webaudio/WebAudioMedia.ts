@@ -1,13 +1,13 @@
 import * as path from "path";
-import Filter from "../filters/Filter";
-import WebAudioContext from "./WebAudioContext";
-import WebAudioInstance from "./WebAudioInstance";
-import WebAudioNodes from "./WebAudioNodes";
-import SoundSprite from "../sprites/SoundSprite";
-import {SoundSpriteData, SoundSprites} from "../sprites/SoundSprite";
-import Sound from "../Sound";
-import {IMedia} from "../interfaces/IMedia";
-import {Options, PlayOptions, LoadedCallback, CompleteCallback} from "../Sound";
+import { Filter } from "../filters/Filter";
+import { WebAudioContext } from "./WebAudioContext";
+import { WebAudioInstance } from "./WebAudioInstance";
+import { WebAudioNodes } from "./WebAudioNodes";
+import { SoundSprite } from "../sprites/SoundSprite";
+import { SoundSpriteData, SoundSprites } from "../sprites/SoundSprite";
+import { Sound } from "../Sound";
+import { IMedia } from "../interfaces/IMedia";
+import { Options, PlayOptions, LoadedCallback, CompleteCallback } from "../Sound";
 
 /**
  * Represents a single sound element. Can be used to play, pause, etc. sound instances.
@@ -16,7 +16,7 @@ import {Options, PlayOptions, LoadedCallback, CompleteCallback} from "../Sound";
  * @memberof PIXI.sound.webaudio
  * @param {PIXI.sound.Sound} parent - Instance of parent Sound container
  */
-export default class WebAudioMedia implements IMedia
+export class WebAudioMedia implements IMedia
 {
     /**
      * Reference to the parent Sound container.

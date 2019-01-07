@@ -1,5 +1,5 @@
-import Filter from './Filter';
-import SoundLibrary from '../SoundLibrary';
+import { Filter } from './Filter';
+import { getInstance } from '../instance';
 
 /**
  * Filter for adding adding delaynode.
@@ -8,7 +8,7 @@ import SoundLibrary from '../SoundLibrary';
  * @memberof PIXI.sound.filters
  * @param {number} [amount=0] The amount of distoration from 0 to 1.
  */
-export default class DistortionFilter extends Filter
+export class DistortionFilter extends Filter
 {
     /**
      * The Wave shape node use to distort
@@ -28,13 +28,13 @@ export default class DistortionFilter extends Filter
 
     constructor(amount:number = 0)
     {
-        if (SoundLibrary.instance.useLegacy)
+        if (getInstance().useLegacy)
         {
             super(null);
             return;
         }
         
-        const context = SoundLibrary.instance.context;
+        const {context} = getInstance();
         const distortion:WaveShaperNode = context.audioContext.createWaveShaper();
 
         super(distortion);

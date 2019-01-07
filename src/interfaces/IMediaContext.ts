@@ -1,7 +1,7 @@
-import Filter from '../filters/Filter';
+import { Filter } from "../filters";
 
 /**
- * Represents the audio context for playing back sounds. This can 
+ * Represents the audio context for playing back sounds. This can
  * represent either an HTML or WebAudio context.
  * @class IMediaContext
  * @memberof PIXI.sound

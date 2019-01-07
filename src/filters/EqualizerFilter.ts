@@ -1,6 +1,6 @@
-import Filter from './Filter';
-import SoundLibrary from '../SoundLibrary';
-import WebAudioUtils from '../webaudio/WebAudioUtils';
+import { Filter } from './Filter';
+import { getInstance } from '../instance';
+import { WebAudioUtils } from '../webaudio';
 
 interface Band {
     f:number;
@@ -24,7 +24,7 @@ interface Band {
  * @param {number} [f8k=0] Default gain for 8000 Hz
  * @param {number} [f16k=0] Default gain for 16000 Hz
  */
-export default class EqualizerFilter extends Filter
+export class EqualizerFilter extends Filter
 {
     /**
      * Band at 32 Hz
@@ -125,7 +125,7 @@ export default class EqualizerFilter extends Filter
     constructor(f32:number = 0, f64:number = 0, f125:number = 0, f250:number = 0, f500:number = 0,
         f1k:number = 0, f2k:number = 0, f4k:number = 0, f8k:number = 0, f16k:number = 0)
     {
-        if (SoundLibrary.instance.useLegacy)
+        if (getInstance().useLegacy)
         {
             super(null);
             return;
@@ -186,12 +186,12 @@ export default class EqualizerFilter extends Filter
         
         const bands:BiquadFilterNode[] = equalizerBands.map(function (band:Band)
         {
-            const filter:BiquadFilterNode = SoundLibrary.instance.context.audioContext.createBiquadFilter();
-            filter.type = band.type as BiquadFilterType;
-            WebAudioUtils.setParamValue(filter.gain, band.gain);
-            WebAudioUtils.setParamValue(filter.Q, 1);
-            WebAudioUtils.setParamValue(filter.frequency, band.f);
-            return filter;
+            const node:BiquadFilterNode = getInstance().context.audioContext.createBiquadFilter();
+            node.type = band.type as BiquadFilterType;
+            WebAudioUtils.setParamValue(node.Q, 1);
+            node.frequency.value = band.f; // WebAudioUtils.setParamValue(filter.frequency, band.f);
+            WebAudioUtils.setParamValue(node.gain, band.gain);
+            return node;
         });
 
         // Setup the constructor AudioNode, where first is the input, and last is the output

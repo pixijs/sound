@@ -8,10 +8,10 @@
  * ];
  * @namespace PIXI.sound.filters
  */
-export { default as Filter } from './Filter';
-export { default as EqualizerFilter } from './EqualizerFilter';
-export { default as DistortionFilter } from './DistortionFilter';
-export { default as StereoFilter } from './StereoFilter';
-export { default as ReverbFilter } from './ReverbFilter';
-export { default as MonoFilter } from './MonoFilter';
-export { default as TelephoneFilter } from './TelephoneFilter';
+export { Filter } from './Filter';
+export { EqualizerFilter } from './EqualizerFilter';
+export { DistortionFilter } from './DistortionFilter';
+export { StereoFilter } from './StereoFilter';
+export { ReverbFilter } from './ReverbFilter';
+export { MonoFilter } from './MonoFilter';
+export { TelephoneFilter } from './TelephoneFilter';

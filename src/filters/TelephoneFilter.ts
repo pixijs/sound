@@ -1,6 +1,6 @@
-import Filter from './Filter';
-import SoundLibrary from '../SoundLibrary';
-import WebAudioUtils from '../webaudio/WebAudioUtils';
+import { Filter } from './Filter';
+import { getInstance } from '../instance';
+import { WebAudioUtils } from '../webaudio';
 
 /**
  * Creates a telephone-sound filter.
@@ -8,17 +8,17 @@ import WebAudioUtils from '../webaudio/WebAudioUtils';
  * @class TelephoneFilter
  * @memberof PIXI.sound.filters
  */
-export default class TelephoneFilter extends Filter
+export class TelephoneFilter extends Filter
 {
     constructor()
     {
-        if (SoundLibrary.instance.useLegacy)
+        if (getInstance().useLegacy)
         {
             super(null);
             return;
         }
 
-        const {audioContext} = SoundLibrary.instance.context;
+        const {audioContext} = getInstance().context;
         const lpf1 = audioContext.createBiquadFilter();
         const lpf2 = audioContext.createBiquadFilter();
         const hpf1 = audioContext.createBiquadFilter();

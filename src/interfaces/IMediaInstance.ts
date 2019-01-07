@@ -1,5 +1,5 @@
-import { IMedia } from "./IMedia";
 import { PlayOptions } from "../Sound";
+import { IMedia } from "./IMedia";
 
 /**
  * Interface for single instance return by a Sound play call. This can either

@@ -7,23 +7,33 @@
  * @param {AudioNode} [source] Optional output node, defaults to destination node. This is useful
  *        when creating filters which contains multiple AudioNode elements chained together.
  */
-export default class Filter
+export class Filter
 {
     /**
      * The node to connect for the filter to the previous filter.
      * @name PIXI.sound.filters.Filter#destination
      * @type {AudioNode}
      */
-    public destination:AudioNode;
+    public destination: AudioNode;
 
     /**
      * The node to connect for the filter to the previous filter.
      * @name PIXI.sound.filters.Filter#source
      * @type {AudioNode}
      */
-    public source:AudioNode;
-    
-    constructor(destination:AudioNode, source?:AudioNode)
+    public source: AudioNode;
+
+    constructor(destination: AudioNode, source?: AudioNode)
+    {
+        this.init(destination, source);
+    }
+
+    /**
+     * Reinitialize
+     * @method PIXI.sound.filters.Filter#init
+     * @private
+     */
+    protected init(destination: AudioNode, source?: AudioNode)
     {
         this.destination = destination;
         this.source = source || destination;
@@ -34,7 +44,7 @@ export default class Filter
      * @method PIXI.sound.filters.Filter#connect
      * @param {AudioNode} destination The destination node to connect the output to
      */
-    connect(destination:AudioNode): void
+    public connect(destination: AudioNode): void
     {
         this.source.connect(destination);
     }
@@ -43,7 +53,7 @@ export default class Filter
      * Completely disconnect filter from destination and source nodes.
      * @method PIXI.sound.filters.Filter#disconnect
      */
-    disconnect(): void
+    public disconnect(): void
     {
         this.source.disconnect();
     }
@@ -52,7 +62,7 @@ export default class Filter
      * Destroy the filter and don't use after this.
      * @method PIXI.sound.filters.Filter#destroy
      */
-    destroy(): void
+    public destroy(): void
     {
         this.disconnect();
         this.destination = null;

@@ -1,14 +1,10 @@
-import PromisePolyfill from "promise-polyfill";
-import Filterable from "./Filterable";
-import * as filters from "./filters";
-import Filter from "./filters/Filter";
+import { Filterable } from "./Filterable";
+import { Filter } from "./filters";
 import * as htmlaudio from "./htmlaudio";
-import {IMediaContext} from "./interfaces/IMediaContext";
-import {IMediaInstance} from "./interfaces/IMediaInstance";
-import LoaderMiddleware from "./loader/LoaderMiddleware";
-import Sound, {CompleteCallback, Options, PlayOptions} from "./Sound";
-import SoundSprite from "./sprites/SoundSprite";
-import utils from "./utils/SoundUtils";
+import { getInstance } from "./instance";
+import { IMediaContext, IMediaInstance } from "./interfaces";
+import { LoaderMiddleware } from "./loader";
+import { CompleteCallback, Options, PlayOptions, Sound } from "./Sound";
 import * as webaudio from "./webaudio";
 
 export type SoundMap = {[id: string]: Options | string | ArrayBuffer | HTMLAudioElement};
@@ -25,13 +21,8 @@ export type SoundMap = {[id: string]: Options | string | ArrayBuffer | HTMLAudio
  * @memberof PIXI.sound
  * @private
  */
-export default class SoundLibrary
+export class SoundLibrary
 {
-    /**
-     * Singleton instance
-     */
-    public static instance: SoundLibrary;
-
     /**
      * For legacy approach for Audio. Instead of using WebAudio API
      * for playback of sounds, it will use HTML5 `<audio>` element.
@@ -107,68 +98,6 @@ export default class SoundLibrary
     public get context(): IMediaContext
     {
         return this._context;
-    }
-
-    /**
-     * Initialize the singleton of the library
-     * @method PIXI.sound.SoundLibrary.init
-     * @return {PIXI.sound}
-     */
-    public static init(): SoundLibrary
-    {
-        if (SoundLibrary.instance)
-        {
-            throw new Error("SoundLibrary is already created");
-        }
-        const instance = SoundLibrary.instance = new SoundLibrary();
-
-        if (typeof Promise === "undefined")
-        {
-            (window as any).Promise = PromisePolyfill;
-        }
-
-        // In some cases loaders can be not included
-        // the the bundle for PixiJS, custom builds
-        if (typeof PIXI.loaders !== "undefined")
-        {
-            // Install the middleware to support
-            // PIXI.loader and new PIXI.loaders.Loader
-            LoaderMiddleware.install(instance);
-        }
-
-        // Remove the global namespace created by rollup
-        // makes it possible for users to opt-in to exposing
-        // the library globally
-        if (typeof (window as any).__pixiSound === "undefined")
-        {
-            delete (window as any).__pixiSound;
-        }
-
-        // Expose to PIXI.sound to the window PIXI object
-        const PixiJS = PIXI as any;
-
-        // Check incase sound has already used
-        if (!PixiJS.sound)
-        {
-            Object.defineProperty(PixiJS, "sound",
-            {
-                get() { return instance; },
-            });
-
-            Object.defineProperties(instance,
-            {
-                filters: { get() { return filters; } },
-                htmlaudio: { get() { return htmlaudio; } },
-                webaudio: { get() { return webaudio; } },
-                utils: { get() { return utils; } },
-                Sound: { get() { return Sound; } },
-                SoundSprite: { get() { return SoundSprite; } },
-                Filterable: { get() { return Filterable; } },
-                SoundLibrary: { get() { return SoundLibrary; } },
-            });
-        }
-
-        return instance;
     }
 
     /**

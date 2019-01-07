@@ -1,5 +1,5 @@
-import Filter from './Filter';
-import SoundLibrary from '../SoundLibrary';
+import { Filter } from './Filter';
+import { getInstance } from '../instance';
 
 /**
  * Combine all channels into mono channel.
@@ -7,7 +7,7 @@ import SoundLibrary from '../SoundLibrary';
  * @class MonoFilter
  * @memberof PIXI.sound.filters
  */
-export default class MonoFilter extends Filter
+export class MonoFilter extends Filter
 {
     /**
      * Merger node
@@ -19,11 +19,12 @@ export default class MonoFilter extends Filter
 
     constructor()
     {
-        if (SoundLibrary.instance.useLegacy)
+        if (getInstance().useLegacy)
         {
             super(null);
+            return;
         }
-        const audioContext:AudioContext = SoundLibrary.instance.context.audioContext;
+        const audioContext:AudioContext = getInstance().context.audioContext;
         const splitter:ChannelSplitterNode = audioContext.createChannelSplitter();
         const merger:ChannelMergerNode = audioContext.createChannelMerger();
         merger.connect(splitter);

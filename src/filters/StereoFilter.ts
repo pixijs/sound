@@ -1,6 +1,6 @@
-import Filter from './Filter';
-import SoundLibrary from '../SoundLibrary';
-import WebAudioUtils from '../webaudio/WebAudioUtils';
+import { Filter } from './Filter';
+import { getInstance } from '../instance';
+import { WebAudioUtils } from '../webaudio';
 
 /**
  * Filter for adding Stereo panning.
@@ -9,7 +9,7 @@ import WebAudioUtils from '../webaudio/WebAudioUtils';
  * @memberof PIXI.sound.filters
  * @param {number} [pan=0] The amount of panning, -1 is left, 1 is right, 0 is centered.
  */
-export default class StereoFilter extends Filter
+export class StereoFilter extends Filter
 {
     /**
      * The stereo panning node
@@ -37,7 +37,7 @@ export default class StereoFilter extends Filter
 
     constructor(pan:number = 0)
     {
-        if (SoundLibrary.instance.useLegacy)
+        if (getInstance().useLegacy)
         {
             super(null);
             return;
@@ -46,7 +46,7 @@ export default class StereoFilter extends Filter
         let stereo:StereoPannerNode;
         let panner:PannerNode;
         let destination:AudioNode;
-        const audioContext = SoundLibrary.instance.context.audioContext;
+        const {audioContext} = getInstance().context;
 
         if (audioContext.createStereoPanner)
         {

@@ -1,7 +1,7 @@
-import WebAudioMedia from "./WebAudioMedia";
-import {IMediaInstance} from "../interfaces/IMediaInstance";
-import {PlayOptions} from "../Sound";
-import WebAudioUtils from "./WebAudioUtils";
+import { WebAudioMedia } from "./WebAudioMedia";
+import { IMediaInstance } from "../interfaces";
+import { PlayOptions } from "../Sound";
+import { WebAudioUtils } from "./WebAudioUtils";
 
 let id = 0;
 
@@ -12,7 +12,7 @@ let id = 0;
  * @memberof PIXI.sound.webaudio
  * @param {SoundNodes} source Reference to the SoundNodes.
  */
-export default class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaInstance
+export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaInstance
 {
     /**
      * The current unique ID for this instance.

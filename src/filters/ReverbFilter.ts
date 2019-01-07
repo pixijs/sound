@@ -1,5 +1,5 @@
-import Filter from './Filter';
-import SoundLibrary from '../SoundLibrary';
+import { Filter } from './Filter';
+import { getInstance } from '../instance';
 
 /**
  * Filter for adding reverb. Refactored from 
@@ -11,16 +11,8 @@ import SoundLibrary from '../SoundLibrary';
  * @param {number} [decay=2] The decay length
  * @param {boolean} [reverse=false] Reverse reverb
  */
-export default class ReverbFilter extends Filter
+export class ReverbFilter extends Filter
 {
-    /**
-     * The covolver node
-     * @name PIXI.sound.filters.ReverbFilter#_convolver
-     * @type {ConvolverNode}
-     * @private
-     */
-    private _convolver:ConvolverNode;
-
     /**
      * @name PIXI.sound.filters.ReverbFilter#_seconds
      * @type {number}
@@ -44,17 +36,14 @@ export default class ReverbFilter extends Filter
 
     constructor(seconds:number = 3, decay:number = 2, reverse:boolean = false)
     {
-        if (SoundLibrary.instance.useLegacy)
+        if (getInstance().useLegacy)
         {
             super(null);
             return;
         }
 
-        const convolver:ConvolverNode = SoundLibrary.instance.context.audioContext.createConvolver();
+        super(null);
 
-        super(convolver);
-
-        this._convolver = convolver;
         this._seconds = this._clamp(seconds, 1, 50);
         this._decay = this._clamp(decay, 0, 100);
         this._reverse = reverse;
@@ -131,7 +120,7 @@ export default class ReverbFilter extends Filter
      */
     private _rebuild(): void
     {
-        const context = SoundLibrary.instance.context.audioContext;
+        const context = getInstance().context.audioContext;
         const rate:number = context.sampleRate;
         const length:number = rate * this._seconds;
         const impulse:AudioBuffer = context.createBuffer(2, length, rate);
@@ -145,12 +134,8 @@ export default class ReverbFilter extends Filter
             impulseL[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, this._decay);
             impulseR[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, this._decay);
         }
-        this._convolver.buffer = impulse;
-    }
-
-    destroy(): void
-    {
-        this._convolver = null;
-        super.destroy();
+        const convolver = getInstance().context.audioContext.createConvolver();
+        convolver.buffer = impulse;
+        this.init(convolver);
     }
 }

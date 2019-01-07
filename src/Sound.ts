@@ -1,12 +1,10 @@
-import Filter from "./filters/Filter";
-import HTMLAudioMedia from "./htmlaudio/HTMLAudioMedia";
-import {IMedia} from "./interfaces/IMedia";
-import {IMediaContext} from "./interfaces/IMediaContext";
-import {IMediaInstance} from "./interfaces/IMediaInstance";
-import SoundLibrary from "./SoundLibrary";
-import SoundSprite, {SoundSpriteData, SoundSprites} from "./sprites/SoundSprite";
-import SoundUtils from "./utils/SoundUtils";
-import WebAudioMedia from "./webaudio/WebAudioMedia";
+import { Filter } from "./filters";
+import { HTMLAudioMedia } from "./htmlaudio";
+import { getInstance } from "./instance";
+import { IMedia, IMediaContext, IMediaInstance } from "./interfaces";
+import { SoundSprite, SoundSpriteData, SoundSprites } from "./sprites";
+import { resolveUrl } from "./utils/resolveUrl";
+import { WebAudioMedia } from "./webaudio";
 
 // Constructor options
 export interface Options {
@@ -59,7 +57,7 @@ export declare type CompleteCallback = (sound: Sound) => void;
  * @class Sound
  * @memberof PIXI.sound
  */
-export default class Sound
+export class Sound
 {
     /**
      * Pool of instances
@@ -254,12 +252,12 @@ export default class Sound
         // Resolve url in-case it has a special format
         if (options.url)
         {
-            options.url = SoundUtils.resolveUrl(options.url);
+            options.url = resolveUrl(options.url);
         }
 
         Object.freeze(options);
 
-        const media: IMedia = SoundLibrary.instance.useLegacy ?
+        const media: IMedia = getInstance().useLegacy ?
             new HTMLAudioMedia() :
             new WebAudioMedia();
 
@@ -310,7 +308,7 @@ export default class Sound
      */
     public get context(): IMediaContext
     {
-        return SoundLibrary.instance.context;
+        return getInstance().context;
     }
 
     /**
