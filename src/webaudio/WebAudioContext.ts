@@ -337,8 +337,8 @@ export class WebAudioContext extends Filterable implements IMediaContext
             arrayBuffer, (buffer: AudioBuffer) => {
                 callback(null, buffer);
             },
-            () => {
-                callback(new Error("Unable to decode file"));
+            (err) => {
+                callback(new Error(err.message || "Unable to decode file"));
             },
         );
     }
