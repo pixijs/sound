@@ -126,4 +126,14 @@ export class WebAudioNodes extends Filterable
         gain.connect(this.destination);
         return { source, gain };
     }
+
+    /**
+     * Get buffer size of `ScriptProcessorNode`.
+     * @type {number}
+     * @readonly
+     */
+    get bufferSize(): number
+    {
+        return this.script.bufferSize;
+    }
 }
