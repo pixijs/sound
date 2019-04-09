@@ -25,14 +25,6 @@ export interface SourceClone {
 export class WebAudioNodes extends Filterable
 {
     /**
-     * The buffer size for script processor
-     * @name PIXI.sound.SoundNodes.BUFFER_SIZE
-     * @type {number}
-     * @default 256
-     */
-    public static BUFFER_SIZE: number = 256;
-
-    /**
      * Get the buffer source node
      * @name PIXI.sound.SoundNodes#bufferSource
      * @type {AudioBufferSourceNode}
@@ -77,7 +69,7 @@ export class WebAudioNodes extends Filterable
         const audioContext: AudioContext = context.audioContext;
 
         const bufferSource: AudioBufferSourceNode = audioContext.createBufferSource();
-        const script: ScriptProcessorNode = audioContext.createScriptProcessor(WebAudioNodes.BUFFER_SIZE);
+        const script: ScriptProcessorNode = audioContext.createScriptProcessor(0);
         const gain: GainNode = audioContext.createGain();
         const analyser: AnalyserNode = audioContext.createAnalyser();
 
