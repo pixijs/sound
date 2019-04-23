@@ -206,7 +206,9 @@ console.log('Sound: ', PIXI.sound.find('boing'));</code></pre>
                 <p>First setup an Application to render the waveform.</p>
                 <code class="hidden" id="render-clear">waveform.stage.removeChildren();</code>
                 <canvas class="canvas" width="1024" height="128" id="waveform"></canvas>
-                <pre><code data-autorun class="javascript">window.waveform = new PIXI.Application(1024, 128, {
+                <pre><code data-autorun class="javascript">window.waveform = new PIXI.Application({
+    width: 1024,
+    height: 128,
     view: document.getElementById('waveform'),
     backgroundColor: 0xffffff
 });
