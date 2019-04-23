@@ -53,7 +53,7 @@ var sound = PIXI.sound.Sound.from({
     loaded: function() {
         var app = new PIXI.Application({
             width: 1024,
-            height: 100, 
+            height: 100,
             backgroundColor: 0xffffff,
             view: document.getElementById("waveform"),
         });
