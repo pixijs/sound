@@ -51,6 +51,13 @@ export interface IMediaContext
     togglePause(): boolean;
 
     /**
+     * Dispatches event to refresh the paused state of playing instances.
+     * @method PIXI.sound.IMediaContext#refreshPaused
+     * @private
+     */
+    refreshPaused(): void;
+
+    /**
      * Dispatch event to refresh all instances volume, mute, etc.
      * @method PIXI.sound.IMediaContext#refresh
      * @private
