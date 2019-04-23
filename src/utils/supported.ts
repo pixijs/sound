@@ -26,6 +26,7 @@ export const extensions: string[] = [
  */
 function validateFormats(): ExtensionMap {
     const overrides: {[key: string]: string} = {
+        m4a: "mp4",
         oga: "ogg",
     };
     const audio = document.createElement("audio");
