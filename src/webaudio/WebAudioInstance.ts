@@ -377,6 +377,54 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
     }
 
     /**
+     * Set|Add speed and Return this.
+     * @method PIXI.sound.webaudio.WebAudioInstance#Speed
+     * @param {string | number} speed Number or string operator 
+     * @return {Object} PIXI.sound.webaudio.WebAudioInstance
+    */
+    public Speed(speed: string | number): this
+    {   
+        if(typeof speed === "string"){
+            this._speed+= Number(speed);
+        }else{
+            this._speed = speed;
+        }
+        this.refresh();
+        this._update(true); // update progress
+        return this;
+    }
+
+    /**
+     * Set|Add Volume and Return this.
+     * @method PIXI.sound.webaudio.WebAudioInstance#Volume
+     * @param {string | number} volume Number or string operator
+     * @return {Object} PIXI.sound.webaudio.WebAudioInstance
+    */
+    public Volume(volume: string | number): this
+    {   
+        if(typeof volume === "string"){
+            this._volume+= Number(volume);
+        }else{
+            this._volume = volume;
+        }
+        this.refresh();
+        return this;
+    }
+
+    /**
+     * Set loop and Return this.
+     * @method PIXI.sound.webaudio.WebAudioInstance#Speed
+     * @param {boolean} loop 
+     * @return {Object} PIXI.sound.webaudio.WebAudioInstance
+    */
+    public Loop(loop: boolean): this
+    {   
+        this._loop = loop;
+        this.refresh();
+        return this;
+    }
+
+    /**
      * Utility to convert time in millseconds or seconds
      * @method PIXI.sound.webaudio.WebAudioInstance#_toSec
      * @private
