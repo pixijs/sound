@@ -49,7 +49,6 @@ declare namespace PIXI.sound {
     }
     interface Options {
         autoPlay?: boolean;
-        preaload?: boolean;
         singleInstance?: boolean;
         volume?: number;
         speed?: number;

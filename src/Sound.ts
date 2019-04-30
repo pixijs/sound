@@ -9,7 +9,6 @@ import { WebAudioMedia } from "./webaudio";
 // Constructor options
 export interface Options {
     autoPlay?: boolean;
-    preaload?: boolean;
     singleInstance?: boolean;
     volume?: number;
     speed?: number;
