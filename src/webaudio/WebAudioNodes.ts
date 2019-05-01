@@ -33,14 +33,6 @@ export class WebAudioNodes extends Filterable
     public bufferSource: AudioBufferSourceNode;
 
     /**
-     * Get the script processor node.
-     * @name PIXI.sound.SoundNodes#script
-     * @type {ScriptProcessorNode}
-     * @readonly
-     */
-    public script: ScriptProcessorNode;
-
-    /**
      * Get the gain node
      * @name PIXI.sound.SoundNodes#gain
      * @type {GainNode}
@@ -64,27 +56,47 @@ export class WebAudioNodes extends Filterable
      */
     public context: WebAudioContext;
 
+    /**
+     * Private reference to the script processor node.
+     * @name PIXI.sound.SoundNodes#_script
+     * @type {ScriptProcessorNode}
+     */
+    private _script: ScriptProcessorNode;
+
     constructor(context: WebAudioContext)
     {
         const audioContext: AudioContext = context.audioContext;
 
         const bufferSource: AudioBufferSourceNode = audioContext.createBufferSource();
-        const script: ScriptProcessorNode = audioContext.createScriptProcessor(0);
         const gain: GainNode = audioContext.createGain();
         const analyser: AnalyserNode = audioContext.createAnalyser();
 
         bufferSource.connect(analyser);
         analyser.connect(gain);
         gain.connect(context.destination);
-        script.connect(context.destination);
 
         super(analyser, gain);
 
         this.context = context;
         this.bufferSource = bufferSource;
-        this.script = script;
         this.gain = gain;
         this.analyser = analyser;
+    }
+
+    /**
+     * Get the script processor node.
+     * @name PIXI.sound.SoundNodes#script
+     * @type {ScriptProcessorNode}
+     * @readonly
+     */
+    public get script()
+    {
+        if (!this._script)
+        {
+            this._script = this.context.audioContext.createScriptProcessor(0);
+            this._script.connect(this.context.destination);
+        }
+        return this._script;
     }
 
     /**
@@ -96,12 +108,15 @@ export class WebAudioNodes extends Filterable
         super.destroy();
 
         this.bufferSource.disconnect();
-        this.script.disconnect();
+        if (this._script)
+        {
+            this._script.disconnect();
+        }
         this.gain.disconnect();
         this.analyser.disconnect();
 
         this.bufferSource = null;
-        this.script = null;
+        this._script = null;
         this.gain = null;
         this.analyser = null;
 
