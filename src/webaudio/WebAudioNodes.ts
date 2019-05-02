@@ -25,6 +25,15 @@ export interface SourceClone {
 export class WebAudioNodes extends Filterable
 {
     /**
+     * The buffer size for script processor, default is `0` which auto-detects. If you plan to use
+     * script node on iOS, you'll need to provide a non-zero amount.
+     * @name PIXI.sound.SoundNodes.BUFFER_SIZE
+     * @type {number}
+     * @default 0
+     */
+    public static BUFFER_SIZE: number = 0;
+
+    /**
      * Get the buffer source node
      * @name PIXI.sound.SoundNodes#bufferSource
      * @type {AudioBufferSourceNode}
@@ -93,7 +102,7 @@ export class WebAudioNodes extends Filterable
     {
         if (!this._script)
         {
-            this._script = this.context.audioContext.createScriptProcessor(0);
+            this._script = this.context.audioContext.createScriptProcessor(WebAudioNodes.BUFFER_SIZE);
             this._script.connect(this.context.destination);
         }
         return this._script;
