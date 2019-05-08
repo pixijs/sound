@@ -139,8 +139,8 @@ declare namespace PIXI.sound {
         audioContext: AudioContext;
     }
     interface IMediaInstance {
-        id: number;
-        progress: number;
+        readonly id: number;
+        readonly progress: number;
         paused: boolean;
         volume: number;
         speed: number;
@@ -156,6 +156,7 @@ declare namespace PIXI.sound {
         once(event: string, fn: () => void, context?: any): this;
         on(event: string, fn: Function, context?: any): this;
         off(event: string, fn: Function, context?: any, once?: boolean): this;
+        set(name:'speed'|'volume'|'muted'|'loop'|'paused', value:number|boolean): this;
     }
     interface SoundSpriteData {
         start: number;

@@ -13,14 +13,16 @@ export interface IMediaInstance
     /**
      * Auto-incrementing ID for the instance.
      * @member {number} PIXI.sound.IMediaInstance#id
+     * @readonly
      */
-    id: number;
+    readonly id: number;
 
     /**
      * Current progress of the sound from 0 to 1
      * @member {number} PIXI.sound.IMediaInstance#progress
+     * @readonly
      */
-    progress: number;
+    readonly progress: number;
 
     /**
      * If the instance is paused, if the sound or global context
@@ -105,4 +107,17 @@ export interface IMediaInstance
     once(event: string, fn: () => void, context?: any): this;
     on(event: string, fn: () => void, context?: any): this;
     off(event: string, fn: () => void, context?: any, once?: boolean): this;
+
+    /**
+     * Fired when the sound when progress updates.
+     * @method PIXI.sound.IMediaInstance#set
+     * @param {string} name - Name of property, like 'speed', 'volume', 'muted', 'loop', 'paused'
+     * @param {number|boolean} value - The total number of seconds of audio
+     * @return {PIXI.sound.IMediaInstance}
+     * @example
+     * PIXI.sound.play('foo')
+     *   .set('volume', 0.5)
+     *   .set('speed', 0.8);
+     */
+    set(name: "speed" | "volume" | "muted" | "loop" | "paused", value: number | boolean): this;
 }

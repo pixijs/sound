@@ -21,7 +21,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
      * @name PIXI.sound.webaudio.WebAudioInstance#id
      * @readonly
      */
-    public id: number;
+    public readonly id: number;
 
     /**
      * The source Sound.
@@ -147,6 +147,26 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
 
         // Initialize
         this.init(media);
+    }
+
+    /**
+     * Set a property by name, this makes it easy to chain values
+     * @method PIXI.sound.webaudio.WebAudioInstance#set
+     * @param {string} name - Values include: 'speed', 'volume', 'muted', 'loop', 'paused'
+     * @param {number|boolean} value - Value to set property to
+     * @return {PIXI.sound.webaudio.WebAudioInstance}
+     */
+    public set(name: "speed" | "volume" | "muted" | "loop" | "paused", value: number | boolean)
+    {
+        if (this[name] === undefined)
+        {
+            throw new Error(`Property with name ${name} does not exist.`);
+        }
+        else
+        {
+            this[name] = value;
+        }
+        return this;
     }
 
     /**

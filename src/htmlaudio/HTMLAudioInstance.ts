@@ -27,7 +27,7 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
      * @name PIXI.sound.htmlaudio.HTMLAudioInstance#id
      * @readonly
      */
-    public id: number;
+    public readonly id: number;
 
     /**
      * The instance of the Audio element.
@@ -132,6 +132,26 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         this.id = id++;
 
         this.init(parent);
+    }
+
+    /**
+     * Set a property by name, this makes it easy to chain values
+     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#set
+     * @param {string} name - Values include: 'speed', 'volume', 'muted', 'loop', 'paused'
+     * @param {number|boolean} value - Value to set property to
+     * @return {PIXI.sound.htmlaudio.HTMLAudioInstance}
+     */
+    public set(name: "speed" | "volume" | "muted" | "loop" | "paused", value: number | boolean)
+    {
+        if (this[name] === undefined)
+        {
+            throw new Error(`Property with name ${name} does not exist.`);
+        }
+        else
+        {
+            this[name] = value;
+        }
+        return this;
     }
 
     /**
