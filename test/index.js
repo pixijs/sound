@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-expression */
-// Require pixi
 const PIXI = require("pixi.js");
+const { expect } = require("chai");
 
 // Import the library
 module.exports = function(libraryPath, useLegacy)
@@ -54,17 +54,17 @@ module.exports = function(libraryPath, useLegacy)
 
         it("should have the correct classes", function()
         {
-            expect(sound).to.be.a.function;
-            expect(sound.Sound).to.be.a.function;
-            expect(sound.utils).to.be.a.function;
-            expect(sound.webaudio).to.be.an.object;
-            expect(sound.htmlaudio).to.be.an.object;
-            expect(sound.SoundLibrary).to.be.a.function;
-            expect(sound.filters).to.be.an.object;
-            expect(sound.filters.DistortionFilter).to.be.a.function;
-            expect(sound.filters.EqualizerFilter).to.be.a.function;
-            expect(sound.filters.ReverbFilter).to.be.a.function;
-            expect(sound.filters.StereoFilter).to.be.a.function;
+            expect(sound).to.be.an("object");
+            expect(sound.Sound).to.be.a("function");
+            expect(sound.utils).to.be.an("object");
+            expect(sound.webaudio).to.be.an("object");
+            expect(sound.htmlaudio).to.be.an("object");
+            expect(sound.SoundLibrary).to.be.a("function");
+            expect(sound.filters).to.be.an("object");
+            expect(sound.filters.DistortionFilter).to.be.a("function");
+            expect(sound.filters.EqualizerFilter).to.be.a("function");
+            expect(sound.filters.ReverbFilter).to.be.a("function");
+            expect(sound.filters.StereoFilter).to.be.a("function");
             expect(sound).to.be.instanceof(sound.SoundLibrary);
         });
 
@@ -94,7 +94,7 @@ module.exports = function(libraryPath, useLegacy)
                     }
                 },
             });
-            expect(results).to.be.an.object;
+            expect(results).to.be.a("object");
             expect(results["alert-4"]).to.be.instanceof(Sound);
             expect(results["alert-7"]).to.be.instanceof(Sound);
             expect(results["alert-12"]).to.be.instanceof(Sound);
