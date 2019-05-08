@@ -49,7 +49,6 @@ declare namespace PIXI.sound {
     }
     interface Options {
         autoPlay?: boolean;
-        preaload?: boolean;
         singleInstance?: boolean;
         volume?: number;
         speed?: number;
@@ -371,5 +370,5 @@ declare namespace PIXI.sound {
 }
 
 declare module "pixi-sound" {
-    export = PIXI.sound;
+    export default PIXI.sound;
 }

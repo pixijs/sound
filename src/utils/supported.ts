@@ -14,7 +14,6 @@ export const extensions: string[] = [
     "mpeg",
     "wav",
     "m4a",
-    "mp4",
     "aiff",
     "wma",
     "mid",
@@ -26,7 +25,7 @@ export const extensions: string[] = [
  * @return {object} map of support by type
  */
 function validateFormats(): ExtensionMap {
-    const types: {[key: string]: string} = {
+    const overrides: {[key: string]: string} = {
         m4a: "mp4",
         oga: "ogg",
     };
@@ -34,7 +33,7 @@ function validateFormats(): ExtensionMap {
     const formats: ExtensionMap = {};
     const no = /^no$/;
     extensions.forEach((ext) => {
-        const type = types[ext] || ext;
+        const type = overrides[ext] || ext;
         const canByExt = audio.canPlayType(`audio/${ext}`).replace(no, "");
         const canByType = audio.canPlayType(`audio/${type}`).replace(no, "");
         formats[ext] = !!canByExt || !!canByType;
@@ -53,7 +52,6 @@ function validateFormats(): ExtensionMap {
  * @property {boolean} opus - `true` if file-type is supported
  * @property {boolean} mpeg - `true` if file-type is supported
  * @property {boolean} wav - `true` if file-type is supported
- * @property {boolean} mp4 - `true` if file-type is supported
  * @property {boolean} aiff - `true` if file-type is supported
  * @property {boolean} wma - `true` if file-type is supported
  * @property {boolean} mid - `true` if file-type is supported

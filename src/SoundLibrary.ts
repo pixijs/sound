@@ -331,7 +331,7 @@ export class SoundLibrary
     public pauseAll(): SoundLibrary
     {
         this._context.paused = true;
-        this._context.refresh();
+        this._context.refreshPaused();
         return this;
     }
 
@@ -343,7 +343,7 @@ export class SoundLibrary
     public resumeAll(): SoundLibrary
     {
         this._context.paused = false;
-        this._context.refresh();
+        this._context.refreshPaused();
         return this;
     }
 

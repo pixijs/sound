@@ -126,14 +126,6 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
     private _progress: number;
 
     /**
-     * Callback for update listener
-     * @type {EventListener}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_updateListener
-     * @private
-     */
-    private _updateListener: EventListener;
-
-    /**
      * Audio buffer source clone from Sound object.
      * @type {AudioBufferSourceNode}
      * @name PIXI.sound.webaudio.WebAudioInstance#_source
@@ -150,7 +142,6 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
         this._paused = false;
         this._muted = false;
         this._elapsed = 0;
-        this._updateListener = this._update.bind(this) as EventListener;
 
         // Initialize
         this.init(media);
@@ -400,13 +391,10 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
      */
     private set _enabled(enabled: boolean)
     {
-        const script = this._media.nodes.script;
-
-        script.removeEventListener("audioprocess", this._updateListener);
-
+        PIXI.ticker.shared.remove(this._updateListener, this);
         if (enabled)
         {
-            script.addEventListener("audioprocess", this._updateListener);
+            PIXI.ticker.shared.add(this._updateListener, this);
         }
     }
 
@@ -491,6 +479,16 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
     private _now(): number
     {
         return this._media.context.audioContext.currentTime;
+    }
+
+    /**
+     * Callback for update listener
+     * @type {Function}
+     * @name PIXI.sound.webaudio.WebAudioInstance#_updateListener
+     * @private
+     */
+    private _updateListener() {
+        this._update();
     }
 
     /**
