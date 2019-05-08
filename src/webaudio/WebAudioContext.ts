@@ -1,3 +1,4 @@
+import { EventEmitter } from "@pixi/utils";
 import { Filterable } from "../Filterable";
 import { IMediaContext } from "../interfaces";
 
@@ -58,7 +59,7 @@ export class WebAudioContext extends Filterable implements IMediaContext
      * @name PIXI.sound.webaudio.WebAudioContext#events
      * @default 1
      */
-    public events: PIXI.utils.EventEmitter;
+    public events: EventEmitter;
 
     /**
      * The instance of the AudioContext for WebAudio API.
@@ -115,7 +116,7 @@ export class WebAudioContext extends Filterable implements IMediaContext
 
         this.compressor = compressor;
         this.analyser = analyser;
-        this.events = new PIXI.utils.EventEmitter();
+        this.events = new EventEmitter();
 
         // Set the defaults
         this.volume = 1;

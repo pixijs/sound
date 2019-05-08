@@ -6,7 +6,11 @@
         "noImplicitAny": true,
         "preserveConstEnums": true,
         "sourceMap": true,
-        "inlineSources": true
+        "inlineSources": true,
+        "typeRoots": [
+          "node_modules/@types",
+          "typings"
+        ]
     },
     "include": [
         "src/**/*"

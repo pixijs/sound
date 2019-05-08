@@ -85,8 +85,8 @@ PIXI.sound.play('bird');</code></pre>
                 <button class="btn btn-danger btn-lg pull-right play" data-code="#filetypes1">
                     <span class="glyphicon glyphicon-play"></span> Run
                 </button>
-                <pre><code id="filetypes1" class="javascript">PIXI.loader.add('applause', 'resources/applause.{ogg,mp3}');
-PIXI.loader.load(function(loader, resources) {
+                <pre><code id="filetypes1" class="javascript">PIXI.Loader.shared.add('applause', 'resources/applause.{ogg,mp3}');
+PIXI.Loader.shared.load(function(loader, resources) {
     resources.applause.sound.play();
 });</code></pre>
                 <p>Also supported loading with the <code>PIXI.sound</code> object.</p>
@@ -113,15 +113,15 @@ PIXI.sound.play('applause');</code></pre>
                 <button class="btn btn-danger btn-lg pull-right play" data-code="#loaded2">
                     <span class="glyphicon glyphicon-play"></span> Run
                 </button>
-                <pre><code id="loaded2" class="javascript">PIXI.loader.add('bird', 'resources/bird.mp3');
-PIXI.loader.load(function(loader, resources) {
+                <pre><code id="loaded2" class="javascript">PIXI.Loader.shared.add('bird', 'resources/bird.mp3');
+PIXI.Loader.shared.load(function(loader, resources) {
     resources.bird.sound.play();
 });</code></pre>
-            <p>Alternatively, use the <code>PIXI.loaders.Loader</code>, if you don't want to use the shared loader.</p>
+            <p>Alternatively, use <code>new PIXI.Loader()</code>, if you don't want to use the shared loader.</p>
                 <button class="btn btn-danger btn-lg pull-right play" data-code="#loaded3">
                     <span class="glyphicon glyphicon-play"></span> Run
                 </button>
-                <pre><code id="loaded3" class="javascript">const loader = new PIXI.loaders.Loader();
+                <pre><code id="loaded3" class="javascript">const loader = new PIXI.Loader();
 loader.add('bird', 'resources/bird.mp3');
 loader.load(function(loader, resources) {
     resources.bird.sound.play();
@@ -216,7 +216,7 @@ console.log('Sound: ', PIXI.sound.find('boing'));</code></pre>
                 <button class="btn btn-danger btn-lg pull-right play" data-code="#render3" data-beforeCode="#render-clear">
                     <span class="glyphicon glyphicon-play"></span> Run
                 </button>
-                <pre><code id="render3" class="javascript">PIXI.loader.add('applause', 'resources/applause.mp3')
+                <pre><code id="render3" class="javascript">PIXI.Loader.shared.add('applause', 'resources/applause.mp3')
     .load(function(loader, resources) {
         const sound = resources.applause.sound;
         const baseTexture = PIXI.sound.utils.render(sound, {

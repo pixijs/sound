@@ -1,10 +1,11 @@
 /* tslint:disable:no-unused-expression */
 // Require pixi
-require("pixi.js");
+const PIXI = require("pixi.js");
 
 // Import the library
 module.exports = function(libraryPath, useLegacy)
 {
+    const sound = require(libraryPath);
     const {
         Sound,
         utils,
@@ -12,8 +13,7 @@ module.exports = function(libraryPath, useLegacy)
         htmlaudio,
         SoundLibrary,
         filters,
-        sound,
-    } = require(libraryPath);
+    } = sound;
 
     const path = require("path");
     const suffix = useLegacy ? " (legacy)" : "";
@@ -43,7 +43,7 @@ module.exports = function(libraryPath, useLegacy)
 
         after(function()
         {
-            PIXI.loader.reset();
+            PIXI.Loader.shared.reset();
             sound.removeAll();
         });
 
@@ -54,29 +54,24 @@ module.exports = function(libraryPath, useLegacy)
 
         it("should have the correct classes", function()
         {
-            expect(PIXI.sound).to.be.a.function;
-            expect(PIXI.sound.Sound).to.be.a.function;
-            expect(PIXI.sound.utils).to.be.a.function;
-            expect(PIXI.sound.webaudio).to.be.an.object;
-            expect(PIXI.sound.htmlaudio).to.be.an.object;
-            expect(PIXI.sound.SoundLibrary).to.be.a.function;
-            expect(PIXI.sound.filters).to.be.an.object;
-            expect(PIXI.sound.filters.DistortionFilter).to.be.a.function;
-            expect(PIXI.sound.filters.EqualizerFilter).to.be.a.function;
-            expect(PIXI.sound.filters.ReverbFilter).to.be.a.function;
-            expect(PIXI.sound.filters.StereoFilter).to.be.a.function;
-            expect(PIXI.sound).to.be.instanceof(PIXI.sound.SoundLibrary);
-
-            expect(sound).to.equal(PIXI.sound);
-            expect(filters).to.equal(PIXI.sound.filters);
-            expect(webaudio).to.equal(PIXI.sound.webaudio);
-            expect(htmlaudio).to.equal(PIXI.sound.htmlaudio);
+            expect(sound).to.be.a.function;
+            expect(sound.Sound).to.be.a.function;
+            expect(sound.utils).to.be.a.function;
+            expect(sound.webaudio).to.be.an.object;
+            expect(sound.htmlaudio).to.be.an.object;
+            expect(sound.SoundLibrary).to.be.a.function;
+            expect(sound.filters).to.be.an.object;
+            expect(sound.filters.DistortionFilter).to.be.a.function;
+            expect(sound.filters.EqualizerFilter).to.be.a.function;
+            expect(sound.filters.ReverbFilter).to.be.a.function;
+            expect(sound.filters.StereoFilter).to.be.a.function;
+            expect(sound).to.be.instanceof(sound.SoundLibrary);
         });
 
         it("should recreate the library", function()
         {
-            PIXI.sound.close().init();
-            PIXI.sound.useLegacy = !!useLegacy;
+            sound.close().init();
+            sound.useLegacy = !!useLegacy;
         });
 
         it("should load a manifest", function(done)
@@ -355,9 +350,9 @@ module.exports = function(libraryPath, useLegacy)
             this.slow(200);
             for (const name in manifest)
             {
-                PIXI.loader.add(name, manifest[name]);
+                PIXI.Loader.shared.add(name, manifest[name]);
             }
-            PIXI.loader.load((loader, resources) =>
+            PIXI.Loader.shared.load((loader, resources) =>
             {
                 expect(Object.keys(resources).length).to.equal(5);
                 for (const name in resources)

@@ -1,3 +1,4 @@
+import { LoaderResource } from "@pixi/loaders";
 import { supported } from "./supported";
 
 /**
@@ -14,12 +15,12 @@ const FORMAT_PATTERN = /\.(\{([^\}]+)\})(\?.*)?$/;
  * if "ogg" support is found, otherwise, fallback to "sounds.music.mp3"
  * @method PIXI.sound.utils.resolveUrl
  * @static
- * @param {string|PIXI.loaders.Resource} source - Path to resolve or Resource, if
+ * @param {string|PIXI.LoaderResource} source - Path to resolve or Resource, if
  *        a Resource object is provided, automatically updates the extension and url
  *        of that object.
  * @return {string} The format to resolve to
  */
-export function resolveUrl(source: string | PIXI.loaders.Resource): string
+export function resolveUrl(source: string | PIXI.LoaderResource): string
 {
     // search for patterns like ".{mp3,ogg}""
     const glob = FORMAT_PATTERN;

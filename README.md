@@ -9,7 +9,7 @@ WebAudio API playback library, with filters. Modern audio playback for modern br
 * Pausing and resuming
 * Independent volume control
 * Support blocking or layered sounds (multiple instances)
-* Support for `PIXI.loader` system
+* Support for `PIXI.Loader` system
 * Dynamic filters:
     * ReverbFilter
     * DistortionFilter

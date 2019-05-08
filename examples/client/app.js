@@ -10,14 +10,14 @@ var manifest = {
 };
 
 for (var name in manifest) {
-    PIXI.loader.add(name, manifest[name]);
+    PIXI.Loader.shared.add(name, manifest[name]);
 }
 
 var distort = new PIXI.sound.filters.DistortionFilter();
 var stereo = new PIXI.sound.filters.StereoFilter();
 var equalizer = new PIXI.sound.filters.EqualizerFilter();
 
-PIXI.loader.load(function(loader, resources) {
+PIXI.Loader.shared.load(function(loader, resources) {
     var singleInstance = $("#singleInstance");
     var loop = $("#loop");
     var speed = $("#speed");

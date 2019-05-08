@@ -164,11 +164,11 @@ const manifest = {
 
 // Add to the PIXI loader
 for (let name in manifest) {
-    PIXI.loader.add(name, manifest[name]);
+    PIXI.Loader.shared.add(name, manifest[name]);
 }
 
 // Preload the sounds
-PIXI.loader.load(function(loader, resources) {
+PIXI.Loader.shared.load(function(loader, resources) {
     const plays = document.querySelectorAll('button[data-sound]');
     for (let i = 0; i < plays.length; i++) {
         const button = plays[i];

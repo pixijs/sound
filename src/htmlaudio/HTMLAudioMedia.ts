@@ -1,3 +1,4 @@
+import { EventEmitter } from "@pixi/utils";
 import { Filter } from "../filters/Filter";
 import { IMedia } from "../interfaces/IMedia";
 import { CompleteCallback, LoadedCallback, Options, PlayOptions, Sound } from "../Sound";
@@ -13,7 +14,7 @@ import { HTMLAudioInstance } from "./HTMLAudioInstance";
  * @param {HTMLAudioElement|String|Object} options Either the path or url to the source file.
  *        or the object of options to use. See {@link PIXI.sound.Sound.from}
  */
-export class HTMLAudioMedia extends PIXI.utils.EventEmitter implements IMedia
+export class HTMLAudioMedia extends EventEmitter implements IMedia
 {
     public parent: Sound;
     private _source: HTMLAudioElement;

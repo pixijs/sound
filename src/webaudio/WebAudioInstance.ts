@@ -1,3 +1,5 @@
+import { Ticker } from "@pixi/ticker";
+import { EventEmitter } from "@pixi/utils";
 import { IMediaInstance } from "../interfaces";
 import { PlayOptions } from "../Sound";
 import { WebAudioMedia } from "./WebAudioMedia";
@@ -12,7 +14,7 @@ let id = 0;
  * @memberof PIXI.sound.webaudio
  * @param {SoundNodes} source Reference to the SoundNodes.
  */
-export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaInstance
+export class WebAudioInstance extends EventEmitter implements IMediaInstance
 {
     /**
      * The current unique ID for this instance.
@@ -391,10 +393,10 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
      */
     private set _enabled(enabled: boolean)
     {
-        PIXI.ticker.shared.remove(this._updateListener, this);
+        Ticker.shared.remove(this._updateListener, this);
         if (enabled)
         {
-            PIXI.ticker.shared.add(this._updateListener, this);
+            Ticker.shared.add(this._updateListener, this);
         }
     }
 

@@ -4,3 +4,4 @@ node_modules
 /coverage
 .docs
 .rpt2_cache
+.DS_Store
