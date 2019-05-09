@@ -454,11 +454,6 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
     {
         this.removeAllListeners();
         this._internalStop();
-        if (this._source)
-        {
-            this._source.disconnect();
-            this._source = null;
-        }
         if (this._gain)
         {
             this._gain.disconnect();
@@ -579,6 +574,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
             this._enabled = false;
             this._source.onended = null;
             this._source.stop(0); // param needed for iOS 8 bug
+            this._source.disconnect();
             this._source = null;
         }
     }
@@ -594,6 +590,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         {
             this._enabled = false;
             this._source.onended = null;
+            this._source.disconnect();
         }
         this._source = null;
         this._progress = 1;
