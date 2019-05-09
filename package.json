@@ -35,10 +35,7 @@
   },
   "files": [
     "dist/",
-    "pixi-sound.d.ts",
-    "LICENSE",
-    "package.json",
-    "README.md"
+    "pixi-sound.d.ts"
   ],
   "keywords": [
     "webaudio",
