@@ -4,7 +4,6 @@
   "description": "WebAudio API playback library with filters",
   "main": "dist/pixi-sound.cjs.js",
   "module": "dist/pixi-sound.esm.js",
-  "browser": "dist/pixi-sound.js",
   "types": "pixi-sound.d.ts",
   "scripts": {
     "test": "floss -p test/dist.js -- --autoplay-policy=no-user-gesture-required",
