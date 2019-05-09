@@ -19,7 +19,7 @@ for (var i = 0; i < buttons.length; i++) {
         button.setAttribute("data-beforecodeContent", $(beforecode).innerHTML);
     }
     button.addEventListener("click", function() {
-        PIXI.loader.reset();
+        PIXI.Loader.shared.reset();
         PIXI.sound.stopAll();
         PIXI.sound.removeAll();
         var beforecodeContent = this.getAttribute("data-beforecodeContent");

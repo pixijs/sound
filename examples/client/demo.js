@@ -14,10 +14,10 @@ var manifest = {
 };
 
 for (var name in manifest) {
-    PIXI.loader.add(name, manifest[name]);
+    PIXI.Loader.shared.add(name, manifest[name]);
 }
 
-PIXI.loader.load(function(loader, resources) {
+PIXI.Loader.shared.load(function(loader, resources) {
     var plays = document.querySelectorAll("button[data-sound]");
     for (var i = 0; i < plays.length; i++) {
         var button = plays[i];
@@ -34,7 +34,7 @@ PIXI.loader.load(function(loader, resources) {
 
 function play() {
     var button = this;
-    var sound = PIXI.loader.resources[button.getAttribute("data-sound")].sound;
+    var sound = PIXI.Loader.shared.resources[button.getAttribute("data-sound")].sound;
     var loop = !!button.getAttribute("data-loop");
     var playing = !parseInt(button.getAttribute("data-playing"), 10);
     if (loop) {

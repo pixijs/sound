@@ -3,7 +3,7 @@ import { Filter } from "./filters";
 import * as htmlaudio from "./htmlaudio";
 import { getInstance } from "./instance";
 import { IMediaContext, IMediaInstance } from "./interfaces";
-import { LoaderMiddleware } from "./loader";
+import { SoundLoader } from "./loader";
 import { CompleteCallback, Options, PlayOptions, Sound } from "./Sound";
 import * as webaudio from "./webaudio";
 
@@ -260,7 +260,7 @@ export class SoundLibrary
     }
     public set useLegacy(legacy: boolean)
     {
-        LoaderMiddleware.legacy = legacy;
+        SoundLoader.legacy = legacy;
         this._useLegacy = legacy;
 
         // Set the context to use

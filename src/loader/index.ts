@@ -1,2 +1,1 @@
-export * from "./Loader";
-export * from "./LoaderMiddleware";
+export * from "./SoundLoader";

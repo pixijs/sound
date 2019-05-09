@@ -5,18 +5,18 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>PixiJS Sound | Demo</title>
         <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'>
-        <link href="https://fonts.googleapis.com/css?family=Libre+Franklin:400,700" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
         <link rel="stylesheet" href="css/range.css">
-        <link rel="stylesheet" href="css/examples.css">
+        <link rel="stylesheet" href="css/examples.css?v=2">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/languages/javascript.min.js"></script>
         <script src="https://pixijs.download/dev/pixi.min.js"></script>
         <script src="../dist/pixi-sound.js"></script>
     </head>
     <body ontouchstart="">
         <div class="container-fluid frame">
-            <h1>PixiJS Sound <small>Demo</small></h1>
+            <h1><img src="resources/logo.svg" class="logo" alt="PixiJS" />Sound <small>Demo</small></h1>
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
                     <ul class="nav navbar-nav">
@@ -125,10 +125,10 @@
             </div>
             <div class="sound-controls text-center">
                 <div class="btn-group">
-                    <button class="btn btn-lg btn-primary" id="stop">
+                    <button class="btn btn-lg btn-danger" id="stop">
                         <span class="glyphicon glyphicon-stop"></span> Stop All
                     </button>
-                    <button class="btn btn-lg btn-primary off" id="paused">
+                    <button class="btn btn-lg btn-danger off" id="paused">
                         <span class="glyphicon glyphicon-pause off"></span>
                         <span class="glyphicon glyphicon-play on"></span> Pause All
                     </button>
@@ -164,11 +164,11 @@ const manifest = {
 
 // Add to the PIXI loader
 for (let name in manifest) {
-    PIXI.loader.add(name, manifest[name]);
+    PIXI.Loader.shared.add(name, manifest[name]);
 }
 
 // Preload the sounds
-PIXI.loader.load(function(loader, resources) {
+PIXI.Loader.shared.load(function(loader, resources) {
     const plays = document.querySelectorAll('button[data-sound]');
     for (let i = 0; i < plays.length; i++) {
         const button = plays[i];

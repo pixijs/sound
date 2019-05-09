@@ -1,3 +1,5 @@
+import { Ticker } from "@pixi/ticker";
+import { EventEmitter } from "@pixi/utils";
 import { IMediaInstance } from "../interfaces/IMediaInstance";
 import { PlayOptions } from "../Sound";
 import { HTMLAudioMedia } from "./HTMLAudioMedia";
@@ -10,7 +12,7 @@ let id = 0;
  * @class HTMLAudioInstance
  * @memberof PIXI.sound.htmlaudio
  */
-export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMediaInstance
+export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 {
     /**
      * Extra padding, in seconds, to deal with low-latecy of HTMLAudio.
@@ -25,7 +27,7 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
      * @name PIXI.sound.htmlaudio.HTMLAudioInstance#id
      * @readonly
      */
-    public id: number;
+    public readonly id: number;
 
     /**
      * The instance of the Audio element.
@@ -130,6 +132,26 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
         this.id = id++;
 
         this.init(parent);
+    }
+
+    /**
+     * Set a property by name, this makes it easy to chain values
+     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#set
+     * @param {string} name - Values include: 'speed', 'volume', 'muted', 'loop', 'paused'
+     * @param {number|boolean} value - Value to set property to
+     * @return {PIXI.sound.htmlaudio.HTMLAudioInstance}
+     */
+    public set(name: "speed" | "volume" | "muted" | "loop" | "paused", value: number | boolean)
+    {
+        if (this[name] === undefined)
+        {
+            throw new Error(`Property with name ${name} does not exist.`);
+        }
+        else
+        {
+            this[name] = value;
+        }
+        return this;
     }
 
     /**
@@ -393,7 +415,7 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
                 this._source.currentTime = start;
                 this._source.onloadedmetadata = null;
                 this.emit("progress", start, this._duration);
-                PIXI.ticker.shared.add(this._onUpdate, this);
+                Ticker.shared.add(this._onUpdate, this);
             }
         };
         this._source.onended = this._onComplete.bind(this);
@@ -427,7 +449,7 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
      */
     private _onComplete(): void
     {
-        PIXI.ticker.shared.remove(this._onUpdate, this);
+        Ticker.shared.remove(this._onUpdate, this);
         this._internalStop();
         this.emit("progress", 1, this._duration);
         /**
@@ -443,7 +465,7 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
      */
     public destroy(): void
     {
-        PIXI.ticker.shared.remove(this._onUpdate, this);
+        Ticker.shared.remove(this._onUpdate, this);
         this.removeAllListeners();
 
         const source = this._source;

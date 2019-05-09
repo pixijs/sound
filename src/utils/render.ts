@@ -1,3 +1,4 @@
+import { BaseTexture } from "@pixi/core";
 import { Sound } from "../Sound";
 import { WebAudioContext, WebAudioMedia } from "../webaudio";
 
@@ -15,9 +16,9 @@ export interface RenderOptions {
  * @param {number} [options.width=512] Width of the render
  * @param {number} [options.height=128] Height of the render
  * @param {string|CanvasPattern|CanvasGradient} [options.fill='black'] Fill style for waveform
- * @return {PIXI.Texture} Result texture
+ * @return {PIXI.BaseTexture} Result texture
  */
-export function render(sound: Sound, options?: RenderOptions): PIXI.BaseTexture
+export function render(sound: Sound, options?: RenderOptions): BaseTexture
 {
     const canvas: HTMLCanvasElement = document.createElement("canvas");
 
@@ -29,7 +30,7 @@ export function render(sound: Sound, options?: RenderOptions): PIXI.BaseTexture
     canvas.width = options.width;
     canvas.height = options.height;
 
-    const baseTexture = PIXI.BaseTexture.fromCanvas(canvas);
+    const baseTexture = BaseTexture.from(canvas);
 
     if (!(sound.media instanceof WebAudioMedia))
     {

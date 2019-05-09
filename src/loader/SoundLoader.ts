@@ -1,13 +1,14 @@
+import { LoaderResource } from "@pixi/loaders";
 import { getInstance } from "../instance";
 import { resolveUrl } from "../utils/resolveUrl";
 import { extensions } from "../utils/supported";
 
 /**
- * Sound middleware installation utilities for PIXI.loaders.Loader
+ * Sound middleware installation utilities for PIXI.Loader
  * @class
  * @private
  */
-export class LoaderMiddleware
+export class SoundLoader
 {
     /**
      * Install the middleware
@@ -16,7 +17,7 @@ export class LoaderMiddleware
      */
     public static add()
     {
-        LoaderMiddleware.legacy = getInstance().useLegacy;
+        SoundLoader.legacy = getInstance().useLegacy;
     }
 
     /**
@@ -28,7 +29,6 @@ export class LoaderMiddleware
     static set legacy(legacy: boolean)
     {
         // Configure PIXI Loader to handle audio files correctly
-        const Resource = PIXI.loaders.Resource;
         const exts = extensions;
 
         // Make sure we support webaudio
@@ -36,16 +36,16 @@ export class LoaderMiddleware
         {
             // Load all audio files as ArrayBuffers
             exts.forEach((ext) => {
-                Resource.setExtensionXhrType(ext, Resource.XHR_RESPONSE_TYPE.BUFFER);
-                Resource.setExtensionLoadType(ext, Resource.LOAD_TYPE.XHR);
+                LoaderResource.setExtensionXhrType(ext, LoaderResource.XHR_RESPONSE_TYPE.BUFFER);
+                LoaderResource.setExtensionLoadType(ext, LoaderResource.LOAD_TYPE.XHR);
             });
         }
         else
         {
             // Fall back to loading as <audio> elements
             exts.forEach((ext) => {
-                Resource.setExtensionXhrType(ext, Resource.XHR_RESPONSE_TYPE.DEFAULT);
-                Resource.setExtensionLoadType(ext, Resource.LOAD_TYPE.AUDIO);
+                LoaderResource.setExtensionXhrType(ext, LoaderResource.XHR_RESPONSE_TYPE.DEFAULT);
+                LoaderResource.setExtensionLoadType(ext, LoaderResource.LOAD_TYPE.AUDIO);
             });
         }
     }
@@ -53,7 +53,7 @@ export class LoaderMiddleware
     /**
      * Handle the preprocessing of file paths
      */
-    public static pre(resource: PIXI.loaders.Resource, next: () => void): void
+    public static pre(resource: PIXI.LoaderResource, next: () => void): void
     {
         resolveUrl(resource);
         next();
@@ -62,7 +62,7 @@ export class LoaderMiddleware
     /**
      * Actual resource-loader middleware for sound class
      */
-    public static use(resource: PIXI.loaders.Resource, next: () => void): void
+    public static use(resource: PIXI.LoaderResource, next: () => void): void
     {
         if (resource.data && extensions.indexOf(resource.extension) > -1)
         {

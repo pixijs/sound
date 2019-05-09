@@ -1,3 +1,5 @@
+import { Ticker } from "@pixi/ticker";
+import { EventEmitter } from "@pixi/utils";
 import { IMediaInstance } from "../interfaces";
 import { PlayOptions } from "../Sound";
 import { WebAudioMedia } from "./WebAudioMedia";
@@ -12,14 +14,14 @@ let id = 0;
  * @memberof PIXI.sound.webaudio
  * @param {SoundNodes} source Reference to the SoundNodes.
  */
-export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaInstance
+export class WebAudioInstance extends EventEmitter implements IMediaInstance
 {
     /**
      * The current unique ID for this instance.
      * @name PIXI.sound.webaudio.WebAudioInstance#id
      * @readonly
      */
-    public id: number;
+    public readonly id: number;
 
     /**
      * The source Sound.
@@ -145,6 +147,26 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
 
         // Initialize
         this.init(media);
+    }
+
+    /**
+     * Set a property by name, this makes it easy to chain values
+     * @method PIXI.sound.webaudio.WebAudioInstance#set
+     * @param {string} name - Values include: 'speed', 'volume', 'muted', 'loop', 'paused'
+     * @param {number|boolean} value - Value to set property to
+     * @return {PIXI.sound.webaudio.WebAudioInstance}
+     */
+    public set(name: "speed" | "volume" | "muted" | "loop" | "paused", value: number | boolean)
+    {
+        if (this[name] === undefined)
+        {
+            throw new Error(`Property with name ${name} does not exist.`);
+        }
+        else
+        {
+            this[name] = value;
+        }
+        return this;
     }
 
     /**
@@ -391,10 +413,10 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
      */
     private set _enabled(enabled: boolean)
     {
-        PIXI.ticker.shared.remove(this._updateListener, this);
+        Ticker.shared.remove(this._updateListener, this);
         if (enabled)
         {
-            PIXI.ticker.shared.add(this._updateListener, this);
+            Ticker.shared.add(this._updateListener, this);
         }
     }
 
@@ -432,11 +454,6 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
     {
         this.removeAllListeners();
         this._internalStop();
-        if (this._source)
-        {
-            this._source.disconnect();
-            this._source = null;
-        }
         if (this._gain)
         {
             this._gain.disconnect();
@@ -557,6 +574,7 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
             this._enabled = false;
             this._source.onended = null;
             this._source.stop(0); // param needed for iOS 8 bug
+            this._source.disconnect();
             this._source = null;
         }
     }
@@ -572,6 +590,7 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
         {
             this._enabled = false;
             this._source.onended = null;
+            this._source.disconnect();
         }
         this._source = null;
         this._progress = 1;
