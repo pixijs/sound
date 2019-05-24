@@ -2,6 +2,7 @@ node_modules
 /dist
 /docs
 /coverage
+/deploy
 .docs
 .rpt2_cache
 .DS_Store
