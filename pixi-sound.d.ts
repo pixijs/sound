@@ -73,6 +73,7 @@ declare namespace PIXI.sound {
         complete?: CompleteCallback;
         loaded?: LoadedCallback;
     }
+    type InstanceSetProperties = 'speed'|'volume'|'muted'|'loop'|'paused';
     type LoadedCallback = (err: Error, sound?: Sound, instance?: IMediaInstance) => void;
     type CompleteCallback = (sound: Sound) => void;
     class Sound {
@@ -156,7 +157,7 @@ declare namespace PIXI.sound {
         once(event: string, fn: () => void, context?: any): this;
         on(event: string, fn: Function, context?: any): this;
         off(event: string, fn: Function, context?: any, once?: boolean): this;
-        set(name:'speed'|'volume'|'muted'|'loop'|'paused', value:number|boolean): this;
+        set(name:InstanceSetProperties, value:number|boolean): this;
     }
     interface SoundSpriteData {
         start: number;
@@ -271,6 +272,7 @@ declare namespace PIXI.sound {
             play(options: PlayOptions): void;
             destroy(): void;
             toString(): string;
+            set(name:InstanceSetProperties, value:number|boolean): this;
         }
         class HTMLAudioContext extends PIXI.utils.EventEmitter implements IMediaContext {
             speed: number;
@@ -337,6 +339,7 @@ declare namespace PIXI.sound {
             destroy(): void;
             toString(): string;
             init(media: WebAudioMedia): void;
+            set(name:InstanceSetProperties, value:number|boolean): this;
         }
         class WebAudioMedia implements IMedia {
             parent: Sound;
