@@ -1,4 +1,11 @@
 /// <reference types="pixi.js" />
+
+declare namespace PIXI {
+    export interface LoaderResource {
+        sound: PIXI.sound.Sound;
+    }
+}
+
 declare namespace PIXI.sound {
     // SoundLibrary
     const context: IMediaContext;
