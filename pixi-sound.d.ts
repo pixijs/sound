@@ -197,7 +197,7 @@ declare namespace PIXI.sound {
     class SoundUtils {
         static extensions: string[];
         static supported: ExtensionMap;
-        static resolveUrl(source: string | PIXI.loaders.Resource): string;
+        static resolveUrl(source: string | PIXI.LoaderResource): string;
         static sineTone(hertz?: number, seconds?: number): Sound;
         static render(sound: Sound, options?: RenderOptions): PIXI.BaseTexture;
         static playOnce(url: string, callback?: (err?: Error) => void): string;
