@@ -459,6 +459,7 @@ export class SoundLibrary
      * @param {number} [options.end] End time offset.
      * @param {number} [options.speed] Override default speed, default to the Sound's speed setting.
      * @param {boolean} [options.loop] Override default loop, default to the Sound's loop setting.
+     * @param {number} [options.wait] Delay in seconds before starting playback
      * @return {PIXI.sound.IMediaInstance|Promise<PIXI.sound.IMediaInstance>} The sound instance,
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
