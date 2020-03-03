@@ -510,7 +510,7 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
         this._pausedReal = false;
         this._paused = false;
         this._muted = false;
-        if(typeof this._waitTimer === "number"){
+        if (typeof this._waitTimer === "number") {
             window.clearTimeout(this._waitTimer);
         }
         this._wait = 0;
