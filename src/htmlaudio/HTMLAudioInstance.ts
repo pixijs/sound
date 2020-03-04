@@ -228,7 +228,7 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
             this._source.onended = null;
             this._source.pause();
         }
-        else if (typeof this._waitTimer === "number") {
+        else if (this._waitTimer !== null) {
             window.clearTimeout(this._waitTimer);
             this._waitTimer = null;
             this._wait -= (Date.now() - this._waitStart) / 1000;
@@ -510,7 +510,7 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
         this._pausedReal = false;
         this._paused = false;
         this._muted = false;
-        if (typeof this._waitTimer === "number") {
+        if (this._waitTimer !== null) {
             window.clearTimeout(this._waitTimer);
         }
         this._wait = 0;
