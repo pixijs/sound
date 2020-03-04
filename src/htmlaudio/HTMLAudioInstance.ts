@@ -137,7 +137,7 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
      * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_waitTimer
      * @private
      */
-    private _waitTimer: number;
+    private _waitTimer: number = null;
 
     /**
      * Timestamp when playback delay was started
