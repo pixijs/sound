@@ -123,6 +123,30 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
      */
     private _loop: boolean;
 
+    /**
+     * The number of seconds to wait before starting playback
+     * @type {number}
+     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_wait
+     * @private
+     */
+    private _wait: number;
+
+    /**
+     * Timer to delay playback
+     * @type {number}
+     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_waitTimer
+     * @private
+     */
+    private _waitTimer: number = null;
+
+    /**
+     * Timestamp when playback delay was started
+     * @type {number}
+     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_waitStart
+     * @private
+     */
+    private _waitStart: number;
+
     constructor(parent: HTMLAudioMedia)
     {
         super();
@@ -203,6 +227,11 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
         {
             this._source.onended = null;
             this._source.pause();
+        }
+        else if (this._waitTimer !== null) {
+            window.clearTimeout(this._waitTimer);
+            this._waitTimer = null;
+            this._wait -= (Date.now() - this._waitStart) / 1000;
         }
     }
 
@@ -339,6 +368,7 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
                     volume: this._volume,
                     speed: this._speed,
                     loop: this._loop,
+                    wait: this._wait,
                 });
             }
 
@@ -357,7 +387,7 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
      */
     public play(options: PlayOptions): void
     {
-        const {start, end, speed, loop, volume, muted} = options;
+        const {start, end, speed, loop, volume, muted, wait} = options;
 
         if (end)
         {
@@ -368,6 +398,7 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
         this._volume = volume;
         this._loop = !!loop;
         this._muted = muted;
+        this._wait = wait;
         this.refresh();
 
         // WebAudio doesn't support looping when a duration is set
@@ -397,7 +428,17 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
             }
         };
         this._source.onended = this._onComplete.bind(this);
-        this._source.play();
+        if (this._wait) {
+            this._waitTimer = window.setTimeout(() => {
+                this._source.play();
+                this._waitTimer = 0;
+                this._wait = 0;
+            }, this._wait * 1000);
+            this._waitStart = Date.now();
+        }
+        else {
+            this._source.play();
+        }
 
         /**
          * The sound is started.
@@ -469,6 +510,12 @@ export class HTMLAudioInstance extends PIXI.utils.EventEmitter implements IMedia
         this._pausedReal = false;
         this._paused = false;
         this._muted = false;
+        if (this._waitTimer !== null) {
+            window.clearTimeout(this._waitTimer);
+        }
+        this._wait = 0;
+        this._waitStart = 0;
+        this._waitTimer = null;
 
         if (this._media)
         {

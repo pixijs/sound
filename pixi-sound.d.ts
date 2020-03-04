@@ -72,6 +72,7 @@ declare namespace PIXI.sound {
         muted?: boolean;
         complete?: CompleteCallback;
         loaded?: LoadedCallback;
+        wait?: number;
     }
     type LoadedCallback = (err: Error, sound?: Sound, instance?: IMediaInstance) => void;
     type CompleteCallback = (sound: Sound) => void;

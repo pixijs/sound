@@ -94,6 +94,14 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
     private _end: number;
 
     /**
+     * The number of seconds to wait before starting playback
+     * @type {number}
+     * @name PIXI.sound.webaudio.WebAudioInstance#_wait
+     * @private
+     */
+    private _wait: number;
+
+    /**
      * `true` if should be looping.
      * @type {boolean}
      * @name PIXI.sound.webaudio.WebAudioInstance#_loop
@@ -285,7 +293,8 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
 
                 // resume the playing with offset
                 this.play({
-                    start: this._elapsed % this._duration,
+                    wait: this._elapsed < this._wait ? this._wait - this._elapsed : 0,
+                    start: Math.max(this._elapsed - this._wait, 0) % this._duration,
                     end: this._end,
                     speed: this._speed,
                     loop: this._loop,
@@ -312,10 +321,11 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
      * @param {boolean} options.loop If the instance is looping, defaults to sound loop
      * @param {number} options.volume Volume of the instance
      * @param {boolean} options.muted Muted state of instance
+     * @param {number} options.wait Delay in seconds before starting playback
      */
     public play(options: PlayOptions): void
     {
-        const {start, end, speed, loop, volume, muted} = options;
+        const {start, end, speed, loop, volume, muted, wait} = options;
 
         if (end)
         {
@@ -330,6 +340,7 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
         this._volume = volume;
         this._loop = !!loop;
         this._muted = muted;
+        this._wait = wait || 0;
         this.refresh();
 
         const duration: number = this._source.buffer.duration;
@@ -338,20 +349,21 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
         this._lastUpdate = this._now();
         this._elapsed = start;
         this._source.onended = this._onComplete.bind(this);
+        const when = wait ? this._now() + wait : 0;
 
         if (this._loop)
         {
             this._source.loopEnd = end;
             this._source.loopStart = start;
-            this._source.start(0, start);
+            this._source.start(when, start);
         }
         else if (end)
         {
-            this._source.start(0, start, end - start);
+            this._source.start(when, start, end - start);
         }
         else
         {
-            this._source.start(0, start);
+            this._source.start(when, start);
         }
 
         /**
@@ -454,6 +466,7 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
         this._loop = false;
         this._elapsed = 0;
         this._duration = 0;
+        this._wait = 0;
         this._paused = false;
         this._muted = false;
         this._pausedReal = false;
@@ -557,6 +570,7 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
             this._enabled = false;
             this._source.onended = null;
             this._source.stop(0); // param needed for iOS 8 bug
+            this._source.disconnect();
             this._source = null;
         }
     }
@@ -572,6 +586,7 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
         {
             this._enabled = false;
             this._source.onended = null;
+            this._source.disconnect();
         }
         this._source = null;
         this._progress = 1;

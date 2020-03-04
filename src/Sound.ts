@@ -32,6 +32,7 @@ export interface PlayOptions {
     muted?: boolean;
     complete?: CompleteCallback;
     loaded?: LoadedCallback;
+    wait?: number;
 }
 
 /**
@@ -534,6 +535,7 @@ export class Sound
      * @param {number} [options.volume] Current volume amount for instance.
      * @param {boolean} [options.muted] Override default muted, default to the Sound's muted setting.
      * @param {boolean} [options.loop] Override default loop, default to the Sound's loop setting.
+     * @param {number} [options.wait] Delay in seconds before starting playback
      * @param {PIXI.sound.Sound~completeCallback} [options.complete] Callback when complete.
      * @param {PIXI.sound.Sound~loadedCallback} [options.loaded] If the sound isn't already preloaded, callback when
      *        the audio has completely finished loading and decoded.
