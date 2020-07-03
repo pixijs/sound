@@ -80,7 +80,7 @@
     "tslint": "^5.16.0",
     "typescript": "^3.4.5"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@pixi/core": "^5.0.2",
     "@pixi/loaders": "^5.0.2",
     "@pixi/ticker": "^5.0.1",

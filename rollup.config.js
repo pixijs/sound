@@ -46,7 +46,7 @@ const banner = `/*!
  */
 export default {
     input: "src/index.ts",
-    external: Object.keys(pkg.dependencies),
+    external: Object.keys(pkg.peerDependencies),
     output: [
         {
             banner,
