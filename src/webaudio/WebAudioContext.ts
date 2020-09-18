@@ -334,7 +334,7 @@ export class WebAudioContext extends Filterable implements IMediaContext
      */
     public decode(arrayBuffer: ArrayBuffer, callback: (err?: Error, buffer?: AudioBuffer) => void): void
     {
-        this._offlineCtx.decodeAudioData(
+        const result = this._offlineCtx.decodeAudioData(
             arrayBuffer, (buffer: AudioBuffer) => {
                 callback(null, buffer);
             },
@@ -342,5 +342,14 @@ export class WebAudioContext extends Filterable implements IMediaContext
                 callback(new Error(err.message || "Unable to decode file"));
             },
         );
+        /**
+         *  Reference: https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/decodeAudioData
+         *  decodeAudioData return value: Void, or a Promise object that fulfills with the decodedData.
+         */
+        if (result) {
+            result.catch((newBrowserErr) => {
+                callback(new Error(newBrowserErr.message || "Unable to decode file"));
+            });
+        }
     }
 }
