@@ -34,9 +34,10 @@ export const extensions: string[] = [
  * @property {boolean} aiff - `true` if file-type is supported
  * @property {boolean} wma - `true` if file-type is supported
  * @property {boolean} mid - `true` if file-type is supported
- * @property {boolean} caf - `true` if file-type is supported
+ * @property {boolean} caf - `true` if file-type is supported. Note that for this we check if the
+ *                             'opus' codec is supported inside the caf container.
  */
-export let supported: ExtensionMap = null;
+export const supported: ExtensionMap = {};
 
 /**
  * Function to validate file type formats. This is called when the library initializes, but can
@@ -49,12 +50,11 @@ export let supported: ExtensionMap = null;
  *                                 PIXI.sound.utils.extensions array.
  */
 export function validateFormats(typeOverrides?: {[key: string]: string}) {
-    const overrides: {[key: string]: string} = Object.assign({
+    const overrides: {[key: string]: string} = {
         m4a: "audio/mp4",
         oga: "audio/ogg",
         opus: "audio/ogg; codecs=\"opus\"",
-        caf: "audio/x-caf",
-    }, typeOverrides || {});
+        caf: "audio/x-caf; codecs=\"opus\"", ...(typeOverrides || {})};
     const audio = document.createElement("audio");
     const formats: ExtensionMap = {};
     const no = /^no$/;
@@ -63,7 +63,7 @@ export function validateFormats(typeOverrides?: {[key: string]: string}) {
         const canByType = overrides[ext] ? audio.canPlayType(overrides[ext]).replace(no, "") : "";
         formats[ext] = !!canByExt || !!canByType;
     });
-    supported = Object.freeze(formats);
+    Object.assign(supported, formats);
 }
 
 // initialize supported
