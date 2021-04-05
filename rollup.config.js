@@ -1,7 +1,7 @@
-import typescript from "rollup-plugin-typescript";
+import typescript from "@rollup/plugin-typescript";
 import { terser } from "rollup-plugin-terser";
-import resolve from "rollup-plugin-node-resolve";
-import commonjs from "rollup-plugin-commonjs";
+import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
 import pkg from "./package.json";
 
 const plugins = [
@@ -54,6 +54,7 @@ export default {
             format: "iife",
             name: "PIXI.sound",
             sourcemap,
+            exports: "default",
             file: "dist/pixi-sound.js",
             globals: {
                 "@pixi/loaders": "PIXI",
@@ -66,6 +67,7 @@ export default {
             banner,
             freeze: false,
             sourcemap,
+            exports: "default",
             format: "cjs",
             file: "dist/pixi-sound.cjs.js",
         },
@@ -73,6 +75,7 @@ export default {
             banner,
             freeze: false,
             sourcemap,
+            exports: "default",
             format: "esm",
             file: "dist/pixi-sound.esm.js",
         },
