@@ -10,12 +10,12 @@ export interface RenderOptions {
 
 /**
  * Render image as Texture. **Only supported with WebAudio**
- * @method PIXI.sound.utils.render
- * @param {PIXI.sound.Sound} sound Instance of sound to render
- * @param {Object} [options] Custom rendering options
- * @param {number} [options.width=512] Width of the render
- * @param {number} [options.height=128] Height of the render
- * @param {string|CanvasPattern|CanvasGradient} [options.fill='black'] Fill style for waveform
+ * @static
+ * @param {Sound} sound - Instance of sound to render
+ * @param {Object} [options] - Custom rendering options
+ * @param {number} [options.width=512] - Width of the render
+ * @param {number} [options.height=128] - Height of the render
+ * @param {string|CanvasPattern|CanvasGradient} [options.fill='black'] - Fill style for waveform
  * @return {PIXI.BaseTexture} Result texture
  */
 export function render(sound: Sound, options?: RenderOptions): BaseTexture

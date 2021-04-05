@@ -1,7 +1,6 @@
 /**
  * Classes supporting non-WebAudio based browsers.
- * @namespace PIXI.sound.webaudio
- * @private
+ * @namespace webaudio
  */
 export { WebAudioMedia } from "./WebAudioMedia";
 export { WebAudioInstance } from "./WebAudioInstance";

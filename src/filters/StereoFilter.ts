@@ -5,36 +5,21 @@ import { Filter } from "./Filter";
 /**
  * Filter for adding Stereo panning.
  *
- * @class StereoFilter
- * @memberof PIXI.sound.filters
- * @param {number} [pan=0] The amount of panning, -1 is left, 1 is right, 0 is centered.
+ * @class
+ * @memberof filters
  */
 export class StereoFilter extends Filter
 {
-    /**
-     * The stereo panning node
-     * @name PIXI.sound.filters.StereoFilter#_stereo
-     * @type {StereoPannerNode}
-     * @private
-     */
+    /** The stereo panning node */
     private _stereo: StereoPannerNode;
 
-    /**
-     * The stereo panning node
-     * @name PIXI.sound.filters.StereoFilter#_panner
-     * @type {PannerNode}
-     * @private
-     */
+    /** The stereo panning node */
     private _panner: PannerNode;
 
-    /**
-     * The amount of panning, -1 is left, 1 is right, 0 is centered
-     * @name PIXI.sound.filters.StereoFilter#_pan
-     * @type {number}
-     * @private
-     */
+    /** The amount of panning, -1 is left, 1 is right, 0 is centered */
     private _pan: number;
 
+    /** @param {number} pan - The amount of panning, -1 is left, 1 is right, 0 is centered. */
     constructor(pan: number = 0)
     {
         if (getInstance().useLegacy)
@@ -68,11 +53,7 @@ export class StereoFilter extends Filter
         this.pan = pan;
     }
 
-    /**
-     * Set the amount of panning, where -1 is left, 1 is right, and 0 is centered
-     * @name PIXI.sound.filters.StereoFilter#pan
-     * @type {number}
-     */
+    /** Set the amount of panning, where -1 is left, 1 is right, and 0 is centered */
     set pan(value: number)
     {
         this._pan = value;

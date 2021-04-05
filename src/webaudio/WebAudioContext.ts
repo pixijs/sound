@@ -6,49 +6,38 @@ import { IMediaContext } from "../interfaces";
  * Main class to handle WebAudio API. There's a simple chain
  * of AudioNode elements: analyser > compressor > context.destination.
  * any filters that are added are inserted between the analyser and compressor nodes
- * @private
- * @class WebAudioContext
+ * @class
  * @extends PIXI.sound.Filterable
- * @memberof PIXI.sound.webaudio
+ * @memberof webaudio
  */
 export class WebAudioContext extends Filterable implements IMediaContext
 {
     /**
      * Context Compressor node
-     * @name PIXI.sound.webaudio.WebAudioContext#compressor
-     * @type {DynamicsCompressorNode}
      * @readonly
      */
     public compressor: DynamicsCompressorNode;
 
     /**
      * Context Analyser node
-     * @name PIXI.sound.webaudio.WebAudioContext#analyser
-     * @type {AnalyserNode}
      * @readonly
      */
     public analyser: AnalyserNode;
 
     /**
      * Global speed of all sounds
-     * @name PIXI.sound.webaudio.WebAudioContext#speed
-     * @type {number}
      * @readonly
      */
     public speed: number;
 
     /**
      * Sets the muted state.
-     * @type {boolean}
-     * @name PIXI.sound.webaudio.WebAudioContext#muted
      * @default false
      */
     public muted: boolean;
 
     /**
      * Sets the volume from 0 to 1.
-     * @type {number}
-     * @name PIXI.sound.webaudio.WebAudioContext#volume
      * @default 1
      */
     public volume: number;
@@ -56,42 +45,22 @@ export class WebAudioContext extends Filterable implements IMediaContext
     /**
      * Handle global events
      * @type {PIXI.utils.EventEmitter}
-     * @name PIXI.sound.webaudio.WebAudioContext#events
-     * @default 1
      */
     public events: EventEmitter;
 
-    /**
-     * The instance of the AudioContext for WebAudio API.
-     * @name PIXI.sound.webaudio.WebAudioContext#_ctx
-     * @type {AudioContext}
-     * @private
-     */
+    /** The instance of the AudioContext for WebAudio API. */
     private _ctx: AudioContext;
 
-    /**
-     * The instance of the OfflineAudioContext for fast decoding audio.
-     * @name PIXI.sound.webaudio.WebAudioContext#_offlineCtx
-     * @type {OfflineAudioContext}
-     * @private
-     */
+    /** The instance of the OfflineAudioContext for fast decoding audio. */
     private _offlineCtx: OfflineAudioContext;
 
-    /**
-     * Current paused status
-     * @name PIXI.sound.webaudio.WebAudioContext#_paused
-     * @type {boolean}
-     * @private
-     * @default false
-     */
+    /** Current paused status */
     private _paused: boolean;
 
     /**
      * Indicated whether audio on iOS has been unlocked, which requires a touchend/mousedown event that plays an
      * empty sound.
-     * @name PIXI.sound.webaudio.WebAudioContext#_unlocked
      * @type {boolean}
-     * @private
      */
     private _unlocked: boolean;
 
@@ -143,8 +112,6 @@ export class WebAudioContext extends Filterable implements IMediaContext
      * Note that earlier versions of iOS supported `touchstart` for this, but iOS9 removed this functionality. Adding
      * a `touchstart` event to support older platforms may preclude a `mousedown` even from getting fired on iOS9, so we
      * stick with `mousedown` and `touchend`.
-     * @method PIXI.sound.webaudio.WebAudioContext#_unlock
-     * @private
      */
     private _unlock(): void
     {
@@ -165,7 +132,6 @@ export class WebAudioContext extends Filterable implements IMediaContext
     /**
      * Plays an empty sound in the web audio context.  This is used to enable web audio on iOS devices, as they
      * require the first sound to be played inside of a user initiated event (touch/click).
-     * @method PIXI.sound.webaudio.WebAudioContext#playEmptySound
      */
     public playEmptySound(): void
     {
@@ -181,9 +147,7 @@ export class WebAudioContext extends Filterable implements IMediaContext
 
     /**
      * Get AudioContext class, if not supported returns `null`
-     * @name PIXI.sound.webaudio.WebAudioContext.AudioContext
      * @type {Function}
-     * @static
      */
     public static get AudioContext(): typeof AudioContext
     {
@@ -197,9 +161,7 @@ export class WebAudioContext extends Filterable implements IMediaContext
 
     /**
      * Get OfflineAudioContext class, if not supported returns `null`
-     * @name PIXI.sound.webaudio.WebAudioContext.OfflineAudioContext
      * @type {Function}
-     * @static
      */
     public static get OfflineAudioContext(): typeof OfflineAudioContext
     {
@@ -211,10 +173,7 @@ export class WebAudioContext extends Filterable implements IMediaContext
         );
     }
 
-    /**
-     * Destroy this context.
-     * @method PIXI.sound.webaudio.WebAudioContext#destroy
-     */
+    /** Destroy this context. */
     public destroy()
     {
         super.destroy();
@@ -235,23 +194,13 @@ export class WebAudioContext extends Filterable implements IMediaContext
         this._ctx = null;
     }
 
-    /**
-     * The WebAudio API AudioContext object.
-     * @name PIXI.sound.webaudio.WebAudioContext#audioContext
-     * @type {AudioContext}
-     * @readonly
-     */
+    /** The WebAudio API AudioContext object. */
     public get audioContext(): AudioContext
     {
         return this._ctx;
     }
 
-    /**
-     * The WebAudio API OfflineAudioContext object.
-     * @name PIXI.sound.webaudio.WebAudioContext#offlineContext
-     * @type {OfflineAudioContext}
-     * @readonly
-     */
+    /** The WebAudio API OfflineAudioContext object. */
     public get offlineContext(): OfflineAudioContext
     {
         return this._offlineCtx;
@@ -261,8 +210,6 @@ export class WebAudioContext extends Filterable implements IMediaContext
      * Pauses all sounds, even though we handle this at the instance
      * level, we'll also pause the audioContext so that the
      * time used to compute progress isn't messed up.
-     * @type {boolean}
-     * @name PIXI.sound.webaudio.WebAudioContext#paused
      * @default false
      */
     public set paused(paused: boolean)
@@ -282,21 +229,13 @@ export class WebAudioContext extends Filterable implements IMediaContext
         return this._paused;
     }
 
-    /**
-     * Emit event when muted, volume or speed changes
-     * @method PIXI.sound.webaudio.WebAudioContext#refresh
-     * @private
-     */
+    /** Emit event when muted, volume or speed changes */
     public refresh(): void
     {
         this.events.emit("refresh");
     }
 
-    /**
-     * Emit event when muted, volume or speed changes
-     * @method PIXI.sound.webaudio.WebAudioContext#refreshPaused
-     * @private
-     */
+    /** Emit event when muted, volume or speed changes */
     public refreshPaused(): void
     {
         this.events.emit("refreshPaused");
@@ -304,8 +243,7 @@ export class WebAudioContext extends Filterable implements IMediaContext
 
     /**
      * Toggles the muted state.
-     * @method PIXI.sound.webaudio.WebAudioContext#toggleMute
-     * @return {boolean} The current muted state.
+     * @return The current muted state.
      */
     public toggleMute(): boolean
     {
@@ -316,8 +254,7 @@ export class WebAudioContext extends Filterable implements IMediaContext
 
     /**
      * Toggles the paused state.
-     * @method PIXI.sound.webaudio.WebAudioContext#togglePause
-     * @return {boolean} The current muted state.
+     * @return The current muted state.
      */
     public togglePause(): boolean
     {
@@ -328,9 +265,8 @@ export class WebAudioContext extends Filterable implements IMediaContext
 
     /**
      * Decode the audio data
-     * @method PIXI.sound.webaudio.WebAudioContext#decode
-     * @param {ArrayBuffer} arrayBuffer Buffer from loader
-     * @param {Function} callback When completed, error and audioBuffer are parameters.
+     * @param {ArrayBuffer} arrayBuffer - Buffer from loader
+     * @param {Function} callback - When completed, error and audioBuffer are parameters.
      */
     public decode(arrayBuffer: ArrayBuffer, callback: (err?: Error, buffer?: AudioBuffer) => void): void
     {

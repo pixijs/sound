@@ -8,11 +8,10 @@ import { HTMLAudioInstance } from "./HTMLAudioInstance";
 
 /**
  * The fallback version of Sound which uses `<audio>` instead of WebAudio API.
- * @private
- * @class HTMLAudioMedia
- * @memberof PIXI.sound.htmlaudio
- * @param {HTMLAudioElement|String|Object} options Either the path or url to the source file.
- *        or the object of options to use. See {@link PIXI.sound.Sound.from}
+ * @class
+ * @memberof htmlaudio
+ * @param {HTMLAudioElement|String|Object} options - Either the path or url to the source file.
+ *        or the object of options to use. See {@link Sound.from}
  */
 export class HTMLAudioMedia extends EventEmitter implements IMedia
 {
@@ -80,7 +79,6 @@ export class HTMLAudioMedia extends EventEmitter implements IMedia
 
     /**
      * Get the audio source element.
-     * @name PIXI.sound.legacy.LegacySound#source
      * @type {HTMLAudioElement}
      * @readonly
      */

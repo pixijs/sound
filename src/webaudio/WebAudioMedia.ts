@@ -9,45 +9,37 @@ import { WebAudioNodes } from "./WebAudioNodes";
 
 /**
  * Represents a single sound element. Can be used to play, pause, etc. sound instances.
- * @private
- * @class WebAudioMedia
- * @memberof PIXI.sound.webaudio
- * @param {PIXI.sound.Sound} parent - Instance of parent Sound container
+ * @class
+ * @memberof webaudio
  */
 export class WebAudioMedia implements IMedia
 {
     /**
      * Reference to the parent Sound container.
-     * @name PIXI.sound.webaudio.WebAudioMedia#parent
-     * @type {PIXI.sound.Sound}
+     * @type {Sound}
      * @readonly
      */
     public parent: Sound;
 
     /**
      * The file buffer to load.
-     * @name PIXI.sound.webaudio.WebAudioMedia#source
-     * @type {ArrayBuffer}
      * @readonly
      */
     public source: ArrayBuffer;
 
     /**
      * Instance of the chain builder.
-     * @name PIXI.sound.webaudio.WebAudioMedia#_nodes
-     * @type {PIXI.sound.webaudio.WebAudioNodes}
-     * @private
+     * @type {webaudio.WebAudioNodes}
      */
     private _nodes: WebAudioNodes;
 
-    /**
-     * Instance of the source node.
-     * @name PIXI.sound.webaudio.WebAudioMedia#_source
-     * @type {AudioBufferSourceNode}
-     * @private
-     */
+    /** Instance of the source node. */
     private _source: AudioBufferSourceNode;
 
+    /**
+     * Re-initialize without constructing.
+     * @param {Sound} parent - - Instance of parent Sound container
+     */
     public init(parent: Sound): void
     {
         this.parent = parent;
@@ -56,11 +48,7 @@ export class WebAudioMedia implements IMedia
         this.source = parent.options.source as ArrayBuffer;
     }
 
-    /**
-     * Destructor, safer to use `SoundLibrary.remove(alias)` to remove this sound.
-     * @private
-     * @method PIXI.sound.webaudio.WebAudioMedia#destroy
-     */
+    /** Destructor, safer to use `SoundLibrary.remove(alias)` to remove this sound. */
     public destroy(): void
     {
         this.parent = null;
@@ -105,11 +93,7 @@ export class WebAudioMedia implements IMedia
         return this._source.buffer.duration;
     }
 
-    /**
-     * Gets and sets the buffer.
-     * @name PIXI.sound.webaudio.WebAudioMedia#buffer
-     * @type {AudioBuffer}
-     */
+    /** Gets and sets the buffer. */
     public get buffer(): AudioBuffer
     {
         return this._source.buffer;
@@ -121,9 +105,7 @@ export class WebAudioMedia implements IMedia
 
     /**
      * Get the current chained nodes object
-     * @private
-     * @name PIXI.sound.webaudio.WebAudioMedia#nodes
-     * @type {PIXI.sound.webaudio.WebAudioNodes}
+     * @type {webaudio.WebAudioNodes}
      */
     public get nodes(): WebAudioNodes
     {
@@ -153,11 +135,7 @@ export class WebAudioMedia implements IMedia
         }
     }
 
-    /**
-     * Loads a sound using XHMLHttpRequest object.
-     * @method PIXI.sound.webaudio.WebAudioMedia#_loadUrl
-     * @private
-     */
+    /** Loads a sound using XHMLHttpRequest object. */
     private _loadUrl(callback?: LoadedCallback): void
     {
         const request = new XMLHttpRequest();
@@ -177,9 +155,8 @@ export class WebAudioMedia implements IMedia
 
     /**
      * Decodes the array buffer.
-     * @method PIXI.sound.webaudio.WebAudioMedia#decode
-     * @param {ArrayBuffer} arrayBuffer From load.
-     * @private
+     * @param arrayBuffer - From load.
+     * @param {Function} callback - Callback optional
      */
     private _decode(arrayBuffer: ArrayBuffer, callback?: LoadedCallback): void
     {

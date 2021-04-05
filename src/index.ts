@@ -1,15 +1,8 @@
-/// <reference types="pixi.js" />
-
-/**
- * Global namespace provided by the PixiJS project.
- * @namespace PIXI
- * @see https://github.com/pixijs/pixi.js
- */
 import { Loader } from "@pixi/loaders";
 import { Filterable } from "./Filterable";
 import * as filters from "./filters";
 import * as htmlaudio from "./htmlaudio";
-import { getInstance, setInstance } from "./instance";
+import { setInstance } from "./instance";
 import { SoundLoader } from "./loader";
 import { Sound } from "./Sound";
 import { SoundLibrary } from "./SoundLibrary";

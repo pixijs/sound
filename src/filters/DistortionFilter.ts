@@ -4,28 +4,18 @@ import { Filter } from "./Filter";
 /**
  * Filter for adding adding delaynode.
  *
- * @class DistortionFilter
- * @memberof PIXI.sound.filters
- * @param {number} [amount=0] The amount of distoration from 0 to 1.
+ * @class
+ * @memberof filters
  */
 export class DistortionFilter extends Filter
 {
-    /**
-     * The Wave shape node use to distort
-     * @name PIXI.sound.filters.DistortionFilter#_distortion
-     * @type {WaveShaperNode}
-     * @private
-     */
+    /** The Wave shape node use to distort */
     private _distortion: WaveShaperNode;
 
-    /**
-     * The amount of distoration
-     * @name PIXI.sound.filters.DistortionFilter#_amount
-     * @type {number}
-     * @private
-     */
+    /** The amount of distoration */
     private _amount: number;
 
+    /** @param {number} [amount=0] - The amount of distoration from 0 to 1. */
     constructor(amount: number = 0)
     {
         if (getInstance().useLegacy)
@@ -44,10 +34,7 @@ export class DistortionFilter extends Filter
         this.amount = amount;
     }
 
-    /**
-     * @name PIXI.sound.filters.Distoration#amount
-     * @type {number}
-     */
+    /** @type {number} */
     set amount(value: number)
     {
         value *= 1000;

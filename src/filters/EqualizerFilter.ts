@@ -11,116 +11,93 @@ interface Band {
 /**
  * Filter for adding equalizer bands.
  *
- * @class EqualizerFilter
- * @memberof PIXI.sound.filters
- * @param {number} [f32=0] Default gain for 32 Hz
- * @param {number} [f64=0] Default gain for 64 Hz
- * @param {number} [f125=0] Default gain for 125 Hz
- * @param {number} [f250=0] Default gain for 250 Hz
- * @param {number} [f500=0] Default gain for 500 Hz
- * @param {number} [f1k=0] Default gain for 1000 Hz
- * @param {number} [f2k=0] Default gain for 2000 Hz
- * @param {number} [f4k=0] Default gain for 4000 Hz
- * @param {number} [f8k=0] Default gain for 8000 Hz
- * @param {number} [f16k=0] Default gain for 16000 Hz
+ * @class
+ * @memberof filters
+ * @param {number} [f32=0] - Default gain for 32 Hz
+ * @param {number} [f64=0] - Default gain for 64 Hz
+ * @param {number} [f125=0] - Default gain for 125 Hz
+ * @param {number} [f250=0] - Default gain for 250 Hz
+ * @param {number} [f500=0] - Default gain for 500 Hz
+ * @param {number} [f1k=0] - Default gain for 1000 Hz
+ * @param {number} [f2k=0] - Default gain for 2000 Hz
+ * @param {number} [f4k=0] - Default gain for 4000 Hz
+ * @param {number} [f8k=0] - Default gain for 8000 Hz
+ * @param {number} [f16k=0] - Default gain for 16000 Hz
  */
 export class EqualizerFilter extends Filter
 {
     /**
      * Band at 32 Hz
-     * @name PIXI.sound.filters.EqualizerFilter.F32
-     * @type {number}
      * @readonly
      */
-    public static F32: number = 32;
+    public static readonly F32: number = 32;
 
     /**
      * Band at 64 Hz
-     * @name PIXI.sound.filters.EqualizerFilter.F64
-     * @type {number}
      * @readonly
      */
-    public static F64: number = 64;
+    public static readonly F64: number = 64;
 
     /**
      * Band at 125 Hz
-     * @name PIXI.sound.filters.EqualizerFilter.F125
-     * @type {number}
      * @readonly
      */
-    public static F125: number = 125;
+    public static readonly F125: number = 125;
 
     /**
      * Band at 250 Hz
-     * @name PIXI.sound.filters.EqualizerFilter.F250
-     * @type {number}
      * @readonly
      */
-    public static F250: number = 250;
+    public static readonly F250: number = 250;
 
     /**
      * Band at 500 Hz
-     * @name PIXI.sound.filters.EqualizerFilter.F500
-     * @type {number}
      * @readonly
      */
-    public static F500: number = 500;
+    public static readonly F500: number = 500;
 
     /**
      * Band at 1000 Hz
-     * @name PIXI.sound.filters.EqualizerFilter.F1K
-     * @type {number}
      * @readonly
      */
-    public static F1K: number = 1000;
+    public static readonly F1K: number = 1000;
 
     /**
      * Band at 2000 Hz
-     * @name PIXI.sound.filters.EqualizerFilter.F2K
-     * @type {number}
      * @readonly
      */
-    public static F2K: number = 2000;
+    public static readonly F2K: number = 2000;
 
     /**
      * Band at 4000 Hz
-     * @name PIXI.sound.filters.EqualizerFilter.F4K
-     * @type {number}
      * @readonly
      */
-    public static F4K: number = 4000;
+    public static readonly F4K: number = 4000;
 
     /**
      * Band at 8000 Hz
-     * @name PIXI.sound.filters.EqualizerFilter.F8K
-     * @type {number}
      * @readonly
      */
-    public static F8K: number = 8000;
+    public static readonly F8K: number = 8000;
 
     /**
      * Band at 16000 Hz
-     * @name PIXI.sound.filters.EqualizerFilter.F16K
-     * @type {number}
      * @readonly
      */
-    public static F16K: number = 16000;
+    public static readonly F16K: number = 16000;
 
     /**
      * The list of bands
-     * @name PIXI.sounds.filters.EqualizerFilter#bands
-     * @type {BiquadFilterNode[]}
      * @readonly
      */
-    public bands: BiquadFilterNode[];
+    public readonly bands: BiquadFilterNode[];
 
     /**
      * The map of bands to frequency
-     * @name PIXI.sounds.filters.EqualizerFilter#bandsMap
      * @type {Object}
      * @readonly
      */
-    public bandsMap: {[id: number]: BiquadFilterNode};
+    public readonly bandsMap: {[id: number]: BiquadFilterNode};
 
     constructor(f32: number = 0, f64: number = 0, f125: number = 0, f250: number = 0, f500: number = 0,
                 f1k: number = 0, f2k: number = 0, f4k: number = 0, f8k: number = 0, f16k: number = 0)
@@ -218,9 +195,8 @@ export class EqualizerFilter extends Filter
 
     /**
      * Set gain on a specific frequency.
-     * @method PIXI.sound.filters.EqualizerFilter#setGain
-     * @param {number} frequency The frequency, see EqualizerFilter.F* for bands
-     * @param {number} [gain=0] Recommended -40 to 40.
+     * @param {number} frequency - The frequency, see EqualizerFilter.F* for bands
+     * @param {number} [gain=0] - Recommended -40 to 40.
      */
     public setGain(frequency: number, gain: number = 0): void
     {
@@ -233,7 +209,6 @@ export class EqualizerFilter extends Filter
 
     /**
      * Get gain amount on a specific frequency.
-     * @method PIXI.sound.filters.EqualizerFilter#getGain
      * @return {number} The amount of gain set.
      */
     public getGain(frequency: number): number
@@ -247,7 +222,6 @@ export class EqualizerFilter extends Filter
 
     /**
      * Gain at 32 Hz frequencey.
-     * @name PIXI.sound.filters.EqualizerFilter#f32
      * @type {number}
      * @default 0
      */
@@ -262,7 +236,6 @@ export class EqualizerFilter extends Filter
 
     /**
      * Gain at 64 Hz frequencey.
-     * @name PIXI.sound.filters.EqualizerFilter#f64
      * @type {number}
      * @default 0
      */
@@ -277,7 +250,6 @@ export class EqualizerFilter extends Filter
 
     /**
      * Gain at 125 Hz frequencey.
-     * @name PIXI.sound.filters.EqualizerFilter#f125
      * @type {number}
      * @default 0
      */
@@ -292,7 +264,6 @@ export class EqualizerFilter extends Filter
 
     /**
      * Gain at 250 Hz frequencey.
-     * @name PIXI.sound.filters.EqualizerFilter#f250
      * @type {number}
      * @default 0
      */
@@ -307,7 +278,6 @@ export class EqualizerFilter extends Filter
 
     /**
      * Gain at 500 Hz frequencey.
-     * @name PIXI.sound.filters.EqualizerFilter#f500
      * @type {number}
      * @default 0
      */
@@ -322,7 +292,6 @@ export class EqualizerFilter extends Filter
 
     /**
      * Gain at 1 KHz frequencey.
-     * @name PIXI.sound.filters.EqualizerFilter#f1k
      * @type {number}
      * @default 0
      */
@@ -337,7 +306,6 @@ export class EqualizerFilter extends Filter
 
     /**
      * Gain at 2 KHz frequencey.
-     * @name PIXI.sound.filters.EqualizerFilter#f2k
      * @type {number}
      * @default 0
      */
@@ -352,7 +320,6 @@ export class EqualizerFilter extends Filter
 
     /**
      * Gain at 4 KHz frequencey.
-     * @name PIXI.sound.filters.EqualizerFilter#f4k
      * @type {number}
      * @default 0
      */
@@ -367,7 +334,6 @@ export class EqualizerFilter extends Filter
 
     /**
      * Gain at 8 KHz frequencey.
-     * @name PIXI.sound.filters.EqualizerFilter#f8k
      * @type {number}
      * @default 0
      */
@@ -382,7 +348,6 @@ export class EqualizerFilter extends Filter
 
     /**
      * Gain at 16 KHz frequencey.
-     * @name PIXI.sound.filters.EqualizerFilter#f16k
      * @type {number}
      * @default 0
      */
@@ -395,10 +360,7 @@ export class EqualizerFilter extends Filter
         return this.getGain(EqualizerFilter.F16K);
     }
 
-    /**
-     * Reset all frequency bands to have gain of 0
-     * @method PIXI.sound.filters.EqualizerFilter#reset
-     */
+    /** Reset all frequency bands to have gain of 0 */
     public reset(): void
     {
         this.bands.forEach((band: BiquadFilterNode) => {
@@ -411,7 +373,7 @@ export class EqualizerFilter extends Filter
         this.bands.forEach((band: BiquadFilterNode) => {
             band.disconnect();
         });
-        this.bands = null;
-        this.bandsMap = null;
+        (this as any).bands = null;
+        (this as any).bandsMap = null;
     }
 }

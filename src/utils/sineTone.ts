@@ -3,10 +3,10 @@ import { WebAudioContext, WebAudioMedia } from "../webaudio";
 
 /**
  * Create a new sound for a sine wave-based tone.  **Only supported with WebAudio**
- * @method PIXI.sound.utils.sineTone
- * @param {number} [hertz=200] Frequency of sound.
- * @param {number} [seconds=1] Duration of sound in seconds.
- * @return {PIXI.sound.Sound} New sound.
+ * @static
+ * @param {number} [hertz=200] - Frequency of sound.
+ * @param {number} [seconds=1] - Duration of sound in seconds.
+ * @return {Sound} New sound.
  */
 export function sineTone(hertz: number = 200, seconds: number = 1): Sound
 {

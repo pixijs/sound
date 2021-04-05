@@ -4,17 +4,12 @@ import { Filter } from "./Filter";
 /**
  * Combine all channels into mono channel.
  *
- * @class MonoFilter
- * @memberof PIXI.sound.filters
+ * @class
+ * @memberof filters
  */
 export class MonoFilter extends Filter
 {
-    /**
-     * Merger node
-     * @name PIXI.sound.filters.MonoFilter#_merge
-     * @type {ChannelMergerNode}
-     * @private
-     */
+    /** Merger node */
     private _merger: ChannelMergerNode;
 
     constructor()

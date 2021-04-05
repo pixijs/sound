@@ -5,35 +5,20 @@ import { Filter } from "./Filter";
  * Filter for adding reverb. Refactored from
  * https://github.com/web-audio-components/simple-reverb/
  *
- * @class ReverbFilter
- * @memberof PIXI.sound.filters
- * @param {number} [seconds=3] Seconds for reverb
- * @param {number} [decay=2] The decay length
- * @param {boolean} [reverse=false] Reverse reverb
+ * @class
+ * @memberof filters
  */
 export class ReverbFilter extends Filter
 {
-    /**
-     * @name PIXI.sound.filters.ReverbFilter#_seconds
-     * @type {number}
-     * @private
-     */
     private _seconds: number;
-
-    /**
-     * @name PIXI.sound.filters.ReverbFilter#_decay
-     * @type {number}
-     * @private
-     */
     private _decay: number;
-
-    /**
-     * @name PIXI.sound.filters.ReverbFilter#_reverse
-     * @type {number}
-     * @private
-     */
     private _reverse: boolean;
 
+    /**
+     * @param seconds - Seconds for reverb
+     * @param decay - The decay length
+     * @param reverse - Reverse reverb
+     */
     constructor(seconds: number = 3, decay: number = 2, reverse: boolean = false)
     {
         if (getInstance().useLegacy)
@@ -52,11 +37,9 @@ export class ReverbFilter extends Filter
 
     /**
      * Clamp a value
-     * @method PIXI.sound.filters.ReverbFilter#_clamp
-     * @private
      * @param {number} value
-     * @param {number} min Minimum value
-     * @param {number} max Maximum value
+     * @param {number} min - Minimum value
+     * @param {number} max - Maximum value
      * @return {number} Clamped number
      */
     private _clamp(value: number, min: number, max: number): number
@@ -66,8 +49,6 @@ export class ReverbFilter extends Filter
 
     /**
      * Length of reverb in seconds from 1 to 50
-     * @name PIXI.sound.filters.ReverbFilter#decay
-     * @type {number}
      * @default 3
      */
     get seconds(): number
@@ -82,8 +63,6 @@ export class ReverbFilter extends Filter
 
     /**
      * Decay value from 0 to 100
-     * @name PIXI.sound.filters.ReverbFilter#decay
-     * @type {number}
      * @default 2
      */
     get decay(): number
@@ -98,8 +77,6 @@ export class ReverbFilter extends Filter
 
     /**
      * Reverse value from 0 to 1
-     * @name PIXI.sound.filters.ReverbFilter#reverse
-     * @type {boolean}
      * @default false
      */
     get reverse(): boolean
@@ -115,8 +92,6 @@ export class ReverbFilter extends Filter
     /**
      * Utility function for building an impulse response
      * from the module parameters.
-     * @method PIXI.sound.filters.ReverbFilter#_rebuild
-     * @private
      */
     private _rebuild(): void
     {

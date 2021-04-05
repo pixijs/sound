@@ -6,15 +6,10 @@ import { extensions } from "../utils/supported";
 /**
  * Sound middleware installation utilities for PIXI.Loader
  * @class
- * @private
  */
 export class SoundLoader implements ILoaderPlugin
 {
-    /**
-     * Install the middleware
-     * @method PIXI.sound.loader.add
-     * @param {PIXI.sound.SoundLibrary} sound - Instance of sound library
-     */
+    /** Install the middleware */
     public static add()
     {
         SoundLoader.legacy = getInstance().useLegacy;
@@ -22,9 +17,7 @@ export class SoundLoader implements ILoaderPlugin
 
     /**
      * Set the legacy mode
-     * @name PIXI.sound.loader.legacy
-     * @type {boolean}
-     * @private
+     * @param legacy - Non-webaudio environments
      */
     static set legacy(legacy: boolean)
     {
@@ -50,18 +43,14 @@ export class SoundLoader implements ILoaderPlugin
         }
     }
 
-    /**
-     * Handle the preprocessing of file paths
-     */
+    /** Handle the preprocessing of file paths */
     public static pre(resource: ILoaderResource, next: () => void): void
     {
         resolveUrl(resource);
         next();
     }
 
-    /**
-     * Actual resource-loader middleware for sound class
-     */
+    /** Actual resource-loader middleware for sound class */
     public static use(resource: ILoaderResource, next: () => void): void
     {
         if (resource.data && extensions.indexOf(resource.extension) > -1)

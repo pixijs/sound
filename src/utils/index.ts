@@ -1,6 +1,6 @@
 /**
  * Utilities that work with sounds.
- * @namespace PIXI.sound.utils
+ * @namespace utils
  */
 export * from "./playOnce";
 export * from "./render";

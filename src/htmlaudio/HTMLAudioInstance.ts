@@ -8,123 +8,54 @@ let id = 0;
 
 /**
  * Instance which wraps the `<audio>` element playback.
- * @private
- * @class HTMLAudioInstance
- * @memberof PIXI.sound.htmlaudio
+ * @class
+ * @memberof htmlaudio
  */
 export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 {
-    /**
-     * Extra padding, in seconds, to deal with low-latecy of HTMLAudio.
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance.PADDING
-     * @readonly
-     * @default 0.1
-     */
-    public static PADDING: number = 0.1;
+    /** Extra padding, in seconds, to deal with low-latecy of HTMLAudio. */
+    public static readonly PADDING: number = 0.1;
 
-    /**
-     * The current unique ID for this instance.
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#id
-     * @readonly
-     */
+    /** The current unique ID for this instance. */
     public readonly id: number;
 
-    /**
-     * The instance of the Audio element.
-     * @type {HTMLAudioElement}
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_source
-     * @private
-     */
+    /** The instance of the Audio element. */
     private _source: HTMLAudioElement;
 
-    /**
-     * The instance of the Audio media element.
-     * @type {PIXI.sound.htmlaudio.HTMLAudioMedia}
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_media
-     * @private
-     */
+    /** The instance of the Audio media element. */
     private _media: HTMLAudioMedia;
 
-    /**
-     * Playback rate, where 1 is 100%.
-     * @type {number}
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_end
-     * @private
-     */
+    /** Playback rate, where 1 is 100%. */
     private _end: number;
 
-    /**
-     * Current instance paused state.
-     * @type {boolean}
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_paused
-     * @private
-     */
+    /** Current instance paused state. */
     private _paused: boolean;
 
-    /**
-     * Current instance muted state.
-     * @type {boolean}
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_muted
-     * @private
-     */
+    /** Current instance muted state. */
     private _muted: boolean;
 
-    /**
-     * Current actual paused state.
-     * @type {boolean}
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_pausedReal
-     * @private
-     */
+    /** Current actual paused state. */
     private _pausedReal: boolean;
 
-    /**
-     * Total length of the audio.
-     * @type {number}
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_duration
-     * @private
-     */
+    /** Total length of the audio. */
     private _duration: number;
 
-    /**
-     * Playback rate, where 1 is 100%.
-     * @type {number}
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_start
-     * @private
-     */
+    /** Playback rate, where 1 is 100%. */
     private _start: number;
 
-    /**
-     * `true` if the audio is actually playing.
-     * @type {boolean}
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_playing
-     * @private
-     */
+    /** `true` if the audio is actually playing. */
     private _playing: boolean;
 
-    /**
-     * Volume for the instance.
-     * @type {number}
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_volume
-     * @private
-     */
+    /** Volume for the instance. */
     private _volume: number;
 
-    /**
-     * Speed for the instance.
-     * @type {number}
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_speed
-     * @private
-     */
+    /** Speed for the instance. */
     private _speed: number;
 
-    /**
-     * `true` for looping the playback
-     * @type {boolean}
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#_loop
-     * @private
-     */
+    /** `true` for looping the playback */
     private _loop: boolean;
 
+    /** @param parent - Parent element */
     constructor(parent: HTMLAudioMedia)
     {
         super();
@@ -136,12 +67,10 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * Set a property by name, this makes it easy to chain values
-     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#set
-     * @param {string} name - Values include: 'speed', 'volume', 'muted', 'loop', 'paused'
-     * @param {number|boolean} value - Value to set property to
-     * @return {PIXI.sound.htmlaudio.HTMLAudioInstance}
+     * @param {string} name - - Values include: 'speed', 'volume', 'muted', 'loop', 'paused'
+     * @param {number|boolean} value - - Value to set property to
      */
-    public set(name: "speed" | "volume" | "muted" | "loop" | "paused", value: number | boolean)
+    public set(name: "speed" | "volume" | "muted" | "loop" | "paused", value: number | boolean): this
     {
         if (this[name] === undefined)
         {
@@ -160,22 +89,14 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         return this;
     }
 
-    /**
-     * The current playback progress from 0 to 1.
-     * @type {number}
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#progress
-     */
+    /** The current playback progress from 0 to 1. */
     public get progress(): number
     {
         const {currentTime} = this._source;
         return currentTime / this._duration;
     }
 
-    /**
-     * Pauses the sound.
-     * @type {boolean}
-     * @name PIXI.sound.htmlaudio.HTMLAudioInstance#paused
-     */
+    /** Pauses the sound. */
     public get paused(): boolean
     {
         return this._paused;
@@ -186,17 +107,13 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         this.refreshPaused();
     }
 
-    /**
-     * Reference: http://stackoverflow.com/a/40370077
-     */
+    /** Reference: http://stackoverflow.com/a/40370077 */
     private _onPlay(): void
     {
         this._playing = true;
     }
 
-    /**
-     * Reference: http://stackoverflow.com/a/40370077
-     */
+    /** Reference: http://stackoverflow.com/a/40370077 */
     private _onPause(): void
     {
         this._playing = false;
@@ -204,8 +121,7 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * Initialize the instance.
-     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#init
-     * @param {PIXI.sound.htmlaudio.HTMLAudioMedia} media
+     * @param {htmlaudio.HTMLAudioMedia} media - Same as constructor
      */
     public init(media: HTMLAudioMedia): void
     {
@@ -220,11 +136,7 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         this._media = media;
     }
 
-    /**
-     * Stop the sound playing
-     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#_internalStop
-     * @private
-     */
+    /** Stop the sound playing */
     private _internalStop(): void
     {
         if (this._source && this._playing)
@@ -234,10 +146,7 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         }
     }
 
-    /**
-     * Stop the sound playing
-     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#stop
-     */
+    /** Stop the sound playing */
     public stop(): void
     {
         this._internalStop();
@@ -248,10 +157,7 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         }
     }
 
-    /**
-     * Set the instance speed from 0 to 1
-     * @member {number} PIXI.sound.htmlaudio.HTMLAudioInstance#speed
-     */
+    /** Set the instance speed from 0 to 1 */
     public get speed(): number
     {
         return this._speed;
@@ -262,10 +168,7 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         this.refresh();
     }
 
-    /**
-     * Get the set the volume for this instance from 0 to 1
-     * @member {number} PIXI.sound.htmlaudio.HTMLAudioInstance#volume
-     */
+    /** Get the set the volume for this instance from 0 to 1 */
     public get volume(): number
     {
         return this._volume;
@@ -276,10 +179,7 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         this.refresh();
     }
 
-    /**
-     * If the sound instance should loop playback
-     * @member {boolean} PIXI.sound.htmlaudio.HTMLAudioInstance#loop
-     */
+    /** If the sound instance should loop playback */
     public get loop(): boolean
     {
         return this._loop;
@@ -290,10 +190,7 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         this.refresh();
     }
 
-    /**
-     * `true` if the sound is muted
-     * @member {boolean} PIXI.sound.htmlaudio.HTMLAudioInstance#muted
-     */
+    /** `true` if the sound is muted */
     public get muted(): boolean
     {
         return this._muted;
@@ -304,10 +201,7 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         this.refresh();
     }
 
-    /**
-     * Call whenever the loop, speed or volume changes
-     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#refresh
-     */
+    /** Call whenever the loop, speed or volume changes */
     public refresh(): void
     {
         const global = this._media.context;
@@ -326,10 +220,7 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         this._source.playbackRate = this._speed * global.speed * sound.speed;
     }
 
-    /**
-     * Handle changes in paused state, either globally or sound or instance
-     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#refreshPaused
-     */
+    /** Handle changes in paused state, either globally or sound or instance */
     public refreshPaused(): void
     {
         const global = this._media.context;
@@ -348,7 +239,7 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 
                 /**
                  * The sound is paused.
-                 * @event PIXI.sound.htmlaudio.HTMLAudioInstance#paused
+                 * @event paused
                  */
                 this.emit("paused");
             }
@@ -356,7 +247,7 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
             {
                 /**
                  * The sound is unpaused.
-                 * @event PIXI.sound.htmlaudio.HTMLAudioInstance#resumed
+                 * @event resumed
                  */
                 this.emit("resumed");
 
@@ -372,17 +263,14 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 
             /**
              * The sound is paused or unpaused.
-             * @event PIXI.sound.htmlaudio.HTMLAudioInstance#pause
-             * @property {boolean} paused If the instance was paused or not.
+             * @event pause
+             * @property {boolean} paused - If the instance was paused or not.
              */
             this.emit("pause", pausedReal);
         }
     }
 
-    /**
-     * Start playing the sound/
-     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#play
-     */
+    /** Start playing the sound/ */
     public play(options: PlayOptions): void
     {
         const {start, end, speed, loop, volume, muted} = options;
@@ -429,16 +317,12 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 
         /**
          * The sound is started.
-         * @event PIXI.sound.htmlaudio.HTMLAudioInstance#start
+         * @event start
          */
         this.emit("start");
     }
 
-    /**
-     * Handle time update on sound.
-     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#_onUpdate
-     * @private
-     */
+    /** Handle time update on sound. */
     private _onUpdate(): void
     {
         this.emit("progress", this.progress, this._duration);
@@ -448,11 +332,7 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         }
     }
 
-    /**
-     * Callback when completed.
-     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#_onComplete
-     * @private
-     */
+    /** Callback when completed. */
     private _onComplete(): void
     {
         Ticker.shared.remove(this._onUpdate, this);
@@ -460,15 +340,12 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         this.emit("progress", 1, this._duration);
         /**
          * The sound ends, don't use after this
-         * @event PIXI.sound.htmlaudio.HTMLAudioInstance#end
+         * @event end
          */
         this.emit("end", this);
     }
 
-    /**
-     * Don't use after this.
-     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#destroy
-     */
+    /** Don't use after this. */
     public destroy(): void
     {
         Ticker.shared.remove(this._onUpdate, this);
@@ -508,9 +385,7 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * To string method for instance.
-     * @method PIXI.sound.htmlaudio.HTMLAudioInstance#toString
      * @return {String} The string representation of instance.
-     * @private
      */
     public toString(): string
     {

@@ -4,96 +4,75 @@ import { IMedia } from "./IMedia";
 /**
  * Interface for single instance return by a Sound play call. This can either
  * be a WebAudio or HTMLAudio instance.
- * @class IMediaInstance
+ * @class
  * @extends PIXI.utils.EventEmitter
- * @memberof PIXI.sound
  */
 export interface IMediaInstance
 {
-    /**
-     * Auto-incrementing ID for the instance.
-     * @member {number} PIXI.sound.IMediaInstance#id
-     * @readonly
-     */
+    /** Auto-incrementing ID for the instance. */
     readonly id: number;
 
-    /**
-     * Current progress of the sound from 0 to 1
-     * @member {number} PIXI.sound.IMediaInstance#progress
-     * @readonly
-     */
+    /** Current progress of the sound from 0 to 1 */
     readonly progress: number;
 
     /**
      * If the instance is paused, if the sound or global context
      * is paused, this could still be false.
-     * @member {boolean} PIXI.sound.IMediaInstance#paused
      */
     paused: boolean;
 
     /**
      * Current volume of the instance. This is not the actual volume
      * since it takes into account the global context and the sound volume.
-     * @member {number} PIXI.sound.IMediaInstance#volume
      */
     volume: number;
 
     /**
      * Current speed of the instance. This is not the actual speed
      * since it takes into account the global context and the sound volume.
-     * @member {number} PIXI.sound.IMediaInstance#speed
      */
     speed: number;
 
-    /**
-     * If the current instance is set to loop
-     * @member {boolean} PIXI.sound.IMediaInstance#loop
-     */
+    /** If the current instance is set to loop */
     loop: boolean;
 
-    /**
-     * Set the muted state of the instance
-     * @member {boolean} PIXI.sound.IMediaInstance#muted
-     */
+    /** Set the muted state of the instance */
     muted: boolean;
 
-    /**
-     * Stop the current instance from playing.
-     * @method PIXI.sound.IMediaInstance#stop
-     */
+    /** Stop the current instance from playing. */
     stop(): void;
 
     /**
      * Fired when the sound finishes playing.
-     * @event PIXI.sound.IMediaInstance#end
+     * @event end
      */
 
     /**
      * Fired when the sound starts playing.
-     * @event PIXI.sound.IMediaInstance#start
+     * @event start
      */
 
     /**
      * Fired when the sound when progress updates.
-     * @event PIXI.sound.IMediaInstance#progress
+     * @event progress
      * @param {number} progress - Playback progress from 0 to 1
      * @param {number} duration - The total number of seconds of audio
      */
 
     /**
      * Fired when paused state changes.
-     * @event PIXI.sound.IMediaInstance#pause
+     * @event pause
      * @param {boolean} paused - If the current state is paused
      */
 
     /**
      * Fired when instance is paused.
-     * @event PIXI.sound.IMediaInstance#paused
+     * @event paused
      */
 
     /**
      * Fired when instance is resumed.
-     * @event PIXI.sound.IMediaInstance#resumed
+     * @event resumed
      */
 
     // These are used for typescript only and
@@ -110,10 +89,8 @@ export interface IMediaInstance
 
     /**
      * Fired when the sound when progress updates.
-     * @method PIXI.sound.IMediaInstance#set
      * @param {string} name - Name of property, like 'speed', 'volume', 'muted', 'loop', 'paused'
      * @param {number|boolean} value - The total number of seconds of audio
-     * @return {PIXI.sound.IMediaInstance}
      * @example
      * PIXI.sound.play('foo')
      *   .set('volume', 0.5)

@@ -6,7 +6,7 @@
  *   new PIXI.sound.filters.StereoFilter(-1),
  *   new PIXI.sound.filters.ReverbFilter()
  * ];
- * @namespace PIXI.sound.filters
+ * @namespace filters
  */
 export { Filter } from "./Filter";
 export { EqualizerFilter } from "./EqualizerFilter";

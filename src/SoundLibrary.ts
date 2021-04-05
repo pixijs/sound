@@ -10,59 +10,27 @@ import * as webaudio from "./webaudio";
 export type SoundMap = {[id: string]: Options | string | ArrayBuffer | HTMLAudioElement};
 
 /**
- * Contains all of the functionality for using the **pixi-sound** library.
- * This is deisnged to play audio with WebAudio and fallback to HTML5.
- * @namespace PIXI.sound
- */
-
-/**
- * @description Manages the playback of sounds.
- * @class SoundLibrary
- * @memberof PIXI.sound
- * @private
+ * Manages the playback of sounds.
+ * @class
  */
 export class SoundLibrary
 {
     /**
      * For legacy approach for Audio. Instead of using WebAudio API
      * for playback of sounds, it will use HTML5 `<audio>` element.
-     * @name PIXI.sound#_useLegacy
-     * @type {boolean}
-     * @default false
-     * @private
      */
     private _useLegacy: boolean;
 
-    /**
-     * The global context to use.
-     * @name PIXI.sound#_context
-     * @type {PIXI.sound.webaudio.WebAudioContext}
-     * @private
-     */
+    /** The global context to use. */
     private _context: IMediaContext;
 
-    /**
-     * The WebAudio specific context
-     * @name PIXI.sound#_webAudioContext
-     * @type {PIXI.sound.webaudio.WebAudioContext}
-     * @private
-     */
+    /** The WebAudio specific context */
     private _webAudioContext: webaudio.WebAudioContext;
 
-    /**
-     * The HTML Audio (legacy) context.
-     * @name PIXI.sound#_htmlAudioContext
-     * @type {PIXI.sound.webaudio.WebAudioContext}
-     * @private
-     */
+    /** The HTML Audio (legacy) context. */
     private _htmlAudioContext: htmlaudio.HTMLAudioContext;
 
-    /**
-     * The map of all sounds by alias.
-     * @name PIXI.sound#_sounds
-     * @type {Object}
-     * @private
-     */
+    /** The map of all sounds by alias. */
     private _sounds: {[id: string]: Sound};
 
     constructor()
@@ -74,10 +42,9 @@ export class SoundLibrary
      * Re-initialize the sound library, this will
      * recreate the AudioContext. If there's a hardware-failure
      * call `close` and then `init`.
-     * @method PIXI.sound#init
-     * @return {PIXI.sound} Sound instance
+     * @return Sound instance
      */
-    public init(): SoundLibrary
+    public init(): this
     {
         if (this.supported)
         {
@@ -89,12 +56,7 @@ export class SoundLibrary
         return this;
     }
 
-    /**
-     * The global context to use.
-     * @name PIXI.sound#context
-     * @readonly
-     * @type {PIXI.sound.IMediaContext}
-     */
+    /** The global context to use. */
     public get context(): IMediaContext
     {
         return this._context;
@@ -109,8 +71,7 @@ export class SoundLibrary
      * PIXI.sound.filtersAll = [
      *     new PIXI.sound.filters.StereoFilter(-1)
      * ];
-     * @name PIXI.sound#filtersAll
-     * @type {PIXI.sound.filters.Filter[]}
+     * @type {filters.Filter[]}
      */
     public get filtersAll(): Filter[]
     {
@@ -130,7 +91,6 @@ export class SoundLibrary
 
     /**
      * `true` if WebAudio is supported on the current browser.
-     * @name PIXI.sound#supported
      * @readonly
      * @type {boolean}
      */
@@ -141,44 +101,43 @@ export class SoundLibrary
 
     /**
      * Register an existing sound with the library cache.
-     * @method PIXI.sound#add
-     * @param {String} alias The sound alias reference.
-     * @param {PIXI.sound.Sound} sound Sound reference to use.
-     * @return {PIXI.sound.Sound} Instance of the Sound object.
+     * @method add
+     * @instance
+     * @param {string} alias - The sound alias reference.
+     * @param {Sound} sound - Sound reference to use.
+     * @return {Sound} Instance of the Sound object.
      */
 
     /**
      * Adds a new sound by alias.
-     * @method PIXI.sound#add
-     * @param {String} alias The sound alias reference.
-     * @param {ArrayBuffer|String|Object|HTMLAudioElement} options Either the path or url to the source file.
+     * @param alias - The sound alias reference.
+     * @param {ArrayBuffer|String|Object|HTMLAudioElement} options - Either the path or url to the source file.
      *        or the object of options to use.
-     * @param {String} [options.url] If `options` is an object, the source of file.
-     * @param {ArrayBuffer|HTMLAudioElement} [options.source] If sound is already preloaded, available.
-     * @param {boolean} [options.autoPlay=false] true to play after loading.
-     * @param {boolean} [options.preload=false] true to immediately start preloading.
-     * @param {boolean} [options.singleInstance=false] `true` to disallow playing multiple layered instances at once.
-     * @param {number} [options.volume=1] The amount of volume 1 = 100%.
-     * @param {number} [options.speed=1] The playback rate where 1 is 100% speed.
-     * @param {Object} [options.sprites] The map of sprite data. Where a sprite is an object
+     * @param {String} [options.url] - If `options` is an object, the source of file.
+     * @param {ArrayBuffer|HTMLAudioElement} [options.source] - If sound is already preloaded, available.
+     * @param {boolean} [options.autoPlay=false] - true to play after loading.
+     * @param {boolean} [options.preload=false] - true to immediately start preloading.
+     * @param {boolean} [options.singleInstance=false] - `true` to disallow playing multiple layered instances at once.
+     * @param {number} [options.volume=1] - The amount of volume 1 = 100%.
+     * @param {number} [options.speed=1] - The playback rate where 1 is 100% speed.
+     * @param {Object} [options.sprites] - The map of sprite data. Where a sprite is an object
      *        with a `start` and `end`, which are the times in seconds. Optionally, can include
      *        a `speed` amount where 1 is 100% speed.
-     * @param {PIXI.sound.Sound~completeCallback} [options.complete=null] Global complete callback when
+     * @param {Function} [options.complete=null] - Global complete callback when
      *        play is finished.
-     * @param {PIXI.sound.Sound~loadedCallback} [options.loaded=null] Call when finished loading.
-     * @return {PIXI.sound.Sound} Instance of the Sound object.
+     * @param {Function} [options.loaded=null] - Call when finished loading.
+     * @return Instance of the Sound object.
      */
     public add(alias: string, options: Options | string | ArrayBuffer | HTMLAudioElement | Sound): Sound;
 
     /**
      * Adds multiple sounds at once.
-     * @method PIXI.sound#add
-     * @param {Object} map Map of sounds to add, the key is the alias, the value is the
+     * @param map - Map of sounds to add, the key is the alias, the value is the
      *        `string`, `ArrayBuffer`, `HTMLAudioElement` or the list of options
      *        (see {@link PIXI.sound.add} for options).
-     * @param {Object} globalOptions The default options for all sounds.
+     * @param globalOptions - The default options for all sounds.
      *        if a property is defined, it will use the local property instead.
-     * @return {PIXI.sound.Sound} Instance to the Sound object.
+     * @return Instance to the Sound object.
      */
     public add(map: SoundMap, globalOptions?: Options): {[id: string]: Sound};
 
@@ -222,11 +181,9 @@ export class SoundLibrary
 
     /**
      * Internal methods for getting the options object
-     * @method PIXI.sound#_getOptions
-     * @private
-     * @param {string|ArrayBuffer|HTMLAudioElement|Object} source The source options
-     * @param {Object} [overrides] Override default options
-     * @return {Object} The construction options
+     * @param source - The source options
+     * @param overrides - Override default options
+     * @return The construction options
      */
     private _getOptions(source: string | ArrayBuffer | HTMLAudioElement | Options, overrides?: Options): Options
     {
@@ -249,11 +206,7 @@ export class SoundLibrary
         return options;
     }
 
-    /**
-     * Do not use WebAudio, force the use of legacy. This **must** be called before loading any files.
-     * @name PIXI.sound#useLegacy
-     * @type {boolean}
-     */
+    /** Do not use WebAudio, force the use of legacy. This **must** be called before loading any files. */
     public get useLegacy(): boolean
     {
         return this._useLegacy;
@@ -271,11 +224,10 @@ export class SoundLibrary
 
     /**
      * Removes a sound by alias.
-     * @method PIXI.sound#remove
-     * @param {String} alias The sound alias reference.
-     * @return {PIXI.sound} Instance for chaining.
+     * @param alias - The sound alias reference.
+     * @return Instance for chaining.
      */
-    public remove(alias: string): SoundLibrary
+    public remove(alias: string): this
     {
         this.exists(alias, true);
         this._sounds[alias].destroy();
@@ -284,9 +236,7 @@ export class SoundLibrary
     }
 
     /**
-     * Set the global volume for all sounds. To set per-sound volume see {@link PIXI.sound#volume}.
-     * @name PIXI.sound#volumeAll
-     * @type {number}
+     * Set the global volume for all sounds. To set per-sound volume see {@link PIXI.SoundLibrary#volume}.
      */
     public get volumeAll(): number
     {
@@ -299,9 +249,7 @@ export class SoundLibrary
     }
 
     /**
-     * Set the global speed for all sounds. To set per-sound speed see {@link PIXI.sound#speed}.
-     * @name PIXI.sound#speedAll
-     * @type {number}
+     * Set the global speed for all sounds. To set per-sound speed see {@link SoundLibrary#speed}.
      */
     public get speedAll(): number
     {
@@ -315,8 +263,7 @@ export class SoundLibrary
 
     /**
      * Toggle paused property for all sounds.
-     * @method PIXI.sound#togglePauseAll
-     * @return {boolean} `true` if all sounds are paused.
+     * @return `true` if all sounds are paused.
      */
     public togglePauseAll(): boolean
     {
@@ -325,10 +272,9 @@ export class SoundLibrary
 
     /**
      * Pauses any playing sounds.
-     * @method PIXI.sound#pauseAll
-     * @return {PIXI.sound} Instance for chaining.
+     * @return Instance for chaining.
      */
-    public pauseAll(): SoundLibrary
+    public pauseAll(): this
     {
         this._context.paused = true;
         this._context.refreshPaused();
@@ -337,10 +283,9 @@ export class SoundLibrary
 
     /**
      * Resumes any sounds.
-     * @method PIXI.sound#resumeAll
-     * @return {PIXI.sound} Instance for chaining.
+     * @return Instance for chaining.
      */
-    public resumeAll(): SoundLibrary
+    public resumeAll(): this
     {
         this._context.paused = false;
         this._context.refreshPaused();
@@ -349,7 +294,6 @@ export class SoundLibrary
 
     /**
      * Toggle muted property for all sounds.
-     * @method PIXI.sound#toggleMuteAll
      * @return {boolean} `true` if all sounds are muted.
      */
     public toggleMuteAll(): boolean
@@ -359,10 +303,9 @@ export class SoundLibrary
 
     /**
      * Mutes all playing sounds.
-     * @method PIXI.sound#muteAll
-     * @return {PIXI.sound} Instance for chaining.
+     * @return Instance for chaining.
      */
-    public muteAll(): SoundLibrary
+    public muteAll(): this
     {
         this._context.muted = true;
         this._context.refresh();
@@ -371,10 +314,9 @@ export class SoundLibrary
 
     /**
      * Unmutes all playing sounds.
-     * @method PIXI.sound#unmuteAll
-     * @return {PIXI.sound} Instance for chaining.
+     * @return Instance for chaining.
      */
-    public unmuteAll(): SoundLibrary
+    public unmuteAll(): this
     {
         this._context.muted = false;
         this._context.refresh();
@@ -383,10 +325,9 @@ export class SoundLibrary
 
     /**
      * Stops and removes all sounds. They cannot be used after this.
-     * @method PIXI.sound#removeAll
-     * @return {PIXI.sound} Instance for chaining.
+     * @return Instance for chaining.
      */
-    public removeAll(): SoundLibrary
+    public removeAll(): this
     {
         for (const alias in this._sounds)
         {
@@ -398,10 +339,9 @@ export class SoundLibrary
 
     /**
      * Stops all sounds.
-     * @method PIXI.sound#stopAll
-     * @return {PIXI.sound} Instance for chaining.
+     * @return Instance for chaining.
      */
-    public stopAll(): SoundLibrary
+    public stopAll(): this
     {
         for (const alias in this._sounds)
         {
@@ -412,9 +352,8 @@ export class SoundLibrary
 
     /**
      * Checks if a sound by alias exists.
-     * @method PIXI.sound#exists
-     * @param {String} alias Check for alias.
-     * @return {boolean} true if the sound exists.
+     * @param alias - Check for alias.
+     * @return true if the sound exists.
      */
     public exists(alias: string, assert: boolean= false): boolean
     {
@@ -429,9 +368,8 @@ export class SoundLibrary
 
     /**
      * Find a sound by alias.
-     * @method PIXI.sound#find
-     * @param {String} alias The sound alias reference.
-     * @return {PIXI.sound.Sound} Sound object.
+     * @param alias - The sound alias reference.
+     * @return Sound object.
      */
     public find(alias: string): Sound
     {
@@ -441,25 +379,25 @@ export class SoundLibrary
 
     /**
      * Plays a sound.
-     * @method PIXI.sound#play
-     * @param {String} alias The sound alias reference.
-     * @param {String} sprite The alias of the sprite to play.
-     * @return {PIXI.sound.IMediaInstance|null} The sound instance, this cannot be reused
+     * @method play
+     * @instance
+     * @param {string} alias - The sound alias reference.
+     * @param {string} sprite - The alias of the sprite to play.
+     * @return {IMediaInstance|null} The sound instance, this cannot be reused
      *         after it is done playing. Returns `null` if the sound has not yet loaded.
      */
 
     /**
      * Plays a sound.
-     * @method PIXI.sound#play
-     * @param {String} alias The sound alias reference.
-     * @param {Object|Function} options The options or callback when done.
-     * @param {Function} [options.complete] When completed.
-     * @param {Function} [options.loaded] If not already preloaded, callback when finishes load.
-     * @param {number} [options.start=0] Start time offset.
-     * @param {number} [options.end] End time offset.
-     * @param {number} [options.speed] Override default speed, default to the Sound's speed setting.
-     * @param {boolean} [options.loop] Override default loop, default to the Sound's loop setting.
-     * @return {PIXI.sound.IMediaInstance|Promise<PIXI.sound.IMediaInstance>} The sound instance,
+     * @param alias - The sound alias reference.
+     * @param {Object|Function} options - The options or callback when done.
+     * @param {Function} [options.complete] - When completed.
+     * @param {Function} [options.loaded] - If not already preloaded, callback when finishes load.
+     * @param {number} [options.start=0] - Start time offset.
+     * @param {number} [options.end] - End time offset.
+     * @param {number} [options.speed] - Override default speed, default to the Sound's speed setting.
+     * @param {boolean} [options.loop] - Override default loop, default to the Sound's loop setting.
+     * @return {IMediaInstance|Promise<PIXI.sound.IMediaInstance>} The sound instance,
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
      */
@@ -472,9 +410,8 @@ export class SoundLibrary
 
     /**
      * Stops a sound.
-     * @method PIXI.sound#stop
-     * @param {String} alias The sound alias reference.
-     * @return {PIXI.sound.Sound} Sound object.
+     * @param alias - The sound alias reference.
+     * @return Sound object.
      */
     public stop(alias: string): Sound
     {
@@ -483,9 +420,8 @@ export class SoundLibrary
 
     /**
      * Pauses a sound.
-     * @method PIXI.sound#pause
-     * @param {String} alias The sound alias reference.
-     * @return {PIXI.sound.Sound} Sound object.
+     * @param alias - The sound alias reference.
+     * @return Sound object.
      */
     public pause(alias: string): Sound
     {
@@ -494,9 +430,8 @@ export class SoundLibrary
 
     /**
      * Resumes a sound.
-     * @method PIXI.sound#resume
-     * @param {String} alias The sound alias reference.
-     * @return {PIXI.sound} Instance for chaining.
+     * @param alias - The sound alias reference.
+     * @return Instance for chaining.
      */
     public resume(alias: string): Sound
     {
@@ -505,10 +440,9 @@ export class SoundLibrary
 
     /**
      * Get or set the volume for a sound.
-     * @method PIXI.sound#volume
-     * @param {String} alias The sound alias reference.
-     * @param {number} [volume] Optional current volume to set.
-     * @return {number} The current volume.
+     * @param alias - The sound alias reference.
+     * @param volume - Optional current volume to set.
+     * @return The current volume.
      */
     public volume(alias: string, volume?: number): number
     {
@@ -521,10 +455,9 @@ export class SoundLibrary
 
     /**
      * Get or set the speed for a sound.
-     * @method PIXI.sound#speed
-     * @param {String} alias The sound alias reference.
-     * @param {number} [speed] Optional current speed to set.
-     * @return {number} The current speed.
+     * @param alias - The sound alias reference.
+     * @param speed - Optional current speed to set.
+     * @return The current speed.
      */
     public speed(alias: string, speed?: number): number
     {
@@ -537,9 +470,8 @@ export class SoundLibrary
 
     /**
      * Get the length of a sound in seconds.
-     * @method PIXI.sound#duration
-     * @param {String} alias The sound alias reference.
-     * @return {number} The current duration in seconds.
+     * @param alias - The sound alias reference.
+     * @return The current duration in seconds.
      */
     public duration(alias: string): number
     {
@@ -550,10 +482,8 @@ export class SoundLibrary
      * Closes the sound library. This will release/destroy
      * the AudioContext(s). Can be used safely if you want to
      * initialize the sound library later. Use `init` method.
-     * @method PIXI.sound#close
-     * @return {PIXI.sound}
      */
-    public close(): SoundLibrary
+    public close(): this
     {
         this.removeAll();
         this._sounds = null;

@@ -9,129 +9,99 @@ let id = 0;
 
 /**
  * A single play instance that handles the AudioBufferSourceNode.
- * @private
- * @class WebAudioInstance
- * @memberof PIXI.sound.webaudio
- * @param {SoundNodes} source Reference to the SoundNodes.
+ * @class
+ * @memberof webaudio
+ * @param {SoundNodes} source - Reference to the SoundNodes.
  */
 export class WebAudioInstance extends EventEmitter implements IMediaInstance
 {
     /**
      * The current unique ID for this instance.
-     * @name PIXI.sound.webaudio.WebAudioInstance#id
      * @readonly
      */
     public readonly id: number;
 
     /**
      * The source Sound.
-     * @type {PIXI.sound.webaudio.WebAudioMedia}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_media
-     * @private
+     * @type {webaudio.WebAudioMedia}
      */
     private _media: WebAudioMedia;
 
     /**
      * true if paused.
      * @type {boolean}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_paused
-     * @private
      */
     private _paused: boolean;
 
     /**
      * true if muted.
      * @type {boolean}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_muted
-     * @private
      */
     private _muted: boolean;
 
     /**
      * true if paused.
      * @type {boolean}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_pausedReal
-     * @private
      */
     private _pausedReal: boolean;
 
     /**
      * The instance volume
      * @type {number}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_volume
-     * @private
      */
     private _volume: number;
 
     /**
      * Last update frame number.
      * @type {number}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_lastUpdate
-     * @private
      */
     private _lastUpdate: number;
 
     /**
      * The total number of seconds elapsed in playback.
      * @type {number}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_elapsed
-     * @private
      */
     private _elapsed: number;
 
     /**
      * Playback rate, where 1 is 100%.
      * @type {number}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_speed
-     * @private
      */
     private _speed: number;
 
     /**
      * Playback rate, where 1 is 100%.
      * @type {number}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_end
-     * @private
      */
     private _end: number;
 
     /**
      * `true` if should be looping.
      * @type {boolean}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_loop
-     * @private
      */
     private _loop: boolean;
 
     /**
      * Gain node for controlling volume of instance
      * @type {GainNode}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_gain
-     * @private
      */
     private _gain: GainNode;
 
     /**
      * Length of the sound in seconds.
      * @type {number}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_duration
-     * @private
      */
     private _duration: number;
 
     /**
      * The progress of the sound from 0 to 1.
      * @type {number}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_progress
-     * @private
      */
     private _progress: number;
 
     /**
      * Audio buffer source clone from Sound object.
      * @type {AudioBufferSourceNode}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_source
-     * @private
      */
     private _source: AudioBufferSourceNode;
 
@@ -151,10 +121,9 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * Set a property by name, this makes it easy to chain values
-     * @method PIXI.sound.webaudio.WebAudioInstance#set
-     * @param {string} name - Values include: 'speed', 'volume', 'muted', 'loop', 'paused'
-     * @param {number|boolean} value - Value to set property to
-     * @return {PIXI.sound.webaudio.WebAudioInstance}
+     * @param {string} name - - Values include: 'speed', 'volume', 'muted', 'loop', 'paused'
+     * @param {number|boolean} value - - Value to set property to
+     * @return {webaudio.WebAudioInstance}
      */
     public set(name: "speed" | "volume" | "muted" | "loop" | "paused", value: number | boolean)
     {
@@ -175,10 +144,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         return this;
     }
 
-    /**
-     * Stops the instance, don't use after this.
-     * @method PIXI.sound.webaudio.WebAudioInstance#stop
-     */
+    /** Stops the instance, don't use after this. */
     public stop(): void
     {
         if (this._source)
@@ -187,16 +153,13 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
 
             /**
              * The sound is stopped. Don't use after this is called.
-             * @event PIXI.sound.webaudio.WebAudioInstance#stop
+             * @event stop
              */
             this.emit("stop");
         }
     }
 
-    /**
-     * Set the instance speed from 0 to 1
-     * @member {number} PIXI.sound.htmlaudio.HTMLAudioInstance#speed
-     */
+    /** Set the instance speed from 0 to 1 */
     public get speed(): number
     {
         return this._speed;
@@ -208,10 +171,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         this._update(true); // update progress
     }
 
-    /**
-     * Get the set the volume for this instance from 0 to 1
-     * @member {number} PIXI.sound.htmlaudio.HTMLAudioInstance#volume
-     */
+    /** Get the set the volume for this instance from 0 to 1 */
     public get volume(): number
     {
         return this._volume;
@@ -222,10 +182,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         this.refresh();
     }
 
-    /**
-     * `true` if the sound is muted
-     * @member {boolean} PIXI.sound.htmlaudio.HTMLAudioInstance#muted
-     */
+    /** `true` if the sound is muted */
     public get muted(): boolean
     {
         return this._muted;
@@ -236,10 +193,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         this.refresh();
     }
 
-    /**
-     * If the sound instance should loop playback
-     * @member {boolean} PIXI.sound.htmlaudio.HTMLAudioInstance#loop
-     */
+    /** If the sound instance should loop playback */
     public get loop(): boolean
     {
         return this._loop;
@@ -250,10 +204,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         this.refresh();
     }
 
-    /**
-     * Refresh loop, volume and speed based on changes to parent
-     * @method PIXI.sound.webaudio.WebAudioInstance#refresh
-     */
+    /** Refresh loop, volume and speed based on changes to parent */
     public refresh(): void
     {
         // Sound could be paused
@@ -276,10 +227,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         WebAudioUtils.setParamValue(this._source.playbackRate, this._speed * sound.speed * global.speed);
     }
 
-    /**
-     * Handle changes in paused state, either globally or sound or instance
-     * @method PIXI.sound.webaudio.WebAudioInstance#refreshPaused
-     */
+    /** Handle changes in paused state, either globally or sound or instance */
     public refreshPaused(): void
     {
         const global = this._media.context;
@@ -299,7 +247,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
 
                 /**
                  * The sound is paused.
-                 * @event PIXI.sound.webaudio.WebAudioInstance#paused
+                 * @event paused
                  */
                 this.emit("paused");
             }
@@ -307,7 +255,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
             {
                 /**
                  * The sound is unpaused.
-                 * @event PIXI.sound.webaudio.WebAudioInstance#resumed
+                 * @event resumed
                  */
                 this.emit("resumed");
 
@@ -323,8 +271,8 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
 
             /**
              * The sound is paused or unpaused.
-             * @event PIXI.sound.webaudio.WebAudioInstance#pause
-             * @property {boolean} paused If the instance was paused or not.
+             * @event pause
+             * @property {boolean} paused - If the instance was paused or not.
              */
             this.emit("pause", pausedReal);
         }
@@ -332,14 +280,13 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * Plays the sound.
-     * @method PIXI.sound.webaudio.WebAudioInstance#play
-     * @param {Object} options Play options
-     * @param {number} options.start The position to start playing, in seconds.
-     * @param {number} options.end The ending position in seconds.
-     * @param {number} options.speed Speed for the instance
-     * @param {boolean} options.loop If the instance is looping, defaults to sound loop
-     * @param {number} options.volume Volume of the instance
-     * @param {boolean} options.muted Muted state of instance
+     * @param {Object} options - Play options
+     * @param {number} options.start - The position to start playing, in seconds.
+     * @param {number} options.end - The ending position in seconds.
+     * @param {number} options.speed - Speed for the instance
+     * @param {boolean} options.loop - If the instance is looping, defaults to sound loop
+     * @param {number} options.volume - Volume of the instance
+     * @param {boolean} options.muted - Muted state of instance
      */
     public play(options: PlayOptions): void
     {
@@ -384,7 +331,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
 
         /**
          * The sound is started.
-         * @event PIXI.sound.webaudio.WebAudioInstance#start
+         * @event start
          */
         this.emit("start");
 
@@ -397,9 +344,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * Utility to convert time in millseconds or seconds
-     * @method PIXI.sound.webaudio.WebAudioInstance#_toSec
-     * @private
-     * @param {number} [time] Time in either ms or sec
+     * @param {number} [time] - Time in either ms or sec
      * @return {number} Time in seconds
      */
     private _toSec(time?: number): number
@@ -413,9 +358,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * Start the update progress.
-     * @name PIXI.sound.webaudio.WebAudioInstance#_enabled
      * @type {boolean}
-     * @private
      */
     private set _enabled(enabled: boolean)
     {
@@ -429,7 +372,6 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
     /**
      * The current playback progress from 0 to 1.
      * @type {number}
-     * @name PIXI.sound.webaudio.WebAudioInstance#progress
      */
     public get progress(): number
     {
@@ -439,7 +381,6 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
     /**
      * Pauses the sound.
      * @type {boolean}
-     * @name PIXI.sound.webaudio.WebAudioInstance#paused
      */
     public get paused(): boolean
     {
@@ -452,10 +393,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         this.refreshPaused();
     }
 
-    /**
-     * Don't use after this.
-     * @method PIXI.sound.webaudio.WebAudioInstance#destroy
-     */
+    /** Don't use after this. */
     public destroy(): void
     {
         this.removeAllListeners();
@@ -484,9 +422,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * To string method for instance.
-     * @method PIXI.sound.webaudio.WebAudioInstance#toString
      * @return {string} The string representation of instance.
-     * @private
      */
     public toString(): string
     {
@@ -495,8 +431,6 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * Get the current time in seconds.
-     * @method PIXI.sound.webaudio.WebAudioInstance#_now
-     * @private
      * @return {number} Seconds since start of context
      */
     private _now(): number
@@ -507,18 +441,12 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
     /**
      * Callback for update listener
      * @type {Function}
-     * @name PIXI.sound.webaudio.WebAudioInstance#_updateListener
-     * @private
      */
     private _updateListener() {
         this._update();
     }
 
-    /**
-     * Internal update the progress.
-     * @method PIXI.sound.webaudio.WebAudioInstance#_update
-     * @private
-     */
+    /** Internal update the progress. */
     private _update(force: boolean = false): void
     {
         if (this._source)
@@ -548,19 +476,16 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
 
                 /**
                  * The sound progress is updated.
-                 * @event PIXI.sound.webaudio.WebAudioInstance#progress
-                 * @property {number} progress Amount progressed from 0 to 1
-                 * @property {number} duration The total playback in seconds
+                 * @event progress
+                 * @property {number} progress - Amount progressed from 0 to 1
+                 * @property {number} duration - The total playback in seconds
                  */
                 this.emit("progress", this._progress, duration);
             }
         }
     }
 
-    /**
-     * Initializes the instance.
-     * @method PIXI.sound.webaudio.WebAudioInstance#init
-     */
+    /** Initializes the instance. */
     public init(media: WebAudioMedia): void
     {
         this._media = media;
@@ -568,11 +493,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         media.context.events.on("refreshPaused", this.refreshPaused, this);
     }
 
-    /**
-     * Stops the instance.
-     * @method PIXI.sound.webaudio.WebAudioInstance#_internalStop
-     * @private
-     */
+    /** Stops the instance. */
     private _internalStop(): void
     {
         if (this._source)
@@ -585,11 +506,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         }
     }
 
-    /**
-     * Callback when completed.
-     * @method PIXI.sound.webaudio.WebAudioInstance#_onComplete
-     * @private
-     */
+    /** Callback when completed. */
     private _onComplete(): void
     {
         if (this._source)
@@ -603,7 +520,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         this.emit("progress", 1, this._duration);
         /**
          * The sound ends, don't use after this
-         * @event PIXI.sound.webaudio.WebAudioInstance#end
+         * @event end
          */
         this.emit("end", this);
     }

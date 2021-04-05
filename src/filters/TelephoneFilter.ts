@@ -5,8 +5,8 @@ import { Filter } from "./Filter";
 /**
  * Creates a telephone-sound filter.
  *
- * @class TelephoneFilter
- * @memberof PIXI.sound.filters
+ * @class
+ * @memberof filters
  */
 export class TelephoneFilter extends Filter
 {
