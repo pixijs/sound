@@ -1,8 +1,7 @@
 import { EventEmitter } from "@pixi/utils";
 import { Filter } from "../filters/Filter";
 import { IMedia } from "../interfaces/IMedia";
-import { CompleteCallback, LoadedCallback, Options, PlayOptions, Sound } from "../Sound";
-import { SoundSpriteData, SoundSprites } from "../sprites";
+import { LoadedCallback, Sound } from "../Sound";
 import { HTMLAudioContext } from "./HTMLAudioContext";
 import { HTMLAudioInstance } from "./HTMLAudioInstance";
 
@@ -57,7 +56,7 @@ export class HTMLAudioMedia extends EventEmitter implements IMedia
     {
         return null;
     }
-    public set filters(filters: Filter[])
+    public set filters(_filters: Filter[])
     {
         console.warn("HTML Audio does not support filters");
     }

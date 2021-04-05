@@ -40,7 +40,7 @@ export class HTMLAudioContext extends EventEmitter implements IMediaContext
         console.warn("HTML Audio does not support filters");
         return null;
     }
-    public set filters(filters: Filter[])
+    public set filters(_filters: Filter[])
     {
         console.warn("HTML Audio does not support filters");
     }

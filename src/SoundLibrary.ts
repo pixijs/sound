@@ -1,7 +1,5 @@
-import { Filterable } from "./Filterable";
 import { Filter } from "./filters";
 import * as htmlaudio from "./htmlaudio";
-import { getInstance } from "./instance";
 import { IMediaContext, IMediaInstance } from "./interfaces";
 import { SoundLoader } from "./loader";
 import { CompleteCallback, Options, PlayOptions, Sound } from "./Sound";

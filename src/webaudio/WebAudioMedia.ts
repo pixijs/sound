@@ -1,8 +1,6 @@
-import * as path from "path";
 import { Filter } from "../filters";
 import { IMedia } from "../interfaces";
-import { CompleteCallback, LoadedCallback, Options, PlayOptions, Sound } from "../Sound";
-import { SoundSprite, SoundSpriteData, SoundSprites } from "../sprites";
+import { LoadedCallback, Sound } from "../Sound";
 import { WebAudioContext } from "./WebAudioContext";
 import { WebAudioInstance } from "./WebAudioInstance";
 import { WebAudioNodes } from "./WebAudioNodes";

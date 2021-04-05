@@ -1,5 +1,4 @@
 import { Filterable } from "../Filterable";
-import { Filter } from "../filters/Filter";
 import { WebAudioContext } from "./WebAudioContext";
 import { WebAudioUtils } from "./WebAudioUtils";
 

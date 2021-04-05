@@ -343,20 +343,6 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
     }
 
     /**
-     * Utility to convert time in millseconds or seconds
-     * @param {number} [time] - Time in either ms or sec
-     * @return {number} Time in seconds
-     */
-    private _toSec(time?: number): number
-    {
-        if (time > 10)
-        {
-            time /= 1000;
-        }
-        return time || 0;
-    }
-
-    /**
      * Start the update progress.
      * @type {boolean}
      */
