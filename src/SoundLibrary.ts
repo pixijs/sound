@@ -139,9 +139,10 @@ export class SoundLibrary
      */
     public add(map: SoundMap, globalOptions?: Options): {[id: string]: Sound};
 
-    // Actual method
-    public add(source: string | SoundMap, sourceOptions?: Options | string | ArrayBuffer | HTMLAudioElement | Sound):
-        {[id: string]: Sound} | Sound
+    /**
+     * @ignore
+     */
+    public add(source: any, sourceOptions?: any): any
     {
         if (typeof source === "object")
         {

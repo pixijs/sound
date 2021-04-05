@@ -356,10 +356,10 @@ export class Sound
      */
     public addSprites(sprites: {[id: string]: SoundSpriteData}): SoundSprites;
 
-    // Actual implementation
-    public addSprites(
-        source: string | {[id: string]: SoundSpriteData},
-        data?: SoundSpriteData): SoundSprite | SoundSprites
+    /**
+     * @ignore
+     */
+    public addSprites(source: any, data?: SoundSpriteData): any
     {
         if (typeof source === "object")
         {
