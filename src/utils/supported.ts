@@ -17,29 +17,8 @@ export const extensions: string[] = [
     "aiff",
     "wma",
     "mid",
+    "caf",
 ];
-
-/**
- * Internal function to validate file type formats
- * @private
- * @return {object} map of support by type
- */
-function validateFormats(): ExtensionMap {
-    const overrides: {[key: string]: string} = {
-        m4a: "mp4",
-        oga: "ogg",
-    };
-    const audio = document.createElement("audio");
-    const formats: ExtensionMap = {};
-    const no = /^no$/;
-    extensions.forEach((ext) => {
-        const type = overrides[ext] || ext;
-        const canByExt = audio.canPlayType(`audio/${ext}`).replace(no, "");
-        const canByType = audio.canPlayType(`audio/${type}`).replace(no, "");
-        formats[ext] = !!canByExt || !!canByType;
-    });
-    return Object.freeze(formats);
-}
 
 /**
  * The list of browser supported audio formats.
@@ -55,5 +34,37 @@ function validateFormats(): ExtensionMap {
  * @property {boolean} aiff - `true` if file-type is supported
  * @property {boolean} wma - `true` if file-type is supported
  * @property {boolean} mid - `true` if file-type is supported
+ * @property {boolean} caf - `true` if file-type is supported. Note that for this we check if the
+ *                             'opus' codec is supported inside the caf container.
  */
-export const supported = validateFormats();
+export const supported: ExtensionMap = {};
+
+/**
+ * Function to validate file type formats. This is called when the library initializes, but can
+ * be called again if you need to recognize a format not listed in PIXI.sound.utils.extensions at
+ * initialization.
+ * @method PIXI.sound.utils.validateFormats
+ * @static
+ * @param {object} typeOverrides - Dictionary of type overrides (inputs for
+ *                                 AudioElement.canPlayType()), keyed by extension from the
+ *                                 PIXI.sound.utils.extensions array.
+ */
+export function validateFormats(typeOverrides?: {[key: string]: string}) {
+    const overrides: {[key: string]: string} = {
+        m4a: "audio/mp4",
+        oga: "audio/ogg",
+        opus: "audio/ogg; codecs=\"opus\"",
+        caf: "audio/x-caf; codecs=\"opus\"", ...(typeOverrides || {})};
+    const audio = document.createElement("audio");
+    const formats: ExtensionMap = {};
+    const no = /^no$/;
+    extensions.forEach((ext) => {
+        const canByExt = audio.canPlayType(`audio/${ext}`).replace(no, "");
+        const canByType = overrides[ext] ? audio.canPlayType(overrides[ext]).replace(no, "") : "";
+        formats[ext] = !!canByExt || !!canByType;
+    });
+    Object.assign(supported, formats);
+}
+
+// initialize supported
+validateFormats();

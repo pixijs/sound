@@ -258,6 +258,23 @@ module.exports = function(libraryPath, useLegacy)
             expect(object.extension).to.equal("mp3");
         });
 
+        describe("Extension changes", function()
+        {
+            it("should resolve a file url with a newly added format", function()
+            {
+                const url = "file.{foo,ogg}";
+                expect(utils.resolveUrl(url)).to.equal("file.ogg");
+                utils.extensions.push("foo");
+                utils.validateFormats({foo: "audio/mp3"});
+                expect(utils.resolveUrl(url)).to.equal("file.foo");
+            });
+
+            after(function() {
+                utils.extensions.pop();
+                delete utils.supported.foo;
+            });
+        });
+
         it("should play a sine tone", webAudioOnly(function(done)
         {
             this.slow(300);
