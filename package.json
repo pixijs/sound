@@ -30,6 +30,11 @@
     "publish:skip": "run-s build:prod test && npm publish",
     "postpublish": "run-s deploy && git push && git push --tags"
   },
+  "engines": {
+    "node": ">=12",
+    "yarn": "please-use-npm",
+    "npm": ">=7"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pixijs/sound.git"
@@ -60,8 +65,8 @@
     "chai": "^4.2.0",
     "copyfiles": "^2.1.0",
     "cross-env": "^5.2.0",
-    "electron": "^5.0.1",
-    "floss": "^3.0.0",
+    "electron": "^12.0.0",
+    "floss": "^5.0.0",
     "gh-pages": "^2.0.1",
     "http-server": "^0.11.1",
     "jsdoc": "^3.6.1",
