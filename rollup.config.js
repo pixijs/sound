@@ -1,18 +1,8 @@
 import typescript from "@rollup/plugin-typescript";
 import { terser } from "rollup-plugin-terser";
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
 import pkg from "./package.json";
 
-const plugins = [
-    typescript(),
-    resolve(),
-    commonjs({
-        namedExports: {
-            "resource-loader": ["Resource"],
-        },
-    }),
-];
+const plugins = [typescript()];
 
 // Disabling minification makes faster
 // watch and better coverage debugging
