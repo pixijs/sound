@@ -149,7 +149,13 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         }
         else
         {
-            this[name] = value;
+            switch (name) {
+                case "speed": this.speed = value as number; break;
+                case "volume": this.volume = value as number; break;
+                case "paused": this.paused = value as boolean; break;
+                case "loop": this.loop = value as boolean; break;
+                case "muted": this.muted = value as boolean; break;
+            }
         }
         return this;
     }

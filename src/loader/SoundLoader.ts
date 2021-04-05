@@ -1,4 +1,4 @@
-import { LoaderResource } from "@pixi/loaders";
+import { ILoaderPlugin, ILoaderResource, LoaderResource } from "@pixi/loaders";
 import { getInstance } from "../instance";
 import { resolveUrl } from "../utils/resolveUrl";
 import { extensions } from "../utils/supported";
@@ -8,7 +8,7 @@ import { extensions } from "../utils/supported";
  * @class
  * @private
  */
-export class SoundLoader
+export class SoundLoader implements ILoaderPlugin
 {
     /**
      * Install the middleware
@@ -53,7 +53,7 @@ export class SoundLoader
     /**
      * Handle the preprocessing of file paths
      */
-    public static pre(resource: PIXI.LoaderResource, next: () => void): void
+    public static pre(resource: ILoaderResource, next: () => void): void
     {
         resolveUrl(resource);
         next();
@@ -62,7 +62,7 @@ export class SoundLoader
     /**
      * Actual resource-loader middleware for sound class
      */
-    public static use(resource: PIXI.LoaderResource, next: () => void): void
+    public static use(resource: ILoaderResource, next: () => void): void
     {
         if (resource.data && extensions.indexOf(resource.extension) > -1)
         {

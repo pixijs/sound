@@ -1,4 +1,4 @@
-import { LoaderResource } from "@pixi/loaders";
+import type { ILoaderResource } from "@pixi/loaders";
 import { supported } from "./supported";
 
 /**
@@ -20,7 +20,7 @@ const FORMAT_PATTERN = /\.(\{([^\}]+)\})(\?.*)?$/;
  *        of that object.
  * @return {string} The format to resolve to
  */
-export function resolveUrl(source: string | PIXI.LoaderResource): string
+export function resolveUrl(source: string | ILoaderResource): string
 {
     // search for patterns like ".{mp3,ogg}""
     const glob = FORMAT_PATTERN;
@@ -47,8 +47,10 @@ export function resolveUrl(source: string | PIXI.LoaderResource): string
         const resolved = url.replace(match[1], replace);
         if (!(typeof source === "string"))
         {
-            source.extension = replace;
-            source.url = resolved;
+            // resource-loader marks these as readonly
+            const writableSource = source as { extension: string, url: string };
+            writableSource.extension = replace;
+            writableSource.url = resolved;
         }
         return resolved;
     }

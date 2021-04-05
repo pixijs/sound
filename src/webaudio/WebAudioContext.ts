@@ -175,7 +175,7 @@ export class WebAudioContext extends Filterable implements IMediaContext
         source.start(0, 0, 0);
         if (source.context.state === "suspended")
         {
-            source.context.resume();
+            (source.context as AudioContext).resume();
         }
     }
 
