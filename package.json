@@ -32,7 +32,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pixijs/pixi-sound.git"
+    "url": "git+https://github.com/pixijs/sound.git"
   },
   "files": [
     "dist/",
@@ -46,9 +46,9 @@
   "author": "Matt Karl @bigtimebuddy",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pixijs/pixi-sound/issues"
+    "url": "https://github.com/pixijs/sound/issues"
   },
-  "homepage": "https://github.com/pixijs/pixi-sound#readme",
+  "homepage": "https://github.com/pixijs/sound#readme",
   "pre-commit": [
     "lint",
     "types"
