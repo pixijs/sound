@@ -7,34 +7,51 @@ import { IMedia } from './IMedia';
  */
 interface IMediaInstance
 {
-    /** Auto-incrementing ID for the instance. */
+    /**
+     * Auto-incrementing ID for the instance.
+     * @type {number}
+     * @readonly
+     */
     readonly id: number;
 
-    /** Current progress of the sound from 0 to 1 */
+    /**
+     * Current progress of the sound from 0 to 1
+     * @type {number}
+     * @readonly
+     */
     readonly progress: number;
 
     /**
      * If the instance is paused, if the sound or global context
      * is paused, this could still be false.
+     * @type {boolean}
      */
     paused: boolean;
 
     /**
      * Current volume of the instance. This is not the actual volume
      * since it takes into account the global context and the sound volume.
+     * @type {number}
      */
     volume: number;
 
     /**
      * Current speed of the instance. This is not the actual speed
      * since it takes into account the global context and the sound volume.
+     * @type {number}
      */
     speed: number;
 
-    /** If the current instance is set to loop */
+    /**
+     * If the current instance is set to loop
+     * @type {boolean}
+     */
     loop: boolean;
 
-    /** Set the muted state of the instance */
+    /**
+     * Set the muted state of the instance
+     * @type {boolean}
+     */
     muted: boolean;
 
     /** Stop the current instance from playing. */
