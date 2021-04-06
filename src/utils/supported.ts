@@ -6,17 +6,17 @@ export type ExtensionMap = {[key: string]: boolean};
  * @static
  */
 export const extensions: string[] = [
-    "mp3",
-    "ogg",
-    "oga",
-    "opus",
-    "mpeg",
-    "wav",
-    "m4a",
-    "aiff",
-    "wma",
-    "mid",
-    "caf",
+    'mp3',
+    'ogg',
+    'oga',
+    'opus',
+    'mpeg',
+    'wav',
+    'm4a',
+    'aiff',
+    'wma',
+    'mid',
+    'caf',
 ];
 
 /**
@@ -46,18 +46,22 @@ export const supported: ExtensionMap = {};
  *                                 AudioElement.canPlayType()), keyed by extension from the
  *                                 PIXI.sound.utils.extensions array.
  */
-export function validateFormats(typeOverrides?: {[key: string]: string}) {
+export function validateFormats(typeOverrides?: {[key: string]: string}): void
+{
     const overrides: {[key: string]: string} = {
-        m4a: "audio/mp4",
-        oga: "audio/ogg",
-        opus: "audio/ogg; codecs=\"opus\"",
-        caf: "audio/x-caf; codecs=\"opus\"", ...(typeOverrides || {})};
-    const audio = document.createElement("audio");
+        m4a: 'audio/mp4',
+        oga: 'audio/ogg',
+        opus: 'audio/ogg; codecs="opus"',
+        caf: 'audio/x-caf; codecs="opus"', ...(typeOverrides || {}) };
+    const audio = document.createElement('audio');
     const formats: ExtensionMap = {};
     const no = /^no$/;
-    extensions.forEach((ext) => {
-        const canByExt = audio.canPlayType(`audio/${ext}`).replace(no, "");
-        const canByType = overrides[ext] ? audio.canPlayType(overrides[ext]).replace(no, "") : "";
+
+    extensions.forEach((ext) =>
+    {
+        const canByExt = audio.canPlayType(`audio/${ext}`).replace(no, '');
+        const canByType = overrides[ext] ? audio.canPlayType(overrides[ext]).replace(no, '') : '';
+
         formats[ext] = !!canByExt || !!canByType;
     });
     Object.assign(supported, formats);

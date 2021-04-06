@@ -1,9 +1,9 @@
-import { EventEmitter } from "@pixi/utils";
-import { Filter } from "../filters/Filter";
-import { IMedia } from "../interfaces/IMedia";
-import { LoadedCallback, Sound } from "../Sound";
-import { HTMLAudioContext } from "./HTMLAudioContext";
-import { HTMLAudioInstance } from "./HTMLAudioInstance";
+import { EventEmitter } from '@pixi/utils';
+import { Filter } from '../filters/Filter';
+import { IMedia } from '../interfaces/IMedia';
+import { LoadedCallback, Sound } from '../Sound';
+import { HTMLAudioContext } from './HTMLAudioContext';
+import { HTMLAudioInstance } from './HTMLAudioInstance';
 
 /**
  * The fallback version of Sound which uses `<audio>` instead of WebAudio API.
@@ -58,7 +58,7 @@ export class HTMLAudioMedia extends EventEmitter implements IMedia
     }
     public set filters(_filters: Filter[])
     {
-        console.warn("HTML Audio does not support filters");
+        console.warn('HTML Audio does not support filters');
     }
 
     // Override the destroy
@@ -70,7 +70,7 @@ export class HTMLAudioMedia extends EventEmitter implements IMedia
 
         if (this._source)
         {
-            this._source.src = "";
+            this._source.src = '';
             this._source.load();
             this._source = null;
         }
@@ -97,6 +97,7 @@ export class HTMLAudioMedia extends EventEmitter implements IMedia
         {
             sound.isLoaded = true;
             const instance = sound.autoPlayStart();
+
             if (callback)
             {
                 setTimeout(() =>
@@ -104,33 +105,28 @@ export class HTMLAudioMedia extends EventEmitter implements IMedia
                     callback(null, sound, instance);
                 }, 0);
             }
+
             return;
         }
 
         // If there's no source, we cannot load
         if (!sound.url)
         {
-            return callback(new Error("sound.url or sound.source must be set"));
+            callback(new Error('sound.url or sound.source must be set'));
+
+            return;
         }
 
         // Set the source
         source.src = sound.url;
 
-        // Remove all event listeners
-        const removeListeners = () =>
-        {
-            // Listen for callback
-            source.removeEventListener("canplaythrough", onLoad);
-            source.removeEventListener("load", onLoad);
-            source.removeEventListener("abort", onAbort);
-            source.removeEventListener("error", onError);
-        };
-
         const onLoad = () =>
         {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             removeListeners();
             sound.isLoaded = true;
             const instance = sound.autoPlayStart();
+
             if (callback)
             {
                 callback(null, sound, instance);
@@ -139,17 +135,20 @@ export class HTMLAudioMedia extends EventEmitter implements IMedia
 
         const onAbort = () =>
         {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             removeListeners();
             if (callback)
             {
-                callback(new Error("Sound loading has been aborted"));
+                callback(new Error('Sound loading has been aborted'));
             }
         };
 
         const onError = () =>
         {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             removeListeners();
             const message = `Failed to load audio element (code: ${source.error.code})`;
+
             if (callback)
             {
                 callback(new Error(message));
@@ -160,11 +159,21 @@ export class HTMLAudioMedia extends EventEmitter implements IMedia
             }
         };
 
+        // Remove all event listeners
+        const removeListeners = () =>
+        {
+            // Listen for callback
+            source.removeEventListener('canplaythrough', onLoad);
+            source.removeEventListener('load', onLoad);
+            source.removeEventListener('abort', onAbort);
+            source.removeEventListener('error', onError);
+        };
+
         // Listen for callback
-        source.addEventListener("canplaythrough", onLoad, false);
-        source.addEventListener("load", onLoad, false);
-        source.addEventListener("abort", onAbort, false);
-        source.addEventListener("error", onError, false);
+        source.addEventListener('canplaythrough', onLoad, false);
+        source.addEventListener('load', onLoad, false);
+        source.addEventListener('abort', onAbort, false);
+        source.addEventListener('error', onError, false);
 
         // Begin the loading
         source.load();

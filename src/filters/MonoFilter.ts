@@ -1,5 +1,5 @@
-import { getInstance } from "../instance";
-import { Filter } from "./Filter";
+import { getInstance } from '../instance';
+import { Filter } from './Filter';
 
 /**
  * Combine all channels into mono channel.
@@ -17,11 +17,13 @@ export class MonoFilter extends Filter
         if (getInstance().useLegacy)
         {
             super(null);
+
             return;
         }
         const audioContext: AudioContext = getInstance().context.audioContext;
         const splitter: ChannelSplitterNode = audioContext.createChannelSplitter();
         const merger: ChannelMergerNode = audioContext.createChannelMerger();
+
         merger.connect(splitter);
         super(merger, splitter);
         this._merger = merger;

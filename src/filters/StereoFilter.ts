@@ -1,6 +1,6 @@
-import { getInstance } from "../instance";
-import { WebAudioUtils } from "../webaudio";
-import { Filter } from "./Filter";
+import { getInstance } from '../instance';
+import { WebAudioUtils } from '../webaudio';
+import { Filter } from './Filter';
 
 /**
  * Filter for adding Stereo panning.
@@ -20,18 +20,19 @@ export class StereoFilter extends Filter
     private _pan: number;
 
     /** @param {number} pan - The amount of panning, -1 is left, 1 is right, 0 is centered. */
-    constructor(pan: number = 0)
+    constructor(pan = 0)
     {
         if (getInstance().useLegacy)
         {
             super(null);
+
             return;
         }
 
         let stereo: StereoPannerNode;
         let panner: PannerNode;
         let destination: AudioNode;
-        const {audioContext} = getInstance().context;
+        const { audioContext } = getInstance().context;
 
         if (audioContext.createStereoPanner)
         {
@@ -41,7 +42,7 @@ export class StereoFilter extends Filter
         else
         {
             panner = audioContext.createPanner();
-            panner.panningModel = "equalpower";
+            panner.panningModel = 'equalpower';
             destination = panner;
         }
 

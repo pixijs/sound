@@ -1,6 +1,6 @@
-import { EventEmitter } from "@pixi/utils";
-import { Filterable } from "../Filterable";
-import { IMediaContext } from "../interfaces";
+import { EventEmitter } from '@pixi/utils';
+import { Filterable } from '../Filterable';
+import { IMediaContext } from '../interfaces';
 
 /**
  * Main class to handle WebAudio API. There's a simple chain
@@ -94,13 +94,13 @@ export class WebAudioContext extends Filterable implements IMediaContext
         this.paused = false;
 
         // Listen for document level clicks to unlock WebAudio. See the _unlock method.
-        if (ctx.state !== "running")
+        if (ctx.state !== 'running')
         {
             this._unlock(); // When played inside of a touch event, this will enable audio on iOS immediately.
             this._unlock = this._unlock.bind(this);
-            document.addEventListener("mousedown", this._unlock, true);
-            document.addEventListener("touchstart", this._unlock, true);
-            document.addEventListener("touchend", this._unlock, true);
+            document.addEventListener('mousedown', this._unlock, true);
+            document.addEventListener('touchstart', this._unlock, true);
+            document.addEventListener('touchend', this._unlock, true);
         }
     }
 
@@ -120,11 +120,11 @@ export class WebAudioContext extends Filterable implements IMediaContext
             return;
         }
         this.playEmptySound();
-        if (this._ctx.state === "running")
+        if (this._ctx.state === 'running')
         {
-            document.removeEventListener("mousedown", this._unlock, true);
-            document.removeEventListener("touchend", this._unlock, true);
-            document.removeEventListener("touchstart", this._unlock, true);
+            document.removeEventListener('mousedown', this._unlock, true);
+            document.removeEventListener('touchend', this._unlock, true);
+            document.removeEventListener('touchstart', this._unlock, true);
             this._unlocked = true;
         }
     }
@@ -136,10 +136,11 @@ export class WebAudioContext extends Filterable implements IMediaContext
     public playEmptySound(): void
     {
         const source = this._ctx.createBufferSource();
+
         source.buffer = this._ctx.createBuffer(1, 1, 22050);
         source.connect(this._ctx.destination);
         source.start(0, 0, 0);
-        if (source.context.state === "suspended")
+        if (source.context.state === 'suspended')
         {
             (source.context as AudioContext).resume();
         }
@@ -152,10 +153,11 @@ export class WebAudioContext extends Filterable implements IMediaContext
     public static get AudioContext(): typeof AudioContext
     {
         const win: any = window as any;
+
         return (
-            win.AudioContext ||
-            win.webkitAudioContext ||
-            null
+            win.AudioContext
+            || win.webkitAudioContext
+            || null
         );
     }
 
@@ -166,21 +168,23 @@ export class WebAudioContext extends Filterable implements IMediaContext
     public static get OfflineAudioContext(): typeof OfflineAudioContext
     {
         const win: any = window as any;
+
         return (
-            win.OfflineAudioContext ||
-            win.webkitOfflineAudioContext ||
-            null
+            win.OfflineAudioContext
+            || win.webkitOfflineAudioContext
+            || null
         );
     }
 
     /** Destroy this context. */
-    public destroy()
+    public destroy(): void
     {
         super.destroy();
 
         const ctx: any = this._ctx as any;
         // check if browser supports AudioContext.close()
-        if (typeof ctx.close !== "undefined")
+
+        if (typeof ctx.close !== 'undefined')
         {
             ctx.close();
         }
@@ -214,11 +218,11 @@ export class WebAudioContext extends Filterable implements IMediaContext
      */
     public set paused(paused: boolean)
     {
-        if (paused && this._ctx.state === "running")
+        if (paused && this._ctx.state === 'running')
         {
             (this._ctx as any).suspend();
         }
-        else if (!paused && this._ctx.state === "suspended")
+        else if (!paused && this._ctx.state === 'suspended')
         {
             (this._ctx as any).resume();
         }
@@ -232,13 +236,13 @@ export class WebAudioContext extends Filterable implements IMediaContext
     /** Emit event when muted, volume or speed changes */
     public refresh(): void
     {
-        this.events.emit("refresh");
+        this.events.emit('refresh');
     }
 
     /** Emit event when muted, volume or speed changes */
     public refreshPaused(): void
     {
-        this.events.emit("refreshPaused");
+        this.events.emit('refreshPaused');
     }
 
     /**
@@ -249,6 +253,7 @@ export class WebAudioContext extends Filterable implements IMediaContext
     {
         this.muted = !this.muted;
         this.refresh();
+
         return this.muted;
     }
 
@@ -260,6 +265,7 @@ export class WebAudioContext extends Filterable implements IMediaContext
     {
         this.paused = !this.paused;
         this.refreshPaused();
+
         return this._paused;
     }
 
@@ -271,11 +277,13 @@ export class WebAudioContext extends Filterable implements IMediaContext
     public decode(arrayBuffer: ArrayBuffer, callback: (err?: Error, buffer?: AudioBuffer) => void): void
     {
         this._offlineCtx.decodeAudioData(
-            arrayBuffer, (buffer: AudioBuffer) => {
+            arrayBuffer, (buffer: AudioBuffer) =>
+            {
                 callback(null, buffer);
             },
-            (err) => {
-                callback(new Error(err.message || "Unable to decode file"));
+            (err) =>
+            {
+                callback(new Error(err.message || 'Unable to decode file'));
             },
         );
     }

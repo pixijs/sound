@@ -1,11 +1,12 @@
-import { Filter } from "./filters";
-import * as htmlaudio from "./htmlaudio";
-import { IMediaContext, IMediaInstance } from "./interfaces";
-import { SoundLoader } from "./loader";
-import { CompleteCallback, Options, PlayOptions, Sound } from "./Sound";
-import * as webaudio from "./webaudio";
+import { Filter } from './filters';
+import * as htmlaudio from './htmlaudio';
+import { IMediaContext, IMediaInstance } from './interfaces';
+import { SoundLoader } from './loader';
+import { CompleteCallback, Options, PlayOptions, Sound } from './Sound';
+import * as webaudio from './webaudio';
 
 export type SoundMap = {[id: string]: Options | string | ArrayBuffer | HTMLAudioElement};
+export type Sounds = {[id: string]: Sound};
 
 /**
  * Manages the playback of sounds.
@@ -51,6 +52,7 @@ export class SoundLibrary
         this._htmlAudioContext = new htmlaudio.HTMLAudioContext();
         this._sounds = {};
         this.useLegacy = !this.supported;
+
         return this;
     }
 
@@ -77,6 +79,7 @@ export class SoundLibrary
         {
             return this._context.filters;
         }
+
         return [];
     }
     public set filtersAll(filtersAll: Filter[])
@@ -137,16 +140,16 @@ export class SoundLibrary
      *        if a property is defined, it will use the local property instead.
      * @return Instance to the Sound object.
      */
-    public add(map: SoundMap, globalOptions?: Options): {[id: string]: Sound};
+    public add(map: SoundMap, globalOptions?: Options): Sounds;
 
     /**
      * @ignore
      */
-    public add(source: any, sourceOptions?: any): any
+    public add(source: string | SoundMap, sourceOptions?: Options | string | ArrayBuffer | HTMLAudioElement | Sound): any
     {
-        if (typeof source === "object")
+        if (typeof source === 'object')
         {
-            const results: {[id: string]: Sound} = {};
+            const results: Sounds = {};
 
             for (const alias in source)
             {
@@ -154,28 +157,29 @@ export class SoundLibrary
                     source[alias],
                     sourceOptions as Options,
                 );
+
                 results[alias] = this.add(alias, options);
             }
+
             return results;
         }
-        else if (typeof source === "string")
-        {
-            // tslint:disable-next-line no-console
-            console.assert(!this._sounds[source], `Sound with alias ${source} already exists.`);
 
-            if (sourceOptions instanceof Sound)
-            {
-                this._sounds[source] = sourceOptions;
-                return sourceOptions;
-            }
-            else
-            {
-                const options: Options = this._getOptions(sourceOptions);
-                const sound: Sound = Sound.from(options);
-                this._sounds[source] = sound;
-                return sound;
-            }
+        // eslint-disable-next-line no-console
+        console.assert(!this._sounds[source], `Sound with alias ${source} already exists.`);
+
+        if (sourceOptions instanceof Sound)
+        {
+            this._sounds[source] = sourceOptions;
+
+            return sourceOptions;
         }
+
+        const options: Options = this._getOptions(sourceOptions);
+        const sound: Sound = Sound.from(options);
+
+        this._sounds[source] = sound;
+
+        return sound;
     }
 
     /**
@@ -188,7 +192,7 @@ export class SoundLibrary
     {
         let options: Options;
 
-        if (typeof source === "string")
+        if (typeof source === 'string')
         {
             options = { url: source };
         }
@@ -200,7 +204,7 @@ export class SoundLibrary
         {
             options = source as Options;
         }
-        options = {...options, ...(overrides || {})};
+        options = { ...options, ...(overrides || {}) };
 
         return options;
     }
@@ -212,13 +216,13 @@ export class SoundLibrary
     }
     public set useLegacy(legacy: boolean)
     {
-        SoundLoader.legacy = legacy;
+        SoundLoader.setLegacy(legacy);
         this._useLegacy = legacy;
 
         // Set the context to use
-        this._context = (!legacy && this.supported) ?
-            this._webAudioContext :
-            this._htmlAudioContext;
+        this._context = (!legacy && this.supported)
+            ? this._webAudioContext
+            : this._htmlAudioContext;
     }
 
     /**
@@ -231,6 +235,7 @@ export class SoundLibrary
         this.exists(alias, true);
         this._sounds[alias].destroy();
         delete this._sounds[alias];
+
         return this;
     }
 
@@ -277,6 +282,7 @@ export class SoundLibrary
     {
         this._context.paused = true;
         this._context.refreshPaused();
+
         return this;
     }
 
@@ -288,6 +294,7 @@ export class SoundLibrary
     {
         this._context.paused = false;
         this._context.refreshPaused();
+
         return this;
     }
 
@@ -308,6 +315,7 @@ export class SoundLibrary
     {
         this._context.muted = true;
         this._context.refresh();
+
         return this;
     }
 
@@ -319,6 +327,7 @@ export class SoundLibrary
     {
         this._context.muted = false;
         this._context.refresh();
+
         return this;
     }
 
@@ -333,6 +342,7 @@ export class SoundLibrary
             this._sounds[alias].destroy();
             delete this._sounds[alias];
         }
+
         return this;
     }
 
@@ -346,6 +356,7 @@ export class SoundLibrary
         {
             this._sounds[alias].stop();
         }
+
         return this;
     }
 
@@ -354,14 +365,16 @@ export class SoundLibrary
      * @param alias - Check for alias.
      * @return true if the sound exists.
      */
-    public exists(alias: string, assert: boolean= false): boolean
+    public exists(alias: string, assert = false): boolean
     {
         const exists = !!this._sounds[alias];
+
         if (assert)
         {
-            // tslint:disable-next-line no-console
+            // eslint-disable-next-line no-console
             console.assert(exists, `No sound matching alias '${alias}'.`);
         }
+
         return exists;
     }
 
@@ -373,6 +386,7 @@ export class SoundLibrary
     public find(alias: string): Sound
     {
         this.exists(alias, true);
+
         return this._sounds[alias];
     }
 
@@ -446,9 +460,12 @@ export class SoundLibrary
     public volume(alias: string, volume?: number): number
     {
         const sound = this.find(alias);
-        if (volume !== undefined) {
+
+        if (volume !== undefined)
+        {
             sound.volume = volume;
         }
+
         return sound.volume;
     }
 
@@ -461,9 +478,12 @@ export class SoundLibrary
     public speed(alias: string, speed?: number): number
     {
         const sound = this.find(alias);
-        if (speed !== undefined) {
+
+        if (speed !== undefined)
+        {
             sound.speed = speed;
         }
+
         return sound.speed;
     }
 
@@ -497,6 +517,7 @@ export class SoundLibrary
             this._htmlAudioContext = null;
         }
         this._context = null;
+
         return this;
     }
 }

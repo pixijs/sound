@@ -1,9 +1,9 @@
-import { Filter } from "../filters";
-import { IMedia } from "../interfaces";
-import { LoadedCallback, Sound } from "../Sound";
-import { WebAudioContext } from "./WebAudioContext";
-import { WebAudioInstance } from "./WebAudioInstance";
-import { WebAudioNodes } from "./WebAudioNodes";
+import { Filter } from '../filters';
+import { IMedia } from '../interfaces';
+import { LoadedCallback, Sound } from '../Sound';
+import { WebAudioContext } from './WebAudioContext';
+import { WebAudioInstance } from './WebAudioInstance';
+import { WebAudioNodes } from './WebAudioNodes';
 
 /**
  * Represents a single sound element. Can be used to play, pause, etc. sound instances.
@@ -87,7 +87,9 @@ export class WebAudioMedia implements IMedia
     // Implements duration
     public get duration(): number
     {
-        console.assert(this.isPlayable, "Sound not yet playable, no duration");
+        // eslint-disable-next-line no-console
+        console.assert(this.isPlayable, 'Sound not yet playable, no duration');
+
         return this._source.buffer.duration;
     }
 
@@ -125,11 +127,11 @@ export class WebAudioMedia implements IMedia
         }
         else if (callback)
         {
-            callback(new Error("sound.url or sound.source must be set"));
+            callback(new Error('sound.url or sound.source must be set'));
         }
         else
         {
-            console.error("sound.url or sound.source must be set");
+            console.error('sound.url or sound.source must be set');
         }
     }
 
@@ -138,11 +140,13 @@ export class WebAudioMedia implements IMedia
     {
         const request = new XMLHttpRequest();
         const url: string = this.parent.url;
-        request.open("GET", url, true);
-        request.responseType = "arraybuffer";
+
+        request.open('GET', url, true);
+        request.responseType = 'arraybuffer';
 
         // Decode asynchronously
-        request.onload = () => {
+        request.onload = () =>
+        {
             this.source = request.response as ArrayBuffer;
             this._decode(request.response, callback);
         };
@@ -159,6 +163,7 @@ export class WebAudioMedia implements IMedia
     private _decode(arrayBuffer: ArrayBuffer, callback?: LoadedCallback): void
     {
         const context = this.parent.context as WebAudioContext;
+
         context.decode(arrayBuffer, (err: Error, buffer: AudioBuffer) =>
         {
             if (err)
@@ -173,6 +178,7 @@ export class WebAudioMedia implements IMedia
                 this.parent.isLoaded = true;
                 this.buffer = buffer;
                 const instance = this.parent.autoPlayStart();
+
                 if (callback)
                 {
                     callback(null, this.parent, instance);

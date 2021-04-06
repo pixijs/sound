@@ -1,5 +1,5 @@
-import { IMediaInstance } from "../interfaces";
-import { CompleteCallback, Sound } from "../Sound";
+import { IMediaInstance } from '../interfaces';
+import { CompleteCallback, Sound } from '../Sound';
 
 // Sound sprite data setup
 export interface SoundSpriteData {
@@ -67,7 +67,8 @@ export class SoundSprite
         Object.assign(this, options);
         this.duration = this.end - this.start;
 
-        console.assert(this.duration > 0, "End time must be after start time");
+        // eslint-disable-next-line no-console
+        console.assert(this.duration > 0, 'End time must be after start time');
     }
 
     /**
@@ -82,7 +83,7 @@ export class SoundSprite
             speed: this.speed || this.parent.speed,
             end: this.end,
             start: this.start,
-            loop: this.loop});
+            loop: this.loop });
     }
 
     /** Destroy and don't use after this */

@@ -1,10 +1,10 @@
-import { Filter } from "./filters";
-import { HTMLAudioMedia } from "./htmlaudio";
-import { getInstance } from "./instance";
-import { IMedia, IMediaContext, IMediaInstance } from "./interfaces";
-import { SoundSprite, SoundSpriteData, SoundSprites } from "./sprites";
-import { resolveUrl } from "./utils/resolveUrl";
-import { WebAudioMedia } from "./webaudio";
+import { Filter } from './filters';
+import { HTMLAudioMedia } from './htmlaudio';
+import { getInstance } from './instance';
+import { IMedia, IMediaContext, IMediaInstance } from './interfaces';
+import { SoundSprite, SoundSpriteData, SoundSprites } from './sprites';
+import { resolveUrl } from './utils/resolveUrl';
+import { WebAudioMedia } from './webaudio';
 
 // Constructor options
 export interface Options {
@@ -49,6 +49,8 @@ export type LoadedCallback = (err: Error, sound?: Sound, instance?: IMediaInstan
  * @param {Sound} sound - The instance of sound.
  */
 export type CompleteCallback = (sound: Sound) => void;
+
+export type SoundSpriteDataMap = {[id: string]: SoundSpriteData};
 
 /**
  * Sound represents a single piece of loaded media. When playing a sound {@link IMediaInstance} objects
@@ -193,7 +195,7 @@ export class Sound
     {
         let options: Options = {};
 
-        if (typeof source === "string")
+        if (typeof source === 'string')
         {
             options.url = source as string;
         }
@@ -217,7 +219,7 @@ export class Sound
             speed: 1,
             complete: null,
             loaded: null,
-            loop: false, ...options};
+            loop: false, ...options };
 
         // Resolve url in-case it has a special format
         if (options.url)
@@ -227,9 +229,9 @@ export class Sound
 
         Object.freeze(options);
 
-        const media: IMedia = getInstance().useLegacy ?
-            new HTMLAudioMedia() :
-            new WebAudioMedia();
+        const media: IMedia = getInstance().useLegacy
+            ? new HTMLAudioMedia()
+            : new WebAudioMedia();
 
         return new Sound(media, options);
     }
@@ -248,6 +250,7 @@ export class Sound
         this.media.init(this);
 
         const complete = options.complete;
+
         this._autoPlayOptions = complete ? { complete } : null;
         this.isLoaded = false;
         this.isPlaying = false;
@@ -287,6 +290,7 @@ export class Sound
     {
         this.isPlaying = false;
         this.paused = true;
+
         return this;
     }
 
@@ -298,6 +302,7 @@ export class Sound
     {
         this.isPlaying = this._instances.length > 0;
         this.paused = false;
+
         return this;
     }
 
@@ -354,30 +359,32 @@ export class Sound
      *        and the data are configuration options, see {@PIXI.sound.Sound#addSprite} for info on data.
      * @return {Object} The map of sound sprites added.
      */
-    public addSprites(sprites: {[id: string]: SoundSpriteData}): SoundSprites;
+    public addSprites(sprites: SoundSpriteDataMap): SoundSprites;
 
     /**
      * @ignore
      */
-    public addSprites(source: any, data?: SoundSpriteData): any
+    public addSprites(source: string | SoundSpriteDataMap, data?: SoundSpriteData): any
     {
-        if (typeof source === "object")
+        if (typeof source === 'object')
         {
             const results: SoundSprites = {};
+
             for (const alias in source)
             {
                 results[alias] = this.addSprites(alias, source[alias]);
             }
+
             return results;
         }
-        else if (typeof source === "string")
-        {
-            // tslint:disable-next-line no-console
-            console.assert(!this._sprites[source], `Alias ${source} is already taken`);
-            const sprite = new SoundSprite(this, data);
-            this._sprites[source] = sprite;
-            return sprite;
-        }
+
+        // eslint-disable-next-line no-console
+        console.assert(!this._sprites[source], `Alias ${source} is already taken`);
+        const sprite = new SoundSprite(this, data);
+
+        this._sprites[source] = sprite;
+
+        return sprite;
     }
 
     /** Destructor, safer to use `SoundLibrary.remove(alias)` to remove this sound. */
@@ -415,6 +422,7 @@ export class Sound
                 delete this._sprites[alias];
             }
         }
+
         return this;
     }
 
@@ -434,6 +442,7 @@ export class Sound
         {
             this.autoPlay = false;
             this._autoPlayOptions = null;
+
             return this;
         }
         this.isPlaying = false;
@@ -443,6 +452,7 @@ export class Sound
         {
             this._instances[i].stop();
         }
+
         return this;
     }
 
@@ -486,16 +496,18 @@ export class Sound
                 callback?: CompleteCallback): IMediaInstance | Promise<IMediaInstance>;
 
     // Overloaded function
-    public play(source?: any, complete?: CompleteCallback): IMediaInstance | Promise<IMediaInstance>
+    public play(source?: string | PlayOptions | CompleteCallback,
+        complete?: CompleteCallback): IMediaInstance | Promise<IMediaInstance>
     {
         let options: PlayOptions;
 
-        if (typeof source === "string")
+        if (typeof source === 'string')
         {
             const sprite: string = source as string;
+
             options = { sprite, loop: this.loop, complete };
         }
-        else if (typeof source === "function")
+        else if (typeof source === 'function')
         {
             options = {};
             options.complete = source as CompleteCallback;
@@ -514,15 +526,17 @@ export class Sound
             volume: 1,
             speed: 1,
             muted: false,
-            loop: false, ...(options || {})};
+            loop: false, ...(options || {}) };
 
         // A sprite is specified, add the options
         if (options.sprite)
         {
             const alias: string = options.sprite;
-            // tslint:disable-next-line no-console
+
+            // eslint-disable-next-line no-console
             console.assert(!!this._sprites[alias], `Alias ${alias} is not available`);
             const sprite: SoundSprite = this._sprites[alias];
+
             options.start = sprite.start;
             options.end = sprite.end;
             options.speed = sprite.speed || 1;
@@ -531,7 +545,8 @@ export class Sound
         }
 
         // @deprecated offset option
-        if ((options as any).offset) {
+        if ((options as any).offset)
+        {
             options.start = (options as any).offset as number;
         }
 
@@ -569,16 +584,19 @@ export class Sound
 
         // clone the bufferSource
         const instance = this._createInstance();
+
         this._instances.push(instance);
         this.isPlaying = true;
-        instance.once("end", () => {
+        instance.once('end', () =>
+        {
             if (options.complete)
             {
                 options.complete(this);
             }
             this._onComplete(instance);
         });
-        instance.once("stop", () => {
+        instance.once('stop', () =>
+        {
             this._onComplete(instance);
         });
 
@@ -591,6 +609,7 @@ export class Sound
     public refresh(): void
     {
         const len = this._instances.length;
+
         for (let i = 0; i < len; i++)
         {
             this._instances[i].refresh();
@@ -601,6 +620,7 @@ export class Sound
     public refreshPaused(): void
     {
         const len = this._instances.length;
+
         for (let i = 0; i < len; i++)
         {
             this._instances[i].refreshPaused();
@@ -674,10 +694,12 @@ export class Sound
     public autoPlayStart(): IMediaInstance
     {
         let instance: IMediaInstance;
+
         if (this.autoPlay)
         {
             instance = this.play(this._autoPlayOptions) as IMediaInstance;
         }
+
         return instance;
     }
 
@@ -701,6 +723,7 @@ export class Sound
         if (this._instances)
         {
             const index = this._instances.indexOf(instance);
+
             if (index > -1)
             {
                 this._instances.splice(index, 1);
@@ -719,9 +742,12 @@ export class Sound
         if (Sound._pool.length > 0)
         {
             const instance: IMediaInstance = Sound._pool.pop();
+
             instance.init(this.media);
+
             return instance;
         }
+
         return this.media.create();
     }
 

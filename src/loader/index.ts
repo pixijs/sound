@@ -1,1 +1,1 @@
-export * from "./SoundLoader";
+export * from './SoundLoader';

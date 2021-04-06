@@ -1,4 +1,4 @@
-import { getInstance } from "../instance";
+import { getInstance } from '../instance';
 
 /**
  * Increment the alias for play once
@@ -22,7 +22,8 @@ export function playOnce(url: string, callback?: (err?: Error) => void): string
         url,
         preload: true,
         autoPlay: true,
-        loaded: (err: Error) => {
+        loaded: (err: Error) =>
+        {
             if (err)
             {
                 console.error(err);
@@ -33,7 +34,8 @@ export function playOnce(url: string, callback?: (err?: Error) => void): string
                 }
             }
         },
-        complete: () => {
+        complete: () =>
+        {
             getInstance().remove(alias);
             if (callback)
             {
@@ -41,5 +43,6 @@ export function playOnce(url: string, callback?: (err?: Error) => void): string
             }
         },
     });
+
     return alias;
 }

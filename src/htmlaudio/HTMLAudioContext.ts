@@ -1,6 +1,6 @@
-import { EventEmitter } from "@pixi/utils";
-import { Filter } from "../filters/Filter";
-import { IMediaContext } from "../interfaces/IMediaContext";
+import { EventEmitter } from '@pixi/utils';
+import { Filter } from '../filters/Filter';
+import { IMediaContext } from '../interfaces/IMediaContext';
 
 /**
  * The fallback version of WebAudioContext which uses `<audio>` instead of WebAudio API.
@@ -11,44 +11,46 @@ import { IMediaContext } from "../interfaces/IMediaContext";
 export class HTMLAudioContext extends EventEmitter implements IMediaContext
 {
     /** Current global speed from 0 to 1 */
-    public speed: number = 1;
+    public speed = 1;
 
     /** Current muted status of the context */
-    public muted: boolean = false;
+    public muted = false;
 
     /** Current volume from 0 to 1  */
-    public volume: number = 1;
+    public volume = 1;
 
     /** Current paused status */
-    public paused: boolean = false;
+    public paused = false;
 
     /** Internal trigger when volume, mute or speed changes */
     public refresh(): void
     {
-        this.emit("refresh");
+        this.emit('refresh');
     }
 
     /** Internal trigger paused changes */
     public refreshPaused(): void
     {
-        this.emit("refreshPaused");
+        this.emit('refreshPaused');
     }
 
     /** HTML Audio does not support filters, this is non-functional API. */
     public get filters(): Filter[]
     {
-        console.warn("HTML Audio does not support filters");
+        console.warn('HTML Audio does not support filters');
+
         return null;
     }
     public set filters(_filters: Filter[])
     {
-        console.warn("HTML Audio does not support filters");
+        console.warn('HTML Audio does not support filters');
     }
 
     /** HTML Audio does not support `audioContext` */
     public get audioContext(): AudioContext
     {
-        console.warn("HTML Audio does not support audioContext");
+        console.warn('HTML Audio does not support audioContext');
+
         return null;
     }
 
@@ -60,6 +62,7 @@ export class HTMLAudioContext extends EventEmitter implements IMediaContext
     {
         this.muted = !this.muted;
         this.refresh();
+
         return this.muted;
     }
 
@@ -71,6 +74,7 @@ export class HTMLAudioContext extends EventEmitter implements IMediaContext
     {
         this.paused = !this.paused;
         this.refreshPaused();
+
         return this.paused;
     }
 

@@ -1,7 +1,7 @@
-import { Filter } from "../filters";
-import { LoadedCallback, Sound } from "../Sound";
-import { IMediaContext } from "./IMediaContext";
-import { IMediaInstance } from "./IMediaInstance";
+import { Filter } from '../filters';
+import { LoadedCallback, Sound } from '../Sound';
+import { IMediaContext } from './IMediaContext';
+import { IMediaInstance } from './IMediaInstance';
 
 /**
  * Interface represents either a WebAudio source or an HTML5 AudioElement source

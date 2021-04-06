@@ -1,5 +1,5 @@
-import { PlayOptions } from "../Sound";
-import { IMedia } from "./IMedia";
+import { PlayOptions } from '../Sound';
+import { IMedia } from './IMedia';
 
 /**
  * Interface for single instance return by a Sound play call. This can either
@@ -96,5 +96,5 @@ export interface IMediaInstance
      *   .set('volume', 0.5)
      *   .set('speed', 0.8);
      */
-    set(name: "speed" | "volume" | "muted" | "loop" | "paused", value: number | boolean): this;
+    set(name: 'speed' | 'volume' | 'muted' | 'loop' | 'paused', value: number | boolean): this;
 }

@@ -1,9 +1,9 @@
-import { Ticker } from "@pixi/ticker";
-import { EventEmitter } from "@pixi/utils";
-import { IMediaInstance } from "../interfaces";
-import { PlayOptions } from "../Sound";
-import { WebAudioMedia } from "./WebAudioMedia";
-import { WebAudioUtils } from "./WebAudioUtils";
+import { Ticker } from '@pixi/ticker';
+import { EventEmitter } from '@pixi/utils';
+import { IMediaInstance } from '../interfaces';
+import { PlayOptions } from '../Sound';
+import { WebAudioMedia } from './WebAudioMedia';
+import { WebAudioUtils } from './WebAudioUtils';
 
 let id = 0;
 
@@ -125,7 +125,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
      * @param {number|boolean} value - - Value to set property to
      * @return {webaudio.WebAudioInstance}
      */
-    public set(name: "speed" | "volume" | "muted" | "loop" | "paused", value: number | boolean)
+    public set(name: 'speed' | 'volume' | 'muted' | 'loop' | 'paused', value: number | boolean): this
     {
         if (this[name] === undefined)
         {
@@ -133,14 +133,16 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         }
         else
         {
-            switch (name) {
-                case "speed": this.speed = value as number; break;
-                case "volume": this.volume = value as number; break;
-                case "muted": this.muted = value as boolean; break;
-                case "loop": this.loop = value as boolean; break;
-                case "paused": this.paused = value as boolean; break;
+            switch (name)
+            {
+                case 'speed': this.speed = value as number; break;
+                case 'volume': this.volume = value as number; break;
+                case 'muted': this.muted = value as boolean; break;
+                case 'loop': this.loop = value as boolean; break;
+                case 'paused': this.paused = value as boolean; break;
             }
         }
+
         return this;
     }
 
@@ -155,7 +157,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
              * The sound is stopped. Don't use after this is called.
              * @event stop
              */
-            this.emit("stop");
+            this.emit('stop');
         }
     }
 
@@ -208,7 +210,8 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
     public refresh(): void
     {
         // Sound could be paused
-        if (!this._source) {
+        if (!this._source)
+        {
             return;
         }
         const global = this._media.context;
@@ -221,6 +224,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         const globalVolume = global.volume * (global.muted ? 0 : 1);
         const soundVolume = sound.volume * (sound.muted ? 0 : 1);
         const instanceVolume = this._volume * (this._muted ? 0 : 1);
+
         WebAudioUtils.setParamValue(this._gain.gain, instanceVolume * soundVolume * globalVolume);
 
         // Update the speed
@@ -249,7 +253,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
                  * The sound is paused.
                  * @event paused
                  */
-                this.emit("paused");
+                this.emit('paused');
             }
             else
             {
@@ -257,7 +261,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
                  * The sound is unpaused.
                  * @event resumed
                  */
-                this.emit("resumed");
+                this.emit('resumed');
 
                 // resume the playing with offset
                 this.play({
@@ -274,7 +278,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
              * @event pause
              * @property {boolean} paused - If the instance was paused or not.
              */
-            this.emit("pause", pausedReal);
+            this.emit('pause', pausedReal);
         }
     }
 
@@ -290,14 +294,15 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
      */
     public play(options: PlayOptions): void
     {
-        const {start, end, speed, loop, volume, muted} = options;
+        const { start, end, speed, loop, volume, muted } = options;
 
         if (end)
         {
-            console.assert(end > start, "End time is before start time");
+            // eslint-disable-next-line no-console
+            console.assert(end > start, 'End time is before start time');
         }
         this._paused = false;
-        const {source, gain} = this._media.nodes.cloneBufferSource();
+        const { source, gain } = this._media.nodes.cloneBufferSource();
 
         this._source = source;
         this._gain = gain;
@@ -308,6 +313,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         this.refresh();
 
         const duration: number = this._source.buffer.duration;
+
         this._duration = duration;
         this._end = end;
         this._lastUpdate = this._now();
@@ -333,20 +339,20 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
          * The sound is started.
          * @event start
          */
-        this.emit("start");
+        this.emit('start');
 
         // Do an update for the initial progress
         this._update(true);
 
         // Start handling internal ticks
-        this._enabled = true;
+        this.enableTicker(true);
     }
 
     /**
      * Start the update progress.
      * @type {boolean}
      */
-    private set _enabled(enabled: boolean)
+    private enableTicker(enabled: boolean): void
     {
         Ticker.shared.remove(this._updateListener, this);
         if (enabled)
@@ -391,8 +397,8 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         }
         if (this._media)
         {
-            this._media.context.events.off("refresh", this.refresh, this);
-            this._media.context.events.off("refreshPaused", this.refreshPaused, this);
+            this._media.context.events.off('refresh', this.refresh, this);
+            this._media.context.events.off('refreshPaused', this.refreshPaused, this);
             this._media = null;
         }
         this._end = null;
@@ -412,7 +418,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
      */
     public toString(): string
     {
-        return "[WebAudioInstance id=" + this.id + "]";
+        return `[WebAudioInstance id=${this.id}]`;
     }
 
     /**
@@ -428,12 +434,13 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
      * Callback for update listener
      * @type {Function}
      */
-    private _updateListener() {
+    private _updateListener()
+    {
         this._update();
     }
 
     /** Internal update the progress. */
-    private _update(force: boolean = false): void
+    private _update(force = false): void
     {
         if (this._source)
         {
@@ -443,14 +450,17 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
             if (delta > 0 || force)
             {
                 const speed: number = this._source.playbackRate.value;
+
                 this._elapsed += delta * speed;
                 this._lastUpdate = now;
                 const duration: number = this._duration;
                 let progress: number;
+
                 if (this._source.loopStart)
                 {
                     const soundLength = this._source.loopEnd - this._source.loopStart;
-                    progress = (this._source.loopStart + this._elapsed % soundLength) / duration;
+
+                    progress = (this._source.loopStart + (this._elapsed % soundLength)) / duration;
                 }
                 else
                 {
@@ -466,7 +476,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
                  * @property {number} progress - Amount progressed from 0 to 1
                  * @property {number} duration - The total playback in seconds
                  */
-                this.emit("progress", this._progress, duration);
+                this.emit('progress', this._progress, duration);
             }
         }
     }
@@ -475,8 +485,8 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
     public init(media: WebAudioMedia): void
     {
         this._media = media;
-        media.context.events.on("refresh", this.refresh, this);
-        media.context.events.on("refreshPaused", this.refreshPaused, this);
+        media.context.events.on('refresh', this.refresh, this);
+        media.context.events.on('refreshPaused', this.refreshPaused, this);
     }
 
     /** Stops the instance. */
@@ -484,7 +494,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
     {
         if (this._source)
         {
-            this._enabled = false;
+            this.enableTicker(false);
             this._source.onended = null;
             this._source.stop(0); // param needed for iOS 8 bug
             this._source.disconnect();
@@ -497,17 +507,17 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
     {
         if (this._source)
         {
-            this._enabled = false;
+            this.enableTicker(false);
             this._source.onended = null;
             this._source.disconnect();
         }
         this._source = null;
         this._progress = 1;
-        this.emit("progress", 1, this._duration);
+        this.emit('progress', 1, this._duration);
         /**
          * The sound ends, don't use after this
          * @event end
          */
-        this.emit("end", this);
+        this.emit('end', this);
     }
 }

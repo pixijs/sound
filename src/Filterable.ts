@@ -1,4 +1,4 @@
-import { Filter } from "./filters/Filter";
+import { Filter } from './filters/Filter';
 
 /**
  * Abstract class which SoundNodes and SoundContext
@@ -48,7 +48,8 @@ export class Filterable
     {
         if (this._filters)
         {
-            this._filters.forEach((filter: Filter) => {
+            this._filters.forEach((filter: Filter) =>
+            {
                 if (filter)
                 {
                     filter.disconnect();
@@ -68,7 +69,9 @@ export class Filterable
 
             // Connect each filter
             let prevFilter: Filter = null;
-            filters.forEach((filter: Filter) => {
+
+            filters.forEach((filter: Filter) =>
+            {
                 if (prevFilter === null)
                 {
                     // first filter is the destination

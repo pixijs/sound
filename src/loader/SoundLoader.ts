@@ -1,7 +1,7 @@
-import { ILoaderPlugin, ILoaderResource, LoaderResource } from "@pixi/loaders";
-import { getInstance } from "../instance";
-import { resolveUrl } from "../utils/resolveUrl";
-import { extensions } from "../utils/supported";
+import { ILoaderPlugin, ILoaderResource, LoaderResource } from '@pixi/loaders';
+import { getInstance } from '../instance';
+import { resolveUrl } from '../utils/resolveUrl';
+import { extensions } from '../utils/supported';
 
 /**
  * Sound middleware installation utilities for PIXI.Loader
@@ -10,16 +10,16 @@ import { extensions } from "../utils/supported";
 export class SoundLoader implements ILoaderPlugin
 {
     /** Install the middleware */
-    public static add()
+    public static add(): void
     {
-        SoundLoader.legacy = getInstance().useLegacy;
+        SoundLoader.setLegacy(getInstance().useLegacy);
     }
 
     /**
      * Set the legacy mode
      * @param legacy - Non-webaudio environments
      */
-    static set legacy(legacy: boolean)
+    static setLegacy(legacy: boolean): void
     {
         // Configure PIXI Loader to handle audio files correctly
         const exts = extensions;
@@ -28,7 +28,8 @@ export class SoundLoader implements ILoaderPlugin
         if (!legacy)
         {
             // Load all audio files as ArrayBuffers
-            exts.forEach((ext) => {
+            exts.forEach((ext) =>
+            {
                 LoaderResource.setExtensionXhrType(ext, LoaderResource.XHR_RESPONSE_TYPE.BUFFER);
                 LoaderResource.setExtensionLoadType(ext, LoaderResource.LOAD_TYPE.XHR);
             });
@@ -36,7 +37,8 @@ export class SoundLoader implements ILoaderPlugin
         else
         {
             // Fall back to loading as <audio> elements
-            exts.forEach((ext) => {
+            exts.forEach((ext) =>
+            {
                 LoaderResource.setExtensionXhrType(ext, LoaderResource.XHR_RESPONSE_TYPE.DEFAULT);
                 LoaderResource.setExtensionLoadType(ext, LoaderResource.LOAD_TYPE.AUDIO);
             });

@@ -1,6 +1,6 @@
-import { getInstance } from "../instance";
-import { WebAudioUtils } from "../webaudio";
-import { Filter } from "./Filter";
+import { getInstance } from '../instance';
+import { WebAudioUtils } from '../webaudio';
+import { Filter } from './Filter';
 
 interface Band {
     f: number;
@@ -99,64 +99,65 @@ export class EqualizerFilter extends Filter
      */
     public readonly bandsMap: {[id: number]: BiquadFilterNode};
 
-    constructor(f32: number = 0, f64: number = 0, f125: number = 0, f250: number = 0, f500: number = 0,
-                f1k: number = 0, f2k: number = 0, f4k: number = 0, f8k: number = 0, f16k: number = 0)
+    constructor(f32 = 0, f64 = 0, f125 = 0, f250 = 0, f500 = 0,
+        f1k = 0, f2k = 0, f4k = 0, f8k = 0, f16k = 0)
     {
         if (getInstance().useLegacy)
         {
             super(null);
+
             return;
         }
 
         const equalizerBands: Band[] = [
             {
                 f: EqualizerFilter.F32,
-                type: "lowshelf",
+                type: 'lowshelf',
                 gain: f32,
             },
             {
                 f: EqualizerFilter.F64,
-                type: "peaking",
+                type: 'peaking',
                 gain: f64,
             },
             {
                 f: EqualizerFilter.F125,
-                type: "peaking",
+                type: 'peaking',
                 gain: f125,
             },
             {
                 f: EqualizerFilter.F250,
-                type: "peaking",
+                type: 'peaking',
                 gain: f250,
             },
             {
                 f: EqualizerFilter.F500,
-                type: "peaking",
+                type: 'peaking',
                 gain: f500,
             },
             {
                 f: EqualizerFilter.F1K,
-                type: "peaking",
+                type: 'peaking',
                 gain: f1k,
             },
             {
                 f: EqualizerFilter.F2K,
-                type: "peaking",
+                type: 'peaking',
                 gain: f2k,
             },
             {
                 f: EqualizerFilter.F4K,
-                type: "peaking",
+                type: 'peaking',
                 gain: f4k,
             },
             {
                 f: EqualizerFilter.F8K,
-                type: "peaking",
+                type: 'peaking',
                 gain: f8k,
             },
             {
                 f: EqualizerFilter.F16K,
-                type: "highshelf",
+                type: 'highshelf',
                 gain: f16k,
             },
         ];
@@ -164,10 +165,12 @@ export class EqualizerFilter extends Filter
         const bands: BiquadFilterNode[] = equalizerBands.map((band: Band) =>
         {
             const node: BiquadFilterNode = getInstance().context.audioContext.createBiquadFilter();
+
             node.type = band.type as BiquadFilterType;
             WebAudioUtils.setParamValue(node.Q, 1);
             node.frequency.value = band.f; // WebAudioUtils.setParamValue(filter.frequency, band.f);
             WebAudioUtils.setParamValue(node.gain, band.gain);
+
             return node;
         });
 
@@ -198,11 +201,11 @@ export class EqualizerFilter extends Filter
      * @param {number} frequency - The frequency, see EqualizerFilter.F* for bands
      * @param {number} [gain=0] - Recommended -40 to 40.
      */
-    public setGain(frequency: number, gain: number = 0): void
+    public setGain(frequency: number, gain = 0): void
     {
         if (!this.bandsMap[frequency])
         {
-            throw new Error("No band found for frequency " + frequency);
+            throw new Error(`No band found for frequency ${frequency}`);
         }
         WebAudioUtils.setParamValue(this.bandsMap[frequency].gain, gain);
     }
@@ -215,8 +218,9 @@ export class EqualizerFilter extends Filter
     {
         if (!this.bandsMap[frequency])
         {
-            throw new Error("No band found for frequency " + frequency);
+            throw new Error(`No band found for frequency ${frequency}`);
         }
+
         return this.bandsMap[frequency].gain.value;
     }
 
@@ -363,14 +367,16 @@ export class EqualizerFilter extends Filter
     /** Reset all frequency bands to have gain of 0 */
     public reset(): void
     {
-        this.bands.forEach((band: BiquadFilterNode) => {
+        this.bands.forEach((band: BiquadFilterNode) =>
+        {
             WebAudioUtils.setParamValue(band.gain, 0);
         });
     }
 
     public destroy(): void
     {
-        this.bands.forEach((band: BiquadFilterNode) => {
+        this.bands.forEach((band: BiquadFilterNode) =>
+        {
             band.disconnect();
         });
         (this as any).bands = null;

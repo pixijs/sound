@@ -1,5 +1,5 @@
-import { Sound } from "../Sound";
-import { WebAudioContext, WebAudioMedia } from "../webaudio";
+import { Sound } from '../Sound';
+import { WebAudioContext, WebAudioMedia } from '../webaudio';
 
 /**
  * Create a new sound for a sine wave-based tone.  **Only supported with WebAudio**
@@ -8,7 +8,7 @@ import { WebAudioContext, WebAudioMedia } from "../webaudio";
  * @param {number} [seconds=1] - Duration of sound in seconds.
  * @return {Sound} New sound.
  */
-export function sineTone(hertz: number = 200, seconds: number = 1): Sound
+export function sineTone(hertz = 200, seconds = 1): Sound
 {
     const sound = Sound.from({
         singleInstance: true,
@@ -40,11 +40,13 @@ export function sineTone(hertz: number = 200, seconds: number = 1): Sound
     {
         const time  = i / buffer.sampleRate;
         const angle = hertz * time * Math.PI;
+
         fArray[i] = Math.sin(angle) * amplitude;
     }
 
     // set the buffer
     media.buffer = buffer;
     sound.isLoaded = true;
+
     return sound;
 }

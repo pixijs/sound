@@ -1,0 +1,13 @@
+{
+	"env": {
+        "browser": true,
+        "node": true
+    },
+    "globals": {
+        "__resources": true
+    },
+	"rules": {
+		"func-names": 0,
+        "global-require": 0
+	}
+}

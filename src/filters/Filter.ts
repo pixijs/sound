@@ -23,7 +23,7 @@ export class Filter
     }
 
     /** Reinitialize */
-    protected init(destination: AudioNode, source?: AudioNode)
+    protected init(destination: AudioNode, source?: AudioNode): void
     {
         this.destination = destination;
         this.source = source || destination;

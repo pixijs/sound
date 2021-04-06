@@ -1,2 +1,2 @@
-require("./")("../");
-require("./")("../", true);
+require('./')('../');
+require('./')('../', true);

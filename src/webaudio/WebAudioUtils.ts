@@ -1,5 +1,5 @@
-import { getInstance } from "../instance";
-import { WebAudioContext } from "./WebAudioContext";
+import { getInstance } from '../instance';
+import { WebAudioContext } from './WebAudioContext';
 
 /**
  * Internal class for Web Audio abstractions and convenience methods.
@@ -21,12 +21,14 @@ export class WebAudioUtils
         if (param.setValueAtTime)
         {
             const context = getInstance().context as WebAudioContext;
+
             param.setValueAtTime(value, context.audioContext.currentTime);
         }
         else
         {
             param.value = value;
         }
+
         return value;
     }
 }

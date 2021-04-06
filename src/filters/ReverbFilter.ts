@@ -1,5 +1,5 @@
-import { getInstance } from "../instance";
-import { Filter } from "./Filter";
+import { getInstance } from '../instance';
+import { Filter } from './Filter';
 
 /**
  * Filter for adding reverb. Refactored from
@@ -19,11 +19,12 @@ export class ReverbFilter extends Filter
      * @param decay - The decay length
      * @param reverse - Reverse reverb
      */
-    constructor(seconds: number = 3, decay: number = 2, reverse: boolean = false)
+    constructor(seconds = 3, decay = 2, reverse = false)
     {
         if (getInstance().useLegacy)
         {
             super(null);
+
             return;
         }
 
@@ -103,13 +104,14 @@ export class ReverbFilter extends Filter
         const impulseR: Float32Array = impulse.getChannelData(1);
         let n: number;
 
-        for (let i: number = 0; i < length; i++)
+        for (let i = 0; i < length; i++)
         {
             n = this._reverse ? length - i : i;
-            impulseL[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, this._decay);
-            impulseR[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, this._decay);
+            impulseL[i] = ((Math.random() * 2) - 1) * Math.pow(1 - (n / length), this._decay);
+            impulseR[i] = ((Math.random() * 2) - 1) * Math.pow(1 - (n / length), this._decay);
         }
         const convolver = getInstance().context.audioContext.createConvolver();
+
         convolver.buffer = impulse;
         this.init(convolver);
     }

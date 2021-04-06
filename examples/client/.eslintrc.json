@@ -1,0 +1,15 @@
+{
+	"env": {
+        "browser": true
+    },
+    "globals": {
+        "PIXI": true,
+        "jQuery": true,
+        "hljs": true,
+        "sortable": true
+    },
+	"rules": {
+		"func-names": 0,
+        "no-eval": 0
+	}
+}

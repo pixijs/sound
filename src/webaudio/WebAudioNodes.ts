@@ -1,6 +1,6 @@
-import { Filterable } from "../Filterable";
-import { WebAudioContext } from "./WebAudioContext";
-import { WebAudioUtils } from "./WebAudioUtils";
+import { Filterable } from '../Filterable';
+import { WebAudioContext } from './WebAudioContext';
+import { WebAudioUtils } from './WebAudioUtils';
 
 /**
  * Output for cloneing node
@@ -25,7 +25,7 @@ export class WebAudioNodes extends Filterable
      * @type {number}
      * @default 0
      */
-    public static BUFFER_SIZE: number = 0;
+    public static BUFFER_SIZE = 0;
 
     /**
      * Get the buffer source node
@@ -92,6 +92,7 @@ export class WebAudioNodes extends Filterable
             this._script = this.context.audioContext.createScriptProcessor(WebAudioNodes.BUFFER_SIZE);
             this._script.connect(this.context.destination);
         }
+
         return this._script;
     }
 
@@ -124,13 +125,16 @@ export class WebAudioNodes extends Filterable
     {
         const orig: AudioBufferSourceNode = this.bufferSource;
         const source: AudioBufferSourceNode = this.context.audioContext.createBufferSource();
+
         source.buffer = orig.buffer;
         WebAudioUtils.setParamValue(source.playbackRate, orig.playbackRate.value);
         source.loop = orig.loop;
 
         const gain: GainNode = this.context.audioContext.createGain();
+
         source.connect(gain);
         gain.connect(this.destination);
+
         return { source, gain };
     }
 
