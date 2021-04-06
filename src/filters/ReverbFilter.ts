@@ -8,7 +8,7 @@ import { Filter } from './Filter';
  * @class
  * @memberof filters
  */
-export class ReverbFilter extends Filter
+class ReverbFilter extends Filter
 {
     private _seconds: number;
     private _decay: number;
@@ -41,7 +41,7 @@ export class ReverbFilter extends Filter
      * @param {number} value
      * @param {number} min - Minimum value
      * @param {number} max - Maximum value
-     * @return {number} Clamped number
+     * @return Clamped number
      */
     private _clamp(value: number, min: number, max: number): number
     {
@@ -116,3 +116,5 @@ export class ReverbFilter extends Filter
         this.init(convolver);
     }
 }
+
+export { ReverbFilter };

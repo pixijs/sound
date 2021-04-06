@@ -2,7 +2,7 @@ import { BaseTexture } from '@pixi/core';
 import { Sound } from '../Sound';
 import { WebAudioMedia } from '../webaudio';
 
-export interface RenderOptions {
+interface RenderOptions {
     width?: number;
     height?: number;
     fill?: string | CanvasPattern | CanvasGradient;
@@ -16,9 +16,9 @@ export interface RenderOptions {
  * @param {number} [options.width=512] - Width of the render
  * @param {number} [options.height=128] - Height of the render
  * @param {string|CanvasPattern|CanvasGradient} [options.fill='black'] - Fill style for waveform
- * @return {PIXI.BaseTexture} Result texture
+ * @return Result texture
  */
-export function render(sound: Sound, options?: RenderOptions): BaseTexture
+function render(sound: Sound, options?: RenderOptions): BaseTexture
 {
     const canvas: HTMLCanvasElement = document.createElement('canvas');
 
@@ -72,3 +72,6 @@ export function render(sound: Sound, options?: RenderOptions): BaseTexture
 
     return baseTexture;
 }
+
+export type { RenderOptions };
+export { render };

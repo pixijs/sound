@@ -4,7 +4,7 @@
  * @class
  * @memberof filters
  */
-export class Filter
+class Filter
 {
     /** The node to connect for the filter to the previous filter. */
     public destination: AudioNode;
@@ -52,3 +52,5 @@ export class Filter
         this.source = null;
     }
 }
+
+export { Filter };

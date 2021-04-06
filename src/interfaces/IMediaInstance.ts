@@ -4,10 +4,8 @@ import { IMedia } from './IMedia';
 /**
  * Interface for single instance return by a Sound play call. This can either
  * be a WebAudio or HTMLAudio instance.
- * @class
- * @extends PIXI.utils.EventEmitter
  */
-export interface IMediaInstance
+interface IMediaInstance
 {
     /** Auto-incrementing ID for the instance. */
     readonly id: number;
@@ -98,3 +96,5 @@ export interface IMediaInstance
      */
     set(name: 'speed' | 'volume' | 'muted' | 'loop' | 'paused', value: number | boolean): this;
 }
+
+export type { IMediaInstance };

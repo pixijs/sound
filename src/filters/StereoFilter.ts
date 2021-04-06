@@ -8,7 +8,7 @@ import { Filter } from './Filter';
  * @class
  * @memberof filters
  */
-export class StereoFilter extends Filter
+class StereoFilter extends Filter
 {
     /** The stereo panning node */
     private _stereo: StereoPannerNode;
@@ -79,3 +79,5 @@ export class StereoFilter extends Filter
         this._panner = null;
     }
 }
+
+export { StereoFilter };

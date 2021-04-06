@@ -24,7 +24,7 @@ interface Band {
  * @param {number} [f8k=0] - Default gain for 8000 Hz
  * @param {number} [f16k=0] - Default gain for 16000 Hz
  */
-export class EqualizerFilter extends Filter
+class EqualizerFilter extends Filter
 {
     /**
      * Band at 32 Hz
@@ -212,7 +212,7 @@ export class EqualizerFilter extends Filter
 
     /**
      * Get gain amount on a specific frequency.
-     * @return {number} The amount of gain set.
+     * @return The amount of gain set.
      */
     public getGain(frequency: number): number
     {
@@ -383,3 +383,5 @@ export class EqualizerFilter extends Filter
         (this as any).bandsMap = null;
     }
 }
+
+export { EqualizerFilter };

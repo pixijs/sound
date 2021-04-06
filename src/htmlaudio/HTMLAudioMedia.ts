@@ -12,7 +12,7 @@ import { HTMLAudioInstance } from './HTMLAudioInstance';
  * @param {HTMLAudioElement|String|Object} options - Either the path or url to the source file.
  *        or the object of options to use. See {@link Sound.from}
  */
-export class HTMLAudioMedia extends EventEmitter implements IMedia
+class HTMLAudioMedia extends EventEmitter implements IMedia
 {
     public parent: Sound;
     private _source: HTMLAudioElement;
@@ -179,3 +179,5 @@ export class HTMLAudioMedia extends EventEmitter implements IMedia
         source.load();
     }
 }
+
+export { HTMLAudioMedia };

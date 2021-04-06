@@ -5,7 +5,7 @@ export type ExtensionMap = {[key: string]: boolean};
  * @readonly
  * @static
  */
-export const extensions: string[] = [
+const extensions: string[] = [
     'mp3',
     'ogg',
     'oga',
@@ -35,7 +35,7 @@ export const extensions: string[] = [
  * @property {boolean} caf - `true` if file-type is supported. Note that for this we check if the
  *                             'opus' codec is supported inside the caf container.
  */
-export const supported: ExtensionMap = {};
+const supported: ExtensionMap = {};
 
 /**
  * Function to validate file type formats. This is called when the library initializes, but can
@@ -46,7 +46,7 @@ export const supported: ExtensionMap = {};
  *                                 AudioElement.canPlayType()), keyed by extension from the
  *                                 PIXI.sound.utils.extensions array.
  */
-export function validateFormats(typeOverrides?: {[key: string]: string}): void
+function validateFormats(typeOverrides?: {[key: string]: string}): void
 {
     const overrides: {[key: string]: string} = {
         m4a: 'audio/mp4',
@@ -69,3 +69,9 @@ export function validateFormats(typeOverrides?: {[key: string]: string}): void
 
 // initialize supported
 validateFormats();
+
+export {
+    validateFormats,
+    supported,
+    extensions
+};

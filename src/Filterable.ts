@@ -6,7 +6,7 @@ import { Filter } from './filters/Filter';
  * dynamic filters.
  * @class
  */
-export class Filterable
+class Filterable
 {
     /** Get the gain node */
     private _input: AudioNode;
@@ -96,3 +96,5 @@ export class Filterable
         this._output = null;
     }
 }
+
+export { Filterable };

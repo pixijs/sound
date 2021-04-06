@@ -5,7 +5,7 @@ import { getInstance } from '../instance';
  * @static
  * @default 0
  */
-export let PLAY_ID = 0;
+let PLAY_ID = 0;
 
 /**
  * Create a new "Audio" stream based on given audio path and project uri; returns the audio object.
@@ -14,7 +14,7 @@ export let PLAY_ID = 0;
  * @param {Function} callback - Callback when complete.
  * @return New audio element alias.
  */
-export function playOnce(url: string, callback?: (err?: Error) => void): string
+function playOnce(url: string, callback?: (err?: Error) => void): string
 {
     const alias = `alias${PLAY_ID++}`;
 
@@ -46,3 +46,5 @@ export function playOnce(url: string, callback?: (err?: Error) => void): string
 
     return alias;
 }
+
+export { playOnce, PLAY_ID };

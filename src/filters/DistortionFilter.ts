@@ -7,7 +7,7 @@ import { Filter } from './Filter';
  * @class
  * @memberof filters
  */
-export class DistortionFilter extends Filter
+class DistortionFilter extends Filter
 {
     /** The Wave shape node use to distort */
     private _distortion: WaveShaperNode;
@@ -66,3 +66,5 @@ export class DistortionFilter extends Filter
         super.destroy();
     }
 }
+
+export { DistortionFilter };

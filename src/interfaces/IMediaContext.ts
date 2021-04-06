@@ -3,9 +3,8 @@ import { Filter } from '../filters';
 /**
  * Represents the audio context for playing back sounds. This can
  * represent either an HTML or WebAudio context.
- * @class
  */
-export interface IMediaContext
+interface IMediaContext
 {
     /** `true` if all sounds are muted */
     muted: boolean;
@@ -40,3 +39,5 @@ export interface IMediaContext
     /** Reference to the Web Audio API AudioContext element, if Web Audio is available */
     audioContext: AudioContext;
 }
+
+export type { IMediaContext };

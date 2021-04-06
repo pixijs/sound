@@ -10,7 +10,7 @@ import { WebAudioNodes } from './WebAudioNodes';
  * @class
  * @memberof webaudio
  */
-export class WebAudioMedia implements IMedia
+class WebAudioMedia implements IMedia
 {
     /**
      * Reference to the parent Sound container.
@@ -187,3 +187,5 @@ export class WebAudioMedia implements IMedia
         });
     }
 }
+
+export { WebAudioMedia };

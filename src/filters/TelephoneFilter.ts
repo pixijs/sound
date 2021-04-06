@@ -8,7 +8,7 @@ import { Filter } from './Filter';
  * @class
  * @memberof filters
  */
-export class TelephoneFilter extends Filter
+class TelephoneFilter extends Filter
 {
     constructor()
     {
@@ -44,3 +44,5 @@ export class TelephoneFilter extends Filter
         super(lpf1, hpf2);
     }
 }
+
+export { TelephoneFilter };

@@ -6,31 +6,124 @@ import { SoundSprite, SoundSpriteData, SoundSprites } from './sprites';
 import { resolveUrl } from './utils/resolveUrl';
 import { WebAudioMedia } from './webaudio';
 
-// Constructor options
-export interface Options {
+/**
+ * Options to use for creating sounds.
+ */
+interface Options {
+    /**
+     * `true` to immediately start preloading.
+     * @type {boolean}
+     * @default false
+     */
     autoPlay?: boolean;
+    /**
+     * `true` to disallow playing multiple layered instances at once.
+     * @type {boolean}
+     * @default false
+     */
     singleInstance?: boolean;
+    /**
+     * The amount of volume 1 = 100%.
+     * @type {number}
+     * @default 1
+     */
     volume?: number;
+    /**
+     * The playback rate where 1 is 100% speed.
+     * @type {number}
+     * @default 1
+     */
     speed?: number;
+    /**
+     * Global complete callback when play is finished.
+     * @type {Function}
+     */
     complete?: CompleteCallback;
+    /**
+     * Call when finished loading.
+     * @type {Function}
+     */
     loaded?: LoadedCallback;
+    /**
+     * `true` to immediately start preloading if loading from `url`.
+     * @type {boolean}
+     */
     preload?: boolean;
+    /**
+     * Initial loop value, `true` is loop infinitely
+     * @type {boolean}
+     * @default false
+     */
     loop?: boolean;
+    /**
+     * The source of the file being loaded
+     * @type {string}
+     */
     url?: string;
+    /**
+     * If sound is already preloaded, available.
+     * @type {ArrayBuffer|HTMLAudioElement}
+     */
     source?: ArrayBuffer | HTMLAudioElement;
+    /**
+     * The map of sprite data. Where a sprite is an object
+     * with a `start` and `end`, which are the times in seconds. Optionally, can include
+     * a `speed` amount where 1 is 100% speed.
+     * @type {Object<string, SoundSpriteData>}
+     */
     sprites?: {[id: string]: SoundSpriteData};
 }
 
-// Interface for play options
-export interface PlayOptions {
+/**
+ * Options used for sound playback.
+ */
+interface PlayOptions {
+    /**
+     * Start time offset in seconds.
+     * @type {number}
+     * @default 0
+     */
     start?: number;
+    /**
+     * End time in seconds.
+     * @type {number}
+     */
     end?: number;
+    /**
+     * Override default speed, default to the Sound's speed setting.
+     * @type {number}
+     */
     speed?: number;
+    /**
+    * Override default loop, default to the Sound's loop setting.
+    * @type {number}
+    */
     loop?: boolean;
+    /**
+     * Override default volume, default to the Sound's volume setting.
+     * @type {number}
+     */
     volume?: number;
+    /**
+     * The sprite to play.
+     * @type {string}
+     */
     sprite?: string;
+    /**
+     * If sound instance is muted by default.
+     * @type {boolean}
+     * @default false
+     */
     muted?: boolean;
+    /**
+     * When completed.
+     * @type {Function}
+     */
     complete?: CompleteCallback;
+    /**
+     * If not already preloaded, callback when finishes load.
+     * @type {Function}
+     */
     loaded?: LoadedCallback;
 }
 
@@ -41,23 +134,23 @@ export interface PlayOptions {
  * @param {Sound} sound - The instance of new sound.
  * @param {IMediaInstance} instance - The instance of auto-played sound.
  */
-export type LoadedCallback = (err: Error, sound?: Sound, instance?: IMediaInstance) => void;
+type LoadedCallback = (err: Error, sound?: Sound, instance?: IMediaInstance) => void;
 
 /**
  * Callback when sound is completed.
  * @ignore
  * @param {Sound} sound - The instance of sound.
  */
-export type CompleteCallback = (sound: Sound) => void;
+type CompleteCallback = (sound: Sound) => void;
 
-export type SoundSpriteDataMap = {[id: string]: SoundSpriteData};
+type SoundSpriteDataMap = {[id: string]: SoundSpriteData};
 
 /**
  * Sound represents a single piece of loaded media. When playing a sound {@link IMediaInstance} objects
  * are created. Properties such a `volume`, `pause`, `mute`, `speed`, etc will have an effect on all instances.
  * @class
  */
-export class Sound
+class Sound
 {
     /**
      * Pool of instances
@@ -173,23 +266,9 @@ export class Sound
 
     /**
      * Create a new sound instance from source.
-     * @param {ArrayBuffer|String|Object|HTMLAudioElement} options - Either the path or url to the source file.
+     * @param {ArrayBuffer|String|Options|HTMLAudioElement} options - Either the path or url to the source file.
      *        or the object of options to use.
-     * @param {String} [options.url] - If `options` is an object, the source of file.
-     * @param {HTMLAudioElement|ArrayBuffer} [options.source] - The source, if already preloaded.
-     * @param {boolean} [options.autoPlay=false] - true to play after loading.
-     * @param {boolean} [options.preload=false] - true to immediately start preloading.
-     * @param {boolean} [options.singleInstance=false] - `true` to disallow playing multiple layered instances at once.
-     * @param {number} [options.volume=1] - The amount of volume 1 = 100%.
-     * @param {number} [options.speed=1] - The playback rate where 1 is 100% speed.
-     * @param {Object} [options.sprites] - The map of sprite data. Where a sprite is an object
-     *        with a `start` and `end`, which are the times in seconds. Optionally, can include
-     *        a `speed` amount where 1 is 100% speed.
-     * @param {Sound~completeCallback} [options.complete=null] - Global complete callback
-     *        when play is finished.
-     * @param {Sound~loadedCallback} [options.loaded=null] - Call when finished loading.
-     * @param {boolean} [options.loop=false] - true to loop the audio playback.
-     * @return {Sound} Created sound instance.
+     * @return Created sound instance.
      */
     public static from(source: string | Options | ArrayBuffer | HTMLAudioElement): Sound
     {
@@ -349,7 +428,7 @@ export class Sound
      * @param {number} data.start - Time when to play the sound in seconds.
      * @param {number} data.end - Time to end playing in seconds.
      * @param {number} data.speed - Override default speed, default to the Sound's speed setting.
-     * @return {SoundSprite} Sound sprite result.
+     * @return Sound sprite result.
      */
     public addSprites(alias: string, data: SoundSpriteData): SoundSprite;
 
@@ -357,7 +436,7 @@ export class Sound
      * Convenience method to add more than one sprite add a time.
      * @param {Object} data - Map of sounds to add where the key is the alias,
      *        and the data are configuration options, see {@PIXI.sound.Sound#addSprite} for info on data.
-     * @return {Object} The map of sound sprites added.
+     * @return The map of sound sprites added.
      */
     public addSprites(sprites: SoundSpriteDataMap): SoundSprites;
 
@@ -401,7 +480,7 @@ export class Sound
     /**
      * Remove a sound sprite.
      * @param {String} alias - The unique name of the sound sprite, if alias is omitted, removes all sprites.
-     * @return {Sound} Sound instance for chaining.
+     * @return Sound instance for chaining.
      */
     public removeSprites(alias?: string): Sound
     {
@@ -461,13 +540,9 @@ export class Sound
      * Similar to an image spritesheet.
      * @method play
      * @instance
-     * @param {String} alias - The unique name of the sound sprite.
-     * @param {object} data - Either completed function or play options.
-     * @param {number} data.start - Time when to play the sound in seconds.
-     * @param {number} data.end - Time to end playing in seconds.
-     * @param {number} data.speed - Override default speed, default to the Sound's speed setting.
+     * @param alias - The unique name of the sound sprite.
      * @param {Function} callback - Callback when completed.
-     * @return {IMediaInstance|Promise<PIXI.sound.IMediaInstance>} The sound instance,
+     * @return The sound instance,
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
      */
@@ -477,18 +552,8 @@ export class Sound
      * Plays the sound.
      * @method play
      * @instance
-     * @param {Sound~completeCallback|object} options - Either completed function or play options.
-     * @param {number} [options.start=0] - Time when to play the sound in seconds.
-     * @param {number} [options.end] - Time to end playing in seconds.
-     * @param {String} [options.sprite] - Play a named sprite. Will override end, start and speed options.
-     * @param {number} [options.speed] - Override default speed, default to the Sound's speed setting.
-     * @param {number} [options.volume] - Current volume amount for instance.
-     * @param {boolean} [options.muted] - Override default muted, default to the Sound's muted setting.
-     * @param {boolean} [options.loop] - Override default loop, default to the Sound's loop setting.
-     * @param {Sound~completeCallback} [options.complete] - Callback when complete.
-     * @param {Sound~loadedCallback} [options.loaded] - If the sound isn't already preloaded, callback when
-     *        the audio has completely finished loading and decoded.
-     * @return {IMediaInstance|Promise<PIXI.sound.IMediaInstance>} The sound instance,
+     * @param {Function|PlayOptions} options - Either completed function or play options.
+     * @return The sound instance,
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
      */
@@ -660,7 +725,10 @@ export class Sound
         this.refresh();
     }
 
-    /** Starts the preloading of sound. */
+    /**
+     * Starts the preloading of sound.
+     * @private
+     */
     private _preload(callback?: LoadedCallback): void
     {
         this.media.load(callback);
@@ -703,7 +771,10 @@ export class Sound
         return instance;
     }
 
-    /** Removes all instances. */
+    /**
+     * Removes all instances.
+     * @private
+     */
     private _removeInstances(): void
     {
         // destroying also stops
@@ -716,6 +787,7 @@ export class Sound
 
     /**
      * Sound instance completed.
+     * @private
      * @param {IMediaInstance} instance
      */
     private _onComplete(instance: IMediaInstance): void
@@ -735,7 +807,8 @@ export class Sound
 
     /**
      * Create a new instance.
-     * @return {IMediaInstance} New instance to use
+     * @private
+     * @return New instance to use
      */
     private _createInstance(): IMediaInstance
     {
@@ -753,7 +826,8 @@ export class Sound
 
     /**
      * Destroy/recycling the instance object.
-     * @param {IMediaInstance} instance - - Instance to recycle
+     * @private
+     * @param instance - - Instance to recycle
      */
     private _poolInstance(instance: IMediaInstance): void
     {
@@ -765,3 +839,12 @@ export class Sound
         }
     }
 }
+
+export { Sound };
+export type {
+    Options,
+    PlayOptions,
+    LoadedCallback,
+    CompleteCallback,
+    SoundSpriteDataMap
+};

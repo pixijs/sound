@@ -10,7 +10,7 @@ import { IMediaContext } from '../interfaces';
  * @extends PIXI.sound.Filterable
  * @memberof webaudio
  */
-export class WebAudioContext extends Filterable implements IMediaContext
+class WebAudioContext extends Filterable implements IMediaContext
 {
     /**
      * Context Compressor node
@@ -288,3 +288,5 @@ export class WebAudioContext extends Filterable implements IMediaContext
         );
     }
 }
+
+export { WebAudioContext };

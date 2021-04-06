@@ -5,9 +5,8 @@ import { IMediaInstance } from './IMediaInstance';
 
 /**
  * Interface represents either a WebAudio source or an HTML5 AudioElement source
- * @class
  */
-export interface IMedia {
+interface IMedia {
 
     /** Collection of global filters */
     filters: Filter[];
@@ -27,3 +26,5 @@ export interface IMedia {
     load(callback?: LoadedCallback): void;
     destroy(): void;
 }
+
+export type { IMedia };

@@ -7,7 +7,7 @@ import { extensions } from '../utils/supported';
  * Sound middleware installation utilities for PIXI.Loader
  * @class
  */
-export class SoundLoader implements ILoaderPlugin
+class SoundLoader implements ILoaderPlugin
 {
     /** Install the middleware */
     public static add(): void
@@ -70,3 +70,5 @@ export class SoundLoader implements ILoaderPlugin
         }
     }
 }
+
+export { SoundLoader };

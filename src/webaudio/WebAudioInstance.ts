@@ -13,7 +13,7 @@ let id = 0;
  * @memberof webaudio
  * @param {SoundNodes} source - Reference to the SoundNodes.
  */
-export class WebAudioInstance extends EventEmitter implements IMediaInstance
+class WebAudioInstance extends EventEmitter implements IMediaInstance
 {
     /**
      * The current unique ID for this instance.
@@ -123,7 +123,6 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
      * Set a property by name, this makes it easy to chain values
      * @param {string} name - - Values include: 'speed', 'volume', 'muted', 'loop', 'paused'
      * @param {number|boolean} value - - Value to set property to
-     * @return {webaudio.WebAudioInstance}
      */
     public set(name: 'speed' | 'volume' | 'muted' | 'loop' | 'paused', value: number | boolean): this
     {
@@ -414,7 +413,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * To string method for instance.
-     * @return {string} The string representation of instance.
+     * @return The string representation of instance.
      */
     public toString(): string
     {
@@ -423,7 +422,7 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * Get the current time in seconds.
-     * @return {number} Seconds since start of context
+     * @return Seconds since start of context
      */
     private _now(): number
     {
@@ -521,3 +520,5 @@ export class WebAudioInstance extends EventEmitter implements IMediaInstance
         this.emit('end', this);
     }
 }
+
+export { WebAudioInstance };

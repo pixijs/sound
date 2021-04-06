@@ -5,14 +5,14 @@ import { SoundLoader } from './loader';
 import { CompleteCallback, Options, PlayOptions, Sound } from './Sound';
 import * as webaudio from './webaudio';
 
-export type SoundMap = {[id: string]: Options | string | ArrayBuffer | HTMLAudioElement};
-export type Sounds = {[id: string]: Sound};
+type SoundMap = {[id: string]: Options | string | ArrayBuffer | HTMLAudioElement};
+type Sounds = {[id: string]: Sound};
 
 /**
  * Manages the playback of sounds.
  * @class
  */
-export class SoundLibrary
+class SoundLibrary
 {
     /**
      * For legacy approach for Audio. Instead of using WebAudio API
@@ -106,27 +106,14 @@ export class SoundLibrary
      * @instance
      * @param {string} alias - The sound alias reference.
      * @param {Sound} sound - Sound reference to use.
-     * @return {Sound} Instance of the Sound object.
+     * @return Instance of the Sound object.
      */
 
     /**
      * Adds a new sound by alias.
      * @param alias - The sound alias reference.
-     * @param {ArrayBuffer|String|Object|HTMLAudioElement} options - Either the path or url to the source file.
+     * @param {ArrayBuffer|String|Options|HTMLAudioElement} options - Either the path or url to the source file.
      *        or the object of options to use.
-     * @param {String} [options.url] - If `options` is an object, the source of file.
-     * @param {ArrayBuffer|HTMLAudioElement} [options.source] - If sound is already preloaded, available.
-     * @param {boolean} [options.autoPlay=false] - true to play after loading.
-     * @param {boolean} [options.preload=false] - true to immediately start preloading.
-     * @param {boolean} [options.singleInstance=false] - `true` to disallow playing multiple layered instances at once.
-     * @param {number} [options.volume=1] - The amount of volume 1 = 100%.
-     * @param {number} [options.speed=1] - The playback rate where 1 is 100% speed.
-     * @param {Object} [options.sprites] - The map of sprite data. Where a sprite is an object
-     *        with a `start` and `end`, which are the times in seconds. Optionally, can include
-     *        a `speed` amount where 1 is 100% speed.
-     * @param {Function} [options.complete=null] - Global complete callback when
-     *        play is finished.
-     * @param {Function} [options.loaded=null] - Call when finished loading.
      * @return Instance of the Sound object.
      */
     public add(alias: string, options: Options | string | ArrayBuffer | HTMLAudioElement | Sound): Sound;
@@ -184,6 +171,7 @@ export class SoundLibrary
 
     /**
      * Internal methods for getting the options object
+     * @private
      * @param source - The source options
      * @param overrides - Override default options
      * @return The construction options
@@ -300,7 +288,7 @@ export class SoundLibrary
 
     /**
      * Toggle muted property for all sounds.
-     * @return {boolean} `true` if all sounds are muted.
+     * @return `true` if all sounds are muted.
      */
     public toggleMuteAll(): boolean
     {
@@ -403,14 +391,8 @@ export class SoundLibrary
     /**
      * Plays a sound.
      * @param alias - The sound alias reference.
-     * @param {Object|Function} options - The options or callback when done.
-     * @param {Function} [options.complete] - When completed.
-     * @param {Function} [options.loaded] - If not already preloaded, callback when finishes load.
-     * @param {number} [options.start=0] - Start time offset.
-     * @param {number} [options.end] - End time offset.
-     * @param {number} [options.speed] - Override default speed, default to the Sound's speed setting.
-     * @param {boolean} [options.loop] - Override default loop, default to the Sound's loop setting.
-     * @return {IMediaInstance|Promise<PIXI.sound.IMediaInstance>} The sound instance,
+     * @param {PlayOptions|Function} options - The options or callback when done.
+     * @return The sound instance,
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
      */
@@ -521,3 +503,6 @@ export class SoundLibrary
         return this;
     }
 }
+
+export { SoundLibrary };
+export type { SoundMap, Sounds };

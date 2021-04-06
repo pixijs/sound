@@ -16,9 +16,9 @@ const FORMAT_PATTERN = /\.(\{([^\}]+)\})(\?.*)?$/;
  * @param {string|PIXI.LoaderResource} source - - Path to resolve or Resource, if
  *        a Resource object is provided, automatically updates the extension and url
  *        of that object.
- * @return {string} The format to resolve to
+ * @return The format to resolve to
  */
-export function resolveUrl(source: string | ILoaderResource): string
+function resolveUrl(source: string | ILoaderResource): string
 {
     // search for patterns like ".{mp3,ogg}""
     const glob = FORMAT_PATTERN;
@@ -56,3 +56,5 @@ export function resolveUrl(source: string | ILoaderResource): string
 
     return resolved;
 }
+
+export { resolveUrl };

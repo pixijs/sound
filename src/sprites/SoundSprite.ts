@@ -2,20 +2,20 @@ import { IMediaInstance } from '../interfaces';
 import { CompleteCallback, Sound } from '../Sound';
 
 // Sound sprite data setup
-export interface SoundSpriteData {
+interface SoundSpriteData {
     start: number;
     end: number;
     speed?: number;
 }
 
 // Collection of sound sprites
-export type SoundSprites = {[id: string]: SoundSprite};
+type SoundSprites = {[id: string]: SoundSprite};
 
 /**
  * Object that represents a single Sound's sprite.
  * @class
  */
-export class SoundSprite
+class SoundSprite
 {
     /**
      * The reference sound
@@ -92,3 +92,6 @@ export class SoundSprite
         this.parent = null;
     }
 }
+
+export type { SoundSprites, SoundSpriteData };
+export { SoundSprite };

@@ -3,12 +3,18 @@ import { WebAudioContext } from './WebAudioContext';
 import { WebAudioUtils } from './WebAudioUtils';
 
 /**
- * Output for cloneing node
- * @property {AudioBufferSourceNode} source - Cloned audio buffer source
- * @property {GainNode} gain - Independent volume control
+ * Output for cloning source node.
  */
-export interface SourceClone {
+interface SourceClone {
+    /**
+     * Cloned audio buffer source
+     * @type {AudioBufferSourceNode}
+     */
     source: AudioBufferSourceNode;
+    /**
+     * Independent volume control
+     * @type {GainNode}
+     */
     gain: GainNode;
 }
 
@@ -17,7 +23,7 @@ export interface SourceClone {
  * @extends PIXI.sound.Filterable
  * @memberof webaudio
  */
-export class WebAudioNodes extends Filterable
+class WebAudioNodes extends Filterable
 {
     /**
      * The buffer size for script processor, default is `0` which auto-detects. If you plan to use
@@ -119,7 +125,7 @@ export class WebAudioNodes extends Filterable
 
     /**
      * Clones the bufferSource. Used just before playing a sound.
-     * @returns {SoundNodes~SourceClone} The clone AudioBufferSourceNode.
+     * @returns {SourceClone} The clone AudioBufferSourceNode.
      */
     public cloneBufferSource(): SourceClone
     {
@@ -144,3 +150,6 @@ export class WebAudioNodes extends Filterable
         return this.script.bufferSize;
     }
 }
+
+export type { SourceClone };
+export { WebAudioNodes };

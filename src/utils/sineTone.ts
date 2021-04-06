@@ -6,9 +6,9 @@ import { WebAudioContext, WebAudioMedia } from '../webaudio';
  * @static
  * @param {number} [hertz=200] - Frequency of sound.
  * @param {number} [seconds=1] - Duration of sound in seconds.
- * @return {Sound} New sound.
+ * @return New sound.
  */
-export function sineTone(hertz = 200, seconds = 1): Sound
+function sineTone(hertz = 200, seconds = 1): Sound
 {
     const sound = Sound.from({
         singleInstance: true,
@@ -50,3 +50,5 @@ export function sineTone(hertz = 200, seconds = 1): Sound
 
     return sound;
 }
+
+export { sineTone };

@@ -7,7 +7,7 @@ import { Filter } from './Filter';
  * @class
  * @memberof filters
  */
-export class MonoFilter extends Filter
+class MonoFilter extends Filter
 {
     /** Merger node */
     private _merger: ChannelMergerNode;
@@ -36,3 +36,5 @@ export class MonoFilter extends Filter
         super.destroy();
     }
 }
+
+export { MonoFilter };

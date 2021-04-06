@@ -8,7 +8,7 @@ import { IMediaContext } from '../interfaces/IMediaContext';
  * @extends PIXI.util.EventEmitter
  * @memberof htmlaudio
  */
-export class HTMLAudioContext extends EventEmitter implements IMediaContext
+class HTMLAudioContext extends EventEmitter implements IMediaContext
 {
     /** Current global speed from 0 to 1 */
     public speed = 1;
@@ -84,3 +84,5 @@ export class HTMLAudioContext extends EventEmitter implements IMediaContext
         this.removeAllListeners();
     }
 }
+
+export { HTMLAudioContext };

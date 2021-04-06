@@ -11,7 +11,7 @@ let id = 0;
  * @class
  * @memberof htmlaudio
  */
-export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
+class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 {
     /** Extra padding, in seconds, to deal with low-latecy of HTMLAudio. */
     public static readonly PADDING: number = 0.1;
@@ -392,10 +392,12 @@ export class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * To string method for instance.
-     * @return {String} The string representation of instance.
+     * @return The string representation of instance.
      */
     public toString(): string
     {
         return `[HTMLAudioInstance id=${this.id}]`;
     }
 }
+
+export { HTMLAudioInstance };

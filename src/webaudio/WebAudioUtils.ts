@@ -6,7 +6,7 @@ import { WebAudioContext } from './WebAudioContext';
  * @class
  * @memberof webaudio
  */
-export class WebAudioUtils
+class WebAudioUtils
 {
     /**
      * Dezippering is removed in the future Web Audio API, instead
@@ -32,3 +32,5 @@ export class WebAudioUtils
         return value;
     }
 }
+
+export { WebAudioUtils };
