@@ -30,7 +30,7 @@ type SoundSprites = {[id: string]: SoundSprite};
  * use the {@link Sound#addSprites} method.
  * @class
  * @example
- * import { sound } from 'pixi-sound';
+ * import { sound } from '@pixi/sound';
  * sound.add('alias', {
  *   url: 'path/to/file.ogg',
  *   sprites: {

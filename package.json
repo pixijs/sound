@@ -1,5 +1,5 @@
 {
-  "name": "pixi-sound",
+  "name": "@pixi/sound",
   "version": "3.0.5",
   "description": "WebAudio API playback library with filters",
   "main": "dist/pixi-sound.cjs.js",
@@ -42,6 +42,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pixijs/sound.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "dist/",

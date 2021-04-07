@@ -30,11 +30,11 @@ WebAudio API playback library, with filters. Modern audio playback for modern br
 Installation is available by [NPM](https://npmjs.org):
 
 ```bash
-npm i pixi-sound --save
+npm i @pixi/sound --save
 ```
 
 ```typescript
-import { sound } from 'pixi-sound';
+import { sound } from '@pixi/sound';
 
 sound.add('my-sound', 'path/to/file.mp3');
 sound.play('my-sound');

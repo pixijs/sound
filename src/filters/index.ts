@@ -9,7 +9,7 @@ import { TelephoneFilter } from './TelephoneFilter';
 /**
  * Set of dynamic filters to be applied to Sound.
  * @example
- * import { Sound, filters } from 'pixi-sound';
+ * import { Sound, filters } from '@pixi/sound';
  * const sound = Sound.from('file.mp3');
  * sound.filters = [
  *   new filters.StereoFilter(-1),
