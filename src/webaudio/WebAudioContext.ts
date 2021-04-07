@@ -286,16 +286,24 @@ class WebAudioContext extends Filterable implements IMediaContext
      */
     public decode(arrayBuffer: ArrayBuffer, callback: (err?: Error, buffer?: AudioBuffer) => void): void
     {
-        this._offlineCtx.decodeAudioData(
+        const handleError = (err: Error) =>
+        {
+            callback(new Error(err.message || 'Unable to decode file'));
+        };
+        const result = this._offlineCtx.decodeAudioData(
             arrayBuffer, (buffer: AudioBuffer) =>
             {
                 callback(null, buffer);
             },
-            (err) =>
-            {
-                callback(new Error(err.message || 'Unable to decode file'));
-            },
+            handleError,
         );
+        // Reference: https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/decodeAudioData
+        // decodeAudioData return value: Void, or a Promise object that fulfills with the decodedData.
+
+        if (result)
+        {
+            result.catch(handleError);
+        }
     }
 }
 
