@@ -13,6 +13,7 @@ const sound = setInstance(new SoundLibrary());
 Loader.registerPlugin(SoundLoader);
 
 export * from './Sound';
+export * from './SoundLoader';
 export * from './SoundLibrary';
 export * from './Filterable';
 export * from './interfaces';
