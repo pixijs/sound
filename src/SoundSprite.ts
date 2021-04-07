@@ -41,7 +41,7 @@ type SoundSprites = {[id: string]: SoundSprite};
  *     sound.play('alias', 'blast');
  *   }
  * );
- * 
+ *
  */
 class SoundSprite
 {

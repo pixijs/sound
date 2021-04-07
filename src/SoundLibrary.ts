@@ -14,7 +14,7 @@ type SoundMap = {[id: string]: Sound};
  * using the browser-based bundled this is `PIXI.sound`. Otherwise, you can do this:
  * @example
  * import { sound } from 'pixi-sound';
- * 
+ *
  * // sound is an instance of SoundLibrary
  * sound.add('my-sound', 'path/to/file.mp3');
  * sound.play('my-sound');

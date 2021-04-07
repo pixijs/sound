@@ -1,23 +1,26 @@
-const PIXI = require('pixi.js');
-const { expect } = require('chai');
+import * as PIXI from 'pixi.js';
+import { expect } from 'chai';
+import { sound, Sound, utils, webaudio, htmlaudio, filters, SoundLibrary, IMediaInstance } from '../';
+import path from 'path';
+
+declare global {
+    var __resources: string;
+}
 
 // Import the library
-module.exports = function (libraryPath, useLegacy)
+export function suite(useLegacy = false): void
 {
-    const { sound, Sound, utils, webaudio, htmlaudio, filters, SoundLibrary } = require(libraryPath);
-
-    const path = require('path');
     const suffix = useLegacy ? ' (legacy)' : '';
 
     // Global reference to the resources
-    global.__resources = path.join(__dirname, 'resources');
+    window.__resources = path.join(__dirname, 'resources');
 
-    function webAudioOnly(fn)
+    function webAudioOnly(fn: (done?:() => void) => void)
     {
         return !useLegacy ? fn : undefined;
     }
 
-    const manifest = {
+    const manifest: {[name: string]: string} = {
         'alert-4': path.join(__resources, 'alert-4.mp3'),
         'alert-7': path.join(__resources, 'alert-7.mp3'),
         'alert-12': path.join(__resources, 'alert-12.mp3'),
@@ -41,7 +44,7 @@ module.exports = function (libraryPath, useLegacy)
 
         afterEach(function ()
         {
-            Sound._pool.length = 0;
+            (Sound as any)._pool.length = 0;
         });
 
         it('should have the correct classes', function ()
@@ -139,7 +142,7 @@ module.exports = function (libraryPath, useLegacy)
             s.play();
             s.play();
             s.play();
-            const instance = s.play();
+            const instance = s.play() as IMediaInstance;
 
             instance.stop();
             expect(s.instances.length).to.equal(3);
@@ -151,7 +154,7 @@ module.exports = function (libraryPath, useLegacy)
         {
             this.slow(200);
             const s = sound.find('alert-4');
-            const i = s.play({ volume: 0 });
+            const i = s.play({ volume: 0 }) as IMediaInstance;
 
             setTimeout(() =>
             {
@@ -174,7 +177,7 @@ module.exports = function (libraryPath, useLegacy)
         it('should remove all sounds', function ()
         {
             sound.removeAll();
-            expect(Object.keys(sound._sounds).length).to.equal(0);
+            expect(Object.keys((sound as any)._sounds).length).to.equal(0);
         });
 
         it('should load a sound file', function (done)
@@ -218,7 +221,7 @@ module.exports = function (libraryPath, useLegacy)
                         expect(instance.progress).to.equal(1);
                         sound.remove(alias);
                         done();
-                    });
+                    }) as IMediaInstance;
 
                     expect(instance.progress).to.equal(0);
 
@@ -253,7 +256,7 @@ module.exports = function (libraryPath, useLegacy)
 
         it('should resolve a file url with object', function ()
         {
-            const object = {
+            const object: any = {
                 url: 'file.{mp3,ogg}',
             };
 
@@ -281,7 +284,7 @@ module.exports = function (libraryPath, useLegacy)
             });
         });
 
-        it('should play a sine tone', webAudioOnly(function (done)
+        it('should play a sine tone', webAudioOnly(function (this: Mocha, done: () => void)
         {
             this.slow(300);
             const s = utils.sineTone(200, 0.1);
@@ -338,7 +341,7 @@ module.exports = function (libraryPath, useLegacy)
             const s = Sound.from(manifest.silence);
 
             expect(s).to.be.instanceof(Sound);
-            const promise = s.play();
+            const promise = s.play() as Promise<IMediaInstance>;
 
             promise.then((instance) =>
             {
@@ -384,7 +387,7 @@ module.exports = function (libraryPath, useLegacy)
             {
                 PIXI.Loader.shared.add(name, manifest[name]);
             }
-            PIXI.Loader.shared.load((loader, resources) =>
+            PIXI.Loader.shared.load((_loader, resources) =>
             {
                 expect(Object.keys(resources).length).to.equal(5);
                 for (const name in resources)
@@ -404,4 +407,4 @@ module.exports = function (libraryPath, useLegacy)
             });
         });
     });
-};
+}

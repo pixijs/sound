@@ -210,7 +210,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
     }
 
     /**
-     * `true` if the sound is muted 
+     * `true` if the sound is muted
      * @type {boolean}
      */
     public get muted(): boolean

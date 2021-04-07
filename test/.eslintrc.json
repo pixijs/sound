@@ -8,6 +8,8 @@
     },
 	"rules": {
 		"func-names": 0,
-        "global-require": 0
+        "global-require": 0,
+        "no-var": 0,
+        "@typescript-eslint/no-unused-expressions": 0
 	}
 }
