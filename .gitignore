@@ -3,7 +3,8 @@ node_modules
 /docs
 /coverage
 /deploy
-.docs
 .rpt2_cache
 .DS_Store
 .nyc_output
+.types_output
+/example.api.json

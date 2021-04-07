@@ -1,44 +1,30 @@
-import { getInstance } from "../instance";
-import { Filter } from "./Filter";
+import { getInstance } from '../instance';
+import { Filter } from './Filter';
 
 /**
  * Filter for adding reverb. Refactored from
  * https://github.com/web-audio-components/simple-reverb/
  *
- * @class ReverbFilter
- * @memberof PIXI.sound.filters
- * @param {number} [seconds=3] Seconds for reverb
- * @param {number} [decay=2] The decay length
- * @param {boolean} [reverse=false] Reverse reverb
+ * @class
+ * @memberof filters
  */
-export class ReverbFilter extends Filter
+class ReverbFilter extends Filter
 {
-    /**
-     * @name PIXI.sound.filters.ReverbFilter#_seconds
-     * @type {number}
-     * @private
-     */
     private _seconds: number;
-
-    /**
-     * @name PIXI.sound.filters.ReverbFilter#_decay
-     * @type {number}
-     * @private
-     */
     private _decay: number;
-
-    /**
-     * @name PIXI.sound.filters.ReverbFilter#_reverse
-     * @type {number}
-     * @private
-     */
     private _reverse: boolean;
 
-    constructor(seconds: number = 3, decay: number = 2, reverse: boolean = false)
+    /**
+     * @param seconds - Seconds for reverb
+     * @param decay - The decay length
+     * @param reverse - Reverse reverb
+     */
+    constructor(seconds = 3, decay = 2, reverse = false)
     {
         if (getInstance().useLegacy)
         {
             super(null);
+
             return;
         }
 
@@ -52,12 +38,10 @@ export class ReverbFilter extends Filter
 
     /**
      * Clamp a value
-     * @method PIXI.sound.filters.ReverbFilter#_clamp
-     * @private
      * @param {number} value
-     * @param {number} min Minimum value
-     * @param {number} max Maximum value
-     * @return {number} Clamped number
+     * @param {number} min - Minimum value
+     * @param {number} max - Maximum value
+     * @return Clamped number
      */
     private _clamp(value: number, min: number, max: number): number
     {
@@ -66,8 +50,6 @@ export class ReverbFilter extends Filter
 
     /**
      * Length of reverb in seconds from 1 to 50
-     * @name PIXI.sound.filters.ReverbFilter#decay
-     * @type {number}
      * @default 3
      */
     get seconds(): number
@@ -82,8 +64,6 @@ export class ReverbFilter extends Filter
 
     /**
      * Decay value from 0 to 100
-     * @name PIXI.sound.filters.ReverbFilter#decay
-     * @type {number}
      * @default 2
      */
     get decay(): number
@@ -98,8 +78,6 @@ export class ReverbFilter extends Filter
 
     /**
      * Reverse value from 0 to 1
-     * @name PIXI.sound.filters.ReverbFilter#reverse
-     * @type {boolean}
      * @default false
      */
     get reverse(): boolean
@@ -115,8 +93,6 @@ export class ReverbFilter extends Filter
     /**
      * Utility function for building an impulse response
      * from the module parameters.
-     * @method PIXI.sound.filters.ReverbFilter#_rebuild
-     * @private
      */
     private _rebuild(): void
     {
@@ -128,14 +104,17 @@ export class ReverbFilter extends Filter
         const impulseR: Float32Array = impulse.getChannelData(1);
         let n: number;
 
-        for (let i: number = 0; i < length; i++)
+        for (let i = 0; i < length; i++)
         {
             n = this._reverse ? length - i : i;
-            impulseL[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, this._decay);
-            impulseR[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, this._decay);
+            impulseL[i] = ((Math.random() * 2) - 1) * Math.pow(1 - (n / length), this._decay);
+            impulseR[i] = ((Math.random() * 2) - 1) * Math.pow(1 - (n / length), this._decay);
         }
         const convolver = getInstance().context.audioContext.createConvolver();
+
         convolver.buffer = impulse;
         this.init(convolver);
     }
 }
+
+export { ReverbFilter };

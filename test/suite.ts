@@ -1,86 +1,82 @@
-/* tslint:disable:no-unused-expression */
-const PIXI = require("pixi.js");
-const { expect } = require("chai");
+import * as PIXI from 'pixi.js';
+import { expect } from 'chai';
+import { sound, Sound, utils, webaudio, htmlaudio, filters, SoundLibrary, IMediaInstance } from '../';
+import path from 'path';
+
+declare global {
+    var __resources: string;
+}
 
 // Import the library
-module.exports = function(libraryPath, useLegacy)
+export function suite(useLegacy = false): void
 {
-    const sound = require(libraryPath);
-    const {
-        Sound,
-        utils,
-        webaudio,
-        htmlaudio,
-        SoundLibrary,
-        filters,
-    } = sound;
-
-    const path = require("path");
-    const suffix = useLegacy ? " (legacy)" : "";
+    const suffix = useLegacy ? ' (legacy)' : '';
 
     // Global reference to the resources
-    global.__resources = path.join(__dirname, "resources");
+    window.__resources = path.join(__dirname, 'resources');
 
-    function webAudioOnly(fn) {
+    function webAudioOnly(fn: (done?:() => void) => void)
+    {
         return !useLegacy ? fn : undefined;
     }
 
-    const manifest = {
-        "alert-4": path.join(__resources, "alert-4.mp3"),
-        "alert-7": path.join(__resources, "alert-7.mp3"),
-        "alert-12": path.join(__resources, "alert-12.mp3"),
-        "musical-11": path.join(__resources, "musical-11.mp3"),
-        "silence": path.join(__resources, "silence.mp3"),
+    const manifest: {[name: string]: string} = {
+        'alert-4': path.join(__resources, 'alert-4.mp3'),
+        'alert-7': path.join(__resources, 'alert-7.mp3'),
+        'alert-12': path.join(__resources, 'alert-12.mp3'),
+        'musical-11': path.join(__resources, 'musical-11.mp3'),
+        silence: path.join(__resources, 'silence.mp3'),
     };
 
-    describe("PIXI.sound" + suffix, function()
+    describe(`PIXI.sound${suffix}`, function ()
     {
-        before(function()
+        before(function ()
         {
             // Set the legacy
             sound.useLegacy = !!useLegacy;
         });
 
-        after(function()
+        after(function ()
         {
             PIXI.Loader.shared.reset();
             sound.removeAll();
         });
 
-        afterEach(function()
+        afterEach(function ()
         {
-            Sound._pool.length = 0;
+            (Sound as any)._pool.length = 0;
         });
 
-        it("should have the correct classes", function()
+        it('should have the correct classes', function ()
         {
-            expect(sound).to.be.an("object");
-            expect(sound.Sound).to.be.a("function");
-            expect(sound.utils).to.be.an("object");
-            expect(sound.webaudio).to.be.an("object");
-            expect(sound.htmlaudio).to.be.an("object");
-            expect(sound.SoundLibrary).to.be.a("function");
-            expect(sound.filters).to.be.an("object");
-            expect(sound.filters.DistortionFilter).to.be.a("function");
-            expect(sound.filters.EqualizerFilter).to.be.a("function");
-            expect(sound.filters.ReverbFilter).to.be.a("function");
-            expect(sound.filters.StereoFilter).to.be.a("function");
-            expect(sound).to.be.instanceof(sound.SoundLibrary);
+            expect(sound).to.be.an('object');
+            expect(Sound).to.be.a('function');
+            expect(utils).to.be.an('object');
+            expect(webaudio).to.be.an('object');
+            expect(htmlaudio).to.be.an('object');
+            expect(SoundLibrary).to.be.a('function');
+            expect(filters).to.be.an('object');
+            expect(filters.DistortionFilter).to.be.a('function');
+            expect(filters.EqualizerFilter).to.be.a('function');
+            expect(filters.ReverbFilter).to.be.a('function');
+            expect(filters.StereoFilter).to.be.a('function');
+            expect(sound).to.be.instanceof(SoundLibrary);
         });
 
-        it("should recreate the library", function()
+        it('should recreate the library', function ()
         {
             sound.close().init();
             sound.useLegacy = !!useLegacy;
         });
 
-        it("should load a manifest", function(done)
+        it('should load a manifest', function (done)
         {
             this.slow(200);
             let counter = 0;
             const results = sound.add(manifest, {
                 preload: true,
-                loaded: (err, s) => {
+                loaded: (_err, s) =>
+                {
                     expect(s.isLoaded).to.be.true;
                     expect(s.isPlayable).to.be.true;
                     expect(s.autoPlay).to.be.false;
@@ -94,24 +90,27 @@ module.exports = function(libraryPath, useLegacy)
                     }
                 },
             });
-            expect(results).to.be.a("object");
-            expect(results["alert-4"]).to.be.instanceof(Sound);
-            expect(results["alert-7"]).to.be.instanceof(Sound);
-            expect(results["alert-12"]).to.be.instanceof(Sound);
-            expect(results["musical-11"]).to.be.instanceof(Sound);
+
+            expect(results).to.be.a('object');
+            expect(results['alert-4']).to.be.instanceof(Sound);
+            expect(results['alert-7']).to.be.instanceof(Sound);
+            expect(results['alert-12']).to.be.instanceof(Sound);
+            expect(results['musical-11']).to.be.instanceof(Sound);
             expect(results.silence).to.be.instanceof(Sound);
         });
 
-        it("should get a reference by alias", function()
+        it('should get a reference by alias', function ()
         {
-            const s = sound.find("alert-7");
+            const s = sound.find('alert-7');
+
             expect(s).to.not.be.undefined;
             expect(s).to.be.instanceof(Sound);
         });
 
-        it("should play multiple at once", function()
+        it('should play multiple at once', function ()
         {
-            const s = sound.find("alert-12");
+            const s = sound.find('alert-12');
+
             s.play();
             s.play();
             s.play();
@@ -121,9 +120,10 @@ module.exports = function(libraryPath, useLegacy)
             expect(s.instances.length).to.equal(0);
         });
 
-        it("should play with blocking", function()
+        it('should play with blocking', function ()
         {
-            const s = sound.find("alert-4");
+            const s = sound.find('alert-4');
+
             s.singleInstance = true;
             s.play();
             s.play();
@@ -135,50 +135,54 @@ module.exports = function(libraryPath, useLegacy)
             s.singleInstance = false;
         });
 
-        it("should play with stopping single instance", function()
+        it('should play with stopping single instance', function ()
         {
-            const s = sound.find("alert-4");
+            const s = sound.find('alert-4');
+
             s.play();
             s.play();
             s.play();
-            const instance = s.play();
+            const instance = s.play() as IMediaInstance;
+
             instance.stop();
             expect(s.instances.length).to.equal(3);
             s.stop();
             expect(s.instances.length).to.equal(0);
         });
 
-        it("should support volume change when instance is paused", function(done)
+        it('should support volume change when instance is paused', function (done)
         {
             this.slow(200);
-            const s = sound.find("alert-4");
-            const i = s.play({ volume: 0 });
-            setTimeout(() => {
+            const s = sound.find('alert-4');
+            const i = s.play({ volume: 0 }) as IMediaInstance;
+
+            setTimeout(() =>
+            {
                 i.paused = true;
                 i.volume = 0.2;
                 done();
             }, 100);
         });
 
-        it("should play a sound by alias", function(done)
+        it('should play a sound by alias', function (done)
         {
-            sound.play("silence", {
-                complete: function()
+            sound.play('silence', {
+                complete()
                 {
                     done();
                 },
             });
         });
 
-        it("should remove all sounds", function()
+        it('should remove all sounds', function ()
         {
             sound.removeAll();
-            expect(Object.keys(sound._sounds).length).to.equal(0);
+            expect(Object.keys((sound as any)._sounds).length).to.equal(0);
         });
 
-        it("should load a sound file", function(done)
+        it('should load a sound file', function (done)
         {
-            const alias = "silence";
+            const alias = 'silence';
             const s = sound.add(alias, {
                 url: manifest[alias],
                 volume: 0,
@@ -194,13 +198,14 @@ module.exports = function(libraryPath, useLegacy)
                     done();
                 },
             });
+
             expect(s.isLoaded).to.be.false;
             expect(s.isPlayable).to.be.false;
         });
 
-        it("should play a file", function(done)
+        it('should play a file', function (done)
         {
-            const alias = "silence";
+            const alias = 'silence';
             const s = sound.add(alias, {
                 url: manifest[alias],
                 preload: true,
@@ -216,7 +221,7 @@ module.exports = function(libraryPath, useLegacy)
                         expect(instance.progress).to.equal(1);
                         sound.remove(alias);
                         done();
-                    });
+                    }) as IMediaInstance;
 
                     expect(instance.progress).to.equal(0);
 
@@ -231,7 +236,7 @@ module.exports = function(libraryPath, useLegacy)
             });
         });
 
-        it("sound play once a file", function(done)
+        it('sound play once a file', function (done)
         {
             const alias = utils.playOnce(manifest.silence, (err) =>
             {
@@ -242,52 +247,59 @@ module.exports = function(libraryPath, useLegacy)
             });
         });
 
-        it("should resolve a file url", function()
+        it('should resolve a file url', function ()
         {
-            const url = "file.{mp3,ogg}";
-            expect(utils.resolveUrl(url)).to.equal("file.mp3");
+            const url = 'file.{mp3,ogg}';
+
+            expect(utils.resolveUrl(url)).to.equal('file.mp3');
         });
 
-        it("should resolve a file url with object", function()
+        it('should resolve a file url with object', function ()
         {
-            const object = {
-                url: "file.{mp3,ogg}",
+            const object: any = {
+                url: 'file.{mp3,ogg}',
             };
-            expect(utils.resolveUrl(object)).to.equal("file.mp3");
-            expect(object.url).to.equal("file.mp3");
-            expect(object.extension).to.equal("mp3");
+
+            expect(utils.resolveUrl(object)).to.equal('file.mp3');
+            expect(object.url).to.equal('file.mp3');
+            expect(object.extension).to.equal('mp3');
         });
 
-        describe("Extension changes", function()
+        describe('Extension changes', function ()
         {
-            it("should resolve a file url with a newly added format", function()
+            it('should resolve a file url with a newly added format', function ()
             {
-                const url = "file.{foo,ogg}";
-                expect(utils.resolveUrl(url)).to.equal("file.ogg");
-                utils.extensions.push("foo");
-                utils.validateFormats({foo: "audio/mp3"});
-                expect(utils.resolveUrl(url)).to.equal("file.foo");
+                const url = 'file.{foo,ogg}';
+
+                expect(utils.resolveUrl(url)).to.equal('file.ogg');
+                utils.extensions.push('foo');
+                utils.validateFormats({ foo: 'audio/mp3' });
+                expect(utils.resolveUrl(url)).to.equal('file.foo');
             });
 
-            after(function() {
+            after(function ()
+            {
                 utils.extensions.pop();
                 delete utils.supported.foo;
             });
         });
 
-        it("should play a sine tone", webAudioOnly(function(done)
+        it('should play a sine tone', webAudioOnly(function (this: Mocha, done: () => void)
         {
             this.slow(300);
             const s = utils.sineTone(200, 0.1);
+
             s.volume = 0;
-            s.play(() => {
+            s.play(() =>
+            {
                 done();
             });
             expect(s.isPlaying);
         }));
 
-        it("should setup sprites", function() {
-            const alias = "musical-11";
+        it('should setup sprites', function ()
+        {
+            const alias = 'musical-11';
             const s = sound.add(alias, {
                 url: manifest[alias],
                 sprites: {
@@ -301,6 +313,7 @@ module.exports = function(libraryPath, useLegacy)
                     },
                 },
             });
+
             expect(Object.keys(s.sprites).length).to.equal(2);
             expect(s.sprites.foo.start).to.equal(0);
             expect(s.sprites.foo.end).to.equal(2);
@@ -313,41 +326,46 @@ module.exports = function(libraryPath, useLegacy)
         });
     });
 
-    describe("PIXI.sound.SoundInstance" + suffix, function()
+    describe(`PIXI.sound.SoundInstance${suffix}`, function ()
     {
-        afterEach(function()
+        afterEach(function ()
         {
             sound.removeAll();
         });
 
-        it("should return Promise for playing unloaded sound", function(done)
+        it('should return Promise for playing unloaded sound', function (done)
         {
-            const SoundInstance = useLegacy ?
-                htmlaudio.HTMLAudioInstance :
-                webaudio.WebAudioInstance;
+            const SoundInstance = useLegacy
+                ? htmlaudio.HTMLAudioInstance
+                : webaudio.WebAudioInstance;
             const s = Sound.from(manifest.silence);
+
             expect(s).to.be.instanceof(Sound);
-            const promise = s.play();
-            promise.then((instance) => {
+            const promise = s.play() as Promise<IMediaInstance>;
+
+            promise.then((instance) =>
+            {
                 expect(instance).to.be.instanceof(SoundInstance);
                 done();
             });
             expect(promise).to.be.instanceof(Promise);
         });
 
-        it("should return instance for playing loaded sound", function(done)
+        it('should return instance for playing loaded sound', function (done)
         {
-            const SoundInstance = useLegacy ?
-                htmlaudio.HTMLAudioInstance :
-                webaudio.WebAudioInstance;
+            const SoundInstance = useLegacy
+                ? htmlaudio.HTMLAudioInstance
+                : webaudio.WebAudioInstance;
             const s = Sound.from({
                 url: manifest.silence,
                 preload: true,
-                loaded: (err) => {
+                loaded: (err) =>
+                {
                     expect(err).to.be.null;
                     expect(s.isLoaded).to.be.true;
                     expect(s.isPlayable).to.be.true;
                     const instance = s.play();
+
                     expect(instance).to.be.instanceof(SoundInstance);
                     done();
                 },
@@ -355,30 +373,32 @@ module.exports = function(libraryPath, useLegacy)
         });
     });
 
-    describe("PIXI.loader" + suffix, function()
+    describe(`PIXI.loader${suffix}`, function ()
     {
-        afterEach(function()
+        afterEach(function ()
         {
             sound.removeAll();
         });
 
-        it("should load files with the PIXI.loader", function(done)
+        it('should load files with the PIXI.loader', function (done)
         {
             this.slow(200);
             for (const name in manifest)
             {
                 PIXI.Loader.shared.add(name, manifest[name]);
             }
-            PIXI.Loader.shared.load((loader, resources) =>
+            PIXI.Loader.shared.load((_loader, resources) =>
             {
                 expect(Object.keys(resources).length).to.equal(5);
                 for (const name in resources)
                 {
                     expect(resources[name]).to.be.ok;
                     const ClassRef = useLegacy ? HTMLAudioElement : ArrayBuffer;
+
                     expect(resources[name].data).to.be.instanceof(ClassRef);
                     expect(resources[name].sound).to.be.ok;
                     const s = resources[name].sound;
+
                     expect(s).to.be.instanceof(Sound);
                     expect(s.isLoaded).to.be.true;
                     expect(s.isPlayable).to.be.true;
@@ -387,4 +407,4 @@ module.exports = function(libraryPath, useLegacy)
             });
         });
     });
-};
+}

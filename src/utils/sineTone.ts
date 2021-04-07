@@ -1,14 +1,15 @@
-import { Sound } from "../Sound";
-import { WebAudioContext, WebAudioMedia } from "../webaudio";
+import { Sound } from '../Sound';
+import { WebAudioMedia } from '../webaudio/WebAudioMedia';
+import { WebAudioContext } from '../webaudio/WebAudioContext';
 
 /**
  * Create a new sound for a sine wave-based tone.  **Only supported with WebAudio**
- * @method PIXI.sound.utils.sineTone
- * @param {number} [hertz=200] Frequency of sound.
- * @param {number} [seconds=1] Duration of sound in seconds.
- * @return {PIXI.sound.Sound} New sound.
+ * @static
+ * @param {number} [hertz=200] - Frequency of sound.
+ * @param {number} [seconds=1] - Duration of sound in seconds.
+ * @return New sound.
  */
-export function sineTone(hertz: number = 200, seconds: number = 1): Sound
+function sineTone(hertz = 200, seconds = 1): Sound
 {
     const sound = Sound.from({
         singleInstance: true,
@@ -40,11 +41,15 @@ export function sineTone(hertz: number = 200, seconds: number = 1): Sound
     {
         const time  = i / buffer.sampleRate;
         const angle = hertz * time * Math.PI;
+
         fArray[i] = Math.sin(angle) * amplitude;
     }
 
     // set the buffer
     media.buffer = buffer;
     sound.isLoaded = true;
+
     return sound;
 }
+
+export { sineTone };

@@ -1,27 +1,29 @@
-import { SoundLibrary } from "./SoundLibrary";
+import { SoundLibrary } from './SoundLibrary';
 
 /**
- * Singletone instance of the SoundLibrary
- * @private
+ * Singleton instance of the SoundLibrary
  */
-export let instance: SoundLibrary;
+let instance: SoundLibrary;
 
 /**
  * Internal set function for the singleton instance.
- * @private
- * @param {PIXI.sound} sound - Sound library instance
- * @return {PIXI.sound}
+ * @ignore
+ * @param sound - - Sound library instance
  */
-export function setInstance(sound: SoundLibrary) {
+function setInstance(sound: SoundLibrary): SoundLibrary
+{
     instance = sound;
+
     return sound;
 }
 
 /**
  * Internal get function for the singleton instance.
- * @private
- * @return {PIXI.sound}
+ * @ignore
  */
-export function getInstance(): SoundLibrary {
+function getInstance(): SoundLibrary
+{
     return instance;
 }
+
+export { instance, setInstance, getInstance };

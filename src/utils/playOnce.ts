@@ -1,22 +1,20 @@
-import { getInstance } from "../instance";
+import { getInstance } from '../instance';
 
 /**
  * Increment the alias for play once
  * @static
- * @private
  * @default 0
  */
-export let PLAY_ID = 0;
+let PLAY_ID = 0;
 
 /**
  * Create a new "Audio" stream based on given audio path and project uri; returns the audio object.
- * @method PIXI.sound.utils.playOnce
  * @static
- * @param {String} fileName Full path of the file to play.
- * @param {Function} callback Callback when complete.
- * @return {string} New audio element alias.
+ * @param fileName - Full path of the file to play.
+ * @param {Function} callback - Callback when complete.
+ * @return New audio element alias.
  */
-export function playOnce(url: string, callback?: (err?: Error) => void): string
+function playOnce(url: string, callback?: (err?: Error) => void): string
 {
     const alias = `alias${PLAY_ID++}`;
 
@@ -24,7 +22,8 @@ export function playOnce(url: string, callback?: (err?: Error) => void): string
         url,
         preload: true,
         autoPlay: true,
-        loaded: (err: Error) => {
+        loaded: (err: Error) =>
+        {
             if (err)
             {
                 console.error(err);
@@ -35,7 +34,8 @@ export function playOnce(url: string, callback?: (err?: Error) => void): string
                 }
             }
         },
-        complete: () => {
+        complete: () =>
+        {
             getInstance().remove(alias);
             if (callback)
             {
@@ -43,5 +43,8 @@ export function playOnce(url: string, callback?: (err?: Error) => void): string
             }
         },
     });
+
     return alias;
 }
+
+export { playOnce, PLAY_ID };

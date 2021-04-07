@@ -1,41 +1,39 @@
-import { Filterable } from "../Filterable";
-import { Filter } from "../filters/Filter";
-import { WebAudioContext } from "./WebAudioContext";
-import { WebAudioUtils } from "./WebAudioUtils";
+import { Filterable } from '../Filterable';
+import { WebAudioContext } from './WebAudioContext';
+import { WebAudioUtils } from './WebAudioUtils';
 
 /**
- * Output for cloneing node
- * @interface PIXI.sound.SoundNodes~SourceClone
- * @property {AudioBufferSourceNode} source Cloned audio buffer source
- * @property {GainNode} gain Independent volume control
+ * Output for cloning source node.
  */
-export interface SourceClone {
+interface SourceClone {
+    /**
+     * Cloned audio buffer source
+     * @type {AudioBufferSourceNode}
+     */
     source: AudioBufferSourceNode;
+    /**
+     * Independent volume control
+     * @type {GainNode}
+     */
     gain: GainNode;
 }
 
 /**
- * @private
- * @class WebAudioNodes
- * @extends PIXI.sound.Filterable
- * @private
- * @memberof PIXI.sound.webaudio
- * @param {PIXI.sound.webaudio.WebAudioContext} audioContext The audio context.
+ * @class
+ * @memberof webaudio
  */
-export class WebAudioNodes extends Filterable
+class WebAudioNodes extends Filterable
 {
     /**
      * The buffer size for script processor, default is `0` which auto-detects. If you plan to use
      * script node on iOS, you'll need to provide a non-zero amount.
-     * @name PIXI.sound.SoundNodes.BUFFER_SIZE
      * @type {number}
      * @default 0
      */
-    public static BUFFER_SIZE: number = 0;
+    public static BUFFER_SIZE = 0;
 
     /**
      * Get the buffer source node
-     * @name PIXI.sound.SoundNodes#bufferSource
      * @type {AudioBufferSourceNode}
      * @readonly
      */
@@ -43,7 +41,6 @@ export class WebAudioNodes extends Filterable
 
     /**
      * Get the gain node
-     * @name PIXI.sound.SoundNodes#gain
      * @type {GainNode}
      * @readonly
      */
@@ -51,7 +48,6 @@ export class WebAudioNodes extends Filterable
 
     /**
      * Get the analyser node
-     * @name PIXI.sound.SoundNodes#analyser
      * @type {AnalyserNode}
      * @readonly
      */
@@ -59,19 +55,20 @@ export class WebAudioNodes extends Filterable
 
     /**
      * Reference to the SoundContext
-     * @name PIXI.sound.SoundNodes#context
-     * @type {PIXI.sound.webaudio.WebAudioContext}
+     * @type {webaudio.WebAudioContext}
      * @readonly
      */
     public context: WebAudioContext;
 
     /**
      * Private reference to the script processor node.
-     * @name PIXI.sound.SoundNodes#_script
      * @type {ScriptProcessorNode}
      */
     private _script: ScriptProcessorNode;
 
+    /**
+     * @param {webaudio.WebAudioContext} audioContext - The audio context.
+     */
     constructor(context: WebAudioContext)
     {
         const audioContext: AudioContext = context.audioContext;
@@ -94,24 +91,21 @@ export class WebAudioNodes extends Filterable
 
     /**
      * Get the script processor node.
-     * @name PIXI.sound.SoundNodes#script
-     * @type {ScriptProcessorNode}
      * @readonly
+     * @type {ScriptProcessorNode}
      */
-    public get script()
+    public get script(): ScriptProcessorNode
     {
         if (!this._script)
         {
             this._script = this.context.audioContext.createScriptProcessor(WebAudioNodes.BUFFER_SIZE);
             this._script.connect(this.context.destination);
         }
+
         return this._script;
     }
 
-    /**
-     * Cleans up.
-     * @method PIXI.sound.SoundNodes#destroy
-     */
+    /** Cleans up. */
     public destroy(): void
     {
         super.destroy();
@@ -134,30 +128,35 @@ export class WebAudioNodes extends Filterable
 
     /**
      * Clones the bufferSource. Used just before playing a sound.
-     * @method PIXI.sound.SoundNodes#cloneBufferSource
-     * @returns {PIXI.sound.SoundNodes~SourceClone} The clone AudioBufferSourceNode.
+     * @returns {SourceClone} The clone AudioBufferSourceNode.
      */
     public cloneBufferSource(): SourceClone
     {
         const orig: AudioBufferSourceNode = this.bufferSource;
         const source: AudioBufferSourceNode = this.context.audioContext.createBufferSource();
+
         source.buffer = orig.buffer;
         WebAudioUtils.setParamValue(source.playbackRate, orig.playbackRate.value);
         source.loop = orig.loop;
 
         const gain: GainNode = this.context.audioContext.createGain();
+
         source.connect(gain);
         gain.connect(this.destination);
+
         return { source, gain };
     }
 
     /**
      * Get buffer size of `ScriptProcessorNode`.
-     * @type {number}
      * @readonly
+     * @type {number}
      */
     get bufferSize(): number
     {
         return this.script.bufferSize;
     }
 }
+
+export type { SourceClone };
+export { WebAudioNodes };

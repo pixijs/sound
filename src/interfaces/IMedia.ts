@@ -1,40 +1,37 @@
-import { Filter } from "../filters";
-import { LoadedCallback, Sound } from "../Sound";
-import { IMediaContext } from "./IMediaContext";
-import { IMediaInstance } from "./IMediaInstance";
+import { Filter } from '../filters/Filter';
+import { LoadedCallback, Sound } from '../Sound';
+import { IMediaContext } from './IMediaContext';
+import { IMediaInstance } from './IMediaInstance';
 
 /**
  * Interface represents either a WebAudio source or an HTML5 AudioElement source
- * @class IMedia
- * @memberof PIXI.sound
- * @private
  */
-export interface IMedia {
+interface IMedia {
 
     /**
      * Collection of global filters
-     * @member {Array<PIXI.sound.filters.Filter>} PIXI.sound.IMedia#filters
+     * @type {Filter[]}
      */
     filters: Filter[];
 
     /**
      * Reference to the context.
-     * @member {PIXI.sound.IMediaContext} PIXI.sound.IMedia#context
      * @readonly
+     * @type {IMediaContext}
      */
     readonly context: IMediaContext;
 
     /**
      * Length of sound in seconds.
-     * @member {number} PIXI.sound.IMedia#duration
      * @readonly
+     * @type {number}
      */
     readonly duration: number;
 
     /**
      * Flag to check if sound is currently playable (e.g., has been loaded/decoded).
-     * @member {boolean} PIXI.sound.IMedia#isPlayable
      * @readonly
+     * @type {boolean}
      */
     readonly isPlayable: boolean;
 
@@ -44,3 +41,5 @@ export interface IMedia {
     load(callback?: LoadedCallback): void;
     destroy(): void;
 }
+
+export type { IMedia };

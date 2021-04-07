@@ -1,10 +1,17 @@
+import { WebAudioMedia } from './WebAudioMedia';
+import { WebAudioInstance } from './WebAudioInstance';
+import { WebAudioNodes } from './WebAudioNodes';
+import { WebAudioContext } from './WebAudioContext';
+import { WebAudioUtils } from './WebAudioUtils';
+
 /**
  * Classes supporting non-WebAudio based browsers.
- * @namespace PIXI.sound.webaudio
- * @private
+ * @namespace webaudio
  */
-export { WebAudioMedia } from "./WebAudioMedia";
-export { WebAudioInstance } from "./WebAudioInstance";
-export { WebAudioNodes } from "./WebAudioNodes";
-export { WebAudioContext } from "./WebAudioContext";
-export { WebAudioUtils } from "./WebAudioUtils";
+export default {
+    WebAudioMedia,
+    WebAudioInstance,
+    WebAudioNodes,
+    WebAudioContext,
+    WebAudioUtils
+};

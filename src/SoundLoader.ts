@@ -1,32 +1,25 @@
-import { LoaderResource } from "@pixi/loaders";
-import { getInstance } from "../instance";
-import { resolveUrl } from "../utils/resolveUrl";
-import { extensions } from "../utils/supported";
+import { ILoaderPlugin, ILoaderResource, LoaderResource } from '@pixi/loaders';
+import { getInstance } from './instance';
+import { resolveUrl } from './utils/resolveUrl';
+import { extensions } from './utils/supported';
 
 /**
  * Sound middleware installation utilities for PIXI.Loader
  * @class
- * @private
  */
-export class SoundLoader
+class SoundLoader implements ILoaderPlugin
 {
-    /**
-     * Install the middleware
-     * @method PIXI.sound.loader.add
-     * @param {PIXI.sound.SoundLibrary} sound - Instance of sound library
-     */
-    public static add()
+    /** Install the middleware */
+    public static add(): void
     {
-        SoundLoader.legacy = getInstance().useLegacy;
+        SoundLoader.setLegacy(getInstance().useLegacy);
     }
 
     /**
      * Set the legacy mode
-     * @name PIXI.sound.loader.legacy
-     * @type {boolean}
-     * @private
+     * @param legacy - Non-webaudio environments
      */
-    static set legacy(legacy: boolean)
+    static setLegacy(legacy: boolean): void
     {
         // Configure PIXI Loader to handle audio files correctly
         const exts = extensions;
@@ -35,7 +28,8 @@ export class SoundLoader
         if (!legacy)
         {
             // Load all audio files as ArrayBuffers
-            exts.forEach((ext) => {
+            exts.forEach((ext) =>
+            {
                 LoaderResource.setExtensionXhrType(ext, LoaderResource.XHR_RESPONSE_TYPE.BUFFER);
                 LoaderResource.setExtensionLoadType(ext, LoaderResource.LOAD_TYPE.XHR);
             });
@@ -43,26 +37,23 @@ export class SoundLoader
         else
         {
             // Fall back to loading as <audio> elements
-            exts.forEach((ext) => {
+            exts.forEach((ext) =>
+            {
                 LoaderResource.setExtensionXhrType(ext, LoaderResource.XHR_RESPONSE_TYPE.DEFAULT);
                 LoaderResource.setExtensionLoadType(ext, LoaderResource.LOAD_TYPE.AUDIO);
             });
         }
     }
 
-    /**
-     * Handle the preprocessing of file paths
-     */
-    public static pre(resource: PIXI.LoaderResource, next: () => void): void
+    /** Handle the preprocessing of file paths */
+    public static pre(resource: ILoaderResource, next: () => void): void
     {
         resolveUrl(resource);
         next();
     }
 
-    /**
-     * Actual resource-loader middleware for sound class
-     */
-    public static use(resource: PIXI.LoaderResource, next: () => void): void
+    /** Actual resource-loader middleware for sound class */
+    public static use(resource: ILoaderResource, next: () => void): void
     {
         if (resource.data && extensions.indexOf(resource.extension) > -1)
         {
@@ -79,3 +70,5 @@ export class SoundLoader
         }
     }
 }
+
+export { SoundLoader };

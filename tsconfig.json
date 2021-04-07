@@ -2,15 +2,26 @@
     "compilerOptions": {
         "moduleResolution": "node",
         "target": "es5",
-        "removeComments": true,
+        "noImplicitThis": true,
+        "removeComments": false,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
         "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
         "preserveConstEnums": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noUncheckedIndexedAccess": true,
         "sourceMap": true,
         "inlineSources": true,
-        "typeRoots": [
-          "node_modules/@types",
-          "typings"
-        ]
+        "esModuleInterop": true,
+        "paths": {
+            "mini-signals": [
+                "node_modules/resource-loader/typings/mini-signals.d.ts"
+            ]
+        },
+        "baseUrl": "./",
     },
     "include": [
         "src/**/*"
