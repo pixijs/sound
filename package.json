@@ -17,7 +17,7 @@
     "build": "rollup -c",
     "postbuild": "run-s build:types",
     "build:prod": "cross-env NODE_ENV=production run-s build",
-    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "build:types": "tsc --declaration --emitDeclarationOnly --skipLibCheck --outDir dist/types",
     "predocs": "rimraf docs/**",
     "docs": "webdoc -r README.md",
     "predeploy": "run-s docs",
