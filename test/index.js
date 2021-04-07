@@ -1,19 +1,10 @@
-/* tslint:disable:no-unused-expression */
 const PIXI = require('pixi.js');
 const { expect } = require('chai');
 
 // Import the library
 module.exports = function (libraryPath, useLegacy)
 {
-    const sound = require(libraryPath);
-    const {
-        Sound,
-        utils,
-        webaudio,
-        htmlaudio,
-        SoundLibrary,
-        filters,
-    } = sound;
+    const { sound, Sound, utils, webaudio, htmlaudio, filters, SoundLibrary } = require(libraryPath);
 
     const path = require('path');
     const suffix = useLegacy ? ' (legacy)' : '';
@@ -56,17 +47,17 @@ module.exports = function (libraryPath, useLegacy)
         it('should have the correct classes', function ()
         {
             expect(sound).to.be.an('object');
-            expect(sound.Sound).to.be.a('function');
-            expect(sound.utils).to.be.an('object');
-            expect(sound.webaudio).to.be.an('object');
-            expect(sound.htmlaudio).to.be.an('object');
-            expect(sound.SoundLibrary).to.be.a('function');
-            expect(sound.filters).to.be.an('object');
-            expect(sound.filters.DistortionFilter).to.be.a('function');
-            expect(sound.filters.EqualizerFilter).to.be.a('function');
-            expect(sound.filters.ReverbFilter).to.be.a('function');
-            expect(sound.filters.StereoFilter).to.be.a('function');
-            expect(sound).to.be.instanceof(sound.SoundLibrary);
+            expect(Sound).to.be.a('function');
+            expect(utils).to.be.an('object');
+            expect(webaudio).to.be.an('object');
+            expect(htmlaudio).to.be.an('object');
+            expect(SoundLibrary).to.be.a('function');
+            expect(filters).to.be.an('object');
+            expect(filters.DistortionFilter).to.be.a('function');
+            expect(filters.EqualizerFilter).to.be.a('function');
+            expect(filters.ReverbFilter).to.be.a('function');
+            expect(filters.StereoFilter).to.be.a('function');
+            expect(sound).to.be.instanceof(SoundLibrary);
         });
 
         it('should recreate the library', function ()

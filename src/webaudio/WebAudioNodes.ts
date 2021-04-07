@@ -20,7 +20,6 @@ interface SourceClone {
 
 /**
  * @class
- * @extends PIXI.sound.Filterable
  * @memberof webaudio
  */
 class WebAudioNodes extends Filterable
@@ -90,7 +89,11 @@ class WebAudioNodes extends Filterable
         this.analyser = analyser;
     }
 
-    /** Get the script processor node. */
+    /**
+     * Get the script processor node.
+     * @readonly
+     * @type {ScriptProcessorNode}
+     */
     public get script(): ScriptProcessorNode
     {
         if (!this._script)
@@ -144,7 +147,11 @@ class WebAudioNodes extends Filterable
         return { source, gain };
     }
 
-    /** Get buffer size of `ScriptProcessorNode`. */
+    /**
+     * Get buffer size of `ScriptProcessorNode`.
+     * @readonly
+     * @type {number}
+     */
     get bufferSize(): number
     {
         return this.script.bufferSize;

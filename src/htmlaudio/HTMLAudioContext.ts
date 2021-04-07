@@ -34,7 +34,10 @@ class HTMLAudioContext extends EventEmitter implements IMediaContext
         this.emit('refreshPaused');
     }
 
-    /** HTML Audio does not support filters, this is non-functional API. */
+    /**
+     * HTML Audio does not support filters, this is non-functional API. 
+     * @type {Array<Filter>}
+     */
     public get filters(): Filter[]
     {
         console.warn('HTML Audio does not support filters');
@@ -46,7 +49,11 @@ class HTMLAudioContext extends EventEmitter implements IMediaContext
         console.warn('HTML Audio does not support filters');
     }
 
-    /** HTML Audio does not support `audioContext` */
+    /**
+     * HTML Audio does not support `audioContext`
+     * @readonly
+     * @type {AudioContext}
+     */
     public get audioContext(): AudioContext
     {
         console.warn('HTML Audio does not support audioContext');

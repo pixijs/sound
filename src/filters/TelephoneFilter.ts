@@ -1,5 +1,5 @@
 import { getInstance } from '../instance';
-import { WebAudioUtils } from '../webaudio';
+import { WebAudioUtils } from '../webaudio/WebAudioUtils';
 import { Filter } from './Filter';
 
 /**

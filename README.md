@@ -33,6 +33,13 @@ Installation is available by [NPM](https://npmjs.org):
 npm i pixi-sound --save
 ```
 
+```typescript
+import { sound } from 'pixi-sound';
+
+sound.add('my-sound', 'path/to/file.mp3');
+sound.play('my-sound');
+```
+
 ### Resources
 
 * [Releases](https://github.com/pixijs/sound/releases)

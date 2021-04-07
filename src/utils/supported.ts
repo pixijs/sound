@@ -1,4 +1,4 @@
-export type ExtensionMap = {[key: string]: boolean};
+type ExtensionMap = {[key: string]: boolean};
 
 /**
  * The list of extensions that can be played.
@@ -39,12 +39,12 @@ const supported: ExtensionMap = {};
 
 /**
  * Function to validate file type formats. This is called when the library initializes, but can
- * be called again if you need to recognize a format not listed in PIXI.sound.utils.extensions at
+ * be called again if you need to recognize a format not listed in `utils.extensions` at
  * initialization.
  * @static
  * @param {object} typeOverrides - - Dictionary of type overrides (inputs for
  *                                 AudioElement.canPlayType()), keyed by extension from the
- *                                 PIXI.sound.utils.extensions array.
+ *                                 utils.extensions array.
  */
 function validateFormats(typeOverrides?: {[key: string]: string}): void
 {

@@ -6,4 +6,5 @@ node_modules
 .rpt2_cache
 .DS_Store
 .nyc_output
+.types_output
 /example.api.json

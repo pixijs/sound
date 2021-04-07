@@ -7,7 +7,6 @@ import { IMediaContext } from '../interfaces';
  * of AudioNode elements: analyser > compressor > context.destination.
  * any filters that are added are inserted between the analyser and compressor nodes
  * @class
- * @extends PIXI.sound.Filterable
  * @memberof webaudio
  */
 class WebAudioContext extends Filterable implements IMediaContext
@@ -148,7 +147,8 @@ class WebAudioContext extends Filterable implements IMediaContext
 
     /**
      * Get AudioContext class, if not supported returns `null`
-     * @type {Function}
+     * @readonly
+     * @type {AudioContext}
      */
     public static get AudioContext(): typeof AudioContext
     {
@@ -163,7 +163,8 @@ class WebAudioContext extends Filterable implements IMediaContext
 
     /**
      * Get OfflineAudioContext class, if not supported returns `null`
-     * @type {Function}
+     * @type {OfflineAudioContext}
+     * @readonly
      */
     public static get OfflineAudioContext(): typeof OfflineAudioContext
     {
@@ -198,13 +199,21 @@ class WebAudioContext extends Filterable implements IMediaContext
         this._ctx = null;
     }
 
-    /** The WebAudio API AudioContext object. */
+    /**
+     * The WebAudio API AudioContext object.
+     * @readonly
+     * @type {AudioContext}
+     */
     public get audioContext(): AudioContext
     {
         return this._ctx;
     }
 
-    /** The WebAudio API OfflineAudioContext object. */
+    /**
+     * The WebAudio API OfflineAudioContext object.
+     * @readonly
+     * @type {OfflineAudioContext}
+     */
     public get offlineContext(): OfflineAudioContext
     {
         return this._offlineCtx;
@@ -214,6 +223,7 @@ class WebAudioContext extends Filterable implements IMediaContext
      * Pauses all sounds, even though we handle this at the instance
      * level, we'll also pause the audioContext so that the
      * time used to compute progress isn't messed up.
+     * @type {boolean}
      * @default false
      */
     public set paused(paused: boolean)

@@ -1,6 +1,6 @@
 import typescript from "@rollup/plugin-typescript";
 import { terser } from "rollup-plugin-terser";
-import pkg from "./package.json";
+import pkg from "../package.json";
 
 const plugins = [typescript()];
 
@@ -20,6 +20,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const sourcemap = true;
+const external = Object.keys(pkg.peerDependencies);
 const compiled = (new Date()).toUTCString().replace(/GMT/g, "UTC");
 const banner = `/*!
  * ${pkg.name} - v${pkg.version}
@@ -34,17 +35,39 @@ const banner = `/*!
  * This configuration is designed for building the browser version
  * of the library, ideally included using the <script> element
  */
-export default {
-    input: "src/index.ts",
-    external: Object.keys(pkg.peerDependencies),
-    output: [
-        {
+export default [
+    {
+        input: "src/index.ts",
+        external,
+        plugins,
+        output: [
+            {
+                banner,
+                freeze: false,
+                sourcemap,
+                format: "cjs",
+                file: "dist/pixi-sound.cjs.js",
+            },
+            {
+                banner,
+                freeze: false,
+                sourcemap,
+                format: "esm",
+                file: "dist/pixi-sound.esm.js",
+            },
+        ],
+    },
+    {
+        input: "src/browser.ts",
+        external,
+        plugins,
+        output: {
             banner,
             freeze: false,
             format: "iife",
             name: "PIXI.sound",
+            exports: 'default',
             sourcemap,
-            exports: "default",
             file: "dist/pixi-sound.js",
             globals: {
                 "@pixi/loaders": "PIXI",
@@ -52,23 +75,6 @@ export default {
                 "@pixi/ticker": "PIXI",
                 "@pixi/utils": "PIXI.utils",
             },
-        },
-        {
-            banner,
-            freeze: false,
-            sourcemap,
-            exports: "default",
-            format: "cjs",
-            file: "dist/pixi-sound.cjs.js",
-        },
-        {
-            banner,
-            freeze: false,
-            sourcemap,
-            exports: "default",
-            format: "esm",
-            file: "dist/pixi-sound.esm.js",
-        },
-    ],
-    plugins,
-};
+        }
+    }
+];

@@ -107,7 +107,8 @@ interface IMediaInstance
      * @param {string} name - Name of property, like 'speed', 'volume', 'muted', 'loop', 'paused'
      * @param {number|boolean} value - The total number of seconds of audio
      * @example
-     * PIXI.sound.play('foo')
+     * import { sound } from 'pixi-sound';
+     * sound.play('foo')
      *   .set('volume', 0.5)
      *   .set('speed', 0.8);
      */

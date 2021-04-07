@@ -1,32 +1,27 @@
 import { Loader } from '@pixi/loaders';
-import { Filterable } from './Filterable';
-import * as filters from './filters';
-import * as htmlaudio from './htmlaudio';
 import { setInstance } from './instance';
-import { SoundLoader } from './loader';
-import { Sound } from './Sound';
+import { SoundLoader } from './SoundLoader';
 import { SoundLibrary } from './SoundLibrary';
-import { SoundSprite } from './sprites';
-import * as utils from './utils';
-import * as webaudio from './webaudio';
+import htmlaudio from './htmlaudio';
+import filters from './filters';
+import webaudio from './webaudio';
+import utils from './utils';
 
 const sound = setInstance(new SoundLibrary());
 
 // Add the loader plugin
 Loader.registerPlugin(SoundLoader);
 
-// Export
-Object.defineProperties(sound,
-    {
-        Filterable: { get() { return Filterable; } },
-        filters: { get() { return filters; } },
-        htmlaudio: { get() { return htmlaudio; } },
-        Sound: { get() { return Sound; } },
-        SoundLibrary: { get() { return SoundLibrary; } },
-        SoundSprite: { get() { return SoundSprite; } },
-        utils: { get() { return utils; } },
-        webaudio: { get() { return webaudio; } },
-        sound: { get() { return sound; } },
-    });
-
-export default sound;
+export * from './Sound';
+export * from './SoundLibrary';
+export * from './Filterable';
+export * from './interfaces';
+export * from './filters/Filter';
+export * from './SoundSprite';
+export {
+    sound,
+    htmlaudio,
+    filters,
+    webaudio,
+    utils,
+};

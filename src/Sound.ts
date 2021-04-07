@@ -1,10 +1,10 @@
-import { Filter } from './filters';
-import { HTMLAudioMedia } from './htmlaudio';
+import { Filter } from './filters/Filter';
+import { HTMLAudioMedia } from './htmlaudio/HTMLAudioMedia';
 import { getInstance } from './instance';
 import { IMedia, IMediaContext, IMediaInstance } from './interfaces';
-import { SoundSprite, SoundSpriteData, SoundSprites } from './sprites';
+import { SoundSprite, SoundSpriteData, SoundSprites } from './SoundSprite';
 import { resolveUrl } from './utils/resolveUrl';
-import { WebAudioMedia } from './webaudio';
+import { WebAudioMedia } from './webaudio/WebAudioMedia';
 
 /**
  * Options to use for creating sounds.
@@ -316,7 +316,7 @@ class Sound
     }
 
     /**
-     * Use `PIXI.sound.Sound.from`
+     * Use `Sound.from`
      * @ignore
      */
     constructor(media: IMedia, options: Options)
@@ -409,7 +409,7 @@ class Sound
 
     /**
      * Set the filters. Only supported with WebAudio.
-     * @type {Array<PIXI.sound.filters.Filter>}
+     * @type {Array<filters.Filter>}
      */
     public get filters(): Filter[]
     {
@@ -435,7 +435,7 @@ class Sound
     /**
      * Convenience method to add more than one sprite add a time.
      * @param {Object} data - Map of sounds to add where the key is the alias,
-     *        and the data are configuration options, see {@PIXI.sound.Sound#addSprite} for info on data.
+     *        and the data are configuration options, see {@link Sound#addSprite} for info on data.
      * @return The map of sound sprites added.
      */
     public addSprites(sprites: SoundSpriteDataMap): SoundSprites;
@@ -736,7 +736,7 @@ class Sound
 
     /**
      * Gets the list of instances that are currently being played of this sound.
-     * @type {Array<PIXI.sound.IMediaInstance>}
+     * @type {Array<IMediaInstance>}
      */
     public get instances(): IMediaInstance[]
     {

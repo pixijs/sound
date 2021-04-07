@@ -33,25 +33,36 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
         return new HTMLAudioInstance(this);
     }
 
-    // Implement isPlayable
+    /**
+     * @type {boolean}
+     * @readonly
+     */
     public get isPlayable(): boolean
     {
         return !!this._source && this._source.readyState === 4;
     }
 
-    // Implement duration
+    /**
+     * @type {number}
+     * @readonly
+     */
     public get duration(): number
     {
         return this._source.duration;
     }
 
-    // Implement context
+    /**
+     * @type {HTMLAudioContext}
+     * @readonly
+     */
     public get context(): HTMLAudioContext
     {
         return this.parent.context as HTMLAudioContext;
     }
 
-    // Implement filters
+    /**
+     * @type {Array<Filter>}
+     */
     public get filters(): Filter[]
     {
         return null;

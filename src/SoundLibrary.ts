@@ -1,15 +1,23 @@
-import { Filter } from './filters';
-import * as htmlaudio from './htmlaudio';
-import { IMediaContext, IMediaInstance } from './interfaces';
-import { SoundLoader } from './loader';
+import { Filter } from './filters/Filter';
+import { IMediaContext } from './interfaces/IMediaContext';
+import { IMediaInstance } from './interfaces/IMediaInstance';
+import { SoundLoader } from './SoundLoader';
 import { CompleteCallback, Options, PlayOptions, Sound } from './Sound';
-import * as webaudio from './webaudio';
+import { HTMLAudioContext } from './htmlaudio/HTMLAudioContext';
+import { WebAudioContext } from './webaudio/WebAudioContext';
 
-type SoundMap = {[id: string]: Options | string | ArrayBuffer | HTMLAudioElement};
-type Sounds = {[id: string]: Sound};
+type SoundSourceMap = {[id: string]: Options | string | ArrayBuffer | HTMLAudioElement};
+type SoundMap = {[id: string]: Sound};
 
 /**
- * Manages the playback of sounds.
+ * Manages the playback of sounds. This is the main class for PixiJS Sound. If you're
+ * using the browser-based bundled this is `PIXI.sound`. Otherwise, you can do this:
+ * @example
+ * import { sound } from 'pixi-sound';
+ * 
+ * // sound is an instance of SoundLibrary
+ * sound.add('my-sound', 'path/to/file.mp3');
+ * sound.play('my-sound');
  * @class
  */
 class SoundLibrary
@@ -24,13 +32,13 @@ class SoundLibrary
     private _context: IMediaContext;
 
     /** The WebAudio specific context */
-    private _webAudioContext: webaudio.WebAudioContext;
+    private _webAudioContext: WebAudioContext;
 
     /** The HTML Audio (legacy) context. */
-    private _htmlAudioContext: htmlaudio.HTMLAudioContext;
+    private _htmlAudioContext: HTMLAudioContext;
 
     /** The map of all sounds by alias. */
-    private _sounds: {[id: string]: Sound};
+    private _sounds: SoundMap;
 
     constructor()
     {
@@ -47,16 +55,20 @@ class SoundLibrary
     {
         if (this.supported)
         {
-            this._webAudioContext = new webaudio.WebAudioContext();
+            this._webAudioContext = new WebAudioContext();
         }
-        this._htmlAudioContext = new htmlaudio.HTMLAudioContext();
+        this._htmlAudioContext = new HTMLAudioContext();
         this._sounds = {};
         this.useLegacy = !this.supported;
 
         return this;
     }
 
-    /** The global context to use. */
+    /**
+     * The global context to use.
+     * @type {IMediaContext}
+     * @readonly
+     */
     public get context(): IMediaContext
     {
         return this._context;
@@ -67,9 +79,10 @@ class SoundLibrary
      * for setting global planning or global effects.
      * **Only supported with WebAudio.**
      * @example
+     * import { sound, filters } from 'pixi-sound';
      * // Adds a filter to pan all output left
-     * PIXI.sound.filtersAll = [
-     *     new PIXI.sound.filters.StereoFilter(-1)
+     * sound.filtersAll = [
+     *     new filters.StereoFilter(-1)
      * ];
      * @type {filters.Filter[]}
      */
@@ -97,7 +110,7 @@ class SoundLibrary
      */
     public get supported(): boolean
     {
-        return webaudio.WebAudioContext.AudioContext !== null;
+        return WebAudioContext.AudioContext !== null;
     }
 
     /**
@@ -106,7 +119,7 @@ class SoundLibrary
      * @instance
      * @param {string} alias - The sound alias reference.
      * @param {Sound} sound - Sound reference to use.
-     * @return Instance of the Sound object.
+     * @return {Sound} Instance of the Sound object.
      */
 
     /**
@@ -122,21 +135,22 @@ class SoundLibrary
      * Adds multiple sounds at once.
      * @param map - Map of sounds to add, the key is the alias, the value is the
      *        `string`, `ArrayBuffer`, `HTMLAudioElement` or the list of options
-     *        (see {@link PIXI.sound.add} for options).
+     *        (see {@link Options} for full options).
      * @param globalOptions - The default options for all sounds.
      *        if a property is defined, it will use the local property instead.
      * @return Instance to the Sound object.
      */
-    public add(map: SoundMap, globalOptions?: Options): Sounds;
+    public add(map: SoundSourceMap, globalOptions?: Options): SoundMap;
 
     /**
      * @ignore
      */
-    public add(source: string | SoundMap, sourceOptions?: Options | string | ArrayBuffer | HTMLAudioElement | Sound): any
+    public add(source: string | SoundSourceMap,
+        sourceOptions?: Options | string | ArrayBuffer | HTMLAudioElement | Sound): any
     {
         if (typeof source === 'object')
         {
-            const results: Sounds = {};
+            const results: SoundMap = {};
 
             for (const alias in source)
             {
@@ -197,7 +211,10 @@ class SoundLibrary
         return options;
     }
 
-    /** Do not use WebAudio, force the use of legacy. This **must** be called before loading any files. */
+    /**
+     * Do not use WebAudio, force the use of legacy. This **must** be called before loading any files.
+     * @type {boolean}
+     */
     public get useLegacy(): boolean
     {
         return this._useLegacy;
@@ -228,7 +245,8 @@ class SoundLibrary
     }
 
     /**
-     * Set the global volume for all sounds. To set per-sound volume see {@link PIXI.SoundLibrary#volume}.
+     * Set the global volume for all sounds. To set per-sound volume see {@link SoundLibrary#volume}.
+     * @type {number}
      */
     public get volumeAll(): number
     {
@@ -242,6 +260,7 @@ class SoundLibrary
 
     /**
      * Set the global speed for all sounds. To set per-sound speed see {@link SoundLibrary#speed}.
+     * @type {number}
      */
     public get speedAll(): number
     {
@@ -505,4 +524,4 @@ class SoundLibrary
 }
 
 export { SoundLibrary };
-export type { SoundMap, Sounds };
+export type { SoundSourceMap, SoundMap };

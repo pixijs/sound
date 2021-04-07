@@ -1,5 +1,6 @@
 import { Sound } from '../Sound';
-import { WebAudioContext, WebAudioMedia } from '../webaudio';
+import { WebAudioMedia } from '../webaudio/WebAudioMedia';
+import { WebAudioContext } from '../webaudio/WebAudioContext';
 
 /**
  * Create a new sound for a sine wave-based tone.  **Only supported with WebAudio**

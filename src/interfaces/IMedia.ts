@@ -1,4 +1,4 @@
-import { Filter } from '../filters';
+import { Filter } from '../filters/Filter';
 import { LoadedCallback, Sound } from '../Sound';
 import { IMediaContext } from './IMediaContext';
 import { IMediaInstance } from './IMediaInstance';
