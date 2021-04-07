@@ -22,12 +22,12 @@
         },
         "applicationName": "PixiJS Sound",
         "footer": "Made with ♥ by Matt Karl (github.com/bigtimebuddy)",
-        "copyright": "PIXI Copyright &copy; 2017 Matt Karl.",
+        "copyright": "PIXI Copyright &copy; 2017 - 2021 Matt Karl.",
         "linenums": false,
         "googleAnalytics": "UA-103772589-1",
         "meta": {
-            "title": "PIXI.sound API Documentation",
-            "description": "Documentation for PIXI.sound library",
+            "title": "PixiJS Sound API Documentation",
+            "description": "Documentation for PixiJS Sound library",
             "keyword": "docs, documentation, pixi, pixijs, webaudio, html5, audio, javascript, jsdoc"
         }
     },
