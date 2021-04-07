@@ -4,6 +4,7 @@
   "description": "WebAudio API playback library with filters",
   "main": "dist/pixi-sound.cjs.js",
   "module": "dist/pixi-sound.esm.js",
+  "types": "dist/types/index.d.ts",
   "scripts": {
     "test": "floss -p test/dist.js -- --autoplay-policy=no-user-gesture-required",
     "coverage": "nyc floss -p test/dist.js -- --autoplay-policy=no-user-gesture-required",
@@ -14,7 +15,9 @@
     "types": "tsc -p tsconfig.json --noEmit",
     "prebuild": "run-s clean lint types",
     "build": "rollup -c",
+    "postbuild": "run-s build:types",
     "build:prod": "cross-env NODE_ENV=production run-s build",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "predocs": "rimraf docs/**",
     "docs": "webdoc -r README.md",
     "predeploy": "run-s docs",
