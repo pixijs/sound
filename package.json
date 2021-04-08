@@ -95,10 +95,10 @@
     "typescript": "^4.0.0"
   },
   "peerDependencies": {
-    "@pixi/core": "^6.0.0",
-    "@pixi/loaders": "^6.0.0",
-    "@pixi/ticker": "^6.0.0",
-    "@pixi/utils": "^6.0.0"
+    "@pixi/core": ">=5",
+    "@pixi/loaders": ">=5",
+    "@pixi/ticker": ">=5",
+    "@pixi/utils": ">=5"
   },
   "eslintConfig": {
     "extends": [
