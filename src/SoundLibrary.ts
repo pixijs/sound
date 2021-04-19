@@ -185,7 +185,6 @@ class SoundLibrary
 
     /**
      * Internal methods for getting the options object
-     * @private
      * @param source - The source options
      * @param overrides - Override default options
      * @return The construction options

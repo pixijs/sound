@@ -34,6 +34,7 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
     }
 
     /**
+     * `true` if the audio is loaded and can be played.
      * @type {boolean}
      * @readonly
      */
@@ -43,6 +44,7 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
     }
 
     /**
+     * The length of the sound in seconds.
      * @type {number}
      * @readonly
      */
@@ -52,6 +54,7 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
     }
 
     /**
+     * Reference to the global context element.
      * @type {HTMLAudioContext}
      * @readonly
      */
@@ -61,7 +64,8 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
     }
 
     /**
-     * @type {Array<Filter>}
+     * Filters are ignored for HTML audio.
+     * @type {filters.Filter[]}
      */
     public get filters(): Filter[]
     {

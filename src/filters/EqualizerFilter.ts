@@ -94,8 +94,6 @@ class EqualizerFilter extends Filter
 
     /**
      * The map of bands to frequency
-     * @type {Object}
-     * @readonly
      */
     public readonly bandsMap: {[id: number]: BiquadFilterNode};
 

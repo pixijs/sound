@@ -5,20 +5,11 @@ import { CompleteCallback, Sound } from './Sound';
  * Data for adding new sound sprites.
  */
 interface SoundSpriteData {
-    /**
-     * The start time in seconds.
-     * @type {number}
-     */
+    /** The start time in seconds. */
     start: number;
-    /**
-     * The end time in seconds.
-     * @type {number}
-     */
+    /** The end time in seconds. */
     end: number;
-    /**
-     * The optional speed, if not speed, uses the default speed of the parent.
-     * @type {number}
-     */
+    /** The optional speed, if not speed, uses the default speed of the parent. */
     speed?: number;
 }
 

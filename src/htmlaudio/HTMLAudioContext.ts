@@ -36,7 +36,7 @@ class HTMLAudioContext extends EventEmitter implements IMediaContext
 
     /**
      * HTML Audio does not support filters, this is non-functional API.
-     * @type {Array<Filter>}
+     * @type {filters.Filter[]}
      */
     public get filters(): Filter[]
     {

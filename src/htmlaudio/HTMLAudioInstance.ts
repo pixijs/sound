@@ -112,7 +112,6 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * Reference: http://stackoverflow.com/a/40370077
-     * @private
      */
     private _onPlay(): void
     {
@@ -121,7 +120,6 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * Reference: http://stackoverflow.com/a/40370077
-     * @private
      */
     private _onPause(): void
     {
@@ -146,10 +144,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         this._media = media;
     }
 
-    /**
-     * Stop the sound playing
-     * @private
-     */
+    /** Stop the sound playing */
     private _internalStop(): void
     {
         if (this._source && this._playing)
@@ -170,7 +165,11 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         }
     }
 
-    /** Set the instance speed from 0 to 1 */
+    /**
+     * Set the instance speed from 0 to 1
+     * @type {number}
+     * @default 1
+     */
     public get speed(): number
     {
         return this._speed;
@@ -184,6 +183,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
     /**
      * Get the set the volume for this instance from 0 to 1
      * @type {number}
+     * @default 1
      */
     public get volume(): number
     {
@@ -198,6 +198,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
     /**
      * If the sound instance should loop playback
      * @type {number}
+     * @default false
      */
     public get loop(): boolean
     {
@@ -212,6 +213,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
     /**
      * `true` if the sound is muted
      * @type {boolean}
+     * @default false
      */
     public get muted(): boolean
     {
@@ -347,10 +349,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         this.emit('start');
     }
 
-    /**
-     * Handle time update on sound.
-     * @private
-     */
+    /** Handle time update on sound. */
     private _onUpdate(): void
     {
         this.emit('progress', this.progress, this._duration);
@@ -360,10 +359,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         }
     }
 
-    /**
-     * Callback when completed.
-     * @private
-     */
+    /** Callback when completed. */
     private _onComplete(): void
     {
         Ticker.shared.remove(this._onUpdate, this);

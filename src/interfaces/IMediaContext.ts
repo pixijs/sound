@@ -6,33 +6,21 @@ import { Filter } from '../filters/Filter';
  */
 interface IMediaContext
 {
-    /**
-     * `true` if all sounds are mute
-     * @type {boolean}
-     */
+    /** `true` if all sounds are mute */
     muted: boolean;
 
-    /**
-     * Volume to apply to all sound
-     * @type {number}
-     */
+    /** Volume to apply to all sound */
     volume: number;
 
-    /**
-     * The speed of all sound
-     * @type {number}
-     */
+    /** The speed of all sound */
     speed: number;
 
-    /**
-     * Set the paused state for all sound
-     * @type {boolean}
-     */
+    /** Set the paused state for all sound */
     paused: boolean;
 
     /**
      * Collection of global filter
-     * @type {Filter[]}
+     * @type {filters.Filter[]}
      */
     filters: Filter[];
 

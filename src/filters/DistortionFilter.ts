@@ -12,10 +12,10 @@ class DistortionFilter extends Filter
     /** The Wave shape node use to distort */
     private _distortion: WaveShaperNode;
 
-    /** The amount of distoration */
+    /** The amount of distortion */
     private _amount: number;
 
-    /** @param {number} [amount=0] - The amount of distoration from 0 to 1. */
+    /** @param {number} [amount=0] - The amount of distortion from 0 to 1. */
     constructor(amount = 0)
     {
         if (getInstance().useLegacy)
@@ -35,7 +35,10 @@ class DistortionFilter extends Filter
         this.amount = amount;
     }
 
-    /** @type {number} */
+    /**
+     * The amount of distortion from 0 (none) to 1 (maximum).
+     * @type {number}
+     */
     set amount(value: number)
     {
         value *= 1000;

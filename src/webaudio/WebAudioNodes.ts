@@ -2,19 +2,11 @@ import { Filterable } from '../Filterable';
 import { WebAudioContext } from './WebAudioContext';
 import { WebAudioUtils } from './WebAudioUtils';
 
-/**
- * Output for cloning source node.
- */
+/** Output for cloning source node. */
 interface SourceClone {
-    /**
-     * Cloned audio buffer source
-     * @type {AudioBufferSourceNode}
-     */
+    /** Cloned audio buffer source */
     source: AudioBufferSourceNode;
-    /**
-     * Independent volume control
-     * @type {GainNode}
-     */
+    /** Independent volume control */
     gain: GainNode;
 }
 
@@ -27,28 +19,23 @@ class WebAudioNodes extends Filterable
     /**
      * The buffer size for script processor, default is `0` which auto-detects. If you plan to use
      * script node on iOS, you'll need to provide a non-zero amount.
-     * @type {number}
-     * @default 0
      */
     public static BUFFER_SIZE = 0;
 
     /**
      * Get the buffer source node
-     * @type {AudioBufferSourceNode}
      * @readonly
      */
     public bufferSource: AudioBufferSourceNode;
 
     /**
      * Get the gain node
-     * @type {GainNode}
      * @readonly
      */
     public gain: GainNode;
 
     /**
      * Get the analyser node
-     * @type {AnalyserNode}
      * @readonly
      */
     public analyser: AnalyserNode;
@@ -60,10 +47,7 @@ class WebAudioNodes extends Filterable
      */
     public context: WebAudioContext;
 
-    /**
-     * Private reference to the script processor node.
-     * @type {ScriptProcessorNode}
-     */
+    /** Private reference to the script processor node. */
     private _script: ScriptProcessorNode;
 
     /**
