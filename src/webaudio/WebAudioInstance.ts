@@ -571,6 +571,7 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
             this._source.onended = null;
             this._source.stop(0); // param needed for iOS 8 bug
             this._source.disconnect();
+            this._source.buffer = null;
             this._source = null;
         }
     }
@@ -587,6 +588,7 @@ export class WebAudioInstance extends PIXI.utils.EventEmitter implements IMediaI
             this._enabled = false;
             this._source.onended = null;
             this._source.disconnect();
+            this._source.buffer = null;
         }
         this._source = null;
         this._progress = 1;
