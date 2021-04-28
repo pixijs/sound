@@ -52,6 +52,7 @@ class WebAudioMedia implements IMedia
         this.parent = null;
         this._nodes.destroy();
         this._nodes = null;
+        this._source.buffer = null;
         this._source = null;
         this.source = null;
     }
