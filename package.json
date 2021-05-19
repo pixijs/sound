@@ -33,12 +33,12 @@
     "publish:patch": "npm version patch && npm run publish:skip",
     "publish:minor": "npm version minor && npm run publish:skip",
     "publish:major": "npm version major && npm run publish:skip",
-    "publish:skip": "npm test && npm publish",
+    "publish:skip": "npm test && npm publish --tag latest-2.x",
     "postpublish": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pixijs/pixi-sound.git"
+    "url": "git+https://github.com/pixijs/sound.git"
   },
   "files": [
     "dist/",
@@ -55,9 +55,9 @@
   "author": "Matt Karl @bigtimebuddy",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pixijs/pixi-sound/issues"
+    "url": "https://github.com/pixijs/sound/issues"
   },
-  "homepage": "https://github.com/pixijs/pixi-sound#readme",
+  "homepage": "https://github.com/pixijs/sound#readme",
   "pre-commit": [
     "lint",
     "types"
