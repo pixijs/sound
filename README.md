@@ -2,7 +2,7 @@
 
 WebAudio API playback library, with filters. Modern audio playback for modern browsers. 
 
-[![Node.js CI](https://github.com/pixijs/sound/workflows/Node.js%20CI/badge.svg)](https://github.com/pixijs/sound/actions?query=workflow%3A%22Node.js+CI%22)
+[![Node.js CI](https://github.com/pixijs/sound/workflows/Node.js%20CI/badge.svg)](https://github.com/pixijs/sound/actions?query=workflow%3A%22Node.js+CI%22) [![npm version](https://badge.fury.io/js/%40pixi%2Fsound.svg)](https://badge.fury.io/js/%40pixi%2Fsound)
 
 **Features**
 
