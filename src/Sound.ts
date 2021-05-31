@@ -602,7 +602,7 @@ class Sound
             console.assert(!!this._sprites[alias], `Alias ${alias} is not available`);
             const sprite: SoundSprite = this._sprites[alias];
 
-            options.start = sprite.start;
+            options.start = sprite.start + (options.start || 0);
             options.end = sprite.end;
             options.speed = sprite.speed || 1;
             options.loop = sprite.loop || options.loop;
