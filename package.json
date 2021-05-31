@@ -32,7 +32,9 @@
     "publish:minor": "npm version minor && run-s publish:skip",
     "publish:major": "npm version major && run-s publish:skip",
     "publish:skip": "run-s build:prod test && npm publish",
-    "postpublish": "run-s deploy && git push && git push --tags"
+    "postpublish": "run-s deploy && git push && git push --tags",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
   },
   "engines": {
     "node": ">=12",
@@ -65,6 +67,17 @@
     "lint",
     "types"
   ],
+  "clean-package": {
+    "indent": 2,
+    "remove": [
+      "clean-package",
+      "scripts",
+      "engines",
+      "pre-commit",
+      "devDependencies",
+      "eslintConfig"
+    ]
+  },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.13.3",
     "@pixi/eslint-config": "^2.0.1",
@@ -75,6 +88,7 @@
     "@types/node": "^12.0.0",
     "@webdoc/cli": "^1.2.0",
     "chai": "^4.2.0",
+    "clean-package": "^1.0.1",
     "copyfiles": "^2.1.0",
     "cross-env": "^5.2.0",
     "electron": "^12.0.0",
