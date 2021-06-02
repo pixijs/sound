@@ -151,11 +151,6 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         if (this._source)
         {
             this._internalStop();
-
-            /**
-             * The sound is stopped. Don't use after this is called.
-             * @event stop
-             */
             this.emit('stop');
         }
     }
