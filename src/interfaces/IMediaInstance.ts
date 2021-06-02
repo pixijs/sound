@@ -68,6 +68,11 @@ interface IMediaInstance
      */
 
     /**
+     * The sound is stopped. Don't use after this is called.
+     * @event stop
+     */
+
+    /**
      * Fired when the sound when progress updates.
      * @event progress
      * @param {number} progress - Playback progress from 0 to 1
@@ -98,9 +103,15 @@ interface IMediaInstance
     play(options: PlayOptions): void;
     destroy(): void;
     toString(): string;
-    once(event: string, fn: () => void, context?: any): this;
-    on(event: string, fn: () => void, context?: any): this;
-    off(event: string, fn: () => void, context?: any, once?: boolean): this;
+    once(event: 'pause', fn: (paused: boolean) => void, context?: any): this;
+    once(event: 'progress', fn: (progress: number, duration: number) => void, context?: any): this;
+    once(event: 'resumed' | 'paused' | 'start' | 'end' | 'stop', fn: () => void, context?: any): this;
+    on(event: 'pause', fn: (paused: boolean) => void, context?: any): this;
+    on(event: 'progress', fn: (progress: number, duration: number) => void, context?: any): this;
+    on(event: 'resumed' | 'paused' | 'start' | 'end' | 'stop', fn: () => void, context?: any): this;
+    off(event: 'resumed' | 'paused' | 'start' | 'end' | 'progress' | 'pause' | 'stop',
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        fn: Function, context?: any, once?: boolean): this;
 
     /**
      * Fired when the sound when progress updates.
