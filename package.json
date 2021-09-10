@@ -1,6 +1,6 @@
 {
   "name": "@pixi/sound",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "description": "WebAudio API playback library with filters",
   "main": "dist/pixi-sound.cjs.js",
   "module": "dist/pixi-sound.esm.js",
