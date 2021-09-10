@@ -52,7 +52,15 @@ class WebAudioMedia implements IMedia
         this.parent = null;
         this._nodes.destroy();
         this._nodes = null;
-        this._source.buffer = null;
+        try
+        {
+            this._source.buffer = null;
+        }
+        catch (err)
+        {
+            // try/catch workaround for bug in older Chrome versions
+            console.warn('Failed to set AudioBufferSourceNode.buffer to null:', err);
+        }
         this._source = null;
         this.source = null;
     }

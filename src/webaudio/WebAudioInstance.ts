@@ -492,7 +492,15 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
             this._source.onended = null;
             this._source.stop(0); // param needed for iOS 8 bug
             this._source.disconnect();
-            this._source.buffer = null;
+            try
+            {
+                this._source.buffer = null;
+            }
+            catch (err)
+            {
+                // try/catch workaround for bug in older Chrome versions
+                console.warn('Failed to set AudioBufferSourceNode.buffer to null:', err);
+            }
             this._source = null;
         }
     }
@@ -505,7 +513,15 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
             this.enableTicker(false);
             this._source.onended = null;
             this._source.disconnect();
-            this._source.buffer = null;
+            try
+            {
+                this._source.buffer = null;
+            }
+            catch (err)
+            {
+                // try/catch workaround for bug in older Chrome versions
+                console.warn('Failed to set AudioBufferSourceNode.buffer to null:', err);
+            }
         }
         this._source = null;
         this._progress = 1;
