@@ -110,8 +110,7 @@ interface IMediaInstance
     on(event: 'progress', fn: (progress: number, duration: number) => void, context?: any): this;
     on(event: 'resumed' | 'paused' | 'start' | 'end' | 'stop', fn: () => void, context?: any): this;
     off(event: 'resumed' | 'paused' | 'start' | 'end' | 'progress' | 'pause' | 'stop',
-        // eslint-disable-next-line @typescript-eslint/ban-types
-        fn: Function, context?: any, once?: boolean): this;
+        fn?: (...args: any[]) => void, context?: any, once?: boolean): this;
 
     /**
      * Fired when the sound when progress updates.
