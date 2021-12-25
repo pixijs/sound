@@ -23,7 +23,7 @@ class WebAudioMedia implements IMedia
      * The file buffer to load.
      * @readonly
      */
-    public source: ArrayBuffer;
+    public source: ArrayBuffer | AudioBuffer;
 
     /**
      * Instance of the chain builder.
@@ -43,7 +43,7 @@ class WebAudioMedia implements IMedia
         this.parent = parent;
         this._nodes = new WebAudioNodes(this.context);
         this._source = this._nodes.bufferSource;
-        this.source = parent.options.source as ArrayBuffer;
+        this.source = parent.options.source as ArrayBuffer | AudioBuffer;
     }
 
     /** Destructor, safer to use `SoundLibrary.remove(alias)` to remove this sound. */
@@ -169,11 +169,9 @@ class WebAudioMedia implements IMedia
      * @param arrayBuffer - From load.
      * @param {Function} callback - Callback optional
      */
-    private _decode(arrayBuffer: ArrayBuffer, callback?: LoadedCallback): void
+    private _decode(arrayBuffer: ArrayBuffer | AudioBuffer, callback?: LoadedCallback): void
     {
-        const context = this.parent.context as WebAudioContext;
-
-        context.decode(arrayBuffer, (err: Error, buffer: AudioBuffer) =>
+        const audioBufferReadyFn = (err: Error, buffer: AudioBuffer) =>
         {
             if (err)
             {
@@ -193,7 +191,18 @@ class WebAudioMedia implements IMedia
                     callback(null, this.parent, instance);
                 }
             }
-        });
+        };
+
+        if (arrayBuffer instanceof AudioBuffer)
+        {
+            audioBufferReadyFn(null, arrayBuffer);
+        }
+        else
+        {
+            const context = this.parent.context as WebAudioContext;
+
+            context.decode(arrayBuffer, audioBufferReadyFn);
+        }
     }
 }
 
