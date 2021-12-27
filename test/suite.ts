@@ -60,6 +60,7 @@ export function suite(useLegacy = false): void
             expect(filters.EqualizerFilter).to.be.a('function');
             expect(filters.ReverbFilter).to.be.a('function');
             expect(filters.StereoFilter).to.be.a('function');
+            expect(filters.StreamFilter).to.be.a('function');
             expect(sound).to.be.instanceof(SoundLibrary);
         });
 

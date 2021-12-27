@@ -4,6 +4,7 @@ import { DistortionFilter } from './DistortionFilter';
 import { StereoFilter } from './StereoFilter';
 import { ReverbFilter } from './ReverbFilter';
 import { MonoFilter } from './MonoFilter';
+import { StreamFilter } from './StreamFilter';
 import { TelephoneFilter } from './TelephoneFilter';
 
 /**
@@ -24,5 +25,6 @@ export default {
     StereoFilter,
     ReverbFilter,
     MonoFilter,
+    StreamFilter,
     TelephoneFilter
 };
