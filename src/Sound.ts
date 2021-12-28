@@ -64,7 +64,7 @@ interface Options {
      * If sound is already preloaded, available.
      * @type {ArrayBuffer|HTMLAudioElement}
      */
-    source?: ArrayBuffer | HTMLAudioElement;
+    source?: ArrayBuffer | AudioBuffer | HTMLAudioElement;
     /**
      * The map of sprite data. Where a sprite is an object
      * with a `start` and `end`, which are the times in seconds. Optionally, can include
@@ -266,11 +266,11 @@ class Sound
 
     /**
      * Create a new sound instance from source.
-     * @param {ArrayBuffer|String|Options|HTMLAudioElement} options - Either the path or url to the source file.
+     * @param {ArrayBuffer|AudioBuffer|String|Options|HTMLAudioElement} options - Either the path or url to the source file.
      *        or the object of options to use.
      * @return Created sound instance.
      */
-    public static from(source: string | Options | ArrayBuffer | HTMLAudioElement): Sound
+    public static from(source: string | Options | ArrayBuffer | HTMLAudioElement | AudioBuffer): Sound
     {
         let options: Options = {};
 
@@ -278,7 +278,7 @@ class Sound
         {
             options.url = source as string;
         }
-        else if (source instanceof ArrayBuffer || source instanceof HTMLAudioElement)
+        else if (source instanceof ArrayBuffer || source instanceof AudioBuffer || source instanceof HTMLAudioElement)
         {
             options.source = source;
         }
