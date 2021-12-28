@@ -46,6 +46,7 @@
             <li><a data-toggle="tab" href="#section-events">Events</a></li>
             <li><a data-toggle="tab" href="#section-library">Library</a></li>
             <li><a data-toggle="tab" href="#section-utils">Utilities</a></li>
+            <li><a data-toggle="tab" href="#section-stream">Stream</a></li>
         </ul>
     </nav>
     <main class="col-sm-10">
@@ -249,6 +250,58 @@ sound.play();</code></pre>
                 </button>
                 <pre><code id="autoplay2" class="javascript">PIXI.sound.utils.playOnce('resources/mechanical.mp3', function() {
     console.log('Sound finished');
+});</code></pre>
+            </div>
+            <div class="tab-pane fade" id="section-stream">
+                <h3>Stream</h3>
+
+                <p>You can get the audio stream by <code>StreamFilter</code></p>
+                <button class="btn btn-danger btn-lg pull-right play" data-code="#stream">
+                    <span class="glyphicon glyphicon-play"></span> Run
+                </button>
+                <pre><code id="stream" class="javascript">const stream = new MediaStream();
+const recorder = new MediaRecorder(stream);
+const streamFilter = new PIXI.sound.filters.StreamFilter();
+
+// attach audio stream
+streamFilter.stream.getAudioTracks().forEach(function (track) {
+    stream.addTrack(track);
+});
+// process recorded data
+recorder.ondataavailable = function (e) {
+    if (e.data.size == 0) {
+        console.error('no data available');
+        return;
+    }
+    const blob = new Blob([e.data], {
+      type: recorder.mimeType,
+    });
+    // You can download the audio file or upload the Blob to server
+    const url = URL.createObjectURL(blob);
+    PIXI.sound.filtersAll = []; // remove filters for recorded sound
+    PIXI.sound.Sound.from({
+        url: url,
+        autoPlay: true,
+    });
+};
+// apply filters
+PIXI.sound.filtersAll = [
+    new PIXI.sound.filters.TelephoneFilter(),
+    new PIXI.sound.filters.StereoFilter(),
+    // You need to place StreamFilter at the end of filters list,
+    // so that the stream will have the effect of other filters.
+    streamFilter,
+];
+// load and play sound
+PIXI.sound.Sound.from({
+    url: 'resources/boing.mp3',
+    autoPlay: true,
+    loaded: function () {
+        recorder.start();
+    },
+    complete: function () {
+        recorder.stop();
+    }
 });</code></pre>
             </div>
         </div>
