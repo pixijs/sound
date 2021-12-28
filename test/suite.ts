@@ -60,6 +60,7 @@ export function suite(useLegacy = false): void
             expect(filters.EqualizerFilter).to.be.a('function');
             expect(filters.ReverbFilter).to.be.a('function');
             expect(filters.StereoFilter).to.be.a('function');
+            expect(filters.StreamFilter).to.be.a('function');
             expect(sound).to.be.instanceof(SoundLibrary);
         });
 
@@ -324,6 +325,25 @@ export function suite(useLegacy = false): void
             expect(s.sprites.foo.parent).to.equal(s);
             expect(s.sprites.bar.parent).to.equal(s);
         });
+
+        it('should take AudioBuffer as source', webAudioOnly(function (this: Mocha, done: () => void)
+        {
+            this.slow(300);
+            const s = utils.sineTone(200, 0.1);
+            const buffer = (s.media as any).buffer as AudioBuffer;
+
+            expect(buffer).to.be.instanceOf(AudioBuffer);
+
+            const sound = Sound.from(buffer);
+
+            sound.volume = 0;
+            sound.play(() =>
+            {
+                done();
+            });
+            expect(sound.duration).to.equal(0.1);
+            expect(sound.isPlaying).to.be.true;
+        }));
     });
 
     describe(`PIXI.sound.SoundInstance${suffix}`, function ()
