@@ -13,7 +13,7 @@ let id = 0;
  * @memberof webaudio
  * @param {SoundNodes} source - Reference to the SoundNodes.
  */
-class WebAudioInstance extends EventEmitter implements IMediaInstance
+class WebAudioInstance extends EventEmitter implements IMediaInstance<WebAudioMedia>
 {
     /**
      * The current unique ID for this instance.

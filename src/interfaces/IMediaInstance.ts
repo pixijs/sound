@@ -5,7 +5,7 @@ import { IMedia } from './IMedia';
  * Interface for single instance return by a Sound play call. This can either
  * be a WebAudio or HTMLAudio instance.
  */
-interface IMediaInstance
+interface IMediaInstance<T extends IMedia = IMedia>
 {
     /**
      * Auto-incrementing ID for the instance.
@@ -99,7 +99,7 @@ interface IMediaInstance
     // are not accessible or part of the public API
     refresh(): void;
     refreshPaused(): void;
-    init(parent: IMedia): void;
+    init(parent: T): void;
     play(options: PlayOptions): void;
     destroy(): void;
     toString(): string;

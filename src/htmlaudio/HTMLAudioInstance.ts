@@ -11,7 +11,7 @@ let id = 0;
  * @class
  * @memberof htmlaudio
  */
-class HTMLAudioInstance extends EventEmitter implements IMediaInstance
+class HTMLAudioInstance extends EventEmitter implements IMediaInstance<HTMLAudioMedia>
 {
     /** Extra padding, in seconds, to deal with low-latecy of HTMLAudio. */
     public static readonly PADDING: number = 0.1;
