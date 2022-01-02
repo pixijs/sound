@@ -30,8 +30,14 @@ for (let i = 0; i < buttons.length; i++)
         PIXI.sound.stopAll();
         PIXI.sound.removeAll();
         const beforecodeContent = this.getAttribute('data-beforecodeContent');
-        const codeContent = this.getAttribute('data-codeContent');
+        let codeContent = this.getAttribute('data-codeContent');
+        const id = code.substr(1, code.length);
+        const textarea = $(`[data-id="${id}"]`);
 
+        if (textarea)
+        {
+            codeContent = textarea.value;
+        }
         if (beforecodeContent)
         {
             // tslint:disable-next-line no-eval
@@ -42,4 +48,25 @@ for (let i = 0; i < buttons.length; i++)
     });
 }
 
-hljs.initHighlightingOnLoad();
+const codeEls = $$('pre code');
+
+for (let i = 0; i < codeEls.length; i++)
+{
+    const codeEl = codeEls[i];
+    const textarea = document.createElement('textarea');
+
+    textarea.setAttribute('data-id', codeEl.id);
+    textarea.value = codeEl.innerHTML;
+    codeEl.parentNode.insertBefore(textarea, codeEl);
+    codeEl.parentNode.removeChild(codeEl);
+    const cm = window.CodeMirror.fromTextArea(textarea, {
+        mode: codeEl.className,
+        autoRefresh: true,
+        theme: 'monokai',
+    });
+
+    cm.on('blur', function ()
+    {
+        cm.save();
+    });
+}
