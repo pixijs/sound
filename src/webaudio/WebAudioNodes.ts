@@ -67,7 +67,7 @@ class WebAudioNodes extends Filterable
     private _script: ScriptProcessorNode;
 
     /**
-     * @param {webaudio.WebAudioContext} audioContext - The audio context.
+     * @param {webaudio.WebAudioContext} context - The audio context.
      */
     constructor(context: WebAudioContext)
     {
