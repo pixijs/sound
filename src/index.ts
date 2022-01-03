@@ -2,10 +2,10 @@ import { Loader } from '@pixi/loaders';
 import { setInstance } from './instance';
 import { SoundLoader } from './SoundLoader';
 import { SoundLibrary } from './SoundLibrary';
-import htmlaudio from './htmlaudio';
-import filters from './filters';
-import webaudio from './webaudio';
-import utils from './utils';
+import * as htmlaudio from './htmlaudio';
+import * as filters from './filters';
+import * as webaudio from './webaudio';
+import * as utils from './utils';
 
 const sound = setInstance(new SoundLibrary());
 
