@@ -21,8 +21,8 @@ class Filterable
     private _filters: Filter[];
 
     /**
-     * @param {AudioNode} source - The source audio node
-     * @param {AudioNode} destination - The output audio node
+     * @param {AudioNode} input - The source audio node
+     * @param {AudioNode} output - The output audio node
      */
     constructor(input: AudioNode, output: AudioNode)
     {

@@ -11,7 +11,6 @@ let id = 0;
  * A single play instance that handles the AudioBufferSourceNode.
  * @class
  * @memberof webaudio
- * @param {SoundNodes} source - Reference to the SoundNodes.
  */
 class WebAudioInstance extends EventEmitter implements IMediaInstance
 {

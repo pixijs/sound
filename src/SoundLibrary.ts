@@ -370,6 +370,7 @@ class SoundLibrary
     /**
      * Checks if a sound by alias exists.
      * @param alias - Check for alias.
+     * @param assert - Whether enable console.assert.
      * @return true if the sound exists.
      */
     public exists(alias: string, assert = false): boolean
