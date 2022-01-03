@@ -9,11 +9,11 @@
  * ];
  * @namespace filters
  */
-export { Filter } from './Filter';
-export { EqualizerFilter } from './EqualizerFilter';
-export { DistortionFilter } from './DistortionFilter';
-export { StereoFilter } from './StereoFilter';
-export { ReverbFilter } from './ReverbFilter';
-export { MonoFilter } from './MonoFilter';
-export { StreamFilter } from './StreamFilter';
-export { TelephoneFilter } from './TelephoneFilter';
+export * from './Filter';
+export * from './EqualizerFilter';
+export * from './DistortionFilter';
+export * from './StereoFilter';
+export * from './ReverbFilter';
+export * from './MonoFilter';
+export * from './StreamFilter';
+export * from './TelephoneFilter';
