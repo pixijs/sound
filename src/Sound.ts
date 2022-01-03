@@ -125,6 +125,12 @@ interface PlayOptions {
      * @type {Function}
      */
     loaded?: LoadedCallback;
+    /**
+     * Setting `true` will stop any playing instances. This is the same as
+     * the singleInstance property on Sound, but is play-specific.
+     * @type {boolean}
+     */
+    singleInstance?: boolean;
 }
 
 /**
@@ -643,7 +649,7 @@ class Sound
         }
 
         // Stop all sounds
-        if (this.singleInstance)
+        if (this.singleInstance || options.singleInstance)
         {
             this._removeInstances();
         }
