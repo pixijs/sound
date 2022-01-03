@@ -334,15 +334,17 @@ export function suite(useLegacy = false): void
 
             expect(buffer).to.be.instanceOf(AudioBuffer);
 
-            const sound = Sound.from(buffer);
+            const snd = Sound.from(buffer);
 
-            sound.volume = 0;
-            sound.play(() =>
+            snd.volume = 0;
+            snd.play(() =>
             {
                 done();
             });
-            expect(sound.duration).to.equal(0.1);
-            expect(sound.isPlaying).to.be.true;
+            expect(snd.duration).to.equal(0.1);
+            expect(snd.isPlaying).to.be.true;
+
+            expect(sound.add('sine', buffer)).to.be.instanceOf(Sound);
         }));
     });
 

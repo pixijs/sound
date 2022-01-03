@@ -6,7 +6,7 @@ import { CompleteCallback, Options, PlayOptions, Sound } from './Sound';
 import { HTMLAudioContext } from './htmlaudio/HTMLAudioContext';
 import { WebAudioContext } from './webaudio/WebAudioContext';
 
-type SoundSourceMap = {[id: string]: Options | string | ArrayBuffer | HTMLAudioElement};
+type SoundSourceMap = {[id: string]: Options | string | ArrayBuffer | AudioBuffer | HTMLAudioElement};
 type SoundMap = {[id: string]: Sound};
 
 /**
@@ -125,16 +125,16 @@ class SoundLibrary
     /**
      * Adds a new sound by alias.
      * @param alias - The sound alias reference.
-     * @param {ArrayBuffer|String|Options|HTMLAudioElement} options - Either the path or url to the source file.
+     * @param {ArrayBuffer|AudioBuffer|String|Options|HTMLAudioElement} options - Either the path or url to the source file.
      *        or the object of options to use.
      * @return Instance of the Sound object.
      */
-    public add(alias: string, options: Options | string | ArrayBuffer | HTMLAudioElement | Sound): Sound;
+    public add(alias: string, options: Options | string | ArrayBuffer | AudioBuffer | HTMLAudioElement | Sound): Sound;
 
     /**
      * Adds multiple sounds at once.
      * @param map - Map of sounds to add, the key is the alias, the value is the
-     *        `string`, `ArrayBuffer`, `HTMLAudioElement` or the list of options
+     *        `string`, `ArrayBuffer`, `AudioBuffer`, `HTMLAudioElement` or the list of options
      *        (see {@link Options} for full options).
      * @param globalOptions - The default options for all sounds.
      *        if a property is defined, it will use the local property instead.
@@ -146,7 +146,7 @@ class SoundLibrary
      * @ignore
      */
     public add(source: string | SoundSourceMap,
-        sourceOptions?: Options | string | ArrayBuffer | HTMLAudioElement | Sound): any
+        sourceOptions?: Options | string | ArrayBuffer | AudioBuffer | HTMLAudioElement | Sound): any
     {
         if (typeof source === 'object')
         {
@@ -190,7 +190,8 @@ class SoundLibrary
      * @param overrides - Override default options
      * @return The construction options
      */
-    private _getOptions(source: string | ArrayBuffer | HTMLAudioElement | Options, overrides?: Options): Options
+    private _getOptions(source: string | ArrayBuffer | AudioBuffer | HTMLAudioElement | Options,
+        overrides?: Options): Options
     {
         let options: Options;
 
@@ -198,7 +199,7 @@ class SoundLibrary
         {
             options = { url: source };
         }
-        else if (source instanceof ArrayBuffer || source instanceof HTMLAudioElement)
+        else if (source instanceof ArrayBuffer || source instanceof AudioBuffer || source instanceof HTMLAudioElement)
         {
             options = { source };
         }
