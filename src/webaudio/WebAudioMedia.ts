@@ -7,14 +7,12 @@ import { WebAudioNodes } from './WebAudioNodes';
 
 /**
  * Represents a single sound element. Can be used to play, pause, etc. sound instances.
- * @class
  * @memberof webaudio
  */
 class WebAudioMedia implements IMedia
 {
     /**
      * Reference to the parent Sound container.
-     * @type {Sound}
      * @readonly
      */
     public parent: Sound;
@@ -25,10 +23,7 @@ class WebAudioMedia implements IMedia
      */
     public source: ArrayBuffer | AudioBuffer;
 
-    /**
-     * Instance of the chain builder.
-     * @type {webaudio.WebAudioNodes}
-     */
+    /** Instance of the chain builder. */
     private _nodes: WebAudioNodes;
 
     /** Instance of the source node. */
@@ -36,7 +31,7 @@ class WebAudioMedia implements IMedia
 
     /**
      * Re-initialize without constructing.
-     * @param {Sound} parent - - Instance of parent Sound container
+     * @param parent - - Instance of parent Sound container
      */
     public init(parent: Sound): void
     {
@@ -112,10 +107,7 @@ class WebAudioMedia implements IMedia
         this._source.buffer = buffer;
     }
 
-    /**
-     * Get the current chained nodes object
-     * @type {webaudio.WebAudioNodes}
-     */
+    /** Get the current chained nodes object */
     public get nodes(): WebAudioNodes
     {
         return this._nodes;

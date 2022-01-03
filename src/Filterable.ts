@@ -4,7 +4,6 @@ import { Filter } from './filters/Filter';
  * Abstract class which SoundNodes and SoundContext
  * both extend. This provides the functionality for adding
  * dynamic filters.
- * @class
  */
 class Filterable
 {
@@ -14,15 +13,12 @@ class Filterable
     /** The destination output audio node */
     private _output: AudioNode;
 
-    /**
-     * Collection of filters.
-     * @type {filters.Filter[]}
-     */
+    /** Collection of filters. */
     private _filters: Filter[];
 
     /**
-     * @param {AudioNode} input - The source audio node
-     * @param {AudioNode} output - The output audio node
+     * @param input - The source audio node
+     * @param output - The output audio node
      */
     constructor(input: AudioNode, output: AudioNode)
     {
@@ -36,10 +32,7 @@ class Filterable
         return this._input;
     }
 
-    /**
-     * The collection of filters
-     * @type {filters.Filter[]}
-     */
+    /** The collection of filters. */
     get filters(): Filter[]
     {
         return this._filters;

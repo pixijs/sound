@@ -1,7 +1,6 @@
 /**
  * Represents a single sound element. Can be used to play, pause, etc. sound instances.
  *
- * @class
  * @memberof filters
  */
 class Filter

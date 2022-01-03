@@ -9,7 +9,7 @@ let PLAY_ID = 0;
 
 /**
  * Create a new "Audio" stream based on given audio path and project uri; returns the audio object.
- * @static
+ * @memberof utils
  * @param url - Full path of the file to play.
  * @param {Function} callback - Callback when complete.
  * @return New audio element alias.

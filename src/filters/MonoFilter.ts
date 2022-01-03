@@ -4,7 +4,6 @@ import { Filter } from './Filter';
 /**
  * Combine all channels into mono channel.
  *
- * @class
  * @memberof filters
  */
 class MonoFilter extends Filter

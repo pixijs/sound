@@ -4,9 +4,9 @@ import { WebAudioContext } from '../webaudio/WebAudioContext';
 
 /**
  * Create a new sound for a sine wave-based tone.  **Only supported with WebAudio**
- * @static
- * @param {number} [hertz=200] - Frequency of sound.
- * @param {number} [seconds=1] - Duration of sound in seconds.
+ * @memberof utils
+ * @param hertz - Frequency of sound.
+ * @param seconds - Duration of sound in seconds.
  * @return New sound.
  */
 function sineTone(hertz = 200, seconds = 1): Sound

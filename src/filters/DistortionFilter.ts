@@ -4,7 +4,6 @@ import { Filter } from './Filter';
 /**
  * Filter for adding adding delaynode.
  *
- * @class
  * @memberof filters
  */
 class DistortionFilter extends Filter
@@ -15,7 +14,7 @@ class DistortionFilter extends Filter
     /** The amount of distoration */
     private _amount: number;
 
-    /** @param {number} [amount=0] - The amount of distoration from 0 to 1. */
+    /** @param amount - The amount of distoration from 0 to 1. */
     constructor(amount = 0)
     {
         if (getInstance().useLegacy)
@@ -35,7 +34,7 @@ class DistortionFilter extends Filter
         this.amount = amount;
     }
 
-    /** @type {number} */
+    /** The amount of distortion to set. */
     set amount(value: number)
     {
         value *= 1000;

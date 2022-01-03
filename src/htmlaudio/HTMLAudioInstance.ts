@@ -8,8 +8,8 @@ let id = 0;
 
 /**
  * Instance which wraps the `<audio>` element playback.
- * @class
  * @memberof htmlaudio
+ * @extends PIXI.util.EventEmitter
  */
 class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 {
@@ -67,8 +67,8 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * Set a property by name, this makes it easy to chain values
-     * @param {string} name - - Values include: 'speed', 'volume', 'muted', 'loop', 'paused'
-     * @param {number|boolean} value - - Value to set property to
+     * @param name - Name of the property to set
+     * @param value - Value to set property to
      */
     public set(name: 'speed' | 'volume' | 'muted' | 'loop' | 'paused', value: number | boolean): this
     {
@@ -181,10 +181,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         this.refresh();
     }
 
-    /**
-     * Get the set the volume for this instance from 0 to 1
-     * @type {number}
-     */
+    /** Get the set the volume for this instance from 0 to 1 */
     public get volume(): number
     {
         return this._volume;
@@ -195,10 +192,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         this.refresh();
     }
 
-    /**
-     * If the sound instance should loop playback
-     * @type {number}
-     */
+    /** If the sound instance should loop playback */
     public get loop(): boolean
     {
         return this._loop;
@@ -209,10 +203,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         this.refresh();
     }
 
-    /**
-     * `true` if the sound is muted
-     * @type {boolean}
-     */
+    /** `true` if the sound is muted */
     public get muted(): boolean
     {
         return this._muted;

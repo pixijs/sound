@@ -5,7 +5,6 @@ import { Filter } from './Filter';
  * Filter for adding reverb. Refactored from
  * https://github.com/web-audio-components/simple-reverb/
  *
- * @class
  * @memberof filters
  */
 class ReverbFilter extends Filter
@@ -38,9 +37,9 @@ class ReverbFilter extends Filter
 
     /**
      * Clamp a value
-     * @param {number} value
-     * @param {number} min - Minimum value
-     * @param {number} max - Maximum value
+     * @param value
+     * @param min - Minimum value
+     * @param max - Maximum value
      * @return Clamped number
      */
     private _clamp(value: number, min: number, max: number): number

@@ -4,9 +4,8 @@ import { IMediaContext } from '../interfaces/IMediaContext';
 
 /**
  * The fallback version of WebAudioContext which uses `<audio>` instead of WebAudio API.
- * @class
- * @extends PIXI.util.EventEmitter
  * @memberof htmlaudio
+ * @extends PIXI.util.EventEmitter
  */
 class HTMLAudioContext extends EventEmitter implements IMediaContext
 {
@@ -36,7 +35,6 @@ class HTMLAudioContext extends EventEmitter implements IMediaContext
 
     /**
      * HTML Audio does not support filters, this is non-functional API.
-     * @type {Array<Filter>}
      */
     public get filters(): Filter[]
     {

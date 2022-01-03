@@ -3,19 +3,28 @@ import { Sound } from '../Sound';
 import { WebAudioMedia } from '../webaudio/WebAudioMedia';
 
 interface RenderOptions {
+    /**
+     * Width of the render.
+     * @default 512
+     */
     width?: number;
+    /**
+     * Height of the render.
+     * @default 128
+     */
     height?: number;
+    /**
+     * Fill style for waveform.
+     * @default 'black'
+     */
     fill?: string | CanvasPattern | CanvasGradient;
 }
 
 /**
  * Render image as Texture. **Only supported with WebAudio**
- * @static
- * @param {Sound} sound - Instance of sound to render
- * @param {Object} [options] - Custom rendering options
- * @param {number} [options.width=512] - Width of the render
- * @param {number} [options.height=128] - Height of the render
- * @param {string|CanvasPattern|CanvasGradient} [options.fill='black'] - Fill style for waveform
+ * @memberof utils
+ * @param sound - Instance of sound to render
+ * @param options - Custom rendering options
  * @return Result texture
  */
 function render(sound: Sound, options?: RenderOptions): BaseTexture
