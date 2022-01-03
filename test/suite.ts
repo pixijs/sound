@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { expect } from 'chai';
-import { sound, Sound, utils, webaudio, htmlaudio, filters, SoundLibrary, IMediaInstance } from '../';
+import { sound, Sound, utils, webaudio, htmlaudio, filters, SoundLibrary, IMediaInstance } from '../src';
 import path from 'path';
 
 declare global {
@@ -147,6 +147,20 @@ export function suite(useLegacy = false): void
 
             instance.stop();
             expect(s.instances.length).to.equal(3);
+            s.stop();
+            expect(s.instances.length).to.equal(0);
+        });
+
+        it('should play with single instance param', function ()
+        {
+            const s = sound.find('alert-4');
+
+            s.play();
+            s.play();
+            s.play();
+            expect(s.instances.length).to.equal(3);
+            s.play({ singleInstance: true });
+            expect(s.instances.length).to.equal(1);
             s.stop();
             expect(s.instances.length).to.equal(0);
         });
