@@ -223,8 +223,8 @@ class Sound
     private _instances: IMediaInstance[];
 
     /**
-     * Reference to the sound context.
-     * @type {SoundContext}
+     * The user defined sound sprites
+     * @type {SoundSprites}
      */
     private _sprites: SoundSprites;
 
@@ -266,7 +266,7 @@ class Sound
 
     /**
      * Create a new sound instance from source.
-     * @param {ArrayBuffer|AudioBuffer|String|Options|HTMLAudioElement} options - Either the path or url to the source file.
+     * @param {ArrayBuffer|AudioBuffer|String|Options|HTMLAudioElement} source - Either the path or url to the source file.
      *        or the object of options to use.
      * @return Created sound instance.
      */
@@ -435,10 +435,10 @@ class Sound
     /**
      * Convenience method to add more than one sprite add a time.
      * @param {Object} data - Map of sounds to add where the key is the alias,
-     *        and the data are configuration options, see {@link Sound#addSprite} for info on data.
+     *        and the data are configuration options.
      * @return The map of sound sprites added.
      */
-    public addSprites(sprites: SoundSpriteDataMap): SoundSprites;
+    public addSprites(data: SoundSpriteDataMap): SoundSprites;
 
     /**
      * @ignore
@@ -552,7 +552,8 @@ class Sound
      * Plays the sound.
      * @method play
      * @instance
-     * @param {Function|PlayOptions} options - Either completed function or play options.
+     * @param {Function|PlayOptions} source - Either completed function or play options.
+     * @param {Function} callback - Callback when completed.
      * @return The sound instance,
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
      *        has not yet loaded.
