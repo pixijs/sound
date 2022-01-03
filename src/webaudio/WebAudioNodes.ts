@@ -2,24 +2,15 @@ import { Filterable } from '../Filterable';
 import { WebAudioContext } from './WebAudioContext';
 import { WebAudioUtils } from './WebAudioUtils';
 
-/**
- * Output for cloning source node.
- */
+/** Output for cloning source node. */
 interface SourceClone {
-    /**
-     * Cloned audio buffer source
-     * @type {AudioBufferSourceNode}
-     */
+    /** Cloned audio buffer source */
     source: AudioBufferSourceNode;
-    /**
-     * Independent volume control
-     * @type {GainNode}
-     */
+    /** Independent volume control */
     gain: GainNode;
 }
 
 /**
- * @class
  * @memberof webaudio
  */
 class WebAudioNodes extends Filterable
@@ -27,47 +18,39 @@ class WebAudioNodes extends Filterable
     /**
      * The buffer size for script processor, default is `0` which auto-detects. If you plan to use
      * script node on iOS, you'll need to provide a non-zero amount.
-     * @type {number}
      * @default 0
      */
     public static BUFFER_SIZE = 0;
 
     /**
      * Get the buffer source node
-     * @type {AudioBufferSourceNode}
      * @readonly
      */
     public bufferSource: AudioBufferSourceNode;
 
     /**
      * Get the gain node
-     * @type {GainNode}
      * @readonly
      */
     public gain: GainNode;
 
     /**
      * Get the analyser node
-     * @type {AnalyserNode}
      * @readonly
      */
     public analyser: AnalyserNode;
 
     /**
      * Reference to the SoundContext
-     * @type {webaudio.WebAudioContext}
      * @readonly
      */
     public context: WebAudioContext;
 
-    /**
-     * Private reference to the script processor node.
-     * @type {ScriptProcessorNode}
-     */
+    /** Private reference to the script processor node. */
     private _script: ScriptProcessorNode;
 
     /**
-     * @param {webaudio.WebAudioContext} context - The audio context.
+     * @param context - The audio context.
      */
     constructor(context: WebAudioContext)
     {
@@ -92,7 +75,6 @@ class WebAudioNodes extends Filterable
     /**
      * Get the script processor node.
      * @readonly
-     * @type {ScriptProcessorNode}
      */
     public get script(): ScriptProcessorNode
     {
@@ -150,7 +132,6 @@ class WebAudioNodes extends Filterable
     /**
      * Get buffer size of `ScriptProcessorNode`.
      * @readonly
-     * @type {number}
      */
     get bufferSize(): number
     {

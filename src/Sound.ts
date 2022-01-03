@@ -12,25 +12,21 @@ import { WebAudioMedia } from './webaudio/WebAudioMedia';
 interface Options {
     /**
      * `true` to immediately start preloading.
-     * @type {boolean}
      * @default false
      */
     autoPlay?: boolean;
     /**
      * `true` to disallow playing multiple layered instances at once.
-     * @type {boolean}
      * @default false
      */
     singleInstance?: boolean;
     /**
      * The amount of volume 1 = 100%.
-     * @type {number}
      * @default 1
      */
     volume?: number;
     /**
      * The playback rate where 1 is 100% speed.
-     * @type {number}
      * @default 1
      */
     speed?: number;
@@ -46,32 +42,27 @@ interface Options {
     loaded?: LoadedCallback;
     /**
      * `true` to immediately start preloading if loading from `url`.
-     * @type {boolean}
      */
     preload?: boolean;
     /**
      * Initial loop value, `true` is loop infinitely
-     * @type {boolean}
      * @default false
      */
     loop?: boolean;
     /**
      * The source of the file being loaded
-     * @type {string}
      */
     url?: string;
     /**
      * If sound is already preloaded, available.
-     * @type {ArrayBuffer|HTMLAudioElement}
      */
     source?: ArrayBuffer | AudioBuffer | HTMLAudioElement;
     /**
      * The map of sprite data. Where a sprite is an object
      * with a `start` and `end`, which are the times in seconds. Optionally, can include
      * a `speed` amount where 1 is 100% speed.
-     * @type {Object<string, SoundSpriteData>}
      */
-    sprites?: {[id: string]: SoundSpriteData};
+    sprites?: Record<string, SoundSpriteData>;
 }
 
 /**
@@ -80,38 +71,31 @@ interface Options {
 interface PlayOptions {
     /**
      * Start time offset in seconds.
-     * @type {number}
      * @default 0
      */
     start?: number;
     /**
      * End time in seconds.
-     * @type {number}
      */
     end?: number;
     /**
      * Override default speed, default to the Sound's speed setting.
-     * @type {number}
      */
     speed?: number;
     /**
     * Override default loop, default to the Sound's loop setting.
-    * @type {number}
     */
     loop?: boolean;
     /**
      * Override default volume, default to the Sound's volume setting.
-     * @type {number}
      */
     volume?: number;
     /**
      * The sprite to play.
-     * @type {string}
      */
     sprite?: string;
     /**
      * If sound instance is muted by default.
-     * @type {boolean}
      * @default false
      */
     muted?: boolean;
@@ -128,7 +112,6 @@ interface PlayOptions {
     /**
      * Setting `true` will stop any playing instances. This is the same as
      * the singleInstance property on Sound, but is play-specific.
-     * @type {boolean}
      */
     singleInstance?: boolean;
 }
@@ -149,31 +132,25 @@ type LoadedCallback = (err: Error, sound?: Sound, instance?: IMediaInstance) => 
  */
 type CompleteCallback = (sound: Sound) => void;
 
-type SoundSpriteDataMap = {[id: string]: SoundSpriteData};
+type SoundSpriteDataMap = Record<string, SoundSpriteData>;
 
 /**
  * Sound represents a single piece of loaded media. When playing a sound {@link IMediaInstance} objects
  * are created. Properties such a `volume`, `pause`, `mute`, `speed`, etc will have an effect on all instances.
- * @class
  */
 class Sound
 {
-    /**
-     * Pool of instances
-     * @type {Array<IMediaInstance>}
-     */
+    /** Pool of instances */
     private static _pool: IMediaInstance[] = [];
 
     /**
      * `true` if the buffer is loaded.
-     * @type {boolean}
      * @default false
      */
     public isLoaded: boolean;
 
     /**
      * `true` if the sound is currently being played.
-     * @type {boolean}
      * @default false
      * @readonly
      */
@@ -181,7 +158,6 @@ class Sound
 
     /**
      * true to start playing immediate after load.
-     * @type {boolean}
      * @default false
      * @readonly
      */
@@ -189,14 +165,12 @@ class Sound
 
     /**
      * `true` to disallow playing multiple layered instances at once.
-     * @type {boolean}
      * @default false
      */
     public singleInstance: boolean;
 
     /**
      * `true` to immediately start preloading.
-     * @type {boolean}
      * @default false
      * @readonly
      */
@@ -204,75 +178,46 @@ class Sound
 
     /**
      * The file source to load.
-     * @type {String}
      * @readonly
      */
     public url: string;
 
     /**
      * The constructor options.
-     * @type {Object}
      * @readonly
      */
     public options: Options;
 
-    /**
-     * The audio source
-     * @type {IMedia}
-     */
+    /** The audio source */
     public media: IMedia;
 
-    /**
-     * The collection of instances being played.
-     * @type {Array<IMediaInstance>}
-     */
+    /** The collection of instances being played. */
     private _instances: IMediaInstance[];
 
-    /**
-     * The user defined sound sprites
-     * @type {SoundSprites}
-     */
+    /** The user defined sound sprites. */
     private _sprites: SoundSprites;
 
-    /**
-     * The options when auto-playing.
-     * @type {PlayOptions}
-     */
+    /** The options when auto-playing. */
     private _autoPlayOptions: PlayOptions;
 
-    /**
-     * The internal volume.
-     * @type {number}
-     */
+    /** The internal volume. */
     private _volume: number;
 
-    /**
-     * The internal paused state.
-     * @type {boolean}
-     */
+    /** The internal paused state. */
     private _paused: boolean;
 
-    /**
-     * The internal muted state.
-     * @type {boolean}
-     */
+    /** The internal muted state. */
     private _muted: boolean;
 
-    /**
-     * The internal volume.
-     * @type {boolean}
-     */
+    /** The internal volume. */
     private _loop: boolean;
 
-    /**
-     * The internal playbackRate
-     * @type {number}
-     */
+    /** The internal playbackRate */
     private _speed: number;
 
     /**
      * Create a new sound instance from source.
-     * @param {ArrayBuffer|AudioBuffer|String|Options|HTMLAudioElement} source - Either the path or url to the source file.
+     * @param source - Either the path or url to the source file.
      *        or the object of options to use.
      * @return Created sound instance.
      */
@@ -358,19 +303,13 @@ class Sound
         }
     }
 
-    /**
-     * Instance of the media context
-     * @type {IMediaContext}
-     */
+    /** Instance of the media context. */
     public get context(): IMediaContext
     {
         return getInstance().context;
     }
 
-    /**
-     * Stops all the instances of this sound from playing.
-     * @return Instance of this sound.
-     */
+    /** Stops all the instances of this sound from playing. */
     public pause(): this
     {
         this.isPlaying = false;
@@ -379,10 +318,7 @@ class Sound
         return this;
     }
 
-    /**
-     * Resuming all the instances of this sound from playing
-     * @return Instance of this sound.
-     */
+    /** Resuming all the instances of this sound from playing */
     public resume(): this
     {
         this.isPlaying = this._instances.length > 0;
@@ -402,7 +338,7 @@ class Sound
         this.refreshPaused();
     }
 
-    /** The playback rate */
+    /** The playback rate. */
     public get speed(): number
     {
         return this._speed;
@@ -413,10 +349,7 @@ class Sound
         this.refresh();
     }
 
-    /**
-     * Set the filters. Only supported with WebAudio.
-     * @type {Array<filters.Filter>}
-     */
+    /** Set the filters. Only supported with WebAudio. */
     public get filters(): Filter[]
     {
         return this.media.filters;
@@ -429,18 +362,14 @@ class Sound
     /**
      * Add a sound sprite, which is a saved instance of a longer sound.
      * Similar to an image spritesheet.
-     * @param {String} alias - The unique name of the sound sprite.
-     * @param {object} data - Either completed function or play options.
-     * @param {number} data.start - Time when to play the sound in seconds.
-     * @param {number} data.end - Time to end playing in seconds.
-     * @param {number} data.speed - Override default speed, default to the Sound's speed setting.
-     * @return Sound sprite result.
+     * @param alias - The unique name of the sound sprite.
+     * @param data - Either completed function or play options.
      */
     public addSprites(alias: string, data: SoundSpriteData): SoundSprite;
 
     /**
      * Convenience method to add more than one sprite add a time.
-     * @param {Object} data - Map of sounds to add where the key is the alias,
+     * @param data - Map of sounds to add where the key is the alias,
      *        and the data are configuration options.
      * @return The map of sound sprites added.
      */
@@ -485,8 +414,7 @@ class Sound
 
     /**
      * Remove a sound sprite.
-     * @param {String} alias - The unique name of the sound sprite, if alias is omitted, removes all sprites.
-     * @return Sound instance for chaining.
+     * @param alias - The unique name of the sound sprite, if alias is omitted, removes all sprites.
      */
     public removeSprites(alias?: string): Sound
     {
@@ -517,10 +445,7 @@ class Sound
         return this.isLoaded && this.media && this.media.isPlayable;
     }
 
-    /**
-     * Stops all the instances of this sound from playing.
-     * @return Instance of this sound.
-     */
+    /** Stops all the instances of this sound from playing. */
     public stop(): this
     {
         if (!this.isPlayable)
@@ -732,28 +657,19 @@ class Sound
         this.refresh();
     }
 
-    /**
-     * Starts the preloading of sound.
-     * @private
-     */
+    /** Starts the preloading of sound. */
     private _preload(callback?: LoadedCallback): void
     {
         this.media.load(callback);
     }
 
-    /**
-     * Gets the list of instances that are currently being played of this sound.
-     * @type {Array<IMediaInstance>}
-     */
+    /** Gets the list of instances that are currently being played of this sound. */
     public get instances(): IMediaInstance[]
     {
         return this._instances;
     }
 
-    /**
-     * Get the map of sprites.
-     * @type {Object}
-     */
+    /** Get the map of sprites. */
     public get sprites(): SoundSprites
     {
         return this._sprites;
@@ -778,10 +694,7 @@ class Sound
         return instance;
     }
 
-    /**
-     * Removes all instances.
-     * @private
-     */
+    /** Removes all instances. */
     private _removeInstances(): void
     {
         // destroying also stops
@@ -794,8 +707,7 @@ class Sound
 
     /**
      * Sound instance completed.
-     * @private
-     * @param {IMediaInstance} instance
+     * @param instance
      */
     private _onComplete(instance: IMediaInstance): void
     {
@@ -812,11 +724,7 @@ class Sound
         this._poolInstance(instance);
     }
 
-    /**
-     * Create a new instance.
-     * @private
-     * @return New instance to use
-     */
+    /** Create a new instance. */
     private _createInstance(): IMediaInstance
     {
         if (Sound._pool.length > 0)
@@ -833,8 +741,7 @@ class Sound
 
     /**
      * Destroy/recycling the instance object.
-     * @private
-     * @param instance - - Instance to recycle
+     * @param instance - Instance to recycle
      */
     private _poolInstance(instance: IMediaInstance): void
     {

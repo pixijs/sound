@@ -9,8 +9,8 @@ let id = 0;
 
 /**
  * A single play instance that handles the AudioBufferSourceNode.
- * @class
  * @memberof webaudio
+ * @extends PIXI.utils.EventEmitter
  */
 class WebAudioInstance extends EventEmitter implements IMediaInstance
 {
@@ -20,88 +20,46 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
      */
     public readonly id: number;
 
-    /**
-     * The source Sound.
-     * @type {webaudio.WebAudioMedia}
-     */
+    /** The source Sound. */
     private _media: WebAudioMedia;
 
-    /**
-     * true if paused.
-     * @type {boolean}
-     */
+    /** true if paused. */
     private _paused: boolean;
 
-    /**
-     * true if muted.
-     * @type {boolean}
-     */
+    /** true if muted. */
     private _muted: boolean;
 
-    /**
-     * true if paused.
-     * @type {boolean}
-     */
+    /** true if paused. */
     private _pausedReal: boolean;
 
-    /**
-     * The instance volume
-     * @type {number}
-     */
+    /** The instance volume */
     private _volume: number;
 
-    /**
-     * Last update frame number.
-     * @type {number}
-     */
+    /** Last update frame number. */
     private _lastUpdate: number;
 
-    /**
-     * The total number of seconds elapsed in playback.
-     * @type {number}
-     */
+    /** The total number of seconds elapsed in playback. */
     private _elapsed: number;
 
-    /**
-     * Playback rate, where 1 is 100%.
-     * @type {number}
-     */
+    /** Playback rate, where 1 is 100%. */
     private _speed: number;
 
-    /**
-     * Playback rate, where 1 is 100%.
-     * @type {number}
-     */
+    /** Playback rate, where 1 is 100%. */
     private _end: number;
 
-    /**
-     * `true` if should be looping.
-     * @type {boolean}
-     */
+    /** `true` if should be looping. */
     private _loop: boolean;
 
-    /**
-     * Gain node for controlling volume of instance
-     * @type {GainNode}
-     */
+    /** Gain node for controlling volume of instance */
     private _gain: GainNode;
 
-    /**
-     * Length of the sound in seconds.
-     * @type {number}
-     */
+    /** Length of the sound in seconds. */
     private _duration: number;
 
-    /**
-     * The progress of the sound from 0 to 1.
-     * @type {number}
-     */
+    /** The progress of the sound from 0 to 1. */
     private _progress: number;
 
-    /**
-     * Audio buffer source clone from Sound object.
-     * @type {AudioBufferSourceNode}
-     */
+    /** Audio buffer source clone from Sound object. */
     private _source: AudioBufferSourceNode;
 
     constructor(media: WebAudioMedia)
@@ -120,8 +78,8 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * Set a property by name, this makes it easy to chain values
-     * @param {string} name - - Values include: 'speed', 'volume', 'muted', 'loop', 'paused'
-     * @param {number|boolean} value - - Value to set property to
+     * @param name - Name of the property to set.
+     * @param value - Value to set property to.
      */
     public set(name: 'speed' | 'volume' | 'muted' | 'loop' | 'paused', value: number | boolean): this
     {
@@ -277,13 +235,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
 
     /**
      * Plays the sound.
-     * @param {Object} options - Play options
-     * @param {number} options.start - The position to start playing, in seconds.
-     * @param {number} options.end - The ending position in seconds.
-     * @param {number} options.speed - Speed for the instance
-     * @param {boolean} options.loop - If the instance is looping, defaults to sound loop
-     * @param {number} options.volume - Volume of the instance
-     * @param {boolean} options.muted - Muted state of instance
+     * @param options - Play options.
      */
     public play(options: PlayOptions): void
     {
@@ -341,10 +293,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         this.enableTicker(true);
     }
 
-    /**
-     * Start the update progress.
-     * @type {boolean}
-     */
+    /** Start the update progress. */
     private enableTicker(enabled: boolean): void
     {
         Ticker.shared.remove(this._updateListener, this);
@@ -354,19 +303,13 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         }
     }
 
-    /**
-     * The current playback progress from 0 to 1.
-     * @type {number}
-     */
+    /** The current playback progress from 0 to 1. */
     public get progress(): number
     {
         return this._progress;
     }
 
-    /**
-     * Pauses the sound.
-     * @type {boolean}
-     */
+    /** Pauses the sound. */
     public get paused(): boolean
     {
         return this._paused;
@@ -423,10 +366,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         return this._media.context.audioContext.currentTime;
     }
 
-    /**
-     * Callback for update listener
-     * @type {Function}
-     */
+    /** Callback for update listener */
     private _updateListener()
     {
         this._update();

@@ -6,7 +6,6 @@ import { IMediaContext } from '../interfaces';
  * Main class to handle WebAudio API. There's a simple chain
  * of AudioNode elements: analyser > compressor > context.destination.
  * any filters that are added are inserted between the analyser and compressor nodes
- * @class
  * @memberof webaudio
  */
 class WebAudioContext extends Filterable implements IMediaContext
@@ -59,7 +58,6 @@ class WebAudioContext extends Filterable implements IMediaContext
     /**
      * Indicated whether audio on iOS has been unlocked, which requires a touchend/mousedown event that plays an
      * empty sound.
-     * @type {boolean}
      */
     private _unlocked: boolean;
 
@@ -147,8 +145,8 @@ class WebAudioContext extends Filterable implements IMediaContext
 
     /**
      * Get AudioContext class, if not supported returns `null`
-     * @readonly
      * @type {AudioContext}
+     * @readonly
      */
     public static get AudioContext(): typeof AudioContext
     {
@@ -223,7 +221,6 @@ class WebAudioContext extends Filterable implements IMediaContext
      * Pauses all sounds, even though we handle this at the instance
      * level, we'll also pause the audioContext so that the
      * time used to compute progress isn't messed up.
-     * @type {boolean}
      * @default false
      */
     public set paused(paused: boolean)
@@ -281,8 +278,8 @@ class WebAudioContext extends Filterable implements IMediaContext
 
     /**
      * Decode the audio data
-     * @param {ArrayBuffer} arrayBuffer - Buffer from loader
-     * @param {Function} callback - When completed, error and audioBuffer are parameters.
+     * @param arrayBuffer - Buffer from loader
+     * @param callback - When completed, error and audioBuffer are parameters.
      */
     public decode(arrayBuffer: ArrayBuffer, callback: (err?: Error, buffer?: AudioBuffer) => void): void
     {

@@ -5,7 +5,6 @@ import { Filter } from './Filter';
 /**
  * Creates a telephone-sound filter.
  *
- * @class
  * @memberof filters
  */
 class TelephoneFilter extends Filter

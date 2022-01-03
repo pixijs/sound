@@ -6,8 +6,8 @@ import { CompleteCallback, Options, PlayOptions, Sound } from './Sound';
 import { HTMLAudioContext } from './htmlaudio/HTMLAudioContext';
 import { WebAudioContext } from './webaudio/WebAudioContext';
 
-type SoundSourceMap = {[id: string]: Options | string | ArrayBuffer | AudioBuffer | HTMLAudioElement};
-type SoundMap = {[id: string]: Sound};
+type SoundSourceMap = Record<string, Options | string | ArrayBuffer | AudioBuffer | HTMLAudioElement>;
+type SoundMap = Record<string, Sound>;
 
 /**
  * Manages the playback of sounds. This is the main class for PixiJS Sound. If you're
@@ -18,7 +18,6 @@ type SoundMap = {[id: string]: Sound};
  * // sound is an instance of SoundLibrary
  * sound.add('my-sound', 'path/to/file.mp3');
  * sound.play('my-sound');
- * @class
  */
 class SoundLibrary
 {
@@ -66,7 +65,6 @@ class SoundLibrary
 
     /**
      * The global context to use.
-     * @type {IMediaContext}
      * @readonly
      */
     public get context(): IMediaContext
@@ -84,7 +82,6 @@ class SoundLibrary
      * sound.filtersAll = [
      *     new filters.StereoFilter(-1)
      * ];
-     * @type {filters.Filter[]}
      */
     public get filtersAll(): Filter[]
     {
@@ -105,8 +102,6 @@ class SoundLibrary
 
     /**
      * `true` if WebAudio is supported on the current browser.
-     * @readonly
-     * @type {boolean}
      */
     public get supported(): boolean
     {
@@ -214,7 +209,6 @@ class SoundLibrary
 
     /**
      * Do not use WebAudio, force the use of legacy. This **must** be called before loading any files.
-     * @type {boolean}
      */
     public get useLegacy(): boolean
     {
@@ -247,7 +241,6 @@ class SoundLibrary
 
     /**
      * Set the global volume for all sounds. To set per-sound volume see {@link SoundLibrary#volume}.
-     * @type {number}
      */
     public get volumeAll(): number
     {
@@ -261,7 +254,6 @@ class SoundLibrary
 
     /**
      * Set the global speed for all sounds. To set per-sound speed see {@link SoundLibrary#speed}.
-     * @type {number}
      */
     public get speedAll(): number
     {

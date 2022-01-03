@@ -11,18 +11,7 @@ interface Band {
 /**
  * Filter for adding equalizer bands.
  *
- * @class
  * @memberof filters
- * @param {number} [f32=0] - Default gain for 32 Hz
- * @param {number} [f64=0] - Default gain for 64 Hz
- * @param {number} [f125=0] - Default gain for 125 Hz
- * @param {number} [f250=0] - Default gain for 250 Hz
- * @param {number} [f500=0] - Default gain for 500 Hz
- * @param {number} [f1k=0] - Default gain for 1000 Hz
- * @param {number} [f2k=0] - Default gain for 2000 Hz
- * @param {number} [f4k=0] - Default gain for 4000 Hz
- * @param {number} [f8k=0] - Default gain for 8000 Hz
- * @param {number} [f16k=0] - Default gain for 16000 Hz
  */
 class EqualizerFilter extends Filter
 {
@@ -94,11 +83,22 @@ class EqualizerFilter extends Filter
 
     /**
      * The map of bands to frequency
-     * @type {Object}
      * @readonly
      */
-    public readonly bandsMap: {[id: number]: BiquadFilterNode};
+    public readonly bandsMap: Record<number, BiquadFilterNode>;
 
+    /**
+     * @param f32 - Default gain for 32 Hz
+     * @param f64 - Default gain for 64 Hz
+     * @param f125 - Default gain for 125 Hz
+     * @param f250 - Default gain for 250 Hz
+     * @param f500 - Default gain for 500 Hz
+     * @param f1k - Default gain for 1000 Hz
+     * @param f2k - Default gain for 2000 Hz
+     * @param f4k - Default gain for 4000 Hz
+     * @param f8k - Default gain for 8000 Hz
+     * @param f16k - Default gain for 16000 Hz
+     */
     constructor(f32 = 0, f64 = 0, f125 = 0, f250 = 0, f500 = 0,
         f1k = 0, f2k = 0, f4k = 0, f8k = 0, f16k = 0)
     {
@@ -198,8 +198,8 @@ class EqualizerFilter extends Filter
 
     /**
      * Set gain on a specific frequency.
-     * @param {number} frequency - The frequency, see EqualizerFilter.F* for bands
-     * @param {number} [gain=0] - Recommended -40 to 40.
+     * @param frequency - The frequency, see EqualizerFilter.F* for bands
+     * @param gain - Recommended -40 to 40.
      */
     public setGain(frequency: number, gain = 0): void
     {
@@ -226,7 +226,6 @@ class EqualizerFilter extends Filter
 
     /**
      * Gain at 32 Hz frequencey.
-     * @type {number}
      * @default 0
      */
     public set f32(value: number)
@@ -240,7 +239,6 @@ class EqualizerFilter extends Filter
 
     /**
      * Gain at 64 Hz frequencey.
-     * @type {number}
      * @default 0
      */
     public set f64(value: number)
@@ -254,7 +252,6 @@ class EqualizerFilter extends Filter
 
     /**
      * Gain at 125 Hz frequencey.
-     * @type {number}
      * @default 0
      */
     public set f125(value: number)
@@ -268,7 +265,6 @@ class EqualizerFilter extends Filter
 
     /**
      * Gain at 250 Hz frequencey.
-     * @type {number}
      * @default 0
      */
     public set f250(value: number)
@@ -282,7 +278,6 @@ class EqualizerFilter extends Filter
 
     /**
      * Gain at 500 Hz frequencey.
-     * @type {number}
      * @default 0
      */
     public set f500(value: number)
@@ -296,7 +291,6 @@ class EqualizerFilter extends Filter
 
     /**
      * Gain at 1 KHz frequencey.
-     * @type {number}
      * @default 0
      */
     public set f1k(value: number)
@@ -310,7 +304,6 @@ class EqualizerFilter extends Filter
 
     /**
      * Gain at 2 KHz frequencey.
-     * @type {number}
      * @default 0
      */
     public set f2k(value: number)
@@ -324,7 +317,6 @@ class EqualizerFilter extends Filter
 
     /**
      * Gain at 4 KHz frequencey.
-     * @type {number}
      * @default 0
      */
     public set f4k(value: number)
@@ -338,7 +330,6 @@ class EqualizerFilter extends Filter
 
     /**
      * Gain at 8 KHz frequencey.
-     * @type {number}
      * @default 0
      */
     public set f8k(value: number)
@@ -352,7 +343,6 @@ class EqualizerFilter extends Filter
 
     /**
      * Gain at 16 KHz frequencey.
-     * @type {number}
      * @default 0
      */
     public set f16k(value: number)
