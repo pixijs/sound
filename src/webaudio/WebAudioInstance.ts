@@ -400,6 +400,14 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
             this._media.context.events.off('refreshPaused', this.refreshPaused, this);
             this._media = null;
         }
+        if (this._filters)
+        {
+            this._filters.forEach((filter) =>
+            {
+                filter.disconnect();
+            });
+        }
+        this._filters = null;
         this._end = null;
         this._speed = 1;
         this._volume = 1;

@@ -441,6 +441,8 @@ export function suite(useLegacy = false): void
                         expect((instance as WebAudioInstance).filters).to.be.null;
                         expect((instance as WebAudioInstance).progress).lessThan(1);
                         expect((instance2 as WebAudioInstance).filters).to.be.undefined;
+                        (instance2 as WebAudioInstance).destroy();
+                        expect((instance2 as WebAudioInstance).filters).to.be.null;
                     }
                     done();
                 }
