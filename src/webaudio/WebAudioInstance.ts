@@ -218,29 +218,20 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
     /** Connect filters nodes to audio context */
     private applyFilters(): void
     {
-        if (this._filters && this._filters.length)
+        if (this._filters?.length)
         {
             // Disconnect direct path before inserting filters
             this._source.disconnect();
 
             // Connect each filter
-            let prevFilter: Filter = null;
+            let source: { connect: (node: AudioNode) => void } = this._source;
 
             this._filters.forEach((filter: Filter) =>
             {
-                if (prevFilter === null)
-                {
-                    // first filter is the destination
-                    // for the analyser
-                    this._source.connect(filter.destination);
-                }
-                else
-                {
-                    prevFilter.connect(filter.destination);
-                }
-                prevFilter = filter;
+                source.connect(filter.destination);
+                source = filter;
             });
-            prevFilter.connect(this._gain);
+            source.connect(this._gain);
         }
     }
 
