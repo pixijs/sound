@@ -170,21 +170,12 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
     {
         if (this._filters)
         {
-            this._filters.forEach((filter: Filter) =>
-            {
-                if (filter)
-                {
-                    filter.disconnect();
-                }
-            });
+            this._filters?.filter(filter => filter).forEach(filter => filter.disconnect());
             this._filters = null;
             // Reconnect direct path
             this._source.connect(this._gain);
         }
-        if (filters && filters.length)
-        {
-            this._filters = filters.slice(0);
-        }
+        this._filters = filters?.length ? [...filters] : null;
         this.refresh();
     }
 
