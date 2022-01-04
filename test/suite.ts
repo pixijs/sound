@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { expect } from 'chai';
 import { sound, Sound, utils, webaudio, htmlaudio, filters, SoundLibrary, IMediaInstance } from '../src';
+import { WebAudioInstance } from '../src/webaudio/WebAudioInstance';
 import path from 'path';
 
 declare global {
@@ -405,6 +406,44 @@ export function suite(useLegacy = false): void
                     expect(instance).to.be.instanceof(SoundInstance);
                     done();
                 },
+            });
+        });
+
+        it('should apply filters for sound instance', function (done)
+        {
+            Sound.from({
+                url: manifest.silence,
+                preload: true,
+                loaded: (err, snd) =>
+                {
+                    expect(err).to.be.null;
+
+                    const filter = new filters.TelephoneFilter();
+                    const instance = snd.play({
+                        filters: [filter],
+                    });
+                    const instance2 = snd.play();
+
+                    if (useLegacy)
+                    {
+                        expect((instance as any).filters).to.be.null;
+                        expect((instance2 as any).filters).to.be.null;
+                    }
+                    else
+                    {
+                        expect(instance).to.be.instanceOf(WebAudioInstance);
+                        expect(instance2).to.be.instanceOf(WebAudioInstance);
+                        expect((instance as WebAudioInstance).filters).to.be.instanceOf(Array);
+                        expect((instance as WebAudioInstance).filters.length).to.equal(1);
+                        expect((instance as WebAudioInstance).filters[0]).to.be.equals(filter);
+                        expect((instance as WebAudioInstance).progress).lessThan(1);
+                        (instance as WebAudioInstance).filters = null;
+                        expect((instance as WebAudioInstance).filters).to.be.null;
+                        expect((instance as WebAudioInstance).progress).lessThan(1);
+                        expect((instance2 as WebAudioInstance).filters).to.be.undefined;
+                    }
+                    done();
+                }
             });
         });
     });
