@@ -4,6 +4,7 @@ import { IMediaInstance } from '../interfaces';
 import { PlayOptions } from '../Sound';
 import { WebAudioMedia } from './WebAudioMedia';
 import { WebAudioUtils } from './WebAudioUtils';
+import { Filter } from '../filters/Filter';
 
 let id = 0;
 
@@ -61,6 +62,9 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
 
     /** Audio buffer source clone from Sound object. */
     private _source: AudioBufferSourceNode;
+
+    /** The filters */
+    private _filters: Filter[];
 
     constructor(media: WebAudioMedia)
     {
@@ -157,6 +161,33 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         this.refresh();
     }
 
+    /** The collection of filters. */
+    public get filters(): Filter[]
+    {
+        return this._filters;
+    }
+    public set filters(filters: Filter[])
+    {
+        if (this._filters)
+        {
+            this._filters.forEach((filter: Filter) =>
+            {
+                if (filter)
+                {
+                    filter.disconnect();
+                }
+            });
+            this._filters = null;
+            // Reconnect direct path
+            this._source.connect(this._gain);
+        }
+        if (filters && filters.length)
+        {
+            this._filters = filters.slice(0);
+        }
+        this.refresh();
+    }
+
     /** Refresh loop, volume and speed based on changes to parent */
     public refresh(): void
     {
@@ -180,6 +211,37 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
 
         // Update the speed
         WebAudioUtils.setParamValue(this._source.playbackRate, this._speed * sound.speed * global.speed);
+
+        this.applyFilters();
+    }
+
+    /** Connect filters nodes to audio context */
+    private applyFilters(): void
+    {
+        if (this._filters && this._filters.length)
+        {
+            // Disconnect direct path before inserting filters
+            this._source.disconnect();
+
+            // Connect each filter
+            let prevFilter: Filter = null;
+
+            this._filters.forEach((filter: Filter) =>
+            {
+                if (prevFilter === null)
+                {
+                    // first filter is the destination
+                    // for the analyser
+                    this._source.connect(filter.destination);
+                }
+                else
+                {
+                    prevFilter.connect(filter.destination);
+                }
+                prevFilter = filter;
+            });
+            prevFilter.connect(this._gain);
+        }
     }
 
     /** Handle changes in paused state, either globally or sound or instance */
@@ -239,7 +301,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
      */
     public play(options: PlayOptions): void
     {
-        const { start, end, speed, loop, volume, muted } = options;
+        const { start, end, speed, loop, volume, muted, filters } = options;
 
         if (end)
         {
@@ -255,6 +317,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         this._volume = volume;
         this._loop = !!loop;
         this._muted = muted;
+        this._filters = filters;
         this.refresh();
 
         const duration: number = this._source.buffer.duration;

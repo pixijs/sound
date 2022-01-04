@@ -100,6 +100,11 @@ interface PlayOptions {
      */
     muted?: boolean;
     /**
+     * Filters that apply to play.
+     * Only supported with WebAudio.
+     */
+    filters?: Filter[];
+    /**
      * When completed.
      * @type {Function}
      */

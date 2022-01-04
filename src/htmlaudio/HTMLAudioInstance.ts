@@ -3,6 +3,7 @@ import { EventEmitter } from '@pixi/utils';
 import { IMediaInstance } from '../interfaces/IMediaInstance';
 import { PlayOptions } from '../Sound';
 import { HTMLAudioMedia } from './HTMLAudioMedia';
+import { Filter } from '../filters/Filter';
 
 let id = 0;
 
@@ -212,6 +213,20 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
     {
         this._muted = muted;
         this.refresh();
+    }
+
+    /**
+     * HTML Audio does not support filters, this is non-functional API.
+     */
+    public get filters(): Filter[]
+    {
+        console.warn('HTML Audio does not support filters');
+
+        return null;
+    }
+    public set filters(_filters: Filter[])
+    {
+        console.warn('HTML Audio does not support filters');
     }
 
     /** Call whenever the loop, speed or volume changes */
