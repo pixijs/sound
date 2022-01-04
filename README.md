@@ -33,11 +33,30 @@ Installation is available by [NPM](https://npmjs.org):
 npm i @pixi/sound --save
 ```
 
+To import into your project, for instance, when using [Webpack](https://webpack.js.org/), [Parcel](https://parceljs.org/), [Rollup](https://rollupjs.org/), or another bundler:
+
 ```typescript
 import { sound } from '@pixi/sound';
 
 sound.add('my-sound', 'path/to/file.mp3');
 sound.play('my-sound');
+```
+
+### Browser Usage
+
+If you're using a `<script>` element to import `@pixi/sound` into your project, then the SoundLibrary object is `PIXI.sound` global.
+
+```html
+<!-- PixiJS must be imported before @pixi/sound -->
+<script src="https://unpkg.com/pixi.js/dist/browser/pixi.min.js"></script>
+
+<!-- found here, if not using CDN "./node_modules/@pixi/sound/dist/pixi-sound.js" -->
+<script src="https://unpkg.com/@pixi/sound/dist/pixi-sound.js"></script>
+
+<script>
+    PIXI.sound.add('my-sound', 'path/to/file.mp3');
+    PIXI.sound.play('my-sound');
+</script>
 ```
 
 ### Resources
