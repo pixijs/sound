@@ -28,7 +28,7 @@ export function suite(useLegacy = false): void
         silence: path.join(__resources, 'silence.mp3'),
     };
 
-    describe(`PIXI.sound${suffix}`, function ()
+    describe(`SoundLibrary${suffix}`, function ()
     {
         before(function ()
         {
@@ -362,7 +362,17 @@ export function suite(useLegacy = false): void
         }));
     });
 
-    describe(`PIXI.sound.SoundInstance${suffix}`, function ()
+    describe(`filters.DistortionFilter${suffix}`, function ()
+    {
+        it('should create a DistortionFilter', webAudioOnly(function ()
+        {
+            const filter = new filters.DistortionFilter(0.5);
+
+            expect(filter.amount).to.equal(0.5);
+        }));
+    });
+
+    describe(`SoundInstance${suffix}`, function ()
     {
         afterEach(function ()
         {
@@ -409,7 +419,7 @@ export function suite(useLegacy = false): void
         });
     });
 
-    describe(`PIXI.loader${suffix}`, function ()
+    describe(`SoundLoader${suffix}`, function ()
     {
         afterEach(function ()
         {
