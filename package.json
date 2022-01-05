@@ -82,12 +82,12 @@
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.19.3",
-    "@pixi/eslint-config": "^2.0.2",
     "@pixi/webdoc-template": "^1.5.3",
     "@rollup/plugin-typescript": "^8.0.0",
     "@types/chai": "^4.2.16",
     "@types/mocha": "^8.2.2",
     "@types/node": "^12.0.0",
+    "@pixi/eslint-config": "^3.0.0",
     "@types/offscreencanvas": "^2019.6.4",
     "@webdoc/cli": "^1.5.5",
     "chai": "^4.2.0",
