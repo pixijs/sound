@@ -8,30 +8,24 @@ import { IMediaInstance } from './IMediaInstance';
  */
 interface IMedia {
 
-    /**
-     * Collection of global filters
-     * @type {Filter[]}
-     */
+    /** Collection of global filters */
     filters: Filter[];
 
     /**
      * Reference to the context.
      * @readonly
-     * @type {IMediaContext}
      */
     readonly context: IMediaContext;
 
     /**
      * Length of sound in seconds.
      * @readonly
-     * @type {number}
      */
     readonly duration: number;
 
     /**
      * Flag to check if sound is currently playable (e.g., has been loaded/decoded).
      * @readonly
-     * @type {boolean}
      */
     readonly isPlayable: boolean;
 

@@ -5,7 +5,6 @@ import { Filter } from './Filter';
 /**
  * Filter for adding Stereo panning.
  *
- * @class
  * @memberof filters
  */
 class StereoFilter extends Filter
@@ -19,7 +18,7 @@ class StereoFilter extends Filter
     /** The amount of panning, -1 is left, 1 is right, 0 is centered */
     private _pan: number;
 
-    /** @param {number} pan - The amount of panning, -1 is left, 1 is right, 0 is centered. */
+    /** @param pan - The amount of panning, -1 is left, 1 is right, 0 is centered. */
     constructor(pan = 0)
     {
         if (getInstance().useLegacy)

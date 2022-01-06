@@ -4,7 +4,6 @@ import { Filter } from './Filter';
 /**
  * Export a MediaStream to be recorded
  *
- * @class
  * @memberof filters
  */
 class StreamFilter extends Filter

@@ -6,8 +6,8 @@ import { CompleteCallback, Options, PlayOptions, Sound } from './Sound';
 import { HTMLAudioContext } from './htmlaudio/HTMLAudioContext';
 import { WebAudioContext } from './webaudio/WebAudioContext';
 
-type SoundSourceMap = {[id: string]: Options | string | ArrayBuffer | HTMLAudioElement};
-type SoundMap = {[id: string]: Sound};
+type SoundSourceMap = Record<string, Options | string | ArrayBuffer | AudioBuffer | HTMLAudioElement>;
+type SoundMap = Record<string, Sound>;
 
 /**
  * Manages the playback of sounds. This is the main class for PixiJS Sound. If you're
@@ -18,7 +18,6 @@ type SoundMap = {[id: string]: Sound};
  * // sound is an instance of SoundLibrary
  * sound.add('my-sound', 'path/to/file.mp3');
  * sound.play('my-sound');
- * @class
  */
 class SoundLibrary
 {
@@ -66,7 +65,6 @@ class SoundLibrary
 
     /**
      * The global context to use.
-     * @type {IMediaContext}
      * @readonly
      */
     public get context(): IMediaContext
@@ -84,7 +82,6 @@ class SoundLibrary
      * sound.filtersAll = [
      *     new filters.StereoFilter(-1)
      * ];
-     * @type {filters.Filter[]}
      */
     public get filtersAll(): Filter[]
     {
@@ -105,8 +102,6 @@ class SoundLibrary
 
     /**
      * `true` if WebAudio is supported on the current browser.
-     * @readonly
-     * @type {boolean}
      */
     public get supported(): boolean
     {
@@ -125,16 +120,16 @@ class SoundLibrary
     /**
      * Adds a new sound by alias.
      * @param alias - The sound alias reference.
-     * @param {ArrayBuffer|String|Options|HTMLAudioElement} options - Either the path or url to the source file.
+     * @param {ArrayBuffer|AudioBuffer|String|Options|HTMLAudioElement} options - Either the path or url to the source file.
      *        or the object of options to use.
      * @return Instance of the Sound object.
      */
-    public add(alias: string, options: Options | string | ArrayBuffer | HTMLAudioElement | Sound): Sound;
+    public add(alias: string, options: Options | string | ArrayBuffer | AudioBuffer | HTMLAudioElement | Sound): Sound;
 
     /**
      * Adds multiple sounds at once.
      * @param map - Map of sounds to add, the key is the alias, the value is the
-     *        `string`, `ArrayBuffer`, `HTMLAudioElement` or the list of options
+     *        `string`, `ArrayBuffer`, `AudioBuffer`, `HTMLAudioElement` or the list of options
      *        (see {@link Options} for full options).
      * @param globalOptions - The default options for all sounds.
      *        if a property is defined, it will use the local property instead.
@@ -146,7 +141,7 @@ class SoundLibrary
      * @ignore
      */
     public add(source: string | SoundSourceMap,
-        sourceOptions?: Options | string | ArrayBuffer | HTMLAudioElement | Sound): any
+        sourceOptions?: Options | string | ArrayBuffer | AudioBuffer | HTMLAudioElement | Sound): any
     {
         if (typeof source === 'object')
         {
@@ -190,7 +185,8 @@ class SoundLibrary
      * @param overrides - Override default options
      * @return The construction options
      */
-    private _getOptions(source: string | ArrayBuffer | HTMLAudioElement | Options, overrides?: Options): Options
+    private _getOptions(source: string | ArrayBuffer | AudioBuffer | HTMLAudioElement | Options,
+        overrides?: Options): Options
     {
         let options: Options;
 
@@ -198,7 +194,7 @@ class SoundLibrary
         {
             options = { url: source };
         }
-        else if (source instanceof ArrayBuffer || source instanceof HTMLAudioElement)
+        else if (source instanceof ArrayBuffer || source instanceof AudioBuffer || source instanceof HTMLAudioElement)
         {
             options = { source };
         }
@@ -213,7 +209,6 @@ class SoundLibrary
 
     /**
      * Do not use WebAudio, force the use of legacy. This **must** be called before loading any files.
-     * @type {boolean}
      */
     public get useLegacy(): boolean
     {
@@ -246,7 +241,6 @@ class SoundLibrary
 
     /**
      * Set the global volume for all sounds. To set per-sound volume see {@link SoundLibrary#volume}.
-     * @type {number}
      */
     public get volumeAll(): number
     {
@@ -260,7 +254,6 @@ class SoundLibrary
 
     /**
      * Set the global speed for all sounds. To set per-sound speed see {@link SoundLibrary#speed}.
-     * @type {number}
      */
     public get speedAll(): number
     {
@@ -370,6 +363,7 @@ class SoundLibrary
     /**
      * Checks if a sound by alias exists.
      * @param alias - Check for alias.
+     * @param assert - Whether enable console.assert.
      * @return true if the sound exists.
      */
     public exists(alias: string, assert = false): boolean

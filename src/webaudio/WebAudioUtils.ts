@@ -3,7 +3,6 @@ import { WebAudioContext } from './WebAudioContext';
 
 /**
  * Internal class for Web Audio abstractions and convenience methods.
- * @class
  * @memberof webaudio
  */
 class WebAudioUtils

@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { expect } from 'chai';
-import { sound, Sound, utils, webaudio, htmlaudio, filters, SoundLibrary, IMediaInstance } from '../';
+import { sound, Sound, utils, webaudio, htmlaudio, filters, SoundLibrary, IMediaInstance } from '../src';
+import { WebAudioInstance } from '../src/webaudio/WebAudioInstance';
 import path from 'path';
 
 declare global {
@@ -28,7 +29,7 @@ export function suite(useLegacy = false): void
         silence: path.join(__resources, 'silence.mp3'),
     };
 
-    describe(`PIXI.sound${suffix}`, function ()
+    describe(`SoundLibrary${suffix}`, function ()
     {
         before(function ()
         {
@@ -147,6 +148,20 @@ export function suite(useLegacy = false): void
 
             instance.stop();
             expect(s.instances.length).to.equal(3);
+            s.stop();
+            expect(s.instances.length).to.equal(0);
+        });
+
+        it('should play with single instance param', function ()
+        {
+            const s = sound.find('alert-4');
+
+            s.play();
+            s.play();
+            s.play();
+            expect(s.instances.length).to.equal(3);
+            s.play({ singleInstance: true });
+            expect(s.instances.length).to.equal(1);
             s.stop();
             expect(s.instances.length).to.equal(0);
         });
@@ -334,19 +349,31 @@ export function suite(useLegacy = false): void
 
             expect(buffer).to.be.instanceOf(AudioBuffer);
 
-            const sound = Sound.from(buffer);
+            const snd = Sound.from(buffer);
 
-            sound.volume = 0;
-            sound.play(() =>
+            snd.volume = 0;
+            snd.play(() =>
             {
                 done();
             });
-            expect(sound.duration).to.equal(0.1);
-            expect(sound.isPlaying).to.be.true;
+            expect(snd.duration).to.equal(0.1);
+            expect(snd.isPlaying).to.be.true;
+
+            expect(sound.add('sine', buffer)).to.be.instanceOf(Sound);
         }));
     });
 
-    describe(`PIXI.sound.SoundInstance${suffix}`, function ()
+    describe(`filters.DistortionFilter${suffix}`, function ()
+    {
+        it('should create a DistortionFilter', webAudioOnly(function ()
+        {
+            const filter = new filters.DistortionFilter(0.5);
+
+            expect(filter.amount).to.equal(0.5);
+        }));
+    });
+
+    describe(`SoundInstance${suffix}`, function ()
     {
         afterEach(function ()
         {
@@ -391,9 +418,49 @@ export function suite(useLegacy = false): void
                 },
             });
         });
+
+        it('should apply filters for sound instance', function (done)
+        {
+            Sound.from({
+                url: manifest.silence,
+                preload: true,
+                loaded: (err, snd) =>
+                {
+                    expect(err).to.be.null;
+
+                    const filter = new filters.TelephoneFilter();
+                    const instance = snd.play({
+                        filters: [filter],
+                    });
+                    const instance2 = snd.play();
+
+                    if (useLegacy)
+                    {
+                        expect((instance as any).filters).to.be.null;
+                        expect((instance2 as any).filters).to.be.null;
+                    }
+                    else
+                    {
+                        expect(instance).to.be.instanceOf(WebAudioInstance);
+                        expect(instance2).to.be.instanceOf(WebAudioInstance);
+                        expect((instance as WebAudioInstance).filters).to.be.instanceOf(Array);
+                        expect((instance as WebAudioInstance).filters.length).to.equal(1);
+                        expect((instance as WebAudioInstance).filters[0]).to.be.equals(filter);
+                        expect((instance as WebAudioInstance).progress).lessThan(1);
+                        (instance as WebAudioInstance).filters = null;
+                        expect((instance as WebAudioInstance).filters).to.be.null;
+                        expect((instance as WebAudioInstance).progress).lessThan(1);
+                        expect((instance2 as WebAudioInstance).filters).to.be.undefined;
+                        (instance2 as WebAudioInstance).destroy();
+                        expect((instance2 as WebAudioInstance).filters).to.be.null;
+                    }
+                    done();
+                }
+            });
+        });
     });
 
-    describe(`PIXI.loader${suffix}`, function ()
+    describe(`SoundLoader${suffix}`, function ()
     {
         afterEach(function ()
         {

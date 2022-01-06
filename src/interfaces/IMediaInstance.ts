@@ -9,14 +9,12 @@ interface IMediaInstance<T extends IMedia = IMedia>
 {
     /**
      * Auto-incrementing ID for the instance.
-     * @type {number}
      * @readonly
      */
     readonly id: number;
 
     /**
      * Current progress of the sound from 0 to 1
-     * @type {number}
      * @readonly
      */
     readonly progress: number;
@@ -24,34 +22,25 @@ interface IMediaInstance<T extends IMedia = IMedia>
     /**
      * If the instance is paused, if the sound or global context
      * is paused, this could still be false.
-     * @type {boolean}
      */
     paused: boolean;
 
     /**
      * Current volume of the instance. This is not the actual volume
      * since it takes into account the global context and the sound volume.
-     * @type {number}
      */
     volume: number;
 
     /**
      * Current speed of the instance. This is not the actual speed
      * since it takes into account the global context and the sound volume.
-     * @type {number}
      */
     speed: number;
 
-    /**
-     * If the current instance is set to loop
-     * @type {boolean}
-     */
+    /** If the current instance is set to loop */
     loop: boolean;
 
-    /**
-     * Set the muted state of the instance
-     * @type {boolean}
-     */
+    /** Set the muted state of the instance */
     muted: boolean;
 
     /** Stop the current instance from playing. */
@@ -114,8 +103,8 @@ interface IMediaInstance<T extends IMedia = IMedia>
 
     /**
      * Fired when the sound when progress updates.
-     * @param {string} name - Name of property, like 'speed', 'volume', 'muted', 'loop', 'paused'
-     * @param {number|boolean} value - The total number of seconds of audio
+     * @param name - Name of property.
+     * @param value - The total number of seconds of audio
      * @example
      * import { sound } from '@pixi/sound';
      * sound.play('foo')

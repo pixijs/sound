@@ -32,7 +32,8 @@ h1 .logo {
     background-color: #14171d;
 }
 
-.hljs {
+.hljs, .CodeMirror {
+    height: auto !important;
     background: #38404e !important;
     border: 1px solid #465162;
     color: #919bac;

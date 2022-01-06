@@ -3,7 +3,7 @@ import { supported } from './supported';
 
 /**
  * RegExp for looking for format patterns.
- * @static
+ * @ignore
  */
 const FORMAT_PATTERN = /\.(\{([^\}]+)\})(\?.*)?$/;
 
@@ -12,7 +12,7 @@ const FORMAT_PATTERN = /\.(\{([^\}]+)\})(\?.*)?$/;
  * a path based on the supported browser format. For instance:
  * "sounds/music.{ogg,mp3}", would resolve to "sounds/music.ogg"
  * if "ogg" support is found, otherwise, fallback to "sounds.music.mp3"
- * @static
+ * @memberof utils
  * @param {string|PIXI.LoaderResource} source - - Path to resolve or Resource, if
  *        a Resource object is provided, automatically updates the extension and url
  *        of that object.

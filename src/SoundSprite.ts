@@ -1,34 +1,22 @@
 import { IMediaInstance } from './interfaces';
 import { CompleteCallback, Sound } from './Sound';
 
-/**
- * Data for adding new sound sprites.
- */
+/** Data for adding new sound sprites. */
 interface SoundSpriteData {
-    /**
-     * The start time in seconds.
-     * @type {number}
-     */
+    /** The start time in seconds. */
     start: number;
-    /**
-     * The end time in seconds.
-     * @type {number}
-     */
+    /** The end time in seconds. */
     end: number;
-    /**
-     * The optional speed, if not speed, uses the default speed of the parent.
-     * @type {number}
-     */
+    /** The optional speed, if not speed, uses the default speed of the parent. */
     speed?: number;
 }
 
 // Collection of sound sprites
-type SoundSprites = {[id: string]: SoundSprite};
+type SoundSprites = Record<string, SoundSprite>;
 
 /**
  * Object that represents a single Sound's sprite. To add sound sprites
  * use the {@link Sound#addSprites} method.
- * @class
  * @example
  * import { sound } from '@pixi/sound';
  * sound.add('alias', {

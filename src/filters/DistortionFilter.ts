@@ -4,7 +4,6 @@ import { Filter } from './Filter';
 /**
  * Filter for adding adding delaynode.
  *
- * @class
  * @memberof filters
  */
 class DistortionFilter extends Filter
@@ -15,7 +14,7 @@ class DistortionFilter extends Filter
     /** The amount of distoration */
     private _amount: number;
 
-    /** @param {number} [amount=0] - The amount of distoration from 0 to 1. */
+    /** @param amount - The amount of distoration from 0 to 1. */
     constructor(amount = 0)
     {
         if (getInstance().useLegacy)
@@ -35,11 +34,11 @@ class DistortionFilter extends Filter
         this.amount = amount;
     }
 
-    /** @type {number} */
+    /** The amount of distortion to set. */
     set amount(value: number)
     {
-        value *= 1000;
         this._amount = value;
+        const scaledValue = value * 1000;
         const samples = 44100;
         const curve: Float32Array = new Float32Array(samples);
         const deg: number = Math.PI / 180;
@@ -50,7 +49,7 @@ class DistortionFilter extends Filter
         for (; i < samples; ++i)
         {
             x = (i * 2 / samples) - 1;
-            curve[i] = (3 + value) * x * 20 * deg / (Math.PI + (value * Math.abs(x)));
+            curve[i] = (3 + scaledValue) * x * 20 * deg / (Math.PI + (scaledValue * Math.abs(x)));
         }
         this._distortion.curve = curve;
         this._distortion.oversample = '4x';

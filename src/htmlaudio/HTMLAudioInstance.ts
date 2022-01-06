@@ -3,13 +3,14 @@ import { EventEmitter } from '@pixi/utils';
 import { IMediaInstance } from '../interfaces/IMediaInstance';
 import { PlayOptions } from '../Sound';
 import { HTMLAudioMedia } from './HTMLAudioMedia';
+import { Filter } from '../filters/Filter';
 
 let id = 0;
 
 /**
  * Instance which wraps the `<audio>` element playback.
- * @class
  * @memberof htmlaudio
+ * @extends PIXI.util.EventEmitter
  */
 class HTMLAudioInstance extends EventEmitter implements IMediaInstance<HTMLAudioMedia>
 {
@@ -67,8 +68,8 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance<HTMLAudio
 
     /**
      * Set a property by name, this makes it easy to chain values
-     * @param {string} name - - Values include: 'speed', 'volume', 'muted', 'loop', 'paused'
-     * @param {number|boolean} value - - Value to set property to
+     * @param name - Name of the property to set
+     * @param value - Value to set property to
      */
     public set(name: 'speed' | 'volume' | 'muted' | 'loop' | 'paused', value: number | boolean): this
     {
@@ -181,10 +182,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance<HTMLAudio
         this.refresh();
     }
 
-    /**
-     * Get the set the volume for this instance from 0 to 1
-     * @type {number}
-     */
+    /** Get the set the volume for this instance from 0 to 1 */
     public get volume(): number
     {
         return this._volume;
@@ -195,10 +193,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance<HTMLAudio
         this.refresh();
     }
 
-    /**
-     * If the sound instance should loop playback
-     * @type {number}
-     */
+    /** If the sound instance should loop playback */
     public get loop(): boolean
     {
         return this._loop;
@@ -209,10 +204,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance<HTMLAudio
         this.refresh();
     }
 
-    /**
-     * `true` if the sound is muted
-     * @type {boolean}
-     */
+    /** `true` if the sound is muted */
     public get muted(): boolean
     {
         return this._muted;
@@ -221,6 +213,20 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance<HTMLAudio
     {
         this._muted = muted;
         this.refresh();
+    }
+
+    /**
+     * HTML Audio does not support filters, this is non-functional API.
+     */
+    public get filters(): Filter[]
+    {
+        console.warn('HTML Audio does not support filters');
+
+        return null;
+    }
+    public set filters(_filters: Filter[])
+    {
+        console.warn('HTML Audio does not support filters');
     }
 
     /** Call whenever the loop, speed or volume changes */

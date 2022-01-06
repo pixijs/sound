@@ -5,7 +5,6 @@ import { extensions } from './utils/supported';
 
 /**
  * Sound middleware installation utilities for PIXI.Loader
- * @class
  */
 class SoundLoader implements ILoaderPlugin
 {

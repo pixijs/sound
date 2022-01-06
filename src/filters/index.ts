@@ -1,12 +1,3 @@
-import { Filter } from './Filter';
-import { EqualizerFilter } from './EqualizerFilter';
-import { DistortionFilter } from './DistortionFilter';
-import { StereoFilter } from './StereoFilter';
-import { ReverbFilter } from './ReverbFilter';
-import { MonoFilter } from './MonoFilter';
-import { StreamFilter } from './StreamFilter';
-import { TelephoneFilter } from './TelephoneFilter';
-
 /**
  * Set of dynamic filters to be applied to Sound.
  * @example
@@ -18,13 +9,11 @@ import { TelephoneFilter } from './TelephoneFilter';
  * ];
  * @namespace filters
  */
-export default {
-    Filter,
-    EqualizerFilter,
-    DistortionFilter,
-    StereoFilter,
-    ReverbFilter,
-    MonoFilter,
-    StreamFilter,
-    TelephoneFilter
-};
+export * from './Filter';
+export * from './EqualizerFilter';
+export * from './DistortionFilter';
+export * from './StereoFilter';
+export * from './ReverbFilter';
+export * from './MonoFilter';
+export * from './StreamFilter';
+export * from './TelephoneFilter';

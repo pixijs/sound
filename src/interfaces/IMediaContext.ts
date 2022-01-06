@@ -8,31 +8,26 @@ interface IMediaContext
 {
     /**
      * `true` if all sounds are mute
-     * @type {boolean}
      */
     muted: boolean;
 
     /**
      * Volume to apply to all sound
-     * @type {number}
      */
     volume: number;
 
     /**
      * The speed of all sound
-     * @type {number}
      */
     speed: number;
 
     /**
      * Set the paused state for all sound
-     * @type {boolean}
      */
     paused: boolean;
 
     /**
      * Collection of global filter
-     * @type {Filter[]}
      */
     filters: Filter[];
 

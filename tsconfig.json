@@ -1,4 +1,10 @@
 {
+    "ts-node": {
+        "transpileOnly": true,
+        "compilerOptions": {
+            "resolveJsonModule": true
+        }
+    },
     "compilerOptions": {
         "moduleResolution": "node",
         "target": "es5",

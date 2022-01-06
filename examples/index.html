@@ -8,8 +8,11 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="css/examples.css?v=2">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/languages/javascript.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/codemirror.min.css" integrity="sha512-CCnciBUnVXwa6IQT9q8EmGcarNit9GdKI5nJnj56B1iu0LuD13Qn/GZ+IUkrZROZaBdutN718NK6mIXdUjZGqg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/theme/monokai.min.css" integrity="sha512-R6PH4vSzF2Yxjdvb2p2FA06yWul+U0PDDav4b/od/oXf9Iw37zl10plvwOXelrjV2Ai7Eo3vyHeyFUjhXdBCVQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/codemirror.min.js" integrity="sha512-JpMCZgesTWh1iu/8ujURbwkJBgbgFWe3sTNCHdIuEvPwZuuN0nTUr2yawXahpgdEK7FOZUlW254Rp7AyDYJdjg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/addon/display/autorefresh.min.js" integrity="sha512-vAsKB7xXQAWMn5kcwda0HkFVKUxSYwrmrGprVhmbGFNAG1Ij+2epT3zzdwjHTJyDsKXsiEdrUdhIxh7loHyX+A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/mode/javascript/javascript.min.js" integrity="sha512-DJ/Flq7rxJDDhgkO49H/rmidX44jmxWot/ku3c+XXEF9XFal78KIpu7w6jEaQhK4jli1U3/yOH+Rp3cIIEYFPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://cdn.rawgit.com/aidanlister/jquery-stickytabs/1.2.1/jquery.stickytabs.js"></script>
@@ -79,6 +82,47 @@ sound.play();</code></pre>
                 </button>
                 <pre><code id="autoplay-global" class="javascript">PIXI.sound.add('bird', 'resources/bird.mp3');
 PIXI.sound.play('bird');</code></pre>
+                <p>You can set options when playing a sound</p>
+                <button class="btn btn-danger btn-lg pull-right play" data-code="#play-options">
+                    <span class="glyphicon glyphicon-play"></span> Run
+                </button>
+                <pre><code id="play-options" class="javascript">PIXI.sound.Sound.from({
+    url: 'resources/bird.mp3',
+    preload: true,
+    loaded: function(err, sound) {
+        sound.play({
+            volume: 0.1,
+            start: 0,
+            end: 1,
+        });
+    }
+});</code></pre>
+                <p>You can also set filters for different instances, in this demo you will hear two birds sounds, one is the left, one on the right.</p>
+                <button class="btn btn-danger btn-lg pull-right play" data-code="#play-options-filters">
+                    <span class="glyphicon glyphicon-play"></span> Run
+                </button>
+                <pre><code id="play-options-filters" class="javascript">PIXI.sound.Sound.from({
+    url: 'resources/bird.mp3',
+    preload: true,
+    loaded: function(err, sound) {
+        // sound.filters = [
+        //     new PIXI.sound.filters.TelephoneFilter(),
+        // ];
+        sound.volume = 0.5;
+        sound.play({
+            filters: [
+                new PIXI.sound.filters.StereoFilter(-1),
+            ],
+        });
+        setTimeout(function () {
+            sound.play({
+                filters: [
+                    new PIXI.sound.filters.StereoFilter(1),
+                ],
+            });
+        }, 50);
+    }
+});</code></pre>
             </div>
             <div class="tab-pane fade" id="section-filetypes">
                 <h3>Filetypes</h3>

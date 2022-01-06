@@ -7,10 +7,8 @@ import { HTMLAudioInstance } from './HTMLAudioInstance';
 
 /**
  * The fallback version of Sound which uses `<audio>` instead of WebAudio API.
- * @class
  * @memberof htmlaudio
- * @param {HTMLAudioElement|String|Object} options - Either the path or url to the source file.
- *        or the object of options to use. See {@link Sound.from}
+ * @extends PIXI.util.EventEmitter
  */
 class HTMLAudioMedia extends EventEmitter implements IMedia
 {
@@ -34,7 +32,7 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
     }
 
     /**
-     * @type {boolean}
+     * If the audio media is playable (ready).
      * @readonly
      */
     public get isPlayable(): boolean
@@ -43,7 +41,7 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
     }
 
     /**
-     * @type {number}
+     * THe duration of the media in seconds.
      * @readonly
      */
     public get duration(): number
@@ -52,7 +50,7 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
     }
 
     /**
-     * @type {HTMLAudioContext}
+     * Reference to the context.
      * @readonly
      */
     public get context(): HTMLAudioContext
@@ -60,9 +58,7 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
         return this.parent.context as HTMLAudioContext;
     }
 
-    /**
-     * @type {Array<Filter>}
-     */
+    /** The collection of filters, does not apply to HTML Audio. */
     public get filters(): Filter[]
     {
         return null;
