@@ -79,7 +79,8 @@ class WebAudioContext extends Filterable implements IMediaContext
         //
         // For the sample rate value passed to OfflineAudioContext constructor,
         // all browsers are required to support a range of 8000 to 96000.
-        // Reference: https://www.w3.org/TR/webaudio/#dom-offlineaudiocontext-offlineaudiocontext-numberofchannels-length-samplerate
+        // Reference:
+        // https://www.w3.org/TR/webaudio/#dom-offlineaudiocontext-offlineaudiocontext-numberofchannels-length-samplerate
         this._offlineCtx = new WebAudioContext.OfflineAudioContext(1, 2,
             (win.OfflineAudioContext) ? Math.max(8000, Math.min(96000, ctx.sampleRate)) : 44100);
         this._unlocked = false;
