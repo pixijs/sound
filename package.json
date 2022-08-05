@@ -2,9 +2,20 @@
   "name": "@pixi/sound",
   "version": "4.2.1",
   "description": "WebAudio API playback library with filters",
+  "source": "src/index.ts",
+  "sourceBundle": "src/browser.ts",
   "main": "dist/pixi-sound.cjs.js",
-  "module": "dist/pixi-sound.esm.js",
+  "module": "dist/pixi-sound.esm.mjs",
+  "bundle": "dist/pixi-sound.js",
   "types": "dist/pixi-sound.d.ts",
+  "namespace": "PIXI.sound",
+  "exports": {
+    ".": {
+      "import": "./dist/pixi-sound.esm.mjs",
+      "require": "./dist/pixi-sound.cjs.js",
+      "types": "./dist/pixi-sound.d.ts"
+    }
+  },
   "scripts": {
     "test": "floss -p test --require ts-node/register -- --autoplay-policy=no-user-gesture-required",
     "test:debug": "floss -p test --debug --require ts-node/register -- --autoplay-policy=no-user-gesture-required",
@@ -77,7 +88,9 @@
       "engines",
       "pre-commit",
       "devDependencies",
-      "eslintConfig"
+      "eslintConfig",
+      "source",
+      "sourceBundle"
     ]
   },
   "devDependencies": {
