@@ -290,7 +290,7 @@ class WebAudioContext extends Filterable implements IMediaContext
     {
         const handleError = (err: Error) =>
         {
-            callback(new Error(err.message || 'Unable to decode file'));
+            callback(new Error(err?.message || 'Unable to decode file'));
         };
         const result = this._offlineCtx.decodeAudioData(
             arrayBuffer, (buffer: AudioBuffer) =>
