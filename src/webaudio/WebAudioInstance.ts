@@ -1,5 +1,4 @@
-import { Ticker } from '@pixi/ticker';
-import { EventEmitter } from '@pixi/utils';
+import { utils, Ticker } from '@pixi/core';
 import { IMediaInstance } from '../interfaces';
 import { PlayOptions } from '../Sound';
 import { WebAudioMedia } from './WebAudioMedia';
@@ -13,7 +12,7 @@ let id = 0;
  * @memberof webaudio
  * @extends PIXI.utils.EventEmitter
  */
-class WebAudioInstance extends EventEmitter implements IMediaInstance
+class WebAudioInstance extends utils.EventEmitter implements IMediaInstance
 {
     /**
      * The current unique ID for this instance.

@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="css/range.css">
         <link rel="stylesheet" href="css/examples.css?v=2">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/languages/javascript.min.js"></script>
-        <script src="https://pixijs.download/v6.x/pixi.min.js"></script>
+        <script src="https://pixijs.download/dev/pixi.min.js"></script>
         <script src="../dist/pixi-sound.js"></script>
     </head>
     <body ontouchstart="">
@@ -163,20 +163,16 @@ const manifest = {
 };
 
 // Add to the PIXI loader
-for (let name in manifest) {
-    PIXI.Loader.shared.add(name, manifest[name]);
-}
-
-// Preload the sounds
-PIXI.Loader.shared.load(function(loader, resources) {
+PIXI.Assets.addBundle('demo', manifest);
+PIXI.Assets.loadBundle('demo').then((resources) => {
     const plays = document.querySelectorAll('button[data-sound]');
     for (let i = 0; i < plays.length; i++) {
         const button = plays[i];
         const alias = button.dataset.sound;
-        const sound = resources[alias].sound;
+        const sound = resources[alias];
         button.addEventListener('mousedown', function() {
             const button = this;
-            const sound = resources[button.dataset.sound].sound;
+            const sound = resources[button.dataset.sound];
             const loop = !!button.dataset.loop;
             const playing = !parseInt(button.dataset.playing);
             if (loop) {

@@ -11,6 +11,14 @@ for (let j = 0; j < autorun.length; j++)
     eval(autorun[j].innerHTML);
 }
 
+function decodeHTMLEntities(rawStr)
+{
+    return rawStr
+        .replace(/&gt;/g, '>')
+        .replace(/&lt;/g, '<')
+        .replace(/&amp;/g, '&');
+}
+
 const buttons = $$('button[data-code]');
 
 for (let i = 0; i < buttons.length; i++)
@@ -26,7 +34,6 @@ for (let i = 0; i < buttons.length; i++)
     }
     button.addEventListener('click', function ()
     {
-        PIXI.Loader.shared.reset();
         PIXI.sound.stopAll();
         PIXI.sound.removeAll();
         const beforecodeContent = this.getAttribute('data-beforecodeContent');
@@ -44,7 +51,7 @@ for (let i = 0; i < buttons.length; i++)
             eval(beforecodeContent);
         }
         // tslint:disable-next-line no-eval
-        eval(codeContent.replace(/const /g, 'var '));
+        eval(`(async () => {${decodeHTMLEntities(codeContent)}})()`);
     });
 }
 
@@ -56,7 +63,7 @@ for (let i = 0; i < codeEls.length; i++)
     const textarea = document.createElement('textarea');
 
     textarea.setAttribute('data-id', codeEl.id);
-    textarea.value = codeEl.innerHTML;
+    textarea.value = codeEl.innerText;
     codeEl.parentNode.insertBefore(textarea, codeEl);
     codeEl.parentNode.removeChild(codeEl);
     const cm = window.CodeMirror.fromTextArea(textarea, {

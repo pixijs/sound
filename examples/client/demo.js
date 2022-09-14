@@ -13,12 +13,8 @@ const manifest = {
     whistle: 'resources/whistle.mp3',
 };
 
-for (const name in manifest)
-{
-    PIXI.Loader.shared.add(name, manifest[name]);
-}
-
-PIXI.Loader.shared.load(function (loader, resources)
+PIXI.Assets.addBundle('demo', manifest);
+PIXI.Assets.loadBundle('demo').then(() =>
 {
     const plays = document.querySelectorAll('button[data-sound]');
 
@@ -26,7 +22,6 @@ PIXI.Loader.shared.load(function (loader, resources)
     {
         const button = plays[i];
         const alias = button.getAttribute('data-sound');
-        const sound = resources[alias].sound;
 
         if ('ontouchstart' in window)
         {
@@ -42,7 +37,7 @@ PIXI.Loader.shared.load(function (loader, resources)
 function play()
 {
     const button = this;
-    const sound = PIXI.Loader.shared.resources[button.getAttribute('data-sound')].sound;
+    const sound = PIXI.Assets.get(button.getAttribute('data-sound'));
     const loop = !!button.getAttribute('data-loop');
     const playing = !parseInt(button.getAttribute('data-playing'), 10);
 

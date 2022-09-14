@@ -3,7 +3,6 @@ import { HTMLAudioMedia } from './htmlaudio/HTMLAudioMedia';
 import { getInstance } from './instance';
 import { IMedia, IMediaContext, IMediaInstance } from './interfaces';
 import { SoundSprite, SoundSpriteData, SoundSprites } from './SoundSprite';
-import { resolveUrl } from './utils/resolveUrl';
 import { WebAudioMedia } from './webaudio/WebAudioMedia';
 
 /**
@@ -255,12 +254,6 @@ class Sound
             complete: null,
             loaded: null,
             loop: false, ...options };
-
-        // Resolve url in-case it has a special format
-        if (options.url)
-        {
-            options.url = resolveUrl(options.url);
-        }
 
         Object.freeze(options);
 
