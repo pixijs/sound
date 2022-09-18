@@ -8,7 +8,7 @@ import * as utils from './utils';
 const sound = setInstance(new SoundLibrary());
 
 export * from './Sound';
-export * from './loaders';
+export * from './soundAsset';
 export * from './SoundLibrary';
 export * from './Filterable';
 export * from './interfaces';

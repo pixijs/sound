@@ -421,7 +421,7 @@ export function suite(useLegacy = false): void
         });
     });
 
-    describe(`Assets${suffix}`, function ()
+    describe(`soundAsset${suffix}`, function ()
     {
         before(async function ()
         {

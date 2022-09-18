@@ -7,6 +7,7 @@ import {
     filters,
     htmlaudio,
     utils,
+    soundAsset,
     webaudio } from './index';
 
 Object.defineProperties(sound,
@@ -20,6 +21,7 @@ Object.defineProperties(sound,
         utils: { get() { return utils; } },
         webaudio: { get() { return webaudio; } },
         sound: { get() { return sound; } },
+        soundAsset: { get() { return soundAsset; } },
     });
 
 /**
