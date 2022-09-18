@@ -9,7 +9,7 @@ WebAudio API playback library, with filters. Modern audio playback for modern br
 * Pausing and resuming
 * Independent volume control
 * Support blocking or layered sounds (multiple instances)
-* Support for `PIXI.Loader` system
+* Support for `PIXI.Assets` system
 * Dynamic filters:
     * ReverbFilter
     * DistortionFilter
@@ -20,10 +20,9 @@ WebAudio API playback library, with filters. Modern audio playback for modern br
 **Known Compatibility**
 
 * Chrome 58+
-* Firefox 49+
-* Safari 10+
-* iOS 9+
-* IE 9+
+* Firefox 52+
+* Safari 11+
+* iOS 11+
 
 ## Usage
 
