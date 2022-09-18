@@ -451,5 +451,21 @@ export function suite(useLegacy = false): void
                 await Assets.unload(name);
             }
         });
+
+        it('should load an asset without alias', async function ()
+        {
+            this.slow(200);
+            const s = await Assets.load<Sound>(manifest.silence);
+            const ClassRef = useLegacy
+                ? htmlaudio.HTMLAudioMedia
+                : webaudio.WebAudioMedia;
+
+            expect(sound.find('silence')).equals(s);
+            expect(s.media).to.be.instanceof(ClassRef);
+            expect(s).to.be.instanceof(Sound);
+            expect(s.isLoaded).to.be.true;
+            expect(s.isPlayable).to.be.true;
+            await Assets.unload(manifest.silence);
+        });
     });
 }
