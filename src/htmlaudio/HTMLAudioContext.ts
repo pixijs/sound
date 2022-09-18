@@ -1,4 +1,4 @@
-import { EventEmitter } from '@pixi/utils';
+import { utils } from '@pixi/core';
 import { Filter } from '../filters/Filter';
 import { IMediaContext } from '../interfaces/IMediaContext';
 
@@ -7,7 +7,7 @@ import { IMediaContext } from '../interfaces/IMediaContext';
  * @memberof htmlaudio
  * @extends PIXI.util.EventEmitter
  */
-class HTMLAudioContext extends EventEmitter implements IMediaContext
+class HTMLAudioContext extends utils.EventEmitter implements IMediaContext
 {
     /** Current global speed from 0 to 1 */
     public speed = 1;

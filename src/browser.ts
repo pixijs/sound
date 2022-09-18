@@ -4,10 +4,10 @@ import {
     Sound,
     SoundLibrary,
     SoundSprite,
-    SoundLoader,
     filters,
     htmlaudio,
     utils,
+    soundAsset,
     webaudio } from './index';
 
 Object.defineProperties(sound,
@@ -16,12 +16,12 @@ Object.defineProperties(sound,
         filters: { get() { return filters; } },
         htmlaudio: { get() { return htmlaudio; } },
         Sound: { get() { return Sound; } },
-        SoundLoader: { get() { return SoundLoader; } },
         SoundLibrary: { get() { return SoundLibrary; } },
         SoundSprite: { get() { return SoundSprite; } },
         utils: { get() { return utils; } },
         webaudio: { get() { return webaudio; } },
         sound: { get() { return sound; } },
+        soundAsset: { get() { return soundAsset; } },
     });
 
 /**

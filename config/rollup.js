@@ -70,10 +70,8 @@ export default [
             sourcemap,
             file: pkg.bundle,
             globals: {
-                "@pixi/loaders": "PIXI",
+                "@pixi/assets": "PIXI",
                 "@pixi/core": "PIXI",
-                "@pixi/ticker": "PIXI",
-                "@pixi/utils": "PIXI.utils",
             },
         }
     }

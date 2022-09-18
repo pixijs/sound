@@ -1,7 +1,6 @@
 import { Filter } from './filters/Filter';
 import { IMediaContext } from './interfaces/IMediaContext';
 import { IMediaInstance } from './interfaces/IMediaInstance';
-import { SoundLoader } from './SoundLoader';
 import { CompleteCallback, Options, PlayOptions, Sound } from './Sound';
 import { HTMLAudioContext } from './htmlaudio/HTMLAudioContext';
 import { WebAudioContext } from './webaudio/WebAudioContext';
@@ -216,7 +215,6 @@ class SoundLibrary
     }
     public set useLegacy(legacy: boolean)
     {
-        SoundLoader.setLegacy(legacy);
         this._useLegacy = legacy;
 
         // Set the context to use

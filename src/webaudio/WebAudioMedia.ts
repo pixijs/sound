@@ -1,3 +1,4 @@
+import { settings } from '@pixi/core';
 import { Filter } from '../filters/Filter';
 import { IMedia } from '../interfaces/IMedia';
 import { LoadedCallback, Sound } from '../Sound';
@@ -137,23 +138,12 @@ class WebAudioMedia implements IMedia
     }
 
     /** Loads a sound using XHMLHttpRequest object. */
-    private _loadUrl(callback?: LoadedCallback): void
+    private async _loadUrl(callback?: LoadedCallback): Promise<void>
     {
-        const request = new XMLHttpRequest();
         const url: string = this.parent.url;
+        const response = await settings.ADAPTER.fetch(url);
 
-        request.open('GET', url, true);
-        request.responseType = 'arraybuffer';
-
-        // Decode asynchronously
-        request.onload = () =>
-        {
-            this.source = request.response as ArrayBuffer;
-            this._decode(request.response, callback);
-        };
-
-        // actually start the request
-        request.send();
+        this._decode(await response.arrayBuffer(), callback);
     }
 
     /**

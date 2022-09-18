@@ -7,7 +7,7 @@
     },
     "compilerOptions": {
         "moduleResolution": "node",
-        "target": "es5",
+        "target": "es2017",
         "noImplicitThis": true,
         "removeComments": false,
         "strictFunctionTypes": true,
@@ -21,13 +21,7 @@
         "noUncheckedIndexedAccess": true,
         "sourceMap": true,
         "inlineSources": true,
-        "esModuleInterop": true,
-        "paths": {
-            "mini-signals": [
-                "node_modules/resource-loader/typings/mini-signals.d.ts"
-            ]
-        },
-        "baseUrl": "./",
+        "esModuleInterop": true
     },
     "include": [
         "src/**/*"
