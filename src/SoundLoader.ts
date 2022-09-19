@@ -8,6 +8,9 @@ import { extensions } from './utils/supported';
  */
 class SoundLoader implements ILoaderPlugin
 {
+    /** Used for PixiJS 6.5.0 extensions API */
+    static extension = 'loader';
+
     /** Install the middleware */
     public static add(): void
     {
