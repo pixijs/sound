@@ -58,6 +58,13 @@ If you're using a `<script>` element to import `@pixi/sound` into your project, 
 </script>
 ```
 
+### Versions Compatibility
+
+| PixiJS | PixiJS Sound |
+|---|---|
+| v5.x - v6.x | v4.x |
+| v7.x | v5.x |
+
 ### Resources
 
 * [Releases](https://github.com/pixijs/sound/releases)
