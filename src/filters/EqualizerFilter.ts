@@ -2,7 +2,8 @@ import { getInstance } from '../instance';
 import { WebAudioUtils } from '../webaudio/WebAudioUtils';
 import { Filter } from './Filter';
 
-interface Band {
+interface Band
+{
     f: number;
     type: string;
     gain: number;

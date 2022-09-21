@@ -8,7 +8,8 @@ import { WebAudioMedia } from './webaudio/WebAudioMedia';
 /**
  * Options to use for creating sounds.
  */
-interface Options {
+interface Options
+{
     /**
      * `true` to immediately start preloading.
      * @default false
@@ -67,7 +68,8 @@ interface Options {
 /**
  * Options used for sound playback.
  */
-interface PlayOptions {
+interface PlayOptions
+{
     /**
      * Start time offset in seconds.
      * @default 0
@@ -488,7 +490,7 @@ class Sound
      *        has not yet loaded.
      */
     public play(source?: string | PlayOptions | CompleteCallback,
-                callback?: CompleteCallback): IMediaInstance | Promise<IMediaInstance>;
+        callback?: CompleteCallback): IMediaInstance | Promise<IMediaInstance>;
 
     // Overloaded function
     public play(source?: string | PlayOptions | CompleteCallback,

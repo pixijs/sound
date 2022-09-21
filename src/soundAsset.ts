@@ -37,7 +37,7 @@ const soundAsset = {
         },
 
         /** Load the sound file, this is mostly handled by Sound.from() */
-        async load(url: string, asset: LoadAsset<Omit<Options, 'url'|'preload'>>): Promise<Sound>
+        async load(url: string, asset: LoadAsset<Omit<Options, 'url' | 'preload'>>): Promise<Sound>
         {
             // We'll use the internal Sound.from to load the asset
             const sound = await new Promise<Sound>((resolve, reject) => Sound.from({

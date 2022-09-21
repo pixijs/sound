@@ -3,7 +3,8 @@ import { WebAudioContext } from './WebAudioContext';
 import { WebAudioUtils } from './WebAudioUtils';
 
 /** Output for cloning source node. */
-interface SourceClone {
+interface SourceClone
+{
     /** Cloned audio buffer source */
     source: AudioBufferSourceNode;
     /** Independent volume control */

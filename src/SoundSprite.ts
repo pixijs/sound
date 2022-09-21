@@ -2,7 +2,8 @@ import { IMediaInstance } from './interfaces';
 import { CompleteCallback, Sound } from './Sound';
 
 /** Data for adding new sound sprites. */
-interface SoundSpriteData {
+interface SoundSpriteData
+{
     /** The start time in seconds. */
     start: number;
     /** The end time in seconds. */

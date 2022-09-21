@@ -1,24 +1,10 @@
-import typescript from "@rollup/plugin-typescript";
-import { terser } from "rollup-plugin-terser";
+import esbuild from "rollup-plugin-esbuild";
 import pkg from "../package.json";
 
-const plugins = [typescript()];
-
-// Disabling minification makes faster
-// watch and better coverage debugging
-if (process.env.NODE_ENV === "production") {
-    plugins.push(terser({
-        output: {
-            comments(node, comment) {
-                return comment.line === 1;
-            },
-        },
-        compress: {
-            drop_console: true,
-        },
-    }));
-}
-
+const plugins = [esbuild({
+    target: "ES2017",
+    minify: process.env.NODE_ENV === "production",
+})];
 const sourcemap = true;
 const external = Object.keys(pkg.peerDependencies);
 const compiled = (new Date()).toUTCString().replace(/GMT/g, "UTC");

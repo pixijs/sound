@@ -6,7 +6,8 @@ import { IMediaInstance } from './IMediaInstance';
 /**
  * Interface represents either a WebAudio source or an HTML5 AudioElement source
  */
-interface IMedia {
+interface IMedia
+{
 
     /** Collection of global filters */
     filters: Filter[];

@@ -3,7 +3,8 @@ import { expect } from 'chai';
 import { sound, Sound, utils, webaudio, htmlaudio, filters, SoundLibrary, IMediaInstance } from '../src';
 import path from 'path';
 
-declare global {
+declare global
+{
     var __resources: string;
 }
 

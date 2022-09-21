@@ -2,7 +2,8 @@ import { BaseTexture } from '@pixi/core';
 import { Sound } from '../Sound';
 import { WebAudioMedia } from '../webaudio/WebAudioMedia';
 
-interface RenderOptions {
+interface RenderOptions
+{
     /**
      * Width of the render.
      * @default 512
