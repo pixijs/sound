@@ -1,32 +1,18 @@
 {
-    "ts-node": {
-        "transpileOnly": true,
-        "compilerOptions": {
-            "resolveJsonModule": true
-        }
-    },
+    "extends": "@pixi/extension-scripts/lib/configs/tsconfig.json",
     "compilerOptions": {
-        "moduleResolution": "node",
-        "target": "es2017",
+        "strict": false,
         "noImplicitThis": true,
-        "removeComments": false,
         "strictFunctionTypes": true,
         "strictBindCallApply": true,
-        "noImplicitAny": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "preserveConstEnums": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
-        "noUncheckedIndexedAccess": true,
-        "sourceMap": true,
-        "inlineSources": true,
-        "esModuleInterop": true
+        "noUncheckedIndexedAccess": true
     },
     "include": [
         "src/**/*"
-    ],
-    "exclude": [
-        "node_modules"
     ]
 }
