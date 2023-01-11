@@ -33,6 +33,8 @@
       "src",
       "examples/client"
     ],
+    "bundleSource": "src/browser.ts",
+    "bundleExports": "default",
     "docsName": "PixiJS Sound",
     "docsCopyright": "PIXI Copyright &copy; 2017 - 2021 Matt Karl.",
     "docsGoogleAnalytics": "UA-103772589-1",
@@ -72,7 +74,7 @@
     "types"
   ],
   "devDependencies": {
-    "@pixi/extension-scripts": "^1.4.0",
+    "@pixi/extension-scripts": "^1.5.1",
     "@types/css-font-loading-module": "^0.0.7",
     "@types/node": "^12.0.0",
     "@types/offscreencanvas": "^2019.6.4",
