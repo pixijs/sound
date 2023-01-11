@@ -69,19 +69,11 @@
     "url": "https://github.com/pixijs/sound/issues"
   },
   "homepage": "https://github.com/pixijs/sound#readme",
-  "pre-commit": [
-    "lint",
-    "types"
-  ],
   "devDependencies": {
     "@pixi/extension-scripts": "^1.5.1",
-    "@types/css-font-loading-module": "^0.0.7",
-    "@types/node": "^12.0.0",
-    "@types/offscreencanvas": "^2019.6.4",
     "copyfiles": "^2.4.1",
     "mkdirp": "^1.0.4",
-    "pixi.js": "^7.0.0",
-    "pre-commit": "^1.2.2"
+    "pixi.js": "^7.0.0"
   },
   "peerDependencies": {
     "@pixi/assets": "^7.0.0",
