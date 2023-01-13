@@ -382,6 +382,23 @@ class SoundLibrary
     }
 
     /**
+     * Convenience function to check to see if any sound is playing.
+     * @returns `true` if any sound is currently playing.
+     */
+    public isPlaying(): boolean
+    {
+        for (const alias in this._sounds)
+        {
+            if (this._sounds[alias].isPlaying)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Find a sound by alias.
      * @param alias - The sound alias reference.
      * @return Sound object.

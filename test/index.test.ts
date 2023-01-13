@@ -181,6 +181,20 @@ export function suite(useLegacy = false): void
             });
         });
 
+        it('should check to see if a file is playing', function (done)
+        {
+            sound.stopAll();
+            expect(sound.isPlaying()).toBe(false);
+            sound.play('silence', {
+                complete() {
+                    sound.stopAll();
+                    expect(sound.isPlaying()).toBe(false);
+                    done();
+                }
+            });
+            expect(sound.isPlaying()).toBe(true);
+        });
+
         it('should remove all sounds', () =>
         {
             sound.removeAll();
