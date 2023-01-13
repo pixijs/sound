@@ -35,7 +35,7 @@ for (let i = 0; i < buttons.length; i++)
     button.addEventListener('click', function ()
     {
         PIXI.sound.stopAll();
-        PIXI.sound.removeAll();
+        PIXI.Assets.cache.reset();
         const beforecodeContent = this.getAttribute('data-beforecodeContent');
         let codeContent = this.getAttribute('data-codeContent');
         const id = code.substr(1, code.length);
