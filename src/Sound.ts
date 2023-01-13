@@ -197,6 +197,9 @@ class Sound
     /** The audio source */
     public media: IMedia;
 
+    /** The list of play calls while waiting to preload the sound. */
+    private _preloadQueue: (() => void)[] | null;
+
     /** The collection of instances being played. */
     private _instances: IMediaInstance[];
 
@@ -283,6 +286,7 @@ class Sound
 
         this._autoPlayOptions = complete ? { complete } : null;
         this.isLoaded = false;
+        this._preloadQueue = null;
         this.isPlaying = false;
         this.autoPlay = options.autoPlay;
         this.singleInstance = options.singleInstance;
@@ -551,12 +555,30 @@ class Sound
         // - usefull when the sound download isnt yet completed
         if (!this.isLoaded)
         {
+            // Handle the case when trying to play a sound that is not yet loaded
+            // We'll add it to a queue to play after initial load finishes
+            if (this._preloadQueue)
+            {
+                return new Promise<IMediaInstance>((resolve) =>
+                {
+                    this._preloadQueue.push(() =>
+                    {
+                        resolve(this.play(options));
+                    });
+                });
+            }
+
+            this._preloadQueue = [];
+            this.autoPlay = true;
+            this._autoPlayOptions = options;
+
             return new Promise<IMediaInstance>((resolve, reject) =>
             {
-                this.autoPlay = true;
-                this._autoPlayOptions = options;
                 this._preload((err: Error, sound: Sound, media: IMediaInstance) =>
                 {
+                    this._preloadQueue.forEach((resolve) => resolve());
+                    this._preloadQueue = null;
+
                     if (err)
                     {
                         reject(err);
