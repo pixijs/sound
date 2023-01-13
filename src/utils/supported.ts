@@ -1,18 +1,19 @@
 type ExtensionMap = Record<string, boolean>;
 
 /**
- * The list of extensions that can be played.
+ * The list of extensions that can be played. This is the preferred order of playback.
+ * If you want to priority the order of playback, you can use this array to do so.
  * @readonly
  * @memberof utils
  */
 const extensions: string[] = [
-    'mp3',
     'ogg',
     'oga',
     'opus',
+    'm4a',
+    'mp3',
     'mpeg',
     'wav',
-    'm4a',
     'aiff',
     'wma',
     'mid',
