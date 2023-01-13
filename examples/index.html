@@ -132,6 +132,16 @@ PIXI.sound.play('bird');</code></pre>
                 </button>
                 <pre><code id="filetypes1" class="javascript">PIXI.Assets.add('applause', 'resources/applause.{ogg,mp3}');
 PIXI.Assets.load('applause').then(sound => sound.play());</code></pre>
+
+                <p>Alternatively, if you don't plan to use Assets (typically because you're using a bundler like Parcel or Webpack), but you still would like to resolve multiple files, you can choose from multiple URLs.</p>
+                <button class="btn btn-danger btn-lg pull-right play" data-code="#filetypes2">
+                    <span class="glyphicon glyphicon-play"></span> Run
+                </button>
+                <pre><code id="filetypes2" class="javascript">const sound = PIXI.sound.add('applause', [
+    'resources/applause.ogg',
+    'resources/applause.mp3'
+]);
+sound.play();</code></pre>
             </div>
             <div class="tab-pane fade" id="section-preloading">
                 <h3>Preloading</h3>

@@ -193,6 +193,10 @@ class SoundLibrary
         {
             options = { url: source };
         }
+        else if (Array.isArray(source))
+        {
+            options = { url: source };
+        }
         else if (source instanceof ArrayBuffer || source instanceof AudioBuffer || source instanceof HTMLAudioElement)
         {
             options = { source };

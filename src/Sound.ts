@@ -1,8 +1,10 @@
+import { utils } from '@pixi/core';
 import { Filter } from './filters/Filter';
 import { HTMLAudioMedia } from './htmlaudio/HTMLAudioMedia';
 import { getInstance } from './instance';
 import { IMedia, IMediaContext, IMediaInstance } from './interfaces';
 import { SoundSprite, SoundSpriteData, SoundSprites } from './SoundSprite';
+import { extensions } from './utils/supported';
 import { WebAudioMedia } from './webaudio/WebAudioMedia';
 
 /**
@@ -52,7 +54,7 @@ interface Options
     /**
      * The source of the file being loaded
      */
-    url?: string;
+    url?: string | string[];
     /**
      * If sound is already preloaded, available.
      */
@@ -230,7 +232,7 @@ class Sound
      *        or the object of options to use.
      * @return Created sound instance.
      */
-    public static from(source: string | Options | ArrayBuffer | HTMLAudioElement | AudioBuffer): Sound
+    public static from(source: string | string[] | Options | ArrayBuffer | HTMLAudioElement | AudioBuffer): Sound
     {
         let options: Options = {};
 
@@ -241,6 +243,10 @@ class Sound
         else if (source instanceof ArrayBuffer || source instanceof AudioBuffer || source instanceof HTMLAudioElement)
         {
             options.source = source;
+        }
+        else if (Array.isArray(source))
+        {
+            options.url = source;
         }
         else
         {
@@ -291,7 +297,10 @@ class Sound
         this.autoPlay = options.autoPlay;
         this.singleInstance = options.singleInstance;
         this.preload = options.preload || this.autoPlay;
-        this.url = options.url;
+
+        this.url = Array.isArray(options.url)
+            ? this.preferUrl(options.url)
+            : options.url;
         this.speed = options.speed;
         this.volume = options.volume;
         this.loop = options.loop;
@@ -305,6 +314,19 @@ class Sound
         {
             this._preload(options.loaded);
         }
+    }
+
+    /**
+     * Internal help for resolving which file to use if there are multiple provide
+     * this is especially helpful for working with bundlers (non Assets loading).
+     */
+    private preferUrl(urls: string[]): string
+    {
+        const [{ url }] = urls
+            .map((url) => ({ url, ext: utils.path.extname(url).slice(1) }))
+            .sort((a, b) => extensions.indexOf(a.ext) - extensions.indexOf(b.ext));
+
+        return url;
     }
 
     /** Instance of the media context. */
