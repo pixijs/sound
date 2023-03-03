@@ -15,9 +15,11 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       SOURCE_DIR: 'deploy'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v3
+    - name: Install xvfb
+      run: sudo apt-get install xvfb
     - name: Use Node.js 16.x
       uses: actions/setup-node@v3
       with:
@@ -28,9 +30,7 @@ jobs:
       run: npm ci
 
     - name: Run Unit Tests
-      uses: GabrielBB/xvfb-action@v1.0
-      with:
-        run: npm test
+      run: xvfb-run --auto-servernum npm test
 
     - name: Prepare Deploy
       run: npm run deploy:ci

@@ -186,7 +186,8 @@ export function suite(useLegacy = false): void
             sound.stopAll();
             expect(sound.isPlaying()).toBe(false);
             sound.play('silence', {
-                complete() {
+                complete()
+                {
                     sound.stopAll();
                     expect(sound.isPlaying()).toBe(false);
                     done();
