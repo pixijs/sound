@@ -39,12 +39,12 @@ jobs:
     - name: Extract Branch Name
       id: branch_name
       if: github.event_name == 'push' && !contains(github.ref, 'refs/tags')
-      run: echo ::set-output name=BRANCH_NAME::${GITHUB_REF/refs\/heads\//}
+      run: echo BRANCH_NAME=${GITHUB_REF/refs\/heads\//} >> $GITHUB_OUTPUT
 
     - name: Extract Tag Name
       id: tag_name
       if: github.event_name == 'release' || contains(github.ref, 'refs/tags')
-      run: echo ::set-output name=TAG_NAME::${GITHUB_REF/refs\/tags\//}
+      run: echo TAG_NAME=${GITHUB_REF/refs\/tags\//} >> $GITHUB_OUTPUT
 
     # Examples:
     # 1) PR feature/acme merged into dev
