@@ -1,6 +1,6 @@
 {
   "name": "@pixi/sound",
-  "version": "4.3.1",
+  "version": "4.3.2",
   "description": "WebAudio API playback library with filters",
   "source": "src/index.ts",
   "sourceBundle": "src/browser.ts",
