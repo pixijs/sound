@@ -1,7 +1,10 @@
 import { ILoaderPlugin, ILoaderResource, LoaderResource } from '@pixi/loaders';
 import { getInstance } from './instance';
 import { resolveUrl } from './utils/resolveUrl';
-import { extensions } from './utils/supported';
+import { extensions, supported } from './utils/supported';
+
+// Ignore unsupported extensions
+const supportedExtensions = extensions.filter((ext) => supported[ext]);
 
 /**
  * Sound middleware installation utilities for PIXI.Loader
@@ -23,14 +26,11 @@ class SoundLoader implements ILoaderPlugin
      */
     static setLegacy(legacy: boolean): void
     {
-        // Configure PIXI Loader to handle audio files correctly
-        const exts = extensions;
-
         // Make sure we support webaudio
         if (!legacy)
         {
             // Load all audio files as ArrayBuffers
-            exts.forEach((ext) =>
+            supportedExtensions.forEach((ext) =>
             {
                 LoaderResource.setExtensionXhrType(ext, LoaderResource.XHR_RESPONSE_TYPE.BUFFER);
                 LoaderResource.setExtensionLoadType(ext, LoaderResource.LOAD_TYPE.XHR);
@@ -39,7 +39,7 @@ class SoundLoader implements ILoaderPlugin
         else
         {
             // Fall back to loading as <audio> elements
-            exts.forEach((ext) =>
+            supportedExtensions.forEach((ext) =>
             {
                 LoaderResource.setExtensionXhrType(ext, LoaderResource.XHR_RESPONSE_TYPE.DEFAULT);
                 LoaderResource.setExtensionLoadType(ext, LoaderResource.LOAD_TYPE.AUDIO);
@@ -57,7 +57,7 @@ class SoundLoader implements ILoaderPlugin
     /** Actual resource-loader middleware for sound class */
     public static use(resource: ILoaderResource, next: () => void): void
     {
-        if (resource.data && extensions.indexOf(resource.extension) > -1)
+        if (resource.data && supportedExtensions.indexOf(resource.extension) > -1)
         {
             (resource as any).sound = getInstance().add(resource.name, {
                 loaded: next,
