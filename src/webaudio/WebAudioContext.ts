@@ -222,6 +222,7 @@ class WebAudioContext extends Filterable implements IMediaContext
             ctx.close();
         }
         globalThis.removeEventListener('focus', this.onFocus);
+        globalThis.removeEventListener('blur', this.onBlur);
         this.events.removeAllListeners();
         this.analyser.disconnect();
         this.compressor.disconnect();
