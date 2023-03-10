@@ -59,7 +59,7 @@ class WebAudioContext extends Filterable implements IMediaContext
      * Indicated whether audio on iOS has been unlocked, which requires a touchend/mousedown event that plays an
      * empty sound.
      */
-    private _unlocked: boolean;
+    private _locked: boolean;
 
     constructor()
     {
@@ -83,7 +83,6 @@ class WebAudioContext extends Filterable implements IMediaContext
         // https://www.w3.org/TR/webaudio/#dom-offlineaudiocontext-offlineaudiocontext-numberofchannels-length-samplerate
         this._offlineCtx = new WebAudioContext.OfflineAudioContext(1, 2,
             (win.OfflineAudioContext) ? Math.max(8000, Math.min(96000, ctx.sampleRate)) : 44100);
-        this._unlocked = false;
 
         this.compressor = compressor;
         this.analyser = analyser;
@@ -95,14 +94,44 @@ class WebAudioContext extends Filterable implements IMediaContext
         this.muted = false;
         this.paused = false;
 
+        this._locked = ctx.state === 'suspended' && ('ontouchstart' in globalThis || 'onclick' in globalThis);
+
         // Listen for document level clicks to unlock WebAudio. See the _unlock method.
-        if (ctx.state !== 'running')
+        if (this._locked)
         {
             this._unlock(); // When played inside of a touch event, this will enable audio on iOS immediately.
             this._unlock = this._unlock.bind(this);
             document.addEventListener('mousedown', this._unlock, true);
             document.addEventListener('touchstart', this._unlock, true);
             document.addEventListener('touchend', this._unlock, true);
+        }
+
+        this.onFocus = this.onFocus.bind(this);
+        this.onBlur = this.onBlur.bind(this);
+        globalThis.addEventListener('focus', this.onFocus);
+        globalThis.addEventListener('blur', this.onBlur);
+    }
+
+    /** Handle mobile WebAudio context resume */
+    private onFocus(): void
+    {
+        // Safari uses the non-standard "interrupted" state in some cases
+        // such as when the app loses focus because the screen is locked
+        // or when the user switches to another app.
+        const state = this._ctx.state as 'suspended' | 'interrupted';
+
+        if (state === 'suspended' || state === 'interrupted' || !this._locked)
+        {
+            this._ctx.resume();
+        }
+    }
+
+    /** Handle mobile WebAudio context suspend */
+    private onBlur(): void
+    {
+        if (!this._locked)
+        {
+            this._ctx.suspend();
         }
     }
 
@@ -117,7 +146,7 @@ class WebAudioContext extends Filterable implements IMediaContext
      */
     private _unlock(): void
     {
-        if (this._unlocked)
+        if (!this._locked)
         {
             return;
         }
@@ -127,7 +156,7 @@ class WebAudioContext extends Filterable implements IMediaContext
             document.removeEventListener('mousedown', this._unlock, true);
             document.removeEventListener('touchend', this._unlock, true);
             document.removeEventListener('touchstart', this._unlock, true);
-            this._unlocked = true;
+            this._locked = false;
         }
     }
 
@@ -192,6 +221,8 @@ class WebAudioContext extends Filterable implements IMediaContext
         {
             ctx.close();
         }
+        globalThis.removeEventListener('focus', this.onFocus);
+        globalThis.removeEventListener('blur', this.onBlur);
         this.events.removeAllListeners();
         this.analyser.disconnect();
         this.compressor.disconnect();
