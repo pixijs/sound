@@ -2,7 +2,7 @@ import { Filter } from './filters/Filter';
 import { IMediaContext } from './interfaces/IMediaContext';
 import { IMediaInstance } from './interfaces/IMediaInstance';
 import { CompleteCallback, Options, PlayOptions, Sound } from './Sound';
-import { HTMLAudioContext } from './htmlaudio/HTMLAudioContext';
+import { SoundChannel } from './SoundChannel';
 import { WebAudioContext } from './webaudio/WebAudioContext';
 
 type SoundSourceMap = Record<string, Options | string | ArrayBuffer | AudioBuffer | HTMLAudioElement>;
@@ -26,17 +26,11 @@ class SoundLibrary
      */
     private _useLegacy: boolean;
 
-    /** The global context to use. */
-    private _context: IMediaContext;
-
-    /** The WebAudio specific context */
-    private _webAudioContext: WebAudioContext;
-
-    /** The HTML Audio (legacy) context. */
-    private _htmlAudioContext: HTMLAudioContext;
-
     /** The map of all sounds by alias. */
     private _sounds: SoundMap;
+
+    /** The map of all channels by name. */
+    private _channels: Map<string, SoundChannel>;
 
     constructor()
     {
@@ -51,13 +45,10 @@ class SoundLibrary
      */
     public init(): this
     {
-        if (this.supported)
-        {
-            this._webAudioContext = new WebAudioContext();
-        }
-        this._htmlAudioContext = new HTMLAudioContext();
         this._sounds = {};
+        this._channels = new Map();
         this.useLegacy = !this.supported;
+        this._channels.set('main', new SoundChannel('main', this));
 
         return this;
     }
@@ -68,7 +59,7 @@ class SoundLibrary
      */
     public get context(): IMediaContext
     {
-        return this._context;
+        return this._channels.get('main').context;
     }
 
     /**
@@ -86,7 +77,7 @@ class SoundLibrary
     {
         if (!this.useLegacy)
         {
-            return this._context.filters;
+            return this.context.filters;
         }
 
         return [];
@@ -95,8 +86,22 @@ class SoundLibrary
     {
         if (!this.useLegacy)
         {
-            this._context.filters = filtersAll;
+            // eslint-disable-next-line no-return-assign
+            this.channels.forEach((channel) => channel.filtersAll = filtersAll);
         }
+    }
+
+    /**
+     * Do not use WebAudio, force the use of legacy. This **must** be called before loading any files.
+     */
+    public get useLegacy(): boolean
+    {
+        return this._useLegacy;
+    }
+    public set useLegacy(legacy: boolean)
+    {
+        this._useLegacy = legacy;
+        this._channels.forEach((channel) => channel.updateContext());
     }
 
     /**
@@ -105,6 +110,78 @@ class SoundLibrary
     public get supported(): boolean
     {
         return WebAudioContext.AudioContext !== null;
+    }
+
+    /**
+     * Gets all channels that are currently registered.
+     */
+    public get channels(): Map<string, SoundChannel>
+    {
+        return this._channels;
+    }
+
+    /**
+     * Gets a channel by name.
+     * @param name - name of the channel
+     * @returns
+     */
+    public getChannel(name: string): SoundChannel
+    {
+        return this._channels.get(name);
+    }
+
+    /**
+     * Adds a new channel to the library.
+     * @param name - name of the channel
+     */
+    public addChannel(name: string): SoundChannel
+    {
+        const channel = new SoundChannel(name);
+
+        this._channels.set(name, channel);
+
+        return channel;
+    }
+
+    /**
+     * Removes a channel from the library.
+     * @param name - name of the channel
+     */
+    public removeChannel(name: string): void
+    {
+        const channel = this._channels.get(name);
+
+        if (channel)
+        {
+            channel.close();
+            this._channels.delete(name);
+        }
+    }
+
+    /**
+     * Removes a sound by alias from a channel.
+     * @param channelName - The sound channel.
+     * @param alias - The sound alias reference.
+     * @param assert - Whether enable console.assert.
+     * @return Instance for chaining.
+     */
+    public removeFromChannel(channelName: string, alias: string, assert = true): void
+    {
+        this._channels.get(channelName).remove(alias, assert);
+        delete this._sounds[alias];
+    }
+
+    /**
+     * Adds a sound to a channel.
+     * @param name - The sound channel.
+     * @param alias - The sound alias reference.
+     * @param sound - Sound reference to use.
+     */
+    public addToChannel(name: string, alias: string, sound: Sound)
+    {
+        this.removeFromChannel(name, alias, false);
+        this._sounds[alias] = sound;
+        this._channels.get(name).add(alias, sound);
     }
 
     /**
@@ -165,6 +242,7 @@ class SoundLibrary
         if (sourceOptions instanceof Sound)
         {
             this._sounds[source] = sourceOptions;
+            this._channels.get('main').add(source, sourceOptions);
 
             return sourceOptions;
         }
@@ -174,57 +252,12 @@ class SoundLibrary
 
         this._sounds[source] = sound;
 
-        return sound;
-    }
-
-    /**
-     * Internal methods for getting the options object
-     * @private
-     * @param source - The source options
-     * @param overrides - Override default options
-     * @return The construction options
-     */
-    private _getOptions(source: string | ArrayBuffer | AudioBuffer | HTMLAudioElement | Options,
-        overrides?: Options): Options
-    {
-        let options: Options;
-
-        if (typeof source === 'string')
+        if (options.channel && !this._channels.has(options.channel))
         {
-            options = { url: source };
+            this.addChannel(options.channel);
         }
-        else if (Array.isArray(source))
-        {
-            options = { url: source };
-        }
-        else if (source instanceof ArrayBuffer || source instanceof AudioBuffer || source instanceof HTMLAudioElement)
-        {
-            options = { source };
-        }
-        else
-        {
-            options = source as Options;
-        }
-        options = { ...options, ...(overrides || {}) };
 
-        return options;
-    }
-
-    /**
-     * Do not use WebAudio, force the use of legacy. This **must** be called before loading any files.
-     */
-    public get useLegacy(): boolean
-    {
-        return this._useLegacy;
-    }
-    public set useLegacy(legacy: boolean)
-    {
-        this._useLegacy = legacy;
-
-        // Set the context to use
-        this._context = (!legacy && this.supported)
-            ? this._webAudioContext
-            : this._htmlAudioContext;
+        return this.channels.get(options.channel ?? 'main').add(source, sound);
     }
 
     /**
@@ -234,8 +267,14 @@ class SoundLibrary
      */
     public remove(alias: string): this
     {
-        this.exists(alias, true);
-        this._sounds[alias].destroy();
+        this._channels.forEach((channel) =>
+        {
+            if (channel.exists(alias))
+            {
+                channel.remove(alias);
+            }
+        });
+
         delete this._sounds[alias];
 
         return this;
@@ -246,12 +285,12 @@ class SoundLibrary
      */
     public get volumeAll(): number
     {
-        return this._context.volume;
+        return this._channels.get('main').volumeAll;
     }
     public set volumeAll(volume: number)
     {
-        this._context.volume = volume;
-        this._context.refresh();
+        // eslint-disable-next-line no-return-assign
+        this._channels.forEach((channel) => channel.volumeAll = volume);
     }
 
     /**
@@ -259,12 +298,12 @@ class SoundLibrary
      */
     public get speedAll(): number
     {
-        return this._context.speed;
+        return this._channels.get('main').speedAll;
     }
     public set speedAll(speed: number)
     {
-        this._context.speed = speed;
-        this._context.refresh();
+        // eslint-disable-next-line no-return-assign
+        this._channels.forEach((channel) => channel.speedAll = speed);
     }
 
     /**
@@ -273,7 +312,12 @@ class SoundLibrary
      */
     public togglePauseAll(): boolean
     {
-        return this._context.togglePause();
+        let paused;
+
+        // eslint-disable-next-line no-return-assign
+        this._channels.forEach((channel) => paused = channel.togglePauseAll());
+
+        return paused;
     }
 
     /**
@@ -282,8 +326,7 @@ class SoundLibrary
      */
     public pauseAll(): this
     {
-        this._context.paused = true;
-        this._context.refreshPaused();
+        this._channels.forEach((channel) => channel.pauseAll());
 
         return this;
     }
@@ -294,8 +337,7 @@ class SoundLibrary
      */
     public resumeAll(): this
     {
-        this._context.paused = false;
-        this._context.refreshPaused();
+        this._channels.forEach((channel) => channel.resumeAll());
 
         return this;
     }
@@ -306,7 +348,12 @@ class SoundLibrary
      */
     public toggleMuteAll(): boolean
     {
-        return this._context.toggleMute();
+        let muted;
+
+        // eslint-disable-next-line no-return-assign
+        this._channels.forEach((channel) => muted = channel.toggleMuteAll());
+
+        return muted;
     }
 
     /**
@@ -315,8 +362,7 @@ class SoundLibrary
      */
     public muteAll(): this
     {
-        this._context.muted = true;
-        this._context.refresh();
+        this._channels.forEach((channel) => channel.muteAll());
 
         return this;
     }
@@ -327,8 +373,7 @@ class SoundLibrary
      */
     public unmuteAll(): this
     {
-        this._context.muted = false;
-        this._context.refresh();
+        this._channels.forEach((channel) => channel.unmuteAll());
 
         return this;
     }
@@ -339,11 +384,8 @@ class SoundLibrary
      */
     public removeAll(): this
     {
-        for (const alias in this._sounds)
-        {
-            this._sounds[alias].destroy();
-            delete this._sounds[alias];
-        }
+        this._channels.forEach((channel) => channel.removeAll());
+        this._sounds = {};
 
         return this;
     }
@@ -354,10 +396,7 @@ class SoundLibrary
      */
     public stopAll(): this
     {
-        for (const alias in this._sounds)
-        {
-            this._sounds[alias].stop();
-        }
+        this._channels.forEach((channel) => channel.stopAll());
 
         return this;
     }
@@ -408,6 +447,24 @@ class SoundLibrary
         this.exists(alias, true);
 
         return this._sounds[alias];
+    }
+
+    /**
+     * Find a sound by alias.
+     * @param alias - The sound alias reference.
+     * @return Sound object.
+     */
+    public findSoundInChannel(alias: Sound): SoundChannel
+    {
+        let channel: SoundChannel;
+
+        this._channels.forEach((chan) =>
+        {
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            Object.values(chan.sounds).includes(alias) && (channel = chan);
+        });
+
+        return channel;
     }
 
     /**
@@ -518,23 +575,49 @@ class SoundLibrary
      */
     public close(): this
     {
-        this.removeAll();
-        this._sounds = null;
-        if (this._webAudioContext)
-        {
-            this._webAudioContext.destroy();
-            this._webAudioContext = null;
-        }
-        if (this._htmlAudioContext)
-        {
-            this._htmlAudioContext.destroy();
-            this._htmlAudioContext = null;
-        }
-        this._context = null;
+        this._channels.forEach((channel) => channel.close());
+        this._sounds = {};
 
         return this;
+    }
+
+    /**
+     * Internal methods for getting the options object
+     * @private
+     * @param source - The source options
+     * @param overrides - Override default options
+     * @return The construction options
+     */
+    private _getOptions(source: string | ArrayBuffer | AudioBuffer | HTMLAudioElement | Options,
+        overrides?: Options): Options
+    {
+        let options: Options;
+
+        if (typeof source === 'string')
+        {
+            options = { url: source };
+        }
+        else if (Array.isArray(source))
+        {
+            options = { url: source };
+        }
+        else if (source instanceof ArrayBuffer || source instanceof AudioBuffer || source instanceof HTMLAudioElement)
+        {
+            options = { source };
+        }
+        else
+        {
+            options = source as Options;
+        }
+        options = { ...options, ...(overrides || {}) };
+
+        // add default channel
+        options.channel = options.channel || 'main';
+
+        return options;
     }
 }
 
 export { SoundLibrary };
 export type { SoundSourceMap, SoundMap };
+

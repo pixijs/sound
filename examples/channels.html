@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>PixiJS Sound | Channels</title>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+        <link rel="stylesheet" href="css/range.css">
+        <link rel="stylesheet" href="css/examples.css?v=2">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/languages/javascript.min.js"></script>
+        <script src="https://pixijs.download/dev/pixi.min.js"></script>
+        <script src="../dist/pixi-sound.js"></script>
+    </head>
+    <body ontouchstart="">
+        <div class="container-fluid frame">
+            <h1><img src="resources/logo.svg" class="logo" alt="PixiJS" />Sound <small>Channels</small></h1>
+            <nav class="navbar navbar-inverse">
+                <div class="container-fluid">
+                    <ul class="nav navbar-nav">
+                        <li><a href="index.html">Basics</a></li>
+                        <li><a href="sprites.html">Sprites</a></li>
+                        <li><a href="filters.html">Filters</a></li>
+                        <li class="active"><a href="channels.html">Channels</a></li>
+                        <li><a href="demo.html">Demo</a></li>
+                        <li><a href="../docs/index.html">API Docs</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a class="github" href="https://github.com/pixijs/pixi-sound">
+                            <img src="resources/github.svg"> Github
+                        </a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div>
+                <div class="row">
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <button class="btn btn-block loop play btn-default" data-sound="loop1" data-loop="true">
+                            <span class="glyphicon glyphicon-play-circle play"></span>
+                            <span class="glyphicon glyphicon-stop stop"></span>
+                            <strong>music 1</strong>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                        </button>
+                    </div>
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <button class="btn btn-block loop play btn-default" data-sound="loop2" data-loop="true">
+                            <span class="glyphicon glyphicon-play-circle play"></span>
+                            <span class="glyphicon glyphicon-stop stop"></span>
+                            <strong>music 2</strong>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                        </button>
+                    </div>
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <button class="btn btn-block loop play btn-default" data-sound="loop3" data-loop="true">
+                            <span class="glyphicon glyphicon-play-circle play"></span>
+                            <span class="glyphicon glyphicon-stop stop"></span>
+                            <strong>music 3</strong>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                        </button>
+                    </div>
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <button class="btn btn-block loop play btn-default" data-sound="loop4" data-loop="true">
+                            <span class="glyphicon glyphicon-play-circle play"></span>
+                            <span class="glyphicon glyphicon-stop stop"></span>
+                            <strong>music 4</strong>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                        </button>
+                    </div>
+                </div>
+                <div class="sound-controls text-center">
+                    <div class="btn-group">
+                        <button class="btn btn-lg btn-danger" id="stop-music">
+                            <span class="glyphicon glyphicon-stop"></span> Stop All
+                        </button>
+                        <button class="btn btn-lg btn-danger off" id="paused-music">
+                            <span class="glyphicon glyphicon-pause off"></span>
+                            <span class="glyphicon glyphicon-play on"></span> Pause All
+                        </button>
+                        <button class="btn btn-lg btn-default off" id="muted-music">
+                            <span class="glyphicon glyphicon-volume-up off"></span>
+                            <span class="glyphicon glyphicon-volume-off on"></span> Mute All
+                        </button>
+                        <div class="btn-group btn-range-group volume-group">
+                            <label>Volume</label>
+                            <input id="volume-music" type="range" class="range" step="0.01" value="1" min="0" max="1" />
+                        </div>
+                        <div class="btn-group btn-range-group speed-group">
+                            <label>Speed</label>
+                            <input id="speed-music" type="range" class="range" step="0.01" value="1" min="0" max="1" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="row">
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <button class="btn btn-block loop play btn-default" data-sound="bird">
+                            <span class="glyphicon glyphicon-play play"></span>
+                            <strong>sfx bird</strong>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                        </button>
+                    </div>
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <button class="btn btn-block loop play btn-default" data-sound="boing">
+                            <span class="glyphicon glyphicon-play play"></span>
+                            <strong>sfx boing</strong>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                        </button>
+                    </div>
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <button class="btn btn-block loop play btn-default" data-sound="buzzer">
+                            <span class="glyphicon glyphicon-play play"></span>
+                            <strong>sfx buzzer</strong>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                        </button>
+                    </div>
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <button class="btn btn-block loop play btn-default" data-sound="car">
+                            <span class="glyphicon glyphicon-play play"></span>
+                            <strong>sfx car</strong>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                        </button>
+                    </div>
+                </div>
+                <div class="sound-controls text-center">
+                    <div class="btn-group">
+                        <button class="btn btn-lg btn-danger" id="stop-sfx">
+                            <span class="glyphicon glyphicon-stop"></span> Stop All
+                        </button>
+                        <button class="btn btn-lg btn-danger off" id="paused-sfx">
+                            <span class="glyphicon glyphicon-pause off"></span>
+                            <span class="glyphicon glyphicon-play on"></span> Pause All
+                        </button>
+                        <button class="btn btn-lg btn-default off" id="muted-sfx">
+                            <span class="glyphicon glyphicon-volume-up off"></span>
+                            <span class="glyphicon glyphicon-volume-off on"></span> Mute All
+                        </button>
+                        <div class="btn-group btn-range-group volume-group">
+                            <label>Volume</label>
+                            <input id="volume-sfx" type="range" class="range" step="0.01" value="1" min="0" max="1" />
+                        </div>
+                        <div class="btn-group btn-range-group speed-group">
+                            <label>Speed</label>
+                            <input id="speed-sfx" type="range" class="range" step="0.01" value="1" min="0" max="1" />
+                        </div>
+                    </div>
+                </div>  
+            </div>
+        </div>
+        <pre><code type="javascript">const manifest = {
+    loop1: { src: 'resources/loops/loop1.mp3', data: { channel: 'music' } },
+    loop2: { src: 'resources/loops/loop2.mp3', data: { channel: 'music' } },
+    loop3: { src: 'resources/loops/loop3.mp3', data: { channel: 'music' } },
+    loop4: { src: 'resources/loops/loop4.mp3', data: { channel: 'music' } },
+    bird: { src: 'resources/bird.mp3', data: { channel: 'sfx' } },
+    boing: { src: 'resources/boing.mp3', data: { channel: 'sfx' } },
+    buzzer: { src: 'resources/buzzer.mp3', data: { channel: 'sfx' } },
+    car: { src: 'resources/car.mp3', data: { channel: 'sfx' } },
+};
+
+PIXI.Assets.addBundle('demo', manifest);
+PIXI.Assets.loadBundle('demo').then(() =>
+{
+    const plays = document.querySelectorAll('button[data-sound]');
+
+    for (let i = 0; i < plays.length; i++)
+    {
+        const button = plays[i];
+
+        if ('ontouchstart' in window)
+        {
+            button.addEventListener('touchstart', play, false);
+        }
+        else
+        {
+            button.addEventListener('mousedown', play, false);
+        }
+    }
+});
+
+function play()
+{
+    const button = this;
+    const sound = PIXI.Assets.get(button.getAttribute('data-sound'));
+    const loop = !!button.getAttribute('data-loop');
+    const playing = !parseInt(button.getAttribute('data-playing'), 10);
+
+    if (loop)
+    {
+        togglePlaying(button);
+        sound.stop();
+        progressBar(button, 0);
+    }
+    if (playing)
+    {
+        const instance = sound.play({
+            loop,
+            singleInstance: loop,
+        });
+
+        instance.on('progress', function (progress, duration)
+        {
+            progressBar(button, progress);
+        });
+        instance.on('end', function ()
+        {
+            progressBar(button, 0);
+        });
+    }
+}
+
+function togglePlaying(button)
+{
+    const playing = !parseInt(button.getAttribute('data-playing'), 10);
+
+    button.className = button.className.replace(/ (play|stop) btn\-(info|default)/, '');
+    button.className += playing ? ' stop btn-info' : ' play btn-default';
+    button.setAttribute('data-playing', playing ? 1 : 0);
+}
+
+function progressBar(button, progress)
+{
+    const bar = button.querySelector('.progress-bar');
+
+    bar.style.width = `${progress * 100}%`;
+}
+
+const selectors = [
+    'music',
+    'sfx'
+];
+
+for (let i = 0; i < selectors.length; i++)
+{
+    const channel = PIXI.sound.addChannel(selectors[i]);
+
+    document.querySelector(`#volume-${selectors[i]}`).addEventListener('input', function ()
+    {
+        channel.volumeAll = Math.max(0,
+            Math.min(1, parseFloat(this.value)),
+        );
+    });
+
+    document.querySelector(`#speed-${selectors[i]}`).addEventListener('input', function ()
+    {
+        channel.speedAll = Math.max(0,
+            Math.min(1, parseFloat(this.value)),
+        );
+    });
+
+    document.querySelector(`#stop-${selectors[i]}`).addEventListener('click', function ()
+    {
+        channel.stopAll();
+        const plays = document.querySelectorAll('button[data-sound]');
+
+        for (let i = 0; i < plays.length; i++)
+        {
+            const button = plays[i];
+
+            if (button.getAttribute('data-playing') === '1')
+            {
+                togglePlaying(button);
+            }
+            progressBar(button, 0);
+        }
+    });
+
+    document.querySelector(`#paused-${selectors[i]}`).addEventListener('click', function ()
+    {
+        const paused = channel.togglePauseAll();
+
+        this.className = this.className.replace(/\b(on|off)/g, '');
+        this.className += paused ? 'on' : 'off';
+    });
+
+    document.querySelector(`#muted-${selectors[i]}`).addEventListener('click', function ()
+    {
+        const muted = channel.toggleMuteAll();
+
+        this.className = this.className.replace(/ (on|off)/g, ' ');
+        this.className += muted ? 'on' : 'off';
+    });
+}
+
+hljs.initHighlightingOnLoad();
+            </code></pre>
+        </div>
+        <script src="./client/channels.js"></script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js'+,'ga');
+            ga('create', 'UA-103772589-1', 'auto');
+            ga('send', 'pageview');
+        </script>
+    </body>
+</html>

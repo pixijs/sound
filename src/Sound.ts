@@ -12,6 +12,7 @@ import { WebAudioMedia } from './webaudio/WebAudioMedia';
  */
 interface Options
 {
+    channel?: string;
     /**
      * `true` to immediately start preloading.
      * @default false
@@ -332,7 +333,12 @@ class Sound
     /** Instance of the media context. */
     public get context(): IMediaContext
     {
-        return getInstance().context;
+        // finds the channel that this sound is assigned to
+        const channel = getInstance().findSoundInChannel(this);
+
+        // could be null if the sound is not assigned to a channel
+        // if so then we just use the "main" context
+        return channel ? channel.context : getInstance().context;
     }
 
     /** Stops all the instances of this sound from playing. */

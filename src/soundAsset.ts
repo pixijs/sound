@@ -58,7 +58,7 @@ const soundAsset = {
                 },
             }));
 
-            getInstance().add(getAlias(asset), sound);
+            getInstance().addToChannel(asset.data?.channel || 'main', getAlias(asset), sound);
 
             return sound;
         },

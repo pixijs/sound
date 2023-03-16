@@ -71,6 +71,7 @@ If you're using a `<script>` element to import `@pixi/sound` into your project, 
 * [Basics](https://pixijs.io/sound/examples/index.html)
 * [Sprites](https://pixijs.io/sound/examples/sprites.html)
 * [Filters](https://pixijs.io/sound/examples/filters.html)
+* [Channels](https://pixijs.io/sound/examples/channels.html)
 * [Demo](https://pixijs.io/sound/examples/demo.html)
 * [API Documentation](https://pixijs.io/sound/docs/index.html)
 
