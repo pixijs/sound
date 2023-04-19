@@ -1,5 +1,6 @@
 import { Assets } from 'pixi.js';
 import { sound, Sound, utils, webaudio, htmlaudio, filters, SoundLibrary, IMediaInstance } from '../src';
+import { dataUrlMp3 } from './resources/dataUrlResources';
 import path from 'path';
 
 declare global
@@ -16,6 +17,7 @@ const manifest: Record<string, string> = {
     'alert-12': path.join(__resources, 'alert-12.mp3'),
     'musical-11': path.join(__resources, 'musical-11.mp3'),
     silence: path.join(__resources, 'silence.mp3'),
+    'dataUrlMp3': dataUrlMp3,
 };
 
 // Import the library
