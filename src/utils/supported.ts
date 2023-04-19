@@ -20,6 +20,10 @@ const extensions: string[] = [
     'caf',
 ];
 
+const mimes: string[] = [
+    'audio/mpeg',
+];
+
 /**
  * The list of browser supported audio formats.
  * @readonly
@@ -74,5 +78,6 @@ validateFormats();
 export {
     validateFormats,
     supported,
-    extensions
+    extensions,
+    mimes,
 };

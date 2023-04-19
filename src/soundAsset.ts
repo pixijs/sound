@@ -1,6 +1,6 @@
 import { utils, extensions, ExtensionType } from '@pixi/core';
 import { AssetExtension, LoadAsset, LoaderParser, LoaderParserPriority } from '@pixi/assets';
-import { supported, extensions as exts } from './utils/supported';
+import { supported, extensions as exts, mimes } from './utils/supported';
 import { Options, Sound } from './Sound';
 import { getInstance } from './instance';
 
@@ -33,7 +33,7 @@ const soundAsset = {
         {
             const ext = utils.path.extname(url).slice(1);
 
-            return !!supported[ext];
+            return !!supported[ext] || mimes.some((mime) => url.startsWith(`data:${mime}`));
         },
 
         /** Load the sound file, this is mostly handled by Sound.from() */
