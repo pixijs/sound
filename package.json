@@ -71,7 +71,7 @@
   },
   "homepage": "https://github.com/pixijs/sound#readme",
   "devDependencies": {
-    "@pixi/extension-scripts": "^1.8.0",
+    "@pixi/extension-scripts": "^1.8.1",
     "copyfiles": "^2.4.1",
     "mkdirp": "^1.0.4",
     "pixi.js": "^7.0.0"
