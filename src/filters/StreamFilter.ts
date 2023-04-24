@@ -12,18 +12,19 @@ class StreamFilter extends Filter
 
     constructor()
     {
-        if (getInstance().useLegacy)
-        {
-            super(null);
+        let destination: MediaStreamAudioDestinationNode;
+        let source: MediaStreamAudioSourceNode;
 
-            return;
+        if (!getInstance().useLegacy)
+        {
+            const { audioContext } = getInstance().context;
+
+            destination = audioContext.createMediaStreamDestination();
+            source = audioContext.createMediaStreamSource(destination.stream);
         }
-        const audioContext: AudioContext = getInstance().context.audioContext;
-        const destination: MediaStreamAudioDestinationNode = audioContext.createMediaStreamDestination();
-        const source: MediaStreamAudioSourceNode = audioContext.createMediaStreamSource(destination.stream);
 
         super(destination, source);
-        this._stream = destination.stream;
+        this._stream = destination?.stream;
     }
 
     public get stream(): MediaStream
