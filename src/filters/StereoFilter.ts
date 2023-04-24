@@ -21,28 +21,25 @@ class StereoFilter extends Filter
     /** @param pan - The amount of panning, -1 is left, 1 is right, 0 is centered. */
     constructor(pan = 0)
     {
-        if (getInstance().useLegacy)
-        {
-            super(null);
-
-            return;
-        }
-
         let stereo: StereoPannerNode;
         let panner: PannerNode;
         let destination: AudioNode;
-        const { audioContext } = getInstance().context;
 
-        if (audioContext.createStereoPanner)
+        if (!getInstance().useLegacy)
         {
-            stereo = audioContext.createStereoPanner();
-            destination = stereo;
-        }
-        else
-        {
-            panner = audioContext.createPanner();
-            panner.panningModel = 'equalpower';
-            destination = panner;
+            const { audioContext } = getInstance().context;
+
+            if (audioContext.createStereoPanner)
+            {
+                stereo = audioContext.createStereoPanner();
+                destination = stereo;
+            }
+            else
+            {
+                panner = audioContext.createPanner();
+                panner.panningModel = 'equalpower';
+                destination = panner;
+            }
         }
 
         super(destination);
@@ -61,7 +58,7 @@ class StereoFilter extends Filter
         {
             WebAudioUtils.setParamValue(this._stereo.pan, value);
         }
-        else
+        else if (this._panner)
         {
             this._panner.setPosition(value, 0, 1 - Math.abs(value));
         }

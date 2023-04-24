@@ -20,15 +20,7 @@ class ReverbFilter extends Filter
      */
     constructor(seconds = 3, decay = 2, reverse = false)
     {
-        if (getInstance().useLegacy)
-        {
-            super(null);
-
-            return;
-        }
-
         super(null);
-
         this._seconds = this._clamp(seconds, 1, 50);
         this._decay = this._clamp(decay, 0, 100);
         this._reverse = reverse;
@@ -95,10 +87,14 @@ class ReverbFilter extends Filter
      */
     private _rebuild(): void
     {
-        const context = getInstance().context.audioContext;
-        const rate: number = context.sampleRate;
+        if (getInstance().useLegacy)
+        {
+            return;
+        }
+        const { audioContext } = getInstance().context;
+        const rate: number = audioContext.sampleRate;
         const length: number = rate * this._seconds;
-        const impulse: AudioBuffer = context.createBuffer(2, length, rate);
+        const impulse: AudioBuffer = audioContext.createBuffer(2, length, rate);
         const impulseL: Float32Array = impulse.getChannelData(0);
         const impulseR: Float32Array = impulse.getChannelData(1);
         let n: number;
@@ -109,7 +105,7 @@ class ReverbFilter extends Filter
             impulseL[i] = ((Math.random() * 2) - 1) * Math.pow(1 - (n / length), this._decay);
             impulseR[i] = ((Math.random() * 2) - 1) * Math.pow(1 - (n / length), this._decay);
         }
-        const convolver = getInstance().context.audioContext.createConvolver();
+        const convolver = audioContext.createConvolver();
 
         convolver.buffer = impulse;
         this.init(convolver);

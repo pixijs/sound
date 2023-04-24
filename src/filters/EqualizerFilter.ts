@@ -103,12 +103,7 @@ class EqualizerFilter extends Filter
     constructor(f32 = 0, f64 = 0, f125 = 0, f250 = 0, f500 = 0,
         f1k = 0, f2k = 0, f4k = 0, f8k = 0, f16k = 0)
     {
-        if (getInstance().useLegacy)
-        {
-            super(null);
-
-            return;
-        }
+        let bands: BiquadFilterNode[] = [];
 
         const equalizerBands: Band[] = [
             {
@@ -163,17 +158,20 @@ class EqualizerFilter extends Filter
             },
         ];
 
-        const bands: BiquadFilterNode[] = equalizerBands.map((band: Band) =>
+        if (!getInstance().useLegacy)
         {
-            const node: BiquadFilterNode = getInstance().context.audioContext.createBiquadFilter();
+            bands = equalizerBands.map((band: Band) =>
+            {
+                const node: BiquadFilterNode = getInstance().context.audioContext.createBiquadFilter();
 
-            node.type = band.type as BiquadFilterType;
-            WebAudioUtils.setParamValue(node.Q, 1);
-            node.frequency.value = band.f; // WebAudioUtils.setParamValue(filter.frequency, band.f);
-            WebAudioUtils.setParamValue(node.gain, band.gain);
+                node.type = band.type as BiquadFilterType;
+                WebAudioUtils.setParamValue(node.Q, 1);
+                node.frequency.value = band.f; // WebAudioUtils.setParamValue(filter.frequency, band.f);
+                WebAudioUtils.setParamValue(node.gain, band.gain);
 
-            return node;
-        });
+                return node;
+            });
+        }
 
         // Setup the constructor AudioNode, where first is the input, and last is the output
         super(bands[0], bands[bands.length - 1]);

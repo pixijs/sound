@@ -17,15 +17,14 @@ class DistortionFilter extends Filter
     /** @param amount - The amount of distoration from 0 to 1. */
     constructor(amount = 0)
     {
-        if (getInstance().useLegacy)
+        let distortion: WaveShaperNode;
+
+        if (!getInstance().useLegacy)
         {
-            super(null);
+            const { audioContext } = getInstance().context;
 
-            return;
+            distortion = audioContext.createWaveShaper();
         }
-
-        const { context } = getInstance();
-        const distortion: WaveShaperNode = context.audioContext.createWaveShaper();
 
         super(distortion);
 
@@ -38,6 +37,10 @@ class DistortionFilter extends Filter
     set amount(value: number)
     {
         this._amount = value;
+        if (getInstance().useLegacy)
+        {
+            return;
+        }
         const scaledValue = value * 1000;
         const samples = 44100;
         const curve: Float32Array = new Float32Array(samples);
