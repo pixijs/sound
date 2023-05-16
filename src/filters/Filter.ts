@@ -34,13 +34,13 @@ class Filter
      */
     public connect(destination: AudioNode): void
     {
-        this.source.connect(destination);
+        this.source?.connect(destination);
     }
 
     /** Completely disconnect filter from destination and source nodes. */
     public disconnect(): void
     {
-        this.source.disconnect();
+        this.source?.disconnect();
     }
 
     /** Destroy the filter and don't use after this. */

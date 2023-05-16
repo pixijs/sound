@@ -1,6 +1,6 @@
 {
   "name": "@pixi/sound",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "description": "WebAudio API playback library with filters",
   "main": "lib/index.js",
   "module": "lib/index.mjs",
@@ -71,7 +71,7 @@
   },
   "homepage": "https://github.com/pixijs/sound#readme",
   "devDependencies": {
-    "@pixi/extension-scripts": "^1.8.0",
+    "@pixi/extension-scripts": "^1.8.1",
     "copyfiles": "^2.4.1",
     "mkdirp": "^1.0.4",
     "pixi.js": "^7.0.0"

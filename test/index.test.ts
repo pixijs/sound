@@ -1,5 +1,6 @@
 import { Assets } from 'pixi.js';
 import { sound, Sound, utils, webaudio, htmlaudio, filters, SoundLibrary, IMediaInstance } from '../src';
+import { dataUrlMp3, dataUrlOgg } from './resources/dataUrlResources';
 import path from 'path';
 
 declare global
@@ -15,7 +16,10 @@ const manifest: Record<string, string> = {
     'alert-7': path.join(__resources, 'alert-7.mp3'),
     'alert-12': path.join(__resources, 'alert-12.mp3'),
     'musical-11': path.join(__resources, 'musical-11.mp3'),
+    'alert-4-ogg': path.join(__resources, 'alert-4.ogg'),
     silence: path.join(__resources, 'silence.mp3'),
+    dataUrlMp3,
+    dataUrlOgg
 };
 
 // Import the library
@@ -90,7 +94,10 @@ export function suite(useLegacy = false): void
             expect(results['alert-7']).toBeInstanceOf(Sound);
             expect(results['alert-12']).toBeInstanceOf(Sound);
             expect(results['musical-11']).toBeInstanceOf(Sound);
+            expect(results['alert-4-ogg']).toBeInstanceOf(Sound);
             expect(results.silence).toBeInstanceOf(Sound);
+            expect(results.dataUrlMp3).toBeInstanceOf(Sound);
+            expect(results.dataUrlOgg).toBeInstanceOf(Sound);
         });
 
         it('should get a reference by alias', () =>
