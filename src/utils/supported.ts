@@ -22,6 +22,7 @@ const extensions: string[] = [
 
 const mimes: string[] = [
     'audio/mpeg',
+    'audio/ogg',
 ];
 
 /**
