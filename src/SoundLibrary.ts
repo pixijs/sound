@@ -226,6 +226,22 @@ class SoundLibrary
     }
 
     /**
+     * This disables auto-pause all playback when the window blurs (WebAudio only).
+     * This is helpful to keep from playing sounds when the user switches tabs.
+     * However, if you're running content within an iframe, this may be undesirable
+     * and you should disable (set to `true`) this behavior.
+     * @default false
+     */
+    public get disableAutoPause(): boolean
+    {
+        return !this._webAudioContext.autoPause;
+    }
+    public set disableAutoPause(autoPause: boolean)
+    {
+        this._webAudioContext.autoPause = !autoPause;
+    }
+
+    /**
      * Removes a sound by alias.
      * @param alias - The sound alias reference.
      * @return Instance for chaining.
