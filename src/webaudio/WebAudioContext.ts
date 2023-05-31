@@ -61,6 +61,12 @@ class WebAudioContext extends Filterable implements IMediaContext
      */
     private _locked: boolean;
 
+    /** The paused state when blurring the current window */
+    private _pausedOnBlur: boolean;
+
+    /** Set to false ignore suspending when window is blurred */
+    public autoPause = true;
+
     constructor()
     {
         const win: any = window as any;
@@ -122,16 +128,19 @@ class WebAudioContext extends Filterable implements IMediaContext
 
         if (state === 'suspended' || state === 'interrupted' || !this._locked)
         {
-            this._ctx.resume();
+            this.paused = this._pausedOnBlur;
+            this.refreshPaused();
         }
     }
 
     /** Handle mobile WebAudio context suspend */
     private onBlur(): void
     {
-        if (!this._locked)
+        if (!this._locked && this.autoPause)
         {
-            this._ctx.suspend();
+            this._pausedOnBlur = this._paused;
+            this.paused = true;
+            this.refreshPaused();
         }
     }
 
@@ -263,11 +272,11 @@ class WebAudioContext extends Filterable implements IMediaContext
     {
         if (paused && this._ctx.state === 'running')
         {
-            (this._ctx as any).suspend();
+            this._ctx.suspend();
         }
         else if (!paused && this._ctx.state === 'suspended')
         {
-            (this._ctx as any).resume();
+            this._ctx.resume();
         }
         this._paused = paused;
     }
