@@ -8,10 +8,10 @@ import { Filter } from './filters/Filter';
 class Filterable
 {
     /** Get the gain node */
-    private _input: AudioNode;
+    protected _input: AudioNode;
 
     /** The destination output audio node */
-    private _output: AudioNode;
+    protected _output: AudioNode;
 
     /** Collection of filters. */
     private _filters: Filter[];
