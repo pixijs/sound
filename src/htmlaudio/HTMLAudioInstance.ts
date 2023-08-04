@@ -1,4 +1,4 @@
-import { utils, Ticker } from '@pixi/core';
+import { EventEmitter, Ticker } from 'pixi.js';
 import { IMediaInstance } from '../interfaces/IMediaInstance';
 import { PlayOptions } from '../Sound';
 import { HTMLAudioMedia } from './HTMLAudioMedia';
@@ -11,7 +11,7 @@ let id = 0;
  * @memberof htmlaudio
  * @extends PIXI.util.EventEmitter
  */
-class HTMLAudioInstance extends utils.EventEmitter implements IMediaInstance
+class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 {
     /** Extra padding, in seconds, to deal with low-latecy of HTMLAudio. */
     public static readonly PADDING: number = 0.1;

@@ -1,4 +1,3 @@
-import { utils } from '@pixi/core';
 import { Filter } from './filters/Filter';
 import { HTMLAudioMedia } from './htmlaudio/HTMLAudioMedia';
 import { getInstance } from './instance';
@@ -6,6 +5,7 @@ import { IMedia, IMediaContext, IMediaInstance } from './interfaces';
 import { SoundSprite, SoundSpriteData, SoundSprites } from './SoundSprite';
 import { extensions } from './utils/supported';
 import { WebAudioMedia } from './webaudio/WebAudioMedia';
+import { path } from 'pixi.js';
 
 /**
  * Options to use for creating sounds.
@@ -323,7 +323,7 @@ class Sound
     private preferUrl(urls: string[]): string
     {
         const [{ url }] = urls
-            .map((url) => ({ url, ext: utils.path.extname(url).slice(1) }))
+            .map((url) => ({ url, ext: path.extname(url).slice(1) }))
             .sort((a, b) => extensions.indexOf(a.ext) - extensions.indexOf(b.ext));
 
         return url;

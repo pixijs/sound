@@ -1,4 +1,4 @@
-import { settings } from '@pixi/core';
+import { settings } from 'pixi.js';
 import { Filter } from '../filters/Filter';
 import { IMedia } from '../interfaces/IMedia';
 import { LoadedCallback, Sound } from '../Sound';

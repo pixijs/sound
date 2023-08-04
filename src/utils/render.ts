@@ -1,4 +1,4 @@
-import { BaseTexture } from '@pixi/core';
+import { CanvasSource, ICanvas, TextureSource } from 'pixi.js';
 import { Sound } from '../Sound';
 import { WebAudioMedia } from '../webaudio/WebAudioMedia';
 
@@ -28,7 +28,7 @@ interface RenderOptions
  * @param options - Custom rendering options
  * @return Result texture
  */
-function render(sound: Sound, options?: RenderOptions): BaseTexture
+function render(sound: Sound, options?: RenderOptions): TextureSource
 {
     const canvas: HTMLCanvasElement = document.createElement('canvas');
 
@@ -40,11 +40,13 @@ function render(sound: Sound, options?: RenderOptions): BaseTexture
     canvas.width = options.width;
     canvas.height = options.height;
 
-    const baseTexture = BaseTexture.from(canvas);
+    const textureSource = new CanvasSource({
+        resource: canvas as ICanvas,
+    });
 
     if (!(sound.media instanceof WebAudioMedia))
     {
-        return baseTexture;
+        return textureSource;
     }
 
     const media: WebAudioMedia = sound.media as WebAudioMedia;
@@ -80,7 +82,7 @@ function render(sound: Sound, options?: RenderOptions): BaseTexture
         context.fillRect(i, (1 + min) * amp, 1, Math.max(1, (max - min) * amp));
     }
 
-    return baseTexture;
+    return textureSource;
 }
 
 export type { RenderOptions };
