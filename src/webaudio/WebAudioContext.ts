@@ -124,6 +124,10 @@ class WebAudioContext extends Filterable implements IMediaContext
     /** Handle mobile WebAudio context resume */
     private onFocus(): void
     {
+        if (!this.autoPause)
+        {
+            return;
+        }
         // Safari uses the non-standard "interrupted" state in some cases
         // such as when the app loses focus because the screen is locked
         // or when the user switches to another app.
@@ -139,7 +143,11 @@ class WebAudioContext extends Filterable implements IMediaContext
     /** Handle mobile WebAudio context suspend */
     private onBlur(): void
     {
-        if (!this._locked && this.autoPause)
+        if (!this.autoPause)
+        {
+            return;
+        }
+        if (!this._locked)
         {
             this._pausedOnBlur = this._paused;
             this.paused = true;
