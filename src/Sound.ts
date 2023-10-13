@@ -4,7 +4,7 @@ import { HTMLAudioMedia } from './htmlaudio/HTMLAudioMedia';
 import { getInstance } from './instance';
 import { IMedia, IMediaContext, IMediaInstance } from './interfaces';
 import { SoundSprite, SoundSpriteData, SoundSprites } from './SoundSprite';
-import { extensions } from './utils/supported';
+import { extensions, supported } from './utils/supported';
 import { WebAudioMedia } from './webaudio/WebAudioMedia';
 
 /**
@@ -322,11 +322,17 @@ class Sound
      */
     private preferUrl(urls: string[]): string
     {
-        const [{ url }] = urls
+        const [file] = urls
             .map((url) => ({ url, ext: utils.path.extname(url).slice(1) }))
+            .filter(({ ext }) => supported[ext])
             .sort((a, b) => extensions.indexOf(a.ext) - extensions.indexOf(b.ext));
 
-        return url;
+        if (!file)
+        {
+            throw new Error('No supported file type found');
+        }
+
+        return file.url;
     }
 
     /** Instance of the media context. */
