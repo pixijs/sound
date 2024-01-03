@@ -1,4 +1,4 @@
-import { settings } from '@pixi/core';
+import { DOMAdapter } from 'pixi.js';
 import { Filter } from '../filters/Filter';
 import { IMedia } from '../interfaces/IMedia';
 import { LoadedCallback, Sound } from '../Sound';
@@ -141,7 +141,7 @@ class WebAudioMedia implements IMedia
     private async _loadUrl(callback?: LoadedCallback): Promise<void>
     {
         const url: string = this.parent.url;
-        const response = await settings.ADAPTER.fetch(url);
+        const response = await DOMAdapter.get().fetch(url);
 
         this._decode(await response.arrayBuffer(), callback);
     }

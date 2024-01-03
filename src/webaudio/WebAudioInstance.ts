@@ -1,18 +1,18 @@
-import { utils, Ticker } from '@pixi/core';
-import { IMediaInstance } from '../interfaces';
+import { EventEmitter, Ticker } from 'pixi.js';
 import { PlayOptions } from '../Sound';
+import { Filter } from '../filters/Filter';
+import { IMediaInstance } from '../interfaces';
 import { WebAudioMedia } from './WebAudioMedia';
 import { WebAudioUtils } from './WebAudioUtils';
-import { Filter } from '../filters/Filter';
 
 let id = 0;
 
 /**
  * A single play instance that handles the AudioBufferSourceNode.
  * @memberof webaudio
- * @extends PIXI.utils.EventEmitter
+ * @extends PIXI.EventEmitter
  */
-class WebAudioInstance extends utils.EventEmitter implements IMediaInstance
+class WebAudioInstance extends EventEmitter implements IMediaInstance
 {
     /**
      * The current unique ID for this instance.

@@ -74,10 +74,9 @@
     "@pixi/extension-scripts": "^1.8.1",
     "copyfiles": "^2.4.1",
     "mkdirp": "^1.0.4",
-    "pixi.js": "^7.0.0"
+    "pixi.js": "^8.0.0-rc"
   },
   "peerDependencies": {
-    "@pixi/assets": "^7.0.0",
-    "@pixi/core": "^7.0.0"
+    "pixi.js": "^8.0.0"
   }
 }

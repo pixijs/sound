@@ -459,7 +459,7 @@ export function suite(useLegacy = false): void
         {
             for (const name in manifest)
             {
-                Assets.add(name, manifest[name]);
+                Assets.add({ alias: name, src: manifest[name] });
                 const s = await Assets.load<Sound>(name);
                 const ClassRef = useLegacy
                     ? htmlaudio.HTMLAudioMedia

@@ -1,4 +1,4 @@
-import { utils } from '@pixi/core';
+import { path } from 'pixi.js';
 import { Filter } from './filters/Filter';
 import { HTMLAudioMedia } from './htmlaudio/HTMLAudioMedia';
 import { getInstance } from './instance';
@@ -323,7 +323,7 @@ class Sound
     private preferUrl(urls: string[]): string
     {
         const [file] = urls
-            .map((url) => ({ url, ext: utils.path.extname(url).slice(1) }))
+            .map((url) => ({ url, ext: path.extname(url).slice(1) }))
             .filter(({ ext }) => supported[ext])
             .sort((a, b) => extensions.indexOf(a.ext) - extensions.indexOf(b.ext));
 

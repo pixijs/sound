@@ -1,15 +1,14 @@
-import { utils, extensions, ExtensionType } from '@pixi/core';
-import { AssetExtension, LoadAsset, LoaderParser, LoaderParserPriority } from '@pixi/assets';
-import { supported, extensions as exts, mimes } from './utils/supported';
+import { AssetExtension, ExtensionType, LoaderParser, LoaderParserPriority, ResolvedAsset, extensions, path } from 'pixi.js';
 import { Options, Sound } from './Sound';
 import { getInstance } from './instance';
+import { extensions as exts, mimes, supported } from './utils/supported';
 
 /** Get the alias for the sound */
-const getAlias = (asset: LoadAsset) =>
+const getAlias = (asset: ResolvedAsset) =>
 {
     const url = asset.src;
 
-    return (asset as any)?.alias?.[0] ?? utils.path.basename(url, utils.path.extname(url));
+    return (asset as any)?.alias?.[0] ?? path.basename(url, path.extname(url));
 };
 
 /**
@@ -23,6 +22,7 @@ const soundAsset = {
         remove: async (formats) => formats.filter((ext) => formats.includes(ext)),
     },
     loader: {
+        name: 'sound',
         extension: {
             type: [ExtensionType.LoadParser],
             priority: LoaderParserPriority.High,
@@ -31,13 +31,13 @@ const soundAsset = {
         /** Should we attempt to load this file? */
         test(url: string): boolean
         {
-            const ext = utils.path.extname(url).slice(1);
+            const ext = path.extname(url).slice(1);
 
             return !!supported[ext] || mimes.some((mime) => url.startsWith(`data:${mime}`));
         },
 
         /** Load the sound file, this is mostly handled by Sound.from() */
-        async load(url: string, asset: LoadAsset<Omit<Options, 'url' | 'preload'>>): Promise<Sound>
+        async load(url: string, asset: ResolvedAsset<Omit<Options, 'url' | 'preload'>>): Promise<Sound>
         {
             // We'll use the internal Sound.from to load the asset
             const sound = await new Promise<Sound>((resolve, reject) => Sound.from({
@@ -64,7 +64,7 @@ const soundAsset = {
         },
 
         /** Remove the sound from the library */
-        async unload(_sound: Sound, asset: LoadAsset): Promise<void>
+        async unload(_sound: Sound, asset: ResolvedAsset): Promise<void>
         {
             getInstance().remove(getAlias(asset));
         },

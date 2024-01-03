@@ -1,4 +1,4 @@
-import { utils } from '@pixi/core';
+import { EventEmitter } from 'pixi.js';
 import { Filter } from '../filters/Filter';
 import { IMedia } from '../interfaces/IMedia';
 import { LoadedCallback, Sound } from '../Sound';
@@ -8,9 +8,9 @@ import { HTMLAudioInstance } from './HTMLAudioInstance';
 /**
  * The fallback version of Sound which uses `<audio>` instead of WebAudio API.
  * @memberof htmlaudio
- * @extends PIXI.util.EventEmitter
+ * @extends PIXI.EventEmitter
  */
-class HTMLAudioMedia extends utils.EventEmitter implements IMedia
+class HTMLAudioMedia extends EventEmitter implements IMedia
 {
     public parent: Sound;
     private _source: HTMLAudioElement;
