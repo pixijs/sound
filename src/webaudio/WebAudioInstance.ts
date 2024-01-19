@@ -1,7 +1,7 @@
 import { EventEmitter, Ticker } from 'pixi.js';
-import { PlayOptions } from '../Sound';
 import { Filter } from '../filters/Filter';
 import { IMediaInstance } from '../interfaces';
+import { PlayOptions } from '../Sound';
 import { WebAudioMedia } from './WebAudioMedia';
 import { WebAudioUtils } from './WebAudioUtils';
 

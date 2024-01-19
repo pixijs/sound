@@ -9,11 +9,11 @@
  * ];
  * @namespace filters
  */
-export * from './Filter';
-export * from './EqualizerFilter';
 export * from './DistortionFilter';
-export * from './StereoFilter';
-export * from './ReverbFilter';
+export * from './EqualizerFilter';
+export * from './Filter';
 export * from './MonoFilter';
+export * from './ReverbFilter';
+export * from './StereoFilter';
 export * from './StreamFilter';
 export * from './TelephoneFilter';

@@ -47,4 +47,4 @@ function playOnce(url: string, callback?: (err?: Error) => void): string
     return alias;
 }
 
-export { playOnce, PLAY_ID };
+export { PLAY_ID, playOnce };

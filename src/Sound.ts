@@ -264,7 +264,8 @@ class Sound
             speed: 1,
             complete: null,
             loaded: null,
-            loop: false, ...options };
+            loop: false, ...options
+        };
 
         Object.freeze(options);
 
@@ -555,7 +556,8 @@ class Sound
             volume: 1,
             speed: 1,
             muted: false,
-            loop: false, ...(options || {}) };
+            loop: false, ...(options || {})
+        };
 
         // A sprite is specified, add the options
         if (options.sprite)
@@ -806,9 +808,9 @@ class Sound
 
 export { Sound };
 export type {
+    CompleteCallback,
+    LoadedCallback,
     Options,
     PlayOptions,
-    LoadedCallback,
-    CompleteCallback,
     SoundSpriteDataMap
 };

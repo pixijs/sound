@@ -1,6 +1,6 @@
-import { AssetExtension, ExtensionType, LoaderParser, LoaderParserPriority, ResolvedAsset, extensions, path } from 'pixi.js';
-import { Options, Sound } from './Sound';
+import { AssetExtension, extensions, ExtensionType, LoaderParser, LoaderParserPriority, path, ResolvedAsset } from 'pixi.js';
 import { getInstance } from './instance';
+import { Options, Sound } from './Sound';
 import { extensions as exts, mimes, supported } from './utils/supported';
 
 /** Get the alias for the sound */

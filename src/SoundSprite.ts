@@ -96,7 +96,8 @@ class SoundSprite
             speed: this.speed || this.parent.speed,
             end: this.end,
             start: this.start,
-            loop: this.loop });
+            loop: this.loop
+        });
     }
 
     /** Destroy and don't use after this */
@@ -106,5 +107,5 @@ class SoundSprite
     }
 }
 
-export type { SoundSprites, SoundSpriteData };
+export type { SoundSpriteData, SoundSprites };
 export { SoundSprite };

@@ -35,7 +35,8 @@ function render(sound: Sound, options?: RenderOptions): TextureSource
     options = {
         width: 512,
         height: 128,
-        fill: 'black', ...(options || {}) };
+        fill: 'black', ...(options || {})
+    };
 
     canvas.width = options.width;
     canvas.height = options.height;

@@ -1,5 +1,5 @@
 {
-    "extends": "@pixi/extension-scripts/lib/configs/tsconfig.json",
+    "extends": "@pixi/extension-scripts/tsconfig",
     "compilerOptions": {
         "strict": false,
         "noImplicitThis": true,
@@ -10,7 +10,8 @@
         "preserveConstEnums": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
-        "noUncheckedIndexedAccess": true
+        "noUncheckedIndexedAccess": true,
+        "skipLibCheck": true
     },
     "include": [
         "src/**/*"

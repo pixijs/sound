@@ -26,4 +26,4 @@ function getInstance(): SoundLibrary
     return instance;
 }
 
-export { instance, setInstance, getInstance };
+export { getInstance, instance, setInstance };

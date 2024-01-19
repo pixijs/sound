@@ -1,8 +1,8 @@
 import { Filter } from './filters/Filter';
+import { HTMLAudioContext } from './htmlaudio/HTMLAudioContext';
 import { IMediaContext } from './interfaces/IMediaContext';
 import { IMediaInstance } from './interfaces/IMediaInstance';
 import { CompleteCallback, Options, PlayOptions, Sound } from './Sound';
-import { HTMLAudioContext } from './htmlaudio/HTMLAudioContext';
 import { WebAudioContext } from './webaudio/WebAudioContext';
 
 type SoundSourceMap = Record<string, Options | string | ArrayBuffer | AudioBuffer | HTMLAudioElement>;
@@ -553,4 +553,4 @@ class SoundLibrary
 }
 
 export { SoundLibrary };
-export type { SoundSourceMap, SoundMap };
+export type { SoundMap, SoundSourceMap };

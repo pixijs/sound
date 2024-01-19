@@ -1,7 +1,7 @@
-import { Assets } from 'pixi.js';
-import { sound, Sound, utils, webaudio, htmlaudio, filters, SoundLibrary, IMediaInstance } from '../src';
-import { dataUrlMp3, dataUrlOgg } from './resources/dataUrlResources';
 import path from 'path';
+import { Assets } from 'pixi.js';
+import { filters, htmlaudio, IMediaInstance, Sound, sound, SoundLibrary, utils, webaudio } from '../src';
+import { dataUrlMp3, dataUrlOgg } from './resources/dataUrlResources';
 
 declare global
 {

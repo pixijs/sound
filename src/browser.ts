@@ -1,14 +1,15 @@
 import {
-    sound,
     Filterable,
-    Sound,
-    SoundLibrary,
-    SoundSprite,
     filters,
     htmlaudio,
-    utils,
+    Sound,
+    sound,
     soundAsset,
-    webaudio } from './index';
+    SoundLibrary,
+    SoundSprite,
+    utils,
+    webaudio
+} from './index';
 
 Object.defineProperties(sound,
     {
