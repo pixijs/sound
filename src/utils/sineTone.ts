@@ -39,8 +39,8 @@ function sineTone(hertz = 200, seconds = 1): Sound
     // fill the buffer
     for (let i = 0; i < fArray.length; i++)
     {
-        const time = i / buffer.sampleRate;
-        const angle = hertz * time * Math.PI;
+        const time  = i / buffer.sampleRate;
+        const angle = hertz * time * 2 * Math.PI;
 
         fArray[i] = Math.sin(angle) * amplitude;
     }
