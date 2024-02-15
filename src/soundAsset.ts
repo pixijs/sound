@@ -6,9 +6,15 @@ import { extensions as exts, mimes, supported } from './utils/supported';
 /** Get the alias for the sound */
 const getAlias = (asset: ResolvedAsset) =>
 {
-    const url = asset.src;
+    const src = asset.src;
+    let alias = asset?.alias?.[0];
 
-    return (asset as any)?.alias?.[0] ?? path.basename(url, path.extname(url));
+    if (!alias || asset.src === alias)
+    {
+        alias = path.basename(src, path.extname(src));
+    }
+
+    return alias;
 };
 
 /**
