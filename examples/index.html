@@ -16,7 +16,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://cdn.rawgit.com/aidanlister/jquery-stickytabs/1.2.1/jquery.stickytabs.js"></script>
-        <script src="https://pixijs.download/dev/pixi.min.js"></script>
+        <script src="https://pixijs.download/next-v8/pixi.min.js"></script>
         <script src="../dist/pixi-sound.js"></script>
     </head>
     <body>
@@ -130,7 +130,7 @@ PIXI.sound.play('bird');</code></pre>
                 <button class="btn btn-danger btn-lg pull-right play" data-code="#filetypes1">
                     <span class="glyphicon glyphicon-play"></span> Run
                 </button>
-                <pre><code id="filetypes1" class="javascript">PIXI.Assets.add('applause', 'resources/applause.{ogg,mp3}');
+                <pre><code id="filetypes1" class="javascript">PIXI.Assets.add({ alias: 'applause', src: 'resources/applause.{ogg,mp3}' });
 PIXI.Assets.load('applause').then(sound => sound.play());</code></pre>
 
                 <p>Alternatively, if you don't plan to use Assets (typically because you're using a bundler like Parcel or Webpack), but you still would like to resolve multiple files, you can choose from multiple URLs.</p>
@@ -160,7 +160,7 @@ sound.play();</code></pre>
                 <button class="btn btn-danger btn-lg pull-right play" data-code="#loaded2">
                     <span class="glyphicon glyphicon-play"></span> Run
                 </button>
-                <pre><code id="loaded2" class="javascript">PIXI.Assets.add('bird', 'resources/bird.mp3');
+                <pre><code id="loaded2" class="javascript">PIXI.Assets.add({ alias: 'bird', src: 'resources/bird.mp3' });
 PIXI.Assets.load('bird').then(sound => sound.play());</code></pre>
             </div>
             <div class="tab-pane fade" id="section-volume">
@@ -242,7 +242,8 @@ console.log('Sound: ', PIXI.sound.find('boing'));</code></pre>
                 <p>First setup an Application to render the waveform.</p>
                 <code class="hidden" id="render-clear">waveform.stage.removeChildren();</code>
                 <canvas class="canvas" width="1024" height="128" id="waveform"></canvas>
-                <pre><code data-autorun class="javascript">window.waveform = new PIXI.Application({
+                <pre><code data-autorun class="javascript">window.waveform = new PIXI.Application();
+window.waveform.init({
     width: 1024,
     height: 128,
     view: document.getElementById('waveform'),
@@ -252,24 +253,24 @@ console.log('Sound: ', PIXI.sound.find('boing'));</code></pre>
                 <button class="btn btn-danger btn-lg pull-right play" data-code="#render3" data-beforeCode="#render-clear">
                     <span class="glyphicon glyphicon-play"></span> Run
                 </button>
-                <pre><code id="render3" class="javascript">PIXI.Assets.add('applause', 'resources/applause.mp3');
-PIXI.Assets.load('applause').then(sound => {
-    const baseTexture = PIXI.sound.utils.render(sound, {
-        width: waveform.renderer.width,
-        height: waveform.renderer.height,
-        fill: '#999'
-    });
-    const playhead = new PIXI.Graphics()
-        .beginFill(0xff0000)
-        .drawRect(0, 0, 1, waveform.renderer.height);
-    const sprite = new PIXI.Sprite(
-        new PIXI.Texture(baseTexture)
-    );
-    waveform.stage.addChild(sprite, playhead);
-    sound.play().on('progress', function(value) {
-        playhead.x = baseTexture.width * value;
-    });
-});</code></pre>
+                <pre><code id="render3" class="javascript">PIXI.Assets.add({ alias: 'applause', src: 'resources/applause.mp3' });
+const sound = await PIXI.Assets.load('applause');
+const baseTexture = PIXI.sound.utils.render(sound, {
+    width: waveform.renderer.width,
+    height: waveform.renderer.height,
+    fill: '#999'
+});
+const playhead = new PIXI.Graphics()
+    .rect(0, 0, 1, waveform.renderer.height)
+    .fill(0xff0000);
+const sprite = new PIXI.Sprite(
+    new PIXI.Texture(baseTexture)
+);
+waveform.stage.addChild(sprite, playhead);
+sound.play().on('progress', function(value) {
+    playhead.x = baseTexture.width * value;
+});
+</code></pre>
 
                 <p>Create a simple sine-wave tone.</p>
                 <button class="btn btn-danger btn-lg pull-right play" data-code="#sine-tone" data-beforeCode="#render-clear">

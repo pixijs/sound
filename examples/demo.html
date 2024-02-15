@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="css/range.css">
         <link rel="stylesheet" href="css/examples.css?v=2">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/languages/javascript.min.js"></script>
-        <script src="https://pixijs.download/dev/pixi.min.js"></script>
+        <script src="https://pixijs.download/next-v8/pixi.js"></script>
         <script src="../dist/pixi-sound.js"></script>
     </head>
     <body ontouchstart="">
@@ -147,20 +147,20 @@
                 </div>
             </div>
         <pre><code type="javascript">// List of files to load
-const manifest = {
-    loop1: 'resources/loops/loop1.mp3',
-    loop2: 'resources/loops/loop2.mp3',
-    loop3: 'resources/loops/loop3.mp3',
-    loop4: 'resources/loops/loop4.mp3',
-    bird: 'resources/bird.mp3',
-    boing: 'resources/boing.mp3',
-    buzzer: 'resources/buzzer.mp3',
-    car: 'resources/car.mp3',
-    chime: 'resources/chime.mp3',
-    success: 'resources/success.mp3',
-    sword: 'resources/sword.mp3',
-    whistle: 'resources/whistle.mp3'
-};
+const manifest = [
+    { alias: 'loop1', src: 'resources/loops/loop1.mp3' },
+    { alias: 'loop2', src: 'resources/loops/loop2.mp3' },
+    { alias: 'loop3', src: 'resources/loops/loop3.mp3' },
+    { alias: 'loop4', src: 'resources/loops/loop4.mp3' },
+    { alias: 'bird', src: 'resources/bird.mp3' },
+    { alias: 'boing', src: 'resources/boing.mp3' },
+    { alias: 'buzzer', src: 'resources/buzzer.mp3' },
+    { alias: 'car', src: 'resources/car.mp3' },
+    { alias: 'chime', src: 'resources/chime.mp3' },
+    { alias: 'success', src: 'resources/success.mp3' },
+    { alias: 'sword', src: 'resources/sword.mp3' },
+    { alias: 'whistle', src: 'resources/whistle.mp3' },
+];
 
 // Add to the PIXI loader
 PIXI.Assets.addBundle('demo', manifest);
