@@ -1,5 +1,5 @@
-import { suite } from './suite';
 import { filters } from '../src';
+import { suite } from './suite';
 
 suite(false);
 

@@ -389,7 +389,9 @@ function suite(useLegacy = false): void
 
                     if (useLegacy)
                     {
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
                         const spy = jest.spyOn(console, 'warn').mockImplementation(() => { });
+
                         expect((instance as any).filters).toBe(null);
                         expect((instance2 as any).filters).toBe(null);
                         spy.mockRestore();
