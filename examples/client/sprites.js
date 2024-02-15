@@ -58,7 +58,7 @@ const sound = PIXI.sound.Sound.from({
             width: 1024,
             height: 100,
             backgroundColor: 0xffffff,
-            view: document.getElementById('waveform'),
+            canvas: document.getElementById('waveform'),
         });
         const baseTexture = PIXI.sound.utils.render(sound, {
             width: 1024,
