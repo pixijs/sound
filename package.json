@@ -13,7 +13,7 @@
     }
   },
   "scripts": {
-    "test": "xs test --silent",
+    "test": "xs test",
     "clean": "xs clean",
     "start": "xs serve",
     "watch": "xs watch",
