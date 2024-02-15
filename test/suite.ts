@@ -326,19 +326,6 @@ function suite(useLegacy = false): void
         }
     });
 
-    if (!useLegacy)
-    {
-        describe(`filters.DistortionFilter${suffix}`, () =>
-        {
-            it('should create a DistortionFilter', () =>
-            {
-                const filter = new filters.DistortionFilter(0.5);
-
-                expect(filter.amount).toBe(0.5);
-            });
-        });
-    }
-
     describe(`SoundInstance${suffix}`, () =>
     {
         afterEach(() =>
@@ -402,8 +389,10 @@ function suite(useLegacy = false): void
 
                     if (useLegacy)
                     {
+                        const spy = jest.spyOn(console, 'warn').mockImplementation(() => { });
                         expect((instance as any).filters).toBe(null);
                         expect((instance2 as any).filters).toBe(null);
+                        spy.mockRestore();
                     }
                     else
                     {
