@@ -64,6 +64,7 @@ If you're using a `<script>` element to import `@pixi/sound` into your project, 
 |---|---|
 | v5.x - v6.x | v4.x |
 | v7.x | v5.x |
+| v8.x | v6.x |
 
 ### Resources
 
