@@ -1,13 +1,13 @@
-import { utils } from '@pixi/core';
+import { EventEmitter } from 'pixi.js';
 import { Filter } from '../filters/Filter';
 import { IMediaContext } from '../interfaces/IMediaContext';
 
 /**
  * The fallback version of WebAudioContext which uses `<audio>` instead of WebAudio API.
  * @memberof htmlaudio
- * @extends PIXI.util.EventEmitter
+ * @extends PIXI.EventEmitter
  */
-class HTMLAudioContext extends utils.EventEmitter implements IMediaContext
+class HTMLAudioContext extends EventEmitter implements IMediaContext
 {
     /** Current global speed from 0 to 1 */
     public speed = 1;

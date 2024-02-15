@@ -1,4 +1,4 @@
-import { utils } from '@pixi/core';
+import { path } from 'pixi.js';
 import { Filter } from './filters/Filter';
 import { HTMLAudioMedia } from './htmlaudio/HTMLAudioMedia';
 import { getInstance } from './instance';
@@ -264,7 +264,8 @@ class Sound
             speed: 1,
             complete: null,
             loaded: null,
-            loop: false, ...options };
+            loop: false, ...options
+        };
 
         Object.freeze(options);
 
@@ -323,7 +324,7 @@ class Sound
     private preferUrl(urls: string[]): string
     {
         const [file] = urls
-            .map((url) => ({ url, ext: utils.path.extname(url).slice(1) }))
+            .map((url) => ({ url, ext: path.extname(url).slice(1) }))
             .filter(({ ext }) => supported[ext])
             .sort((a, b) => extensions.indexOf(a.ext) - extensions.indexOf(b.ext));
 
@@ -555,7 +556,8 @@ class Sound
             volume: 1,
             speed: 1,
             muted: false,
-            loop: false, ...(options || {}) };
+            loop: false, ...(options || {})
+        };
 
         // A sprite is specified, add the options
         if (options.sprite)
@@ -806,9 +808,9 @@ class Sound
 
 export { Sound };
 export type {
+    CompleteCallback,
+    LoadedCallback,
     Options,
     PlayOptions,
-    LoadedCallback,
-    CompleteCallback,
     SoundSpriteDataMap
 };

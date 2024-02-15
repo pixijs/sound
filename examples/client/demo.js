@@ -1,17 +1,17 @@
-const manifest = {
-    loop1: 'resources/loops/loop1.mp3',
-    loop2: 'resources/loops/loop2.mp3',
-    loop3: 'resources/loops/loop3.mp3',
-    loop4: 'resources/loops/loop4.mp3',
-    bird: 'resources/bird.mp3',
-    boing: 'resources/boing.mp3',
-    buzzer: 'resources/buzzer.mp3',
-    car: 'resources/car.mp3',
-    chime: 'resources/chime.mp3',
-    success: 'resources/success.mp3',
-    sword: 'resources/sword.mp3',
-    whistle: 'resources/whistle.mp3',
-};
+const manifest = [
+    { alias: 'loop1', src: 'resources/loops/loop1.mp3' },
+    { alias: 'loop2', src: 'resources/loops/loop2.mp3' },
+    { alias: 'loop3', src: 'resources/loops/loop3.mp3' },
+    { alias: 'loop4', src: 'resources/loops/loop4.mp3' },
+    { alias: 'bird', src: 'resources/bird.mp3' },
+    { alias: 'boing', src: 'resources/boing.mp3' },
+    { alias: 'buzzer', src: 'resources/buzzer.mp3' },
+    { alias: 'car', src: 'resources/car.mp3' },
+    { alias: 'chime', src: 'resources/chime.mp3' },
+    { alias: 'success', src: 'resources/success.mp3' },
+    { alias: 'sword', src: 'resources/sword.mp3' },
+    { alias: 'whistle', src: 'resources/whistle.mp3' },
+];
 
 PIXI.Assets.addBundle('demo', manifest);
 PIXI.Assets.loadBundle('demo').then(() =>

@@ -1,17 +1,17 @@
-import { utils, Ticker } from '@pixi/core';
+import { EventEmitter, Ticker } from 'pixi.js';
+import { Filter } from '../filters/Filter';
 import { IMediaInstance } from '../interfaces/IMediaInstance';
 import { PlayOptions } from '../Sound';
 import { HTMLAudioMedia } from './HTMLAudioMedia';
-import { Filter } from '../filters/Filter';
 
 let id = 0;
 
 /**
  * Instance which wraps the `<audio>` element playback.
  * @memberof htmlaudio
- * @extends PIXI.util.EventEmitter
+ * @extends PIXI.EventEmitter
  */
-class HTMLAudioInstance extends utils.EventEmitter implements IMediaInstance
+class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 {
     /** Extra padding, in seconds, to deal with low-latecy of HTMLAudio. */
     public static readonly PADDING: number = 0.1;

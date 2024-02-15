@@ -58,7 +58,8 @@ function validateFormats(typeOverrides?: Record<string, string>): void
         m4a: 'audio/mp4',
         oga: 'audio/ogg',
         opus: 'audio/ogg; codecs="opus"',
-        caf: 'audio/x-caf; codecs="opus"', ...(typeOverrides || {}) };
+        caf: 'audio/x-caf; codecs="opus"', ...(typeOverrides || {})
+    };
     const audio = document.createElement('audio');
     const formats: ExtensionMap = {};
     const no = /^no$/;
@@ -77,8 +78,8 @@ function validateFormats(typeOverrides?: Record<string, string>): void
 validateFormats();
 
 export {
-    validateFormats,
-    supported,
     extensions,
     mimes,
+    supported,
+    validateFormats,
 };

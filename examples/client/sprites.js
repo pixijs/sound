@@ -41,8 +41,8 @@ const sprites = {
     },
 };
 const playhead = new PIXI.Graphics()
-    .beginFill(0xff0000)
-    .drawRect(0, 0, 1, 100);
+    .rect(0, 0, 1, 100)
+    .fill(0xff0000);
 
 playhead.x = -1;
 const sound = PIXI.sound.Sound.from({
@@ -50,13 +50,15 @@ const sound = PIXI.sound.Sound.from({
     sprites,
     singleInstance: true,
     preload: true,
-    loaded()
+    async loaded()
     {
-        const app = new PIXI.Application({
+        const app = new PIXI.Application();
+
+        await app.init({
             width: 1024,
             height: 100,
             backgroundColor: 0xffffff,
-            view: document.getElementById('waveform'),
+            canvas: document.getElementById('waveform'),
         });
         const baseTexture = PIXI.sound.utils.render(sound, {
             width: 1024,

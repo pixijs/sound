@@ -71,13 +71,12 @@
   },
   "homepage": "https://github.com/pixijs/sound#readme",
   "devDependencies": {
-    "@pixi/extension-scripts": "^1.8.1",
+    "@pixi/extension-scripts": "^2.0.0",
     "copyfiles": "^2.4.1",
     "mkdirp": "^1.0.4",
-    "pixi.js": "^7.0.0"
+    "pixi.js": "^8.0.0-0"
   },
   "peerDependencies": {
-    "@pixi/assets": "^7.0.0",
-    "@pixi/core": "^7.0.0"
+    "pixi.js": ">-8.0.0-0"
   }
 }
