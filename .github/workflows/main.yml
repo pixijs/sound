@@ -73,3 +73,10 @@ jobs:
         args: --acl public-read --follow-symlinks --delete --cache-control "max-age=1209600"
       env:
         DEST_DIR: 'latest'
+
+    # Automatically attach browser files to release
+    - name: Upload to Release
+      if: github.event_name == 'release'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/*
