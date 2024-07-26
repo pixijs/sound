@@ -338,7 +338,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
             {
                 this._source.currentTime = start;
                 this._source.onloadedmetadata = null;
-                this.emit('progress', start, this._duration);
+                this.emit('progress', start / this._duration, this._duration);
                 Ticker.shared.add(this._onUpdate, this);
             }
         };
