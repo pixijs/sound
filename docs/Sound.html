@@ -1,0 +1,4268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>PixiJS Sound API Documentation</title>
+    
+    <meta name="description" content="Documentation for PixiJS Sound library" />
+    
+        <meta name="keywords" content="webaudio, sound, pixi" />
+        <meta name="keyword" content="webaudio, sound, pixi" />
+    
+    
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/googlecode.min.css">
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Franklin:400,700">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/main.css">
+    <link type="text/css" rel="stylesheet" href="styles/collapsible-group.css">
+    
+    <script>
+    var config = {"cleverLinks":false,"monospaceLinks":false,"default":{"outputSourceFiles":false},"applicationName":"PixiJS Sound","copyright":"PIXI Copyright &copy; 2017 - 2021 Matt Karl.","googleAnalytics":"UA-103772589-1","linenums":false,"meta":{"title":"PixiJS Sound API Documentation","description":"Documentation for PixiJS Sound library","keyword":"webaudio, sound, pixi"}};
+    </script>
+    
+
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', config.googleAnalytics]);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html">PixiJS Sound</a></h3>
+    <button id="menuToggle" class="btn btn-link btn-lg menu-toggle">
+        <span class="glyphicon glyphicon-menu-hamburger"></span>
+    </button>
+    <div class="search">
+        <input id="search" type="text" class="form-control input-md" placeholder="Search...">
+    </div>
+    <ul class="list">
+    
+    
+        <li class="item" data-name="filters">
+            <span class="title namespace ">
+                
+                <span class="namespaceTag">
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                </span>
+                
+                
+                    <a href=filters.html>filters</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="htmlaudio">
+            <span class="title namespace ">
+                
+                <span class="namespaceTag">
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                </span>
+                
+                
+                    <a href=htmlaudio.html>htmlaudio</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="utils">
+            <span class="title namespace ">
+                
+                <span class="namespaceTag">
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                </span>
+                
+                
+                    <a href=utils.html>utils</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="utils.extensions"><a href=utils.html#extensions>extensions</a></li>
+            
+                <li class="parent " data-name="utils.supported"><a href=utils.html#supported>supported</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="utils.playOnce"><a href=utils.html#playOnce>playOnce</a></li>
+            
+                <li class="parent  " data-name="utils.render"><a href=utils.html#render>render</a></li>
+            
+                <li class="parent  " data-name="utils.sineTone"><a href=utils.html#sineTone>sineTone</a></li>
+            
+                <li class="parent  " data-name="utils.validateFormats"><a href=utils.html#validateFormats>validateFormats</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="webaudio">
+            <span class="title namespace ">
+                
+                <span class="namespaceTag">
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                </span>
+                
+                
+                    <a href=webaudio.html>webaudio</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="Filterable">
+            <span class="title  ">
+                
+                
+                    <a href=Filterable.html>Filterable</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="Filterable.destination"><a href=Filterable.html#destination>destination</a></li>
+            
+                <li class="parent " data-name="Filterable.filters"><a href=Filterable.html#filters>filters</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="Filterable.destroy"><a href=Filterable.html#destroy>destroy</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="filters.DistortionFilter">
+            <span class="title  ">
+                
+                
+                    <a href=filters.DistortionFilter.html>filters.DistortionFilter</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="filters.DistortionFilter.amount"><a href=filters.DistortionFilter.html#amount>amount</a></li>
+            
+                <li class=" " data-name="filters.DistortionFilter.destination"><a href=filters.DistortionFilter.html#destination>destination</a></li>
+            
+                <li class=" " data-name="filters.DistortionFilter.source"><a href=filters.DistortionFilter.html#source>source</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="  " data-name="filters.DistortionFilter.connect"><a href=filters.DistortionFilter.html#connect>connect</a></li>
+            
+                <li class="  " data-name="filters.DistortionFilter.destroy"><a href=filters.DistortionFilter.html#destroy>destroy</a></li>
+            
+                <li class="  " data-name="filters.DistortionFilter.disconnect"><a href=filters.DistortionFilter.html#disconnect>disconnect</a></li>
+            
+                <li class="  " data-name="filters.DistortionFilter.init"><a href=filters.DistortionFilter.html#init>init</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="filters.EqualizerFilter">
+            <span class="title  ">
+                
+                
+                    <a href=filters.EqualizerFilter.html>filters.EqualizerFilter</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.F125"><a href=filters.EqualizerFilter.html#F125>F125</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.F16K"><a href=filters.EqualizerFilter.html#F16K>F16K</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.F1K"><a href=filters.EqualizerFilter.html#F1K>F1K</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.F250"><a href=filters.EqualizerFilter.html#F250>F250</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.F2K"><a href=filters.EqualizerFilter.html#F2K>F2K</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.F32"><a href=filters.EqualizerFilter.html#F32>F32</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.F4K"><a href=filters.EqualizerFilter.html#F4K>F4K</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.F500"><a href=filters.EqualizerFilter.html#F500>F500</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.F64"><a href=filters.EqualizerFilter.html#F64>F64</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.F8K"><a href=filters.EqualizerFilter.html#F8K>F8K</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.bands"><a href=filters.EqualizerFilter.html#bands>bands</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.bandsMap"><a href=filters.EqualizerFilter.html#bandsMap>bandsMap</a></li>
+            
+                <li class=" " data-name="filters.EqualizerFilter.destination"><a href=filters.EqualizerFilter.html#destination>destination</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.f125"><a href=filters.EqualizerFilter.html#f125>f125</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.f16k"><a href=filters.EqualizerFilter.html#f16k>f16k</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.f1k"><a href=filters.EqualizerFilter.html#f1k>f1k</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.f250"><a href=filters.EqualizerFilter.html#f250>f250</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.f2k"><a href=filters.EqualizerFilter.html#f2k>f2k</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.f32"><a href=filters.EqualizerFilter.html#f32>f32</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.f4k"><a href=filters.EqualizerFilter.html#f4k>f4k</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.f500"><a href=filters.EqualizerFilter.html#f500>f500</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.f64"><a href=filters.EqualizerFilter.html#f64>f64</a></li>
+            
+                <li class="parent " data-name="filters.EqualizerFilter.f8k"><a href=filters.EqualizerFilter.html#f8k>f8k</a></li>
+            
+                <li class=" " data-name="filters.EqualizerFilter.source"><a href=filters.EqualizerFilter.html#source>source</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="  " data-name="filters.EqualizerFilter.connect"><a href=filters.EqualizerFilter.html#connect>connect</a></li>
+            
+                <li class="  " data-name="filters.EqualizerFilter.destroy"><a href=filters.EqualizerFilter.html#destroy>destroy</a></li>
+            
+                <li class="  " data-name="filters.EqualizerFilter.disconnect"><a href=filters.EqualizerFilter.html#disconnect>disconnect</a></li>
+            
+                <li class="parent  " data-name="filters.EqualizerFilter.getGain"><a href=filters.EqualizerFilter.html#getGain>getGain</a></li>
+            
+                <li class="parent  " data-name="filters.EqualizerFilter.reset"><a href=filters.EqualizerFilter.html#reset>reset</a></li>
+            
+                <li class="parent  " data-name="filters.EqualizerFilter.setGain"><a href=filters.EqualizerFilter.html#setGain>setGain</a></li>
+            
+                <li class="  " data-name="filters.EqualizerFilter.init"><a href=filters.EqualizerFilter.html#init>init</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="filters.Filter">
+            <span class="title  ">
+                
+                
+                    <a href=filters.Filter.html>filters.Filter</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="filters.Filter.destination"><a href=filters.Filter.html#destination>destination</a></li>
+            
+                <li class="parent " data-name="filters.Filter.source"><a href=filters.Filter.html#source>source</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="filters.Filter.connect"><a href=filters.Filter.html#connect>connect</a></li>
+            
+                <li class="parent  " data-name="filters.Filter.destroy"><a href=filters.Filter.html#destroy>destroy</a></li>
+            
+                <li class="parent  " data-name="filters.Filter.disconnect"><a href=filters.Filter.html#disconnect>disconnect</a></li>
+            
+                <li class="parent  " data-name="filters.Filter.init"><a href=filters.Filter.html#init>init</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="filters.MonoFilter">
+            <span class="title  ">
+                
+                
+                    <a href=filters.MonoFilter.html>filters.MonoFilter</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class=" " data-name="filters.MonoFilter.destination"><a href=filters.MonoFilter.html#destination>destination</a></li>
+            
+                <li class=" " data-name="filters.MonoFilter.source"><a href=filters.MonoFilter.html#source>source</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="  " data-name="filters.MonoFilter.connect"><a href=filters.MonoFilter.html#connect>connect</a></li>
+            
+                <li class="  " data-name="filters.MonoFilter.destroy"><a href=filters.MonoFilter.html#destroy>destroy</a></li>
+            
+                <li class="  " data-name="filters.MonoFilter.disconnect"><a href=filters.MonoFilter.html#disconnect>disconnect</a></li>
+            
+                <li class="  " data-name="filters.MonoFilter.init"><a href=filters.MonoFilter.html#init>init</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="filters.ReverbFilter">
+            <span class="title  ">
+                
+                
+                    <a href=filters.ReverbFilter.html>filters.ReverbFilter</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="filters.ReverbFilter.decay"><a href=filters.ReverbFilter.html#decay>decay</a></li>
+            
+                <li class=" " data-name="filters.ReverbFilter.destination"><a href=filters.ReverbFilter.html#destination>destination</a></li>
+            
+                <li class="parent " data-name="filters.ReverbFilter.reverse"><a href=filters.ReverbFilter.html#reverse>reverse</a></li>
+            
+                <li class="parent " data-name="filters.ReverbFilter.seconds"><a href=filters.ReverbFilter.html#seconds>seconds</a></li>
+            
+                <li class=" " data-name="filters.ReverbFilter.source"><a href=filters.ReverbFilter.html#source>source</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="  " data-name="filters.ReverbFilter.connect"><a href=filters.ReverbFilter.html#connect>connect</a></li>
+            
+                <li class="  " data-name="filters.ReverbFilter.destroy"><a href=filters.ReverbFilter.html#destroy>destroy</a></li>
+            
+                <li class="  " data-name="filters.ReverbFilter.disconnect"><a href=filters.ReverbFilter.html#disconnect>disconnect</a></li>
+            
+                <li class="  " data-name="filters.ReverbFilter.init"><a href=filters.ReverbFilter.html#init>init</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="filters.StereoFilter">
+            <span class="title  ">
+                
+                
+                    <a href=filters.StereoFilter.html>filters.StereoFilter</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class=" " data-name="filters.StereoFilter.destination"><a href=filters.StereoFilter.html#destination>destination</a></li>
+            
+                <li class="parent " data-name="filters.StereoFilter.pan"><a href=filters.StereoFilter.html#pan>pan</a></li>
+            
+                <li class=" " data-name="filters.StereoFilter.source"><a href=filters.StereoFilter.html#source>source</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="  " data-name="filters.StereoFilter.connect"><a href=filters.StereoFilter.html#connect>connect</a></li>
+            
+                <li class="  " data-name="filters.StereoFilter.destroy"><a href=filters.StereoFilter.html#destroy>destroy</a></li>
+            
+                <li class="  " data-name="filters.StereoFilter.disconnect"><a href=filters.StereoFilter.html#disconnect>disconnect</a></li>
+            
+                <li class="  " data-name="filters.StereoFilter.init"><a href=filters.StereoFilter.html#init>init</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="filters.StreamFilter">
+            <span class="title  ">
+                
+                
+                    <a href=filters.StreamFilter.html>filters.StreamFilter</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class=" " data-name="filters.StreamFilter.destination"><a href=filters.StreamFilter.html#destination>destination</a></li>
+            
+                <li class=" " data-name="filters.StreamFilter.source"><a href=filters.StreamFilter.html#source>source</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="  " data-name="filters.StreamFilter.connect"><a href=filters.StreamFilter.html#connect>connect</a></li>
+            
+                <li class="  " data-name="filters.StreamFilter.destroy"><a href=filters.StreamFilter.html#destroy>destroy</a></li>
+            
+                <li class="  " data-name="filters.StreamFilter.disconnect"><a href=filters.StreamFilter.html#disconnect>disconnect</a></li>
+            
+                <li class="  " data-name="filters.StreamFilter.init"><a href=filters.StreamFilter.html#init>init</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="filters.TelephoneFilter">
+            <span class="title  ">
+                
+                
+                    <a href=filters.TelephoneFilter.html>filters.TelephoneFilter</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class=" " data-name="filters.TelephoneFilter.destination"><a href=filters.TelephoneFilter.html#destination>destination</a></li>
+            
+                <li class=" " data-name="filters.TelephoneFilter.source"><a href=filters.TelephoneFilter.html#source>source</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="  " data-name="filters.TelephoneFilter.connect"><a href=filters.TelephoneFilter.html#connect>connect</a></li>
+            
+                <li class="  " data-name="filters.TelephoneFilter.destroy"><a href=filters.TelephoneFilter.html#destroy>destroy</a></li>
+            
+                <li class="  " data-name="filters.TelephoneFilter.disconnect"><a href=filters.TelephoneFilter.html#disconnect>disconnect</a></li>
+            
+                <li class="  " data-name="filters.TelephoneFilter.init"><a href=filters.TelephoneFilter.html#init>init</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="htmlaudio.HTMLAudioContext">
+            <span class="title  ">
+                
+                
+                    <a href=htmlaudio.HTMLAudioContext.html>htmlaudio.HTMLAudioContext</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioContext.audioContext"><a href=htmlaudio.HTMLAudioContext.html#audioContext>audioContext</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioContext.filters"><a href=htmlaudio.HTMLAudioContext.html#filters>filters</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioContext.muted"><a href=htmlaudio.HTMLAudioContext.html#muted>muted</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioContext.paused"><a href=htmlaudio.HTMLAudioContext.html#paused>paused</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioContext.speed"><a href=htmlaudio.HTMLAudioContext.html#speed>speed</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioContext.volume"><a href=htmlaudio.HTMLAudioContext.html#volume>volume</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="htmlaudio.HTMLAudioContext.destroy"><a href=htmlaudio.HTMLAudioContext.html#destroy>destroy</a></li>
+            
+                <li class="parent  " data-name="htmlaudio.HTMLAudioContext.refresh"><a href=htmlaudio.HTMLAudioContext.html#refresh>refresh</a></li>
+            
+                <li class="parent  " data-name="htmlaudio.HTMLAudioContext.refreshPaused"><a href=htmlaudio.HTMLAudioContext.html#refreshPaused>refreshPaused</a></li>
+            
+                <li class="parent  " data-name="htmlaudio.HTMLAudioContext.toggleMute"><a href=htmlaudio.HTMLAudioContext.html#toggleMute>toggleMute</a></li>
+            
+                <li class="parent  " data-name="htmlaudio.HTMLAudioContext.togglePause"><a href=htmlaudio.HTMLAudioContext.html#togglePause>togglePause</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="htmlaudio.HTMLAudioInstance">
+            <span class="title  ">
+                
+                
+                    <a href=htmlaudio.HTMLAudioInstance.html>htmlaudio.HTMLAudioInstance</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioInstance.PADDING"><a href=htmlaudio.HTMLAudioInstance.html#PADDING>PADDING</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioInstance.filters"><a href=htmlaudio.HTMLAudioInstance.html#filters>filters</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioInstance.id"><a href=htmlaudio.HTMLAudioInstance.html#id>id</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioInstance.loop"><a href=htmlaudio.HTMLAudioInstance.html#loop>loop</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioInstance.muted"><a href=htmlaudio.HTMLAudioInstance.html#muted>muted</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioInstance.paused"><a href=htmlaudio.HTMLAudioInstance.html#paused>paused</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioInstance.progress"><a href=htmlaudio.HTMLAudioInstance.html#progress>progress</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioInstance.speed"><a href=htmlaudio.HTMLAudioInstance.html#speed>speed</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioInstance.volume"><a href=htmlaudio.HTMLAudioInstance.html#volume>volume</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="htmlaudio.HTMLAudioInstance.destroy"><a href=htmlaudio.HTMLAudioInstance.html#destroy>destroy</a></li>
+            
+                <li class="parent  " data-name="htmlaudio.HTMLAudioInstance.init"><a href=htmlaudio.HTMLAudioInstance.html#init>init</a></li>
+            
+                <li class="parent  " data-name="htmlaudio.HTMLAudioInstance.play"><a href=htmlaudio.HTMLAudioInstance.html#play>play</a></li>
+            
+                <li class="parent  " data-name="htmlaudio.HTMLAudioInstance.refresh"><a href=htmlaudio.HTMLAudioInstance.html#refresh>refresh</a></li>
+            
+                <li class="parent  " data-name="htmlaudio.HTMLAudioInstance.refreshPaused"><a href=htmlaudio.HTMLAudioInstance.html#refreshPaused>refreshPaused</a></li>
+            
+                <li class="parent  " data-name="htmlaudio.HTMLAudioInstance.set"><a href=htmlaudio.HTMLAudioInstance.html#set>set</a></li>
+            
+                <li class="parent  " data-name="htmlaudio.HTMLAudioInstance.stop"><a href=htmlaudio.HTMLAudioInstance.html#stop>stop</a></li>
+            
+                <li class="parent  " data-name="htmlaudio.HTMLAudioInstance.toString"><a href=htmlaudio.HTMLAudioInstance.html#toString>toString</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li class="" data-name="htmlaudio.HTMLAudioInstance.end"><a href=htmlaudio.HTMLAudioInstance.html#end>end</a></li>
+            
+                <li class="" data-name="htmlaudio.HTMLAudioInstance.pause"><a href=htmlaudio.HTMLAudioInstance.html#pause>pause</a></li>
+            
+                <li class="" data-name="htmlaudio.HTMLAudioInstance.resumed"><a href=htmlaudio.HTMLAudioInstance.html#resumed>resumed</a></li>
+            
+                <li class="" data-name="htmlaudio.HTMLAudioInstance.start"><a href=htmlaudio.HTMLAudioInstance.html#start>start</a></li>
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="htmlaudio.HTMLAudioMedia">
+            <span class="title  ">
+                
+                
+                    <a href=htmlaudio.HTMLAudioMedia.html>htmlaudio.HTMLAudioMedia</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioMedia.context"><a href=htmlaudio.HTMLAudioMedia.html#context>context</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioMedia.duration"><a href=htmlaudio.HTMLAudioMedia.html#duration>duration</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioMedia.filters"><a href=htmlaudio.HTMLAudioMedia.html#filters>filters</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioMedia.isPlayable"><a href=htmlaudio.HTMLAudioMedia.html#isPlayable>isPlayable</a></li>
+            
+                <li class="parent " data-name="htmlaudio.HTMLAudioMedia.source"><a href=htmlaudio.HTMLAudioMedia.html#source>source</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="Sound">
+            <span class="title  ">
+                
+                
+                    <a href=Sound.html>Sound</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="Sound.autoPlay"><a href=Sound.html#autoPlay>autoPlay</a></li>
+            
+                <li class="parent " data-name="Sound.context"><a href=Sound.html#context>context</a></li>
+            
+                <li class="parent " data-name="Sound.duration"><a href=Sound.html#duration>duration</a></li>
+            
+                <li class="parent " data-name="Sound.filters"><a href=Sound.html#filters>filters</a></li>
+            
+                <li class="parent " data-name="Sound.instances"><a href=Sound.html#instances>instances</a></li>
+            
+                <li class="parent " data-name="Sound.isLoaded"><a href=Sound.html#isLoaded>isLoaded</a></li>
+            
+                <li class="parent " data-name="Sound.isPlayable"><a href=Sound.html#isPlayable>isPlayable</a></li>
+            
+                <li class="parent " data-name="Sound.isPlaying"><a href=Sound.html#isPlaying>isPlaying</a></li>
+            
+                <li class="parent " data-name="Sound.loop"><a href=Sound.html#loop>loop</a></li>
+            
+                <li class="parent " data-name="Sound.media"><a href=Sound.html#media>media</a></li>
+            
+                <li class="parent " data-name="Sound.muted"><a href=Sound.html#muted>muted</a></li>
+            
+                <li class="parent " data-name="Sound.options"><a href=Sound.html#options>options</a></li>
+            
+                <li class="parent " data-name="Sound.paused"><a href=Sound.html#paused>paused</a></li>
+            
+                <li class="parent " data-name="Sound.preload"><a href=Sound.html#preload>preload</a></li>
+            
+                <li class="parent " data-name="Sound.singleInstance"><a href=Sound.html#singleInstance>singleInstance</a></li>
+            
+                <li class="parent " data-name="Sound.speed"><a href=Sound.html#speed>speed</a></li>
+            
+                <li class="parent " data-name="Sound.sprites"><a href=Sound.html#sprites>sprites</a></li>
+            
+                <li class="parent " data-name="Sound.url"><a href=Sound.html#url>url</a></li>
+            
+                <li class="parent " data-name="Sound.volume"><a href=Sound.html#volume>volume</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="Sound.from"><a href=Sound.html#from>from</a></li>
+            
+                <li class="parent  " data-name="Sound.addSprites"><a href=Sound.html#addSprites>addSprites</a></li>
+            
+                <li class="parent  " data-name="Sound.addSprites"><a href=Sound.html#addSprites>addSprites</a></li>
+            
+                <li class="parent  " data-name="Sound.autoPlayStart"><a href=Sound.html#autoPlayStart>autoPlayStart</a></li>
+            
+                <li class="parent  " data-name="Sound.destroy"><a href=Sound.html#destroy>destroy</a></li>
+            
+                <li class="parent  " data-name="Sound.pause"><a href=Sound.html#pause>pause</a></li>
+            
+                <li class="parent  " data-name="Sound.play"><a href=Sound.html#play>play</a></li>
+            
+                <li class="parent  " data-name="Sound.play"><a href=Sound.html#play>play</a></li>
+            
+                <li class="parent  " data-name="Sound.refresh"><a href=Sound.html#refresh>refresh</a></li>
+            
+                <li class="parent  " data-name="Sound.refreshPaused"><a href=Sound.html#refreshPaused>refreshPaused</a></li>
+            
+                <li class="parent  " data-name="Sound.removeSprites"><a href=Sound.html#removeSprites>removeSprites</a></li>
+            
+                <li class="parent  " data-name="Sound.resume"><a href=Sound.html#resume>resume</a></li>
+            
+                <li class="parent  " data-name="Sound.stop"><a href=Sound.html#stop>stop</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="SoundLibrary">
+            <span class="title  ">
+                
+                
+                    <a href=SoundLibrary.html>SoundLibrary</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="SoundLibrary.context"><a href=SoundLibrary.html#context>context</a></li>
+            
+                <li class="parent " data-name="SoundLibrary.disableAutoPause"><a href=SoundLibrary.html#disableAutoPause>disableAutoPause</a></li>
+            
+                <li class="parent " data-name="SoundLibrary.filtersAll"><a href=SoundLibrary.html#filtersAll>filtersAll</a></li>
+            
+                <li class="parent " data-name="SoundLibrary.speedAll"><a href=SoundLibrary.html#speedAll>speedAll</a></li>
+            
+                <li class="parent " data-name="SoundLibrary.supported"><a href=SoundLibrary.html#supported>supported</a></li>
+            
+                <li class="parent " data-name="SoundLibrary.useLegacy"><a href=SoundLibrary.html#useLegacy>useLegacy</a></li>
+            
+                <li class="parent " data-name="SoundLibrary.volumeAll"><a href=SoundLibrary.html#volumeAll>volumeAll</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="SoundLibrary.add"><a href=SoundLibrary.html#add>add</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.add"><a href=SoundLibrary.html#add>add</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.add"><a href=SoundLibrary.html#add>add</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.close"><a href=SoundLibrary.html#close>close</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.duration"><a href=SoundLibrary.html#duration>duration</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.exists"><a href=SoundLibrary.html#exists>exists</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.find"><a href=SoundLibrary.html#find>find</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.init"><a href=SoundLibrary.html#init>init</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.isPlaying"><a href=SoundLibrary.html#isPlaying>isPlaying</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.muteAll"><a href=SoundLibrary.html#muteAll>muteAll</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.pause"><a href=SoundLibrary.html#pause>pause</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.pauseAll"><a href=SoundLibrary.html#pauseAll>pauseAll</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.play"><a href=SoundLibrary.html#play>play</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.play"><a href=SoundLibrary.html#play>play</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.remove"><a href=SoundLibrary.html#remove>remove</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.removeAll"><a href=SoundLibrary.html#removeAll>removeAll</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.resume"><a href=SoundLibrary.html#resume>resume</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.resumeAll"><a href=SoundLibrary.html#resumeAll>resumeAll</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.speed"><a href=SoundLibrary.html#speed>speed</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.stop"><a href=SoundLibrary.html#stop>stop</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.stopAll"><a href=SoundLibrary.html#stopAll>stopAll</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.toggleMuteAll"><a href=SoundLibrary.html#toggleMuteAll>toggleMuteAll</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.togglePauseAll"><a href=SoundLibrary.html#togglePauseAll>togglePauseAll</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.unmuteAll"><a href=SoundLibrary.html#unmuteAll>unmuteAll</a></li>
+            
+                <li class="parent  " data-name="SoundLibrary.volume"><a href=SoundLibrary.html#volume>volume</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="SoundSprite">
+            <span class="title  ">
+                
+                
+                    <a href=SoundSprite.html>SoundSprite</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="SoundSprite.duration"><a href=SoundSprite.html#duration>duration</a></li>
+            
+                <li class="parent " data-name="SoundSprite.end"><a href=SoundSprite.html#end>end</a></li>
+            
+                <li class="parent " data-name="SoundSprite.loop"><a href=SoundSprite.html#loop>loop</a></li>
+            
+                <li class="parent " data-name="SoundSprite.parent"><a href=SoundSprite.html#parent>parent</a></li>
+            
+                <li class="parent " data-name="SoundSprite.speed"><a href=SoundSprite.html#speed>speed</a></li>
+            
+                <li class="parent " data-name="SoundSprite.start"><a href=SoundSprite.html#start>start</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="SoundSprite.destroy"><a href=SoundSprite.html#destroy>destroy</a></li>
+            
+                <li class="parent  " data-name="SoundSprite.play"><a href=SoundSprite.html#play>play</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="webaudio.WebAudioContext">
+            <span class="title  ">
+                
+                
+                    <a href=webaudio.WebAudioContext.html>webaudio.WebAudioContext</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="webaudio.WebAudioContext.AudioContext"><a href=webaudio.WebAudioContext.html#AudioContext>AudioContext</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioContext.OfflineAudioContext"><a href=webaudio.WebAudioContext.html#OfflineAudioContext>OfflineAudioContext</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioContext.analyser"><a href=webaudio.WebAudioContext.html#analyser>analyser</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioContext.audioContext"><a href=webaudio.WebAudioContext.html#audioContext>audioContext</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioContext.autoPause"><a href=webaudio.WebAudioContext.html#autoPause>autoPause</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioContext.compressor"><a href=webaudio.WebAudioContext.html#compressor>compressor</a></li>
+            
+                <li class=" " data-name="webaudio.WebAudioContext.destination"><a href=webaudio.WebAudioContext.html#destination>destination</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioContext.events"><a href=webaudio.WebAudioContext.html#events>events</a></li>
+            
+                <li class=" " data-name="webaudio.WebAudioContext.filters"><a href=webaudio.WebAudioContext.html#filters>filters</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioContext.muted"><a href=webaudio.WebAudioContext.html#muted>muted</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioContext.offlineContext"><a href=webaudio.WebAudioContext.html#offlineContext>offlineContext</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioContext.paused"><a href=webaudio.WebAudioContext.html#paused>paused</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioContext.speed"><a href=webaudio.WebAudioContext.html#speed>speed</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioContext.volume"><a href=webaudio.WebAudioContext.html#volume>volume</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="webaudio.WebAudioContext.decode"><a href=webaudio.WebAudioContext.html#decode>decode</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioContext.destroy"><a href=webaudio.WebAudioContext.html#destroy>destroy</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioContext.playEmptySound"><a href=webaudio.WebAudioContext.html#playEmptySound>playEmptySound</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioContext.refresh"><a href=webaudio.WebAudioContext.html#refresh>refresh</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioContext.refreshPaused"><a href=webaudio.WebAudioContext.html#refreshPaused>refreshPaused</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioContext.toggleMute"><a href=webaudio.WebAudioContext.html#toggleMute>toggleMute</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioContext.togglePause"><a href=webaudio.WebAudioContext.html#togglePause>togglePause</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="webaudio.WebAudioInstance">
+            <span class="title  ">
+                
+                
+                    <a href=webaudio.WebAudioInstance.html>webaudio.WebAudioInstance</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="webaudio.WebAudioInstance.filters"><a href=webaudio.WebAudioInstance.html#filters>filters</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioInstance.id"><a href=webaudio.WebAudioInstance.html#id>id</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioInstance.loop"><a href=webaudio.WebAudioInstance.html#loop>loop</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioInstance.muted"><a href=webaudio.WebAudioInstance.html#muted>muted</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioInstance.paused"><a href=webaudio.WebAudioInstance.html#paused>paused</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioInstance.progress"><a href=webaudio.WebAudioInstance.html#progress>progress</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioInstance.speed"><a href=webaudio.WebAudioInstance.html#speed>speed</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioInstance.volume"><a href=webaudio.WebAudioInstance.html#volume>volume</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="webaudio.WebAudioInstance.destroy"><a href=webaudio.WebAudioInstance.html#destroy>destroy</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioInstance.init"><a href=webaudio.WebAudioInstance.html#init>init</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioInstance.play"><a href=webaudio.WebAudioInstance.html#play>play</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioInstance.refresh"><a href=webaudio.WebAudioInstance.html#refresh>refresh</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioInstance.refreshPaused"><a href=webaudio.WebAudioInstance.html#refreshPaused>refreshPaused</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioInstance.set"><a href=webaudio.WebAudioInstance.html#set>set</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioInstance.stop"><a href=webaudio.WebAudioInstance.html#stop>stop</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioInstance.toString"><a href=webaudio.WebAudioInstance.html#toString>toString</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li class="" data-name="webaudio.WebAudioInstance.end"><a href=webaudio.WebAudioInstance.html#end>end</a></li>
+            
+                <li class="" data-name="webaudio.WebAudioInstance.pause"><a href=webaudio.WebAudioInstance.html#pause>pause</a></li>
+            
+                <li class="" data-name="webaudio.WebAudioInstance.resumed"><a href=webaudio.WebAudioInstance.html#resumed>resumed</a></li>
+            
+                <li class="" data-name="webaudio.WebAudioInstance.start"><a href=webaudio.WebAudioInstance.html#start>start</a></li>
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="webaudio.WebAudioMedia">
+            <span class="title  ">
+                
+                
+                    <a href=webaudio.WebAudioMedia.html>webaudio.WebAudioMedia</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="webaudio.WebAudioMedia.buffer"><a href=webaudio.WebAudioMedia.html#buffer>buffer</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioMedia.nodes"><a href=webaudio.WebAudioMedia.html#nodes>nodes</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioMedia.parent"><a href=webaudio.WebAudioMedia.html#parent>parent</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioMedia.source"><a href=webaudio.WebAudioMedia.html#source>source</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="webaudio.WebAudioMedia.destroy"><a href=webaudio.WebAudioMedia.html#destroy>destroy</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioMedia.init"><a href=webaudio.WebAudioMedia.html#init>init</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="webaudio.WebAudioNodes">
+            <span class="title  ">
+                
+                
+                    <a href=webaudio.WebAudioNodes.html>webaudio.WebAudioNodes</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="webaudio.WebAudioNodes.BUFFER_SIZE"><a href=webaudio.WebAudioNodes.html#BUFFER_SIZE>BUFFER_SIZE</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioNodes.analyser"><a href=webaudio.WebAudioNodes.html#analyser>analyser</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioNodes.bufferSize"><a href=webaudio.WebAudioNodes.html#bufferSize>bufferSize</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioNodes.bufferSource"><a href=webaudio.WebAudioNodes.html#bufferSource>bufferSource</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioNodes.context"><a href=webaudio.WebAudioNodes.html#context>context</a></li>
+            
+                <li class=" " data-name="webaudio.WebAudioNodes.destination"><a href=webaudio.WebAudioNodes.html#destination>destination</a></li>
+            
+                <li class=" " data-name="webaudio.WebAudioNodes.filters"><a href=webaudio.WebAudioNodes.html#filters>filters</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioNodes.gain"><a href=webaudio.WebAudioNodes.html#gain>gain</a></li>
+            
+                <li class="parent " data-name="webaudio.WebAudioNodes.script"><a href=webaudio.WebAudioNodes.html#script>script</a></li>
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="webaudio.WebAudioNodes.cloneBufferSource"><a href=webaudio.WebAudioNodes.html#cloneBufferSource>cloneBufferSource</a></li>
+            
+                <li class="parent  " data-name="webaudio.WebAudioNodes.destroy"><a href=webaudio.WebAudioNodes.html#destroy>destroy</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+        <li class="item" data-name="webaudio.WebAudioUtils">
+            <span class="title  ">
+                
+                
+                    <a href=webaudio.WebAudioUtils.html>webaudio.WebAudioUtils</a>
+                
+            </span>
+            
+            <ul class="members itemMembers">
+            
+            </ul>
+
+            <ul class="enums itemMembers">
+                
+            </ul>
+
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="webaudio.WebAudioUtils.setParamValue"><a href=webaudio.WebAudioUtils.html#setParamValue>setParamValue</a></li>
+            
+            </ul>
+            
+            <ul class="events itemMembers">
+            
+            </ul>
+            
+        </li>
+    
+    </ul>
+</div>
+
+    <div class="main">
+        <h1 class="page-title" data-filename="Sound.html">Class: Sound</h1>
+        
+
+
+<section>
+
+<header>
+  <div class="header content-size">
+      <h2>
+        Sound
+
+        
+      </h2>
+
+      
+      
+          <div class="class-description"><p>Sound represents a single piece of loaded media. When playing a sound <a href=IMediaInstance.html>IMediaInstance</a> objects
+are created. Properties such a <code>volume</code>, <code>pause</code>, <code>mute</code>, <code>speed</code>, etc will have an effect on all instances.</p></div>
+      
+  </div>
+</header>
+
+<article class="content-size">
+    <div class="container-overview">
+        
+        
+
+        
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="autoPlay">
+            <a class="share-icon" href="#autoPlay"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">autoPlay</span>
+            <span class="type-signature type">boolean</span>
+            
+            <span class="access-signature">readonly</span>
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>true to start playing immediate after load.</p>
+    </div>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-default">Default Value:</dt>
+    <dd class="tag-default"><ul class="dummy"><li>false</li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="context">
+            <a class="share-icon" href="#context"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">context</span>
+            <span class="type-signature type"><a href="IMediaContext.html">IMediaContext</a></span>
+            
+            
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Instance of the media context.</p></p>
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="duration">
+            <a class="share-icon" href="#duration"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">duration</span>
+            <span class="type-signature type">number</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Get the duration of the audio in seconds.</p></p>
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="filters">
+            <a class="share-icon" href="#filters"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">filters</span>
+            <span class="type-signature type"><a href="filters.Filter.html">filters.Filter</a>[]</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Set the filters. Only supported with WebAudio.</p></p>
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="instances">
+            <a class="share-icon" href="#instances"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">instances</span>
+            <span class="type-signature type"><a href="IMediaInstance.html">IMediaInstance</a>[]</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Gets the list of instances that are currently being played of this sound.</p></p>
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="isLoaded">
+            <a class="share-icon" href="#isLoaded"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">isLoaded</span>
+            <span class="type-signature type">boolean</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p><code>true</code> if the buffer is loaded.</p>
+    </div>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-default">Default Value:</dt>
+    <dd class="tag-default"><ul class="dummy"><li>false</li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="isPlayable">
+            <a class="share-icon" href="#isPlayable"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">isPlayable</span>
+            <span class="type-signature type">boolean</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>If the current sound is playable (loaded).</p></p>
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="isPlaying">
+            <a class="share-icon" href="#isPlaying"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">isPlaying</span>
+            <span class="type-signature type">boolean</span>
+            
+            <span class="access-signature">readonly</span>
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p><code>true</code> if the sound is currently being played.</p>
+    </div>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-default">Default Value:</dt>
+    <dd class="tag-default"><ul class="dummy"><li>false</li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="loop">
+            <a class="share-icon" href="#loop"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">loop</span>
+            <span class="type-signature type">boolean</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Gets and sets the looping.</p></p>
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="media">
+            <a class="share-icon" href="#media"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">media</span>
+            <span class="type-signature type"><a href="IMedia.html">IMedia</a></span>
+            
+            
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>The audio source</p></p>
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="muted">
+            <a class="share-icon" href="#muted"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">muted</span>
+            <span class="type-signature type">boolean</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Gets and sets the muted flag.</p></p>
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="options">
+            <a class="share-icon" href="#options"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">options</span>
+            <span class="type-signature type"><a href="Options.html">Options</a></span>
+            
+            <span class="access-signature">readonly</span>
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>The constructor options.</p>
+    </div>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="paused">
+            <a class="share-icon" href="#paused"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">paused</span>
+            <span class="type-signature type">boolean</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Stops all the instances of this sound from playing.</p></p>
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="preload">
+            <a class="share-icon" href="#preload"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">preload</span>
+            <span class="type-signature type">boolean</span>
+            
+            <span class="access-signature">readonly</span>
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p><code>true</code> to immediately start preloading.</p>
+    </div>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-default">Default Value:</dt>
+    <dd class="tag-default"><ul class="dummy"><li>false</li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="singleInstance">
+            <a class="share-icon" href="#singleInstance"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">singleInstance</span>
+            <span class="type-signature type">boolean</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p><code>true</code> to disallow playing multiple layered instances at once.</p>
+    </div>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-default">Default Value:</dt>
+    <dd class="tag-default"><ul class="dummy"><li>false</li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="speed">
+            <a class="share-icon" href="#speed"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">speed</span>
+            <span class="type-signature type">number</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>The playback rate.</p></p>
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="sprites">
+            <a class="share-icon" href="#sprites"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">sprites</span>
+            <span class="type-signature type">SoundSprites</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Get the map of sprites.</p></p>
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="url">
+            <a class="share-icon" href="#url"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">url</span>
+            <span class="type-signature type">string</span>
+            
+            <span class="access-signature">readonly</span>
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>The file source to load.</p>
+    </div>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="volume">
+            <a class="share-icon" href="#volume"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">volume</span>
+            <span class="type-signature type">number</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Gets and sets the volume.</p></p>
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+</dd>
+
+        
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="from">
+            <a class="share-icon" href="#from"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+              
+                  Sound.from
+              
+            </span>
+            <span class="signature">(source)</span><span class="type-signature"> <a href="Sound.html">Sound</a></span>
+            
+            <span class="access-signature">static</span>
+            
+            
+        </h4>
+
+        
+    </div>
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Create a new sound instance from source.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+            <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+
+            <td class="type">
+            
+                string | string[] | <a href="Options.html">Options</a> | ArrayBuffer | HTMLAudioElement | AudioBuffer
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>Either the path or url to the source file.
+or the object of options to use.</p>
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+      <h5>Returns:</h5>
+      
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    <a href="Sound.html">Sound</a>
+            
+            </td>
+            <td class="description last">Created sound instance.</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="addSprites">
+            <a class="share-icon" href="#addSprites"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+              
+                  addSprites
+              
+            </span>
+            <span class="signature">(alias, data)</span><span class="type-signature"> <a href="SoundSprite.html">SoundSprite</a></span>
+            
+            
+            
+            
+        </h4>
+
+        
+    </div>
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Add a sound sprite, which is a saved instance of a longer sound.
+Similar to an image spritesheet.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+            <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>alias</code></td>
+            
+
+            <td class="type">
+            
+                string
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>The unique name of the sound sprite.</p>
+                
+            </td>
+        </tr>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                <a href="SoundSpriteData.html">SoundSpriteData</a>
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>Either completed function or play options.</p>
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+      <h5>Returns:</h5>
+      
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    <a href="SoundSprite.html">SoundSprite</a>
+            
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="addSprites">
+            <a class="share-icon" href="#addSprites"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+              
+                  addSprites
+              
+            </span>
+            <span class="signature">(data)</span><span class="type-signature"> SoundSprites</span>
+            
+            
+            
+            
+        </h4>
+
+        
+    </div>
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Convenience method to add more than one sprite add a time.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+            <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                SoundSpriteDataMap
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>Map of sounds to add where the key is the alias,
+and the data are configuration options.</p>
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+      <h5>Returns:</h5>
+      
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    SoundSprites
+            
+            </td>
+            <td class="description last">The map of sound sprites added.</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="autoPlayStart">
+            <a class="share-icon" href="#autoPlayStart"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+              
+                  autoPlayStart
+              
+            </span>
+            <span class="signature">()</span><span class="type-signature"> <a href="IMediaInstance.html">IMediaInstance</a></span>
+            
+            
+            
+            
+        </h4>
+
+        
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Auto play the first instance.</p></p>
+    
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+      <h5>Returns:</h5>
+      
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    <a href="IMediaInstance.html">IMediaInstance</a>
+            
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="destroy">
+            <a class="share-icon" href="#destroy"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+              
+                  destroy
+              
+            </span>
+            <span class="signature">()</span><span class="type-signature"> void</span>
+            
+            
+            
+            
+        </h4>
+
+        
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Destructor, safer to use <code>SoundLibrary.remove(alias)</code> to remove this sound.</p></p>
+    
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="pause">
+            <a class="share-icon" href="#pause"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+              
+                  pause
+              
+            </span>
+            <span class="signature">()</span><span class="type-signature"> this</span>
+            
+            
+            
+            
+        </h4>
+
+        
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Stops all the instances of this sound from playing.</p></p>
+    
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+      <h5>Returns:</h5>
+      
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    this
+            
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="play">
+            <a class="share-icon" href="#play"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+              
+                  play
+              
+            </span>
+            <span class="signature">(alias, callback)</span><span class="type-signature"> <a href="IMediaInstance.html">IMediaInstance</a> | <a href="IMediaInstance.html">IMediaInstance</a>&lt;Promise&gt;</span>
+            
+            
+            
+            
+        </h4>
+
+        
+    </div>
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Play a sound sprite, which is a saved instance of a longer sound.
+Similar to an image spritesheet.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+            <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+            <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>alias</code></td>
+            
+
+            <td class="type">
+            
+                string | <a href="PlayOptions.html">PlayOptions</a> | CompleteCallback
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>The unique name of the sound sprite.</p>
+                
+            </td>
+        </tr>
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                Function
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>Callback when completed.</p>
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+      <h5>Returns:</h5>
+      
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    <a href="IMediaInstance.html">IMediaInstance</a> | <a href="IMediaInstance.html">IMediaInstance</a>&lt;Promise&gt;
+            
+            </td>
+            <td class="description last">The sound instance,
+this cannot be reused after it is done playing. Returns a Promise if the sound
+has not yet loaded.</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="play">
+            <a class="share-icon" href="#play"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+              
+                  play
+              
+            </span>
+            <span class="signature">(source, callback)</span><span class="type-signature"> <a href="IMediaInstance.html">IMediaInstance</a> | <a href="IMediaInstance.html">IMediaInstance</a>&lt;Promise&gt;</span>
+            
+            
+            
+            
+        </h4>
+
+        
+    </div>
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Plays the sound.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+            <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+            <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+
+            <td class="type">
+            
+                Function | <a href="PlayOptions.html">PlayOptions</a>
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>Either completed function or play options.</p>
+                
+            </td>
+        </tr>
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                Function
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>Callback when completed.</p>
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+      <h5>Returns:</h5>
+      
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    <a href="IMediaInstance.html">IMediaInstance</a> | <a href="IMediaInstance.html">IMediaInstance</a>&lt;Promise&gt;
+            
+            </td>
+            <td class="description last">The sound instance,
+this cannot be reused after it is done playing. Returns a Promise if the sound
+has not yet loaded.</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="refresh">
+            <a class="share-icon" href="#refresh"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+              
+                  refresh
+              
+            </span>
+            <span class="signature">()</span><span class="type-signature"> void</span>
+            
+            
+            
+            
+        </h4>
+
+        
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Internal only, speed, loop, volume change occured.</p></p>
+    
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="refreshPaused">
+            <a class="share-icon" href="#refreshPaused"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+              
+                  refreshPaused
+              
+            </span>
+            <span class="signature">()</span><span class="type-signature"> void</span>
+            
+            
+            
+            
+        </h4>
+
+        
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Handle changes in paused state. Internal only.</p></p>
+    
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="removeSprites">
+            <a class="share-icon" href="#removeSprites"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+              
+                  removeSprites
+              
+            </span>
+            <span class="signature">(alias)</span><span class="type-signature"> <a href="Sound.html">Sound</a></span>
+            
+            
+            
+            
+        </h4>
+
+        
+    </div>
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Remove a sound sprite.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+            <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+            <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>alias</code></td>
+            
+
+            <td class="type">
+            
+                string
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>The unique name of the sound sprite, if alias is omitted, removes all sprites.</p>
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+      <h5>Returns:</h5>
+      
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    <a href="Sound.html">Sound</a>
+            
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="resume">
+            <a class="share-icon" href="#resume"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+              
+                  resume
+              
+            </span>
+            <span class="signature">()</span><span class="type-signature"> this</span>
+            
+            
+            
+            
+        </h4>
+
+        
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Resuming all the instances of this sound from playing</p></p>
+    
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+      <h5>Returns:</h5>
+      
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    this
+            
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="stop">
+            <a class="share-icon" href="#stop"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+              
+                  stop
+              
+            </span>
+            <span class="signature">()</span><span class="type-signature"> this</span>
+            
+            
+            
+            
+        </h4>
+
+        
+    </div>
+</dt>
+<dd>
+    
+      <p class="description"><p>Stops all the instances of this sound from playing.</p></p>
+    
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+      <h5>Returns:</h5>
+      
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    this
+            
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+
+    
+
+    
+</dd>
+
+        
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+        
+
+        <footer class="content-size">
+            <div class="footer">
+                Documentation generated by <a href="https://github.com/webdoc-js/webdoc">Webdoc 1</a> on Sat Jul 27 2024 11:17:00 GMT-0400 (Eastern Daylight Time)
+            </div>
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+
+
+
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
