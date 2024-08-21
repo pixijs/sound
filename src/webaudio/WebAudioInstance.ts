@@ -108,6 +108,9 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
     /** Stops the instance, don't use after this. */
     public stop(): void
     {
+        // Unset this property regardless of source
+        this._pausedReal = false;
+
         if (this._source)
         {
             this._internalStop();
@@ -289,7 +292,10 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
             // eslint-disable-next-line no-console
             console.assert(end > start, 'End time is before start time');
         }
+
         this._paused = false;
+        this._pausedReal = false;
+
         const { source, gain } = this._media.nodes.cloneBufferSource();
 
         this._source = source;
