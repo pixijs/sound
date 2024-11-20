@@ -27,6 +27,11 @@ class WebAudioMedia implements IMedia
     /** Instance of the chain builder. */
     private _nodes: WebAudioNodes;
 
+    /**
+     * Raw audio file data.
+     */
+    public file: Blob;
+
     /** Instance of the source node. */
     private _source: AudioBufferSourceNode;
 
@@ -142,8 +147,10 @@ class WebAudioMedia implements IMedia
     {
         const url: string = this.parent.url;
         const response = await DOMAdapter.get().fetch(url);
-
-        this._decode(await response.arrayBuffer(), callback);
+        const arrayBuffer = await response.arrayBuffer();
+        
+        this.file = new Blob([arrayBuffer]);
+        this._decode(arrayBuffer, callback);
     }
 
     /**
