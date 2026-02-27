@@ -377,39 +377,39 @@ function suite(useLegacy = false): void
             Sound.from({
                 url: manifest.silence,
                 preload: true,
-                loaded: (err, snd) =>
+                loaded: async (err, snd) =>
                 {
                     expect(err).toBe(null);
+                    expect(snd).not.toBe(undefined);
 
                     const filter = new filters.TelephoneFilter();
-                    const instance = snd?.play({
+                    const instance = await snd!.play({
                         filters: [filter],
                     });
-                    const instance2 = snd?.play();
+                    const instance2 = await snd!.play();
 
                     if (useLegacy)
                     {
-                        // eslint-disable-next-line @typescript-eslint/no-empty-function
-                        const spy = jest.spyOn(console, 'warn').mockImplementation(() => { });
+                        const spy = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
 
-                        expect((instance as any).filters).toBe(null);
-                        expect((instance2 as any).filters).toBe(null);
+                        expect((instance as any).filters).toEqual([]);
+                        expect((instance2 as any).filters).toEqual([]);
                         spy.mockRestore();
                     }
                     else
                     {
                         expect(instance).toBeInstanceOf(webaudio.WebAudioInstance);
                         expect(instance2).toBeInstanceOf(webaudio.WebAudioInstance);
-                        expect((instance as webaudio.WebAudioInstance).filters).toBeInstanceOf(Array);
-                        expect((instance as webaudio.WebAudioInstance).filters.length).toBe(1);
-                        expect((instance as webaudio.WebAudioInstance).filters[0]).toBe(filter);
-                        expect((instance as webaudio.WebAudioInstance).progress).toBeLessThan(1);
-                        (instance as webaudio.WebAudioInstance).filters = null as any;
-                        expect((instance as webaudio.WebAudioInstance).filters).toBe(null);
-                        expect((instance as webaudio.WebAudioInstance).progress).toBeLessThan(1);
-                        expect((instance2 as webaudio.WebAudioInstance).filters).toBeUndefined();
-                        (instance2 as webaudio.WebAudioInstance).destroy();
-                        expect((instance2 as webaudio.WebAudioInstance).filters).toBe(null);
+                        expect(instance.filters).toBeInstanceOf(Array);
+                        expect(instance.filters).toHaveLength(1);
+                        expect(instance.filters[0]).toBe(filter);
+                        expect(instance.progress).toBeLessThan(1);
+                        instance.filters = [];
+                        expect(instance.filters).toEqual([]);
+                        expect(instance.progress).toBeLessThan(1);
+                        expect(instance2.filters).toEqual([]);
+                        instance2.destroy();
+                        expect(instance2.filters).toEqual([]);
                     }
                     done();
                 }

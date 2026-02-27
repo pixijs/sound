@@ -30,10 +30,10 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
     private _muted: boolean;
 
     /** true if paused. */
-    private _pausedReal: boolean;
+    private _pausedReal: boolean = false;
 
     /** The instance volume */
-    private _volume: number;
+    private _volume: number = 1;
 
     /** Last update frame number. */
     private _lastUpdate: number;
@@ -42,13 +42,13 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
     private _elapsed: number;
 
     /** Playback rate, where 1 is 100%. */
-    private _speed: number;
+    private _speed: number = 1;
 
-    /** Playback rate, where 1 is 100%. */
-    private _end: number;
+    /** Looping end point or duration of section to play */
+    private _end: number | null;
 
     /** `true` if should be looping. */
-    private _loop: boolean;
+    private _loop: boolean = false;
 
     /** Gain node for controlling volume of instance */
     private _gain: GainNode;
@@ -63,7 +63,10 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
     private _source: AudioBufferSourceNode;
 
     /** The filters */
-    private _filters: Filter[];
+    private _filters: Filter[] = [];
+
+    /** If the volume should be ramped on pause/resume */
+    private _pauseResumeRamp: boolean | number = false;
 
     constructor(media: WebAudioMedia)
     {
@@ -169,23 +172,24 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
     {
         if (this._filters)
         {
-            this._filters?.filter((filter) => filter).forEach((filter) => filter.disconnect());
-            this._filters = null;
+            this._filters.filter((filter) => filter).forEach((filter) => filter.disconnect());
             // Reconnect direct path
-            this._source.connect(this._gain);
+            this._source?.connect(this._gain);
         }
-        this._filters = filters?.length ? filters.slice(0) : null;
-        this.refresh();
+        this._filters = filters.slice(0);
+        /**
+         * If the audio never has played and we set a filter there is no need to
+         * refresh as {@link play} will refresh later.
+         */
+        if (this._source)
+        {
+            this.refresh();
+        }
     }
 
     /** Refresh loop, volume and speed based on changes to parent */
     public refresh(): void
     {
-        // Sound could be paused
-        if (!this._source)
-        {
-            return;
-        }
         const global = this._media.context;
         const sound = this._media.parent;
 
@@ -208,7 +212,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
     /** Connect filters nodes to audio context */
     private applyFilters(): void
     {
-        if (this._filters?.length)
+        if (this._filters.length)
         {
             // Disconnect direct path before inserting filters
             this._source.disconnect();
@@ -241,7 +245,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
             if (pausedReal)
             {
                 // pause the sounds
-                this._internalStop();
+                this._internalPause();
 
                 /**
                  * The sound is paused.
@@ -264,6 +268,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
                     speed: this._speed,
                     loop: this._loop,
                     volume: this._volume,
+                    pauseResumeRamp: this._pauseResumeRamp,
                 });
             }
 
@@ -282,23 +287,28 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
      */
     public play(options: PlayOptions): void
     {
-        const { start, end, speed, loop, volume, muted, filters } = options;
+        const { start, end, speed, loop, volume, muted, filters, pauseResumeRamp } = options;
 
         if (end)
         {
             // eslint-disable-next-line no-console
             console.assert(end > start, 'End time is before start time');
         }
+        const { source, gain } = this._pausedReal ? {
+            source: this._source,
+            gain: this._gain,
+        } : this._media.nodes.cloneBufferSource();
+
         this._paused = false;
-        const { source, gain } = this._media.nodes.cloneBufferSource();
 
         this._source = source;
         this._gain = gain;
-        this._speed = speed;
-        this._volume = volume;
+        this._speed = speed ?? this._speed;
+        this._volume = volume ?? this._volume;
         this._loop = !!loop;
-        this._muted = muted;
-        this._filters = filters;
+        this._muted = muted ?? this._muted;
+        this._filters = filters?.slice(0) ?? this._filters;
+        this._pauseResumeRamp = pauseResumeRamp ?? this._pauseResumeRamp;
         this.refresh();
 
         const duration: number = this._source.buffer.duration;
@@ -308,6 +318,18 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         this._lastUpdate = this._now();
         this._elapsed = start;
         this._source.onended = this._onComplete.bind(this);
+
+        if (this._pauseResumeRamp)
+        {
+            const previousGain = this._gain.gain.value;
+
+            WebAudioUtils.setParamValue(this._gain.gain, 0);
+            WebAudioUtils.linearRampToParamValue(
+                this._gain.gain,
+                previousGain,
+                typeof this._pauseResumeRamp === 'number' ? this._pauseResumeRamp : 0.02,
+            );
+        }
 
         if (this._loop)
         {
@@ -361,8 +383,8 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
 
     public set paused(paused: boolean)
     {
-        this._paused = paused;
         this.refreshPaused();
+        this._paused = paused;
     }
 
     /** Don't use after this. */
@@ -381,8 +403,8 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
             this._media.context.events.off('refreshPaused', this.refreshPaused, this);
             this._media = null;
         }
-        this._filters?.forEach((filter) => filter.disconnect());
-        this._filters = null;
+        this._filters.forEach((filter) => filter.disconnect());
+        this._filters = [];
         this._end = null;
         this._speed = 1;
         this._volume = 1;
@@ -468,6 +490,29 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         media.context.events.on('refreshPaused', this.refreshPaused, this);
     }
 
+    private _internalPause(): void
+    {
+        if (!this._source || this._paused)
+        {
+            return;
+        }
+
+        this.enableTicker(false);
+        this._source.onended = null;
+
+        if (this._pauseResumeRamp)
+        {
+            const rampTime = this._pauseResumeRamp === true ? 0.02 : this._pauseResumeRamp;
+
+            WebAudioUtils.linearRampToParamValue(this._gain.gain, 0, rampTime);
+            this._source.stop(this._media.context.audioContext.currentTime + rampTime + 0.001);
+        }
+        else
+        {
+            this._source.stop(this._media.context.audioContext.currentTime);
+        }
+    }
+
     /** Stops the instance. */
     private _internalStop(): void
     {
@@ -475,7 +520,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         {
             this.enableTicker(false);
             this._source.onended = null;
-            this._source.stop(0); // param needed for iOS 8 bug
+            this._source.stop(this._media.context.audioContext.currentTime);
             this._source.disconnect();
             try
             {

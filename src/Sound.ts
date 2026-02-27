@@ -108,6 +108,19 @@ interface PlayOptions
      */
     filters?: Filter[];
     /**
+     * If the volume should be ramped in and out over 20ms on pause/resume.
+     * Can also be set to a value in seconds the audio should be ramped over.
+     *
+     * Please note that long ramp times and repeated pausing/resuming can still
+     * cause audio pops and other oddities as the stop/startcalls overlap.
+     *
+     * Also note that _very_ short ramp times also can create audio pops.
+     *
+     * Reduces chance of "pops" for audio during pause/resume.
+     * Only supported with WebAudio.
+     */
+    pauseResumeRamp?: boolean | number,
+    /**
      * When completed.
      * @type {Function}
      */
@@ -215,10 +228,10 @@ class Sound
     private _volume: number;
 
     /** The internal paused state. */
-    private _paused: boolean;
+    private _paused: boolean = false;
 
     /** The internal muted state. */
-    private _muted: boolean;
+    private _muted: boolean = false;
 
     /** The internal volume. */
     private _loop: boolean;
@@ -617,7 +630,7 @@ class Sound
                     {
                         if (options.loaded)
                         {
-                            options.loaded(err, sound, media);
+                            options.loaded(null, sound, media);
                         }
                         resolve(media);
                     }

@@ -11,14 +11,38 @@ const allFilters = [];
 const allFiltersMap = {};
 let controller;
 
+const updatePlayButton = (icon, label) =>
+{
+    const iconElement = $('#play > span');
+
+    iconElement.classList.toggle('glyphicon-play', icon === 'play');
+    iconElement.classList.toggle('glyphicon-pause', icon === 'pause');
+    iconElement.nextSibling.textContent = ` ${label}`;
+};
+
 $('#play').addEventListener('click', function ()
 {
-    sound.play();
+    if (sound.isPlaying)
+    {
+        sound.pause();
+        updatePlayButton('play', 'Resume');
+    }
+    else if (sound.paused)
+    {
+        sound.resume();
+        updatePlayButton('pause', 'Pause');
+    }
+    else
+    {
+        sound.play();
+        updatePlayButton('pause', 'Pause');
+    }
 });
 
 $('#stop').addEventListener('click', function ()
 {
     sound.stop();
+    updatePlayButton('play', 'Play');
 });
 
 try

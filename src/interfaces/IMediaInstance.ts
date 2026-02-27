@@ -1,3 +1,4 @@
+import { Filter } from '../filters/Filter.js';
 import { PlayOptions } from '../Sound';
 import { IMedia } from './IMedia';
 
@@ -42,6 +43,12 @@ interface IMediaInstance
 
     /** Set the muted state of the instance */
     muted: boolean;
+
+    /**
+     * Array of filters to apply to the sound.
+     * Only supported with WebAudio.
+     */
+    filters: Filter[];
 
     /** Stop the current instance from playing. */
     stop(): void;

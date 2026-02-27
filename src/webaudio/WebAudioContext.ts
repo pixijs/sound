@@ -199,7 +199,7 @@ class WebAudioContext extends Filterable implements IMediaContext
      * @type {AudioContext}
      * @readonly
      */
-    public static get AudioContext(): typeof AudioContext
+    public static get AudioContext(): (typeof AudioContext) | null
     {
         const win: any = window as any;
 
@@ -215,7 +215,7 @@ class WebAudioContext extends Filterable implements IMediaContext
      * @type {OfflineAudioContext}
      * @readonly
      */
-    public static get OfflineAudioContext(): typeof OfflineAudioContext
+    public static get OfflineAudioContext(): (typeof OfflineAudioContext) | null
     {
         const win: any = window as any;
 

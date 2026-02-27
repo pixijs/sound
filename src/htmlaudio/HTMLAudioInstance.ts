@@ -26,34 +26,34 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
     private _media: HTMLAudioMedia;
 
     /** Playback rate, where 1 is 100%. */
-    private _end: number;
+    private _end: number | null = null;
 
     /** Current instance paused state. */
-    private _paused: boolean;
+    private _paused: boolean = false;
 
     /** Current instance muted state. */
-    private _muted: boolean;
+    private _muted: boolean = false;
 
     /** Current actual paused state. */
-    private _pausedReal: boolean;
+    private _pausedReal: boolean = false;
 
     /** Total length of the audio. */
     private _duration: number;
 
     /** Playback rate, where 1 is 100%. */
-    private _start: number;
+    private _start: number = 0;
 
     /** `true` if the audio is actually playing. */
     private _playing: boolean;
 
     /** Volume for the instance. */
-    private _volume: number;
+    private _volume: number = 1;
 
     /** Speed for the instance. */
-    private _speed: number;
+    private _speed: number = 1;
 
     /** `true` for looping the playback */
-    private _loop: boolean;
+    private _loop: boolean = false;
 
     /** @param parent - Parent element */
     constructor(parent: HTMLAudioMedia)
@@ -221,7 +221,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
     {
         console.warn('HTML Audio does not support filters');
 
-        return null;
+        return [];
     }
     public set filters(_filters: Filter[])
     {
