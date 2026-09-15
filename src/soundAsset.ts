@@ -3,8 +3,8 @@ import { getInstance } from './instance';
 import { Options, Sound } from './Sound';
 import { extensions as exts, mimes, supported } from './utils/supported';
 
-/** Get the alias for the sound */
-const getAlias = (asset: ResolvedAsset) =>
+/** Get all aliases while preserving the basename fallback for direct URL loads. */
+const getAliases = (asset: ResolvedAsset) =>
 {
     const src = asset.src;
     let alias = asset?.alias?.[0];
@@ -14,7 +14,7 @@ const getAlias = (asset: ResolvedAsset) =>
         alias = path.basename(src, path.extname(src));
     }
 
-    return alias;
+    return [...new Set([alias, ...(asset.alias || []).filter((entry) => entry && entry !== src)])];
 };
 
 /**
@@ -64,7 +64,10 @@ const soundAsset = {
                 },
             }));
 
-            getInstance().add(getAlias(asset), sound);
+            for (const alias of getAliases(asset))
+            {
+                getInstance().add(alias, sound);
+            }
 
             return sound;
         },
@@ -72,7 +75,19 @@ const soundAsset = {
         /** Remove the sound from the library */
         async unload(_sound: Sound, asset: ResolvedAsset): Promise<void>
         {
-            getInstance().remove(getAlias(asset));
+            const library = getInstance();
+            const alias = getAliases(asset).find((name) => library.exists(name) && library.find(name) === _sound);
+
+            // Removing one alias removes every reference to this sound. It may already
+            // have been removed manually, or an alias may now belong to another sound.
+            if (alias !== undefined)
+            {
+                library.remove(alias);
+            }
+            else if (_sound.media)
+            {
+                _sound.destroy();
+            }
         },
     } as LoaderParser<Sound>,
 } as AssetExtension;
