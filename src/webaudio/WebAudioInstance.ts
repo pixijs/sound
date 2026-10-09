@@ -7,6 +7,9 @@ import { WebAudioUtils } from './WebAudioUtils';
 
 let id = 0;
 
+/** Long enough for the waveform to reach 0 before the source is cut. */
+const FOCUS_PAUSE_FADE_SEC = 0.03;
+
 /**
  * A single play instance that handles the AudioBufferSourceNode.
  * @memberof webaudio
@@ -471,22 +474,114 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
     /** Stops the instance. */
     private _internalStop(): void
     {
-        if (this._source)
+        const source = this._source;
+        const gain = this._gain;
+        const audioContext = this._media?.context?.audioContext;
+
+        if (!source)
         {
-            this.enableTicker(false);
-            this._source.onended = null;
-            this._source.stop(0); // param needed for iOS 8 bug
-            this._source.disconnect();
+            return;
+        }
+
+        this.enableTicker(false);
+        source.onended = null;
+
+        // Blur suspends the context and stops in the same turn. suspend() is async,
+        // so stop(0) cuts the waveform while samples are still rendering.
+        if (!gain || !audioContext || audioContext.state !== 'running')
+        {
+            source.stop(0); // param needed for iOS 8 bug
+            source.disconnect();
+            this._clearSourceBuffer(source);
+            this._source = null;
+
+            return;
+        }
+
+        const now = audioContext.currentTime;
+        const stopAt = now + FOCUS_PAUSE_FADE_SEC;
+
+        try
+        {
+            const param = gain.gain;
+            const current = param.value;
+
+            param.cancelScheduledValues(now);
+            param.setValueAtTime(current, now);
+            param.linearRampToValueAtTime(0, stopAt);
+            source.stop(stopAt);
+        }
+        catch (err)
+        {
             try
             {
-                this._source.buffer = null;
+                source.stop(0); // param needed for iOS 8 bug
+            }
+            catch (stopErr)
+            {
+                void stopErr;
+            }
+            try
+            {
+                source.disconnect();
+            }
+            catch (disconnectErr)
+            {
+                void disconnectErr;
+            }
+            this._clearSourceBuffer(source);
+            this._source = null;
+            void err;
+
+            return;
+        }
+
+        this._source = null;
+
+        let cleaned = false;
+        let onState: () => void;
+        const cleanup = (): void =>
+        {
+            if (cleaned)
+            {
+                return;
+            }
+            cleaned = true;
+            audioContext.removeEventListener('statechange', onState);
+            try
+            {
+                source.disconnect();
             }
             catch (err)
             {
-                // try/catch workaround for bug in older Chrome versions
-                console.warn('Failed to set AudioBufferSourceNode.buffer to null:', err);
+                // Already disconnected.
+                void err;
             }
-            this._source = null;
+            this._clearSourceBuffer(source);
+        };
+
+        onState = (): void =>
+        {
+            if (audioContext.state !== 'running')
+            {
+                cleanup();
+            }
+        };
+        audioContext.addEventListener('statechange', onState);
+        setTimeout(cleanup, FOCUS_PAUSE_FADE_SEC * 1000 + 50);
+    }
+
+    /** Release the buffer on a source that is already stopping. */
+    private _clearSourceBuffer(source: AudioBufferSourceNode): void
+    {
+        try
+        {
+            source.buffer = null;
+        }
+        catch (err)
+        {
+            // try/catch workaround for bug in older Chrome versions
+            console.warn('Failed to set AudioBufferSourceNode.buffer to null:', err);
         }
     }
 
