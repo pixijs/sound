@@ -265,6 +265,8 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
                     speed: this._speed,
                     loop: this._loop,
                     volume: this._volume,
+                    muted: this._muted,
+                    filters: this._filters,
                 });
             }
 

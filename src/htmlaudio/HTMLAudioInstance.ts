@@ -287,6 +287,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
                     volume: this._volume,
                     speed: this._speed,
                     loop: this._loop,
+                    muted: this._muted,
                 });
             }
 
