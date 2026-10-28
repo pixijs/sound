@@ -141,9 +141,24 @@ class WebAudioMedia implements IMedia
     private async _loadUrl(callback?: LoadedCallback): Promise<void>
     {
         const url: string = this.parent.url;
-        const response = await DOMAdapter.get().fetch(url);
 
-        this._decode(await response.arrayBuffer(), callback);
+        try
+        {
+            const response = await DOMAdapter.get().fetch(url);
+
+            this._decode(await response.arrayBuffer(), callback);
+        }
+        catch (err)
+        {
+            if (callback)
+            {
+                callback(err);
+            }
+            else
+            {
+                console.error(err);
+            }
+        }
     }
 
     /**
