@@ -216,8 +216,8 @@ for (const useLegacy of [false, true])
 
         const resumeCalls: [string, (instance: IMediaInstance) => void][] = [
             ['resumeAll()', () => sound.resumeAll()],
-            ['sound.resume()', () => music.resume()],
-            ['sound.paused = false', () =>
+            ['music.resume()', () => music.resume()],
+            ['music.paused = false', () =>
             {
                 music.paused = false;
             }],
