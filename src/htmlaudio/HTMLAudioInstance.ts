@@ -61,6 +61,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         super();
 
         this.id = id++;
+        this._pausedReal = false;
 
         this.init(parent);
     }
@@ -254,8 +255,8 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         const global = this._media.context;
         const sound = this._media.parent;
 
-        // Handle the paused state
-        const pausedReal = this._paused || sound.paused || global.paused;
+        // Handle the paused state, these can be undefined
+        const pausedReal = !!(this._paused || sound.paused || global.paused);
 
         if (pausedReal !== this._pausedReal)
         {

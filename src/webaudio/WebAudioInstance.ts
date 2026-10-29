@@ -72,6 +72,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         this.id = id++;
         this._media = null;
         this._paused = false;
+        this._pausedReal = false;
         this._muted = false;
         this._elapsed = 0;
 
@@ -231,8 +232,8 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         const global = this._media.context;
         const sound = this._media.parent;
 
-        // Consider global and sound paused
-        const pausedReal = this._paused || sound.paused || global.paused;
+        // Consider global and sound paused, these can be undefined
+        const pausedReal = !!(this._paused || sound.paused || global.paused);
 
         if (pausedReal !== this._pausedReal)
         {
@@ -290,6 +291,8 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
             console.assert(end > start, 'End time is before start time');
         }
         this._paused = false;
+        this._internalStop();
+        this._gain?.disconnect();
         const { source, gain } = this._media.nodes.cloneBufferSource();
 
         this._source = source;
@@ -475,7 +478,18 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         {
             this.enableTicker(false);
             this._source.onended = null;
-            this._source.stop(0); // param needed for iOS 8 bug
+            try
+            {
+                this._source.stop(0); // param needed for iOS 8 bug
+            }
+            catch (err)
+            {
+                // A source that never started can't be stopped, e.g. play() threw before start()
+                if ((err as DOMException).name !== 'InvalidStateError')
+                {
+                    throw err;
+                }
+            }
             this._source.disconnect();
             try
             {

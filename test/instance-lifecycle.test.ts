@@ -26,6 +26,11 @@ async function level(): Promise<number>
     return Math.max(...Array.from(data, (value) => Math.abs(value - 128)));
 }
 
+function clearPool(): void
+{
+    (Sound as any)._pool.length = 0;
+}
+
 for (const useLegacy of [false, true])
 {
     describe(`Instance lifecycle (${useLegacy ? 'htmlaudio' : 'webaudio'})`, () =>
@@ -56,7 +61,7 @@ for (const useLegacy of [false, true])
         beforeAll(async () =>
         {
             sound.useLegacy = useLegacy;
-            (Sound as any)._pool.length = 0;
+            clearPool();
             music = await new Promise<Sound>((resolve, reject) =>
             {
                 sound.add(alias, {
@@ -84,8 +89,35 @@ for (const useLegacy of [false, true])
         afterAll(() =>
         {
             sound.remove(alias);
-            (Sound as any)._pool.length = 0;
+            clearPool();
         });
+
+        if (!useLegacy)
+        {
+            const origins: [string, boolean][] = [['fresh', false], ['pooled', true]];
+
+            // Runs before the blur test below, while the context has no saved pre-blur state
+            it.each(origins)('should not restart a playing %s instance on a focus with no blur first',
+                async (_name, pooled) =>
+                {
+                    expect((sound.context as any)._pausedOnBlur).toBeUndefined();
+                    clearPool();
+                    if (pooled)
+                    {
+                        (music.play() as IMediaInstance).stop();
+                    }
+                    const instance = music.play({ loop: true }) as IMediaInstance;
+                    let resumes = 0;
+
+                    instance.on('resumed', () => resumes++);
+                    await wait(50);
+                    window.dispatchEvent(new Event('focus'));
+
+                    expect(resumes).toBe(0);
+                    music.stop();
+                    expect(await level()).toBe(0);
+                });
+        }
 
         it('should not emit stop again from an instance that was already stopped', async () =>
         {
@@ -179,6 +211,92 @@ for (const useLegacy of [false, true])
                 expect(stopCount()).toBe(1);
                 expect(music.instances.length).toBe(0);
                 await expectSilent();
+            });
+        }
+
+        const resumeCalls: [string, (instance: IMediaInstance) => void][] = [
+            ['resumeAll()', () => sound.resumeAll()],
+            ['sound.resume()', () => music.resume()],
+            ['sound.paused = false', () =>
+            {
+                music.paused = false;
+            }],
+            ['instance.paused = false', (instance) =>
+            {
+                instance.paused = false;
+            }],
+        ];
+
+        it.each(resumeCalls)('should do nothing on %s for a playing instance that was never paused', async (_name, resume) =>
+        {
+            // a pooled instance hides this, destroy() resets its paused state
+            clearPool();
+            const instance = music.play({ loop: true }) as IMediaInstance;
+            let resumes = 0;
+
+            instance.on('resumed', () => resumes++);
+            await wait(50);
+            resume(instance);
+
+            expect(resumes).toBe(0);
+            // HTML turns the loop off when it resumes
+            expect(instance.loop).toBe(true);
+            music.stop();
+            await expectSilent();
+        });
+
+        // An HTML instance has one element, so there's no second source to leak or unstarted one to stop
+        if (!useLegacy)
+        {
+            it('should stop the old source when an instance is played again', async () =>
+            {
+                const instance = music.play({ loop: true }) as IMediaInstance;
+
+                await wait(50);
+                instance.play({ start: 0, end: null, speed: 1, volume: 1, loop: true, muted: false });
+                music.stop();
+
+                expect(await level()).toBe(0);
+            });
+
+            it('should not let the old source end an instance that was played again', async () =>
+            {
+                // the first source ends about 1s after the replay, the second about 1.8s after
+                const instance = music.play({ start: music.duration - 1.3 }) as IMediaInstance;
+
+                await wait(300);
+                instance.play({ start: music.duration - 1.8, end: null, speed: 1, volume: 1, loop: false, muted: false });
+                await wait(1300);
+
+                expect(music.instances).toContain(instance);
+                music.stop();
+                expect(await level()).toBe(0);
+            });
+
+            it('should stop an instance whose play() threw before it started', () =>
+            {
+                const assert = jest.spyOn(console, 'assert').mockImplementation(() => undefined);
+
+                expect(() => music.play({ start: 1, end: 0.5 })).toThrow(RangeError);
+                assert.mockRestore();
+                expect(() => music.stop()).not.toThrow();
+                expect(music.instances.length).toBe(0);
+            });
+
+            it('should stop an instance whose resume threw', async () =>
+            {
+                const instance = music.play() as IMediaInstance;
+
+                await wait(50);
+                instance.paused = true;
+                instance.volume = NaN;
+                expect(() =>
+                {
+                    instance.paused = false;
+                }).toThrow(TypeError);
+
+                expect(() => music.stop()).not.toThrow();
+                expect(music.instances.length).toBe(0);
             });
         }
     });
