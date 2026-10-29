@@ -15,25 +15,36 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       SOURCE_DIR: 'deploy'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install xvfb
       run: sudo apt-get install xvfb
-    - name: Use Node.js 16.x
-      uses: actions/setup-node@v3
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v4
       with:
-        node-version: 16
-    - name: Install npm
-      run: npm install -g npm@8
+        node-version: 18
     - name: Install dependencies
       run: npm ci
 
+    # extension-scripts 1.8.1 exits 0 when a step fails, so the gates call the tools directly
     - name: Run Unit Tests
-      run: xvfb-run --auto-servernum npm test
+      # jest-electron-runner waits forever if Electron fails to start
+      timeout-minutes: 2
+      run: xvfb-run --auto-servernum npx jest --config node_modules/@pixi/extension-scripts/lib/configs/jest.mjs --rootDir .
+
+    - name: Check Types
+      run: npx tsc -p tsconfig.json --noEmit
+
+    - name: Lint
+      run: npx eslint --ext .ts --ext .js --ext .mjs src test examples/client
 
     - name: Prepare Deploy
       run: npm run deploy:ci
+
+    # deploy:ci stops silently at a failed bundle, declaration or docs build
+    - name: Check Build Output
+      run: test -f dist/pixi-sound.js && test -f lib/index.d.ts && test -f docs/index.html
 
     # All the below are deploy-related steps
     - name: Extract Branch Name
