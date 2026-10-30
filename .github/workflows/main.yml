@@ -17,18 +17,19 @@ jobs:
       SOURCE_DIR: 'deploy'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Install xvfb
       run: sudo apt-get install xvfb
-    - name: Use Node.js 18.x
-      uses: actions/setup-node@v4
+    - name: Use Node.js 24.x
+      uses: actions/setup-node@v7
       with:
-        node-version: 18
+        node-version: 24
     - name: Install dependencies
       run: npm ci
 
     - name: Run Unit Tests
       run: xvfb-run --auto-servernum npm test
+      timeout-minutes: 2
 
     - name: Prepare Deploy
       run: npm run deploy:ci
@@ -77,6 +78,6 @@ jobs:
     # Automatically attach browser files to release
     - name: Upload to Release
       if: github.event_name == 'release'
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v3
       with:
         files: dist/*
