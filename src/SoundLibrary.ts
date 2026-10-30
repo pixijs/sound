@@ -244,15 +244,23 @@ class SoundLibrary
     }
 
     /**
-     * Removes a sound by alias.
+     * Removes a sound and all aliases referencing it.
      * @param alias - The sound alias reference.
      * @return Instance for chaining.
      */
     public remove(alias: string): this
     {
         this.exists(alias, true);
-        this._sounds[alias].destroy();
-        delete this._sounds[alias];
+        const sound = this._sounds[alias];
+
+        for (const name in this._sounds)
+        {
+            if (this._sounds[name] === sound)
+            {
+                delete this._sounds[name];
+            }
+        }
+        sound.destroy();
 
         return this;
     }
@@ -355,11 +363,15 @@ class SoundLibrary
      */
     public removeAll(): this
     {
-        for (const alias in this._sounds)
+        if (!this._sounds)
         {
-            this._sounds[alias].destroy();
-            delete this._sounds[alias];
+            return this;
         }
+        for (const sound of new Set(Object.values(this._sounds)))
+        {
+            sound.destroy();
+        }
+        this._sounds = {};
 
         return this;
     }
@@ -370,9 +382,13 @@ class SoundLibrary
      */
     public stopAll(): this
     {
-        for (const alias in this._sounds)
+        if (!this._sounds)
         {
-            this._sounds[alias].stop();
+            return this;
+        }
+        for (const sound of new Set(Object.values(this._sounds)))
+        {
+            sound.stop();
         }
 
         return this;
