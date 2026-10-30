@@ -140,10 +140,43 @@ class WebAudioMedia implements IMedia
     /** Loads a sound using XHMLHttpRequest object. */
     private async _loadUrl(callback?: LoadedCallback): Promise<void>
     {
-        const url: string = this.parent.url;
-        const response = await DOMAdapter.get().fetch(url);
+        try
+        {
+            this._decode(await this._fetch(this.parent.url), callback);
+        }
+        catch (err)
+        {
+            if (callback)
+            {
+                callback(err);
+            }
+            else
+            {
+                console.error(err);
+            }
+        }
+    }
 
-        this._decode(await response.arrayBuffer(), callback);
+    /** Fetches the file, adding the URL to network and HTTP errors. */
+    private async _fetch(url: string): Promise<ArrayBuffer>
+    {
+        let response: Response;
+
+        try
+        {
+            response = await DOMAdapter.get().fetch(url);
+            if (response.ok)
+            {
+                return await response.arrayBuffer();
+            }
+        }
+        catch (err)
+        {
+            // Object.assign because the ES2020 target has no ErrorOptions
+            throw Object.assign(new Error(`Failed to load sound from ${url}: ${err.message}`), { cause: err });
+        }
+
+        throw new Error(`Failed to load sound from ${url}: HTTP ${response.status}`);
     }
 
     /**
