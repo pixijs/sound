@@ -9,10 +9,12 @@ describe('WebAudioMedia load errors', () =>
 {
     const url = path.join(__resources, 'missing.mp3');
 
+    type LoadError = Error & { cause?: unknown };
+
     // Waits past the decode callbacks, so a second call to loaded is counted
-    async function load(): Promise<Error[]>
+    async function load(): Promise<LoadError[]>
     {
-        const errors: Error[] = [];
+        const errors: LoadError[] = [];
 
         Sound.from({ url, preload: true, loaded: (err) => errors.push(err) });
         await new Promise((resolve) => setTimeout(resolve, 100));
@@ -25,40 +27,65 @@ describe('WebAudioMedia load errors', () =>
         jest.restoreAllMocks();
     });
 
-    it('should call loaded once when fetch rejects', async () =>
+    it('should call loaded once with the URL when fetch rejects', async () =>
     {
-        jest.spyOn(settings.ADAPTER, 'fetch').mockRejectedValue(new TypeError('Failed to fetch'));
+        const error = new TypeError('Failed to fetch');
+
+        jest.spyOn(settings.ADAPTER, 'fetch').mockRejectedValue(error);
 
         const errors = await load();
 
         expect(errors).toHaveLength(1);
+        expect(errors[0].message).toBe(`Failed to load sound from ${url}: Failed to fetch`);
+        expect(errors[0].cause).toBe(error);
     });
 
-    it('should call loaded once when reading the response fails', async () =>
+    it('should call loaded once with the URL when reading the response fails', async () =>
     {
+        const error = new TypeError('network error');
+
         jest.spyOn(settings.ADAPTER, 'fetch').mockResolvedValue({
-            arrayBuffer: () => Promise.reject(new TypeError('network error')),
+            ok: true,
+            arrayBuffer: () => Promise.reject(error),
         } as unknown as Response);
 
         const errors = await load();
 
         expect(errors).toHaveLength(1);
+        expect(errors[0].message).toBe(`Failed to load sound from ${url}: network error`);
+        expect(errors[0].cause).toBe(error);
     });
 
-    it('should call loaded once when decode throws', async () =>
+    it('should call loaded once with the HTTP status without decoding when the response is not ok', async () =>
     {
+        jest.spyOn(settings.ADAPTER, 'fetch').mockResolvedValue(new Response(null, { status: 404 }));
+        const decode = jest.spyOn(webaudio.WebAudioContext.prototype, 'decode');
+
+        const errors = await load();
+
+        expect(errors).toHaveLength(1);
+        expect(errors[0].message).toBe(`Failed to load sound from ${url}: HTTP 404`);
+        expect(errors[0]).not.toHaveProperty('cause');
+        expect(decode).not.toHaveBeenCalled();
+    });
+
+    it('should pass a decode error to loaded unchanged', async () =>
+    {
+        const error = new TypeError('Cannot read properties of null');
+
         jest.spyOn(settings.ADAPTER, 'fetch').mockResolvedValue(new Response(new ArrayBuffer(8)));
         jest.spyOn(webaudio.WebAudioContext.prototype, 'decode').mockImplementation(() =>
         {
-            throw new TypeError('Cannot read properties of null');
+            throw error;
         });
 
         const errors = await load();
 
         expect(errors).toHaveLength(1);
+        expect(errors[0]).toBe(error);
     });
 
-    it('should log the error once when there is no loaded callback', async () =>
+    it('should log the error with the URL when there is no loaded callback', async () =>
     {
         jest.spyOn(settings.ADAPTER, 'fetch').mockRejectedValue(new TypeError('Failed to fetch'));
         const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -67,5 +94,6 @@ describe('WebAudioMedia load errors', () =>
         await new Promise((resolve) => setTimeout(resolve, 100));
 
         expect(consoleError).toHaveBeenCalledTimes(1);
+        expect(consoleError.mock.calls[0][0].message).toBe(`Failed to load sound from ${url}: Failed to fetch`);
     });
 });
