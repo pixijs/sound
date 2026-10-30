@@ -50,6 +50,12 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
     /** `true` if should be looping. */
     private _loop: boolean;
 
+    /**
+     * Start of the looping region from the first `play()`.
+     * Resume seeks inside this region instead of using the offset as `loopStart`.
+     */
+    private _loopRegionStart: number | null = null;
+
     /** Gain node for controlling volume of instance */
     private _gain: GainNode;
 
@@ -285,7 +291,21 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
      */
     public play(options: PlayOptions): void
     {
-        const { start, end, speed, loop, volume, muted, filters } = options;
+        const { end, speed, loop, volume, muted, filters } = options;
+        let { start } = options;
+
+        // Resume passes `elapsed % bufferDuration` as start and play() would also
+        // use that value as loopStart, collapsing a sprite loop to its tail.
+        if (loop && this._loopRegionStart !== null)
+        {
+            const regionEnd = end ?? this._duration;
+            const length = regionEnd - this._loopRegionStart;
+
+            if (length > 0)
+            {
+                start = this._loopRegionStart + positiveModulo(this._elapsed - this._loopRegionStart, length);
+            }
+        }
 
         if (end)
         {
@@ -316,8 +336,12 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
 
         if (this._loop)
         {
+            if (this._loopRegionStart === null)
+            {
+                this._loopRegionStart = start ?? 0;
+            }
             this._source.loopEnd = end;
-            this._source.loopStart = start;
+            this._source.loopStart = this._loopRegionStart;
             this._source.start(0, start);
         }
         else if (end)
@@ -397,6 +421,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         this._paused = false;
         this._muted = false;
         this._pausedReal = false;
+        this._loopRegionStart = null;
     }
 
     /**
@@ -533,6 +558,12 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
          */
         this.emit('end', this);
     }
+}
+
+/** Non-negative remainder. Playback elapsed can sit slightly below the region start. */
+function positiveModulo(value: number, length: number): number
+{
+    return ((value % length) + length) % length;
 }
 
 export { WebAudioInstance };
