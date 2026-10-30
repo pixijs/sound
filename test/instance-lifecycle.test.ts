@@ -299,5 +299,93 @@ for (const useLegacy of [false, true])
                 expect(music.instances.length).toBe(0);
             });
         }
+
+        // An HTML element starts playing asynchronously, so a stop or pause can come before it does
+        if (useLegacy)
+        {
+            const rejections: Error[] = [];
+            const onRejection = (event: PromiseRejectionEvent): void =>
+            {
+                rejections.push(event.reason);
+            };
+            const elementOf = (instance: IMediaInstance): HTMLAudioElement => (instance as any)._source;
+
+            const expectStopped = async (element: HTMLAudioElement): Promise<void> =>
+            {
+                await wait(300);
+                const time = element.currentTime;
+
+                await wait(100);
+                expect(element.paused).toBe(true);
+                expect(element.currentTime).toBe(time);
+                expect(rejections).toEqual([]);
+            };
+
+            beforeAll(() => window.addEventListener('unhandledrejection', onRejection));
+            beforeEach(() =>
+            {
+                rejections.length = 0;
+            });
+            afterAll(() => window.removeEventListener('unhandledrejection', onRejection));
+
+            it('should pause the element when stopped after it started playing', async () =>
+            {
+                const instance = music.play() as IMediaInstance;
+                const element = elementOf(instance);
+
+                await wait(300);
+                expect(element.paused).toBe(false);
+                instance.stop();
+                await expectStopped(element);
+            });
+
+            it('should pause the element when stopped in the same tick as play', async () =>
+            {
+                const instance = music.play() as IMediaInstance;
+                const element = elementOf(instance);
+
+                instance.stop();
+                await expectStopped(element);
+            });
+
+            const pauseCalls: [string, (instance: IMediaInstance) => void, (instance: IMediaInstance) => void][] = [
+                ['pauseAll()', () => sound.pauseAll(), () => sound.resumeAll()],
+                ['music.pause()', () => music.pause(), () => music.resume()],
+                ['instance.paused = true', (instance) =>
+                {
+                    instance.paused = true;
+                }, (instance) =>
+                {
+                    instance.paused = false;
+                }],
+            ];
+
+            it.each(pauseCalls)('should pause the element on %s in the same tick as play, and play it on resume',
+                async (_name, pause, resume) =>
+                {
+                    const instance = music.play() as IMediaInstance;
+                    const element = elementOf(instance);
+
+                    pause(instance);
+                    await expectStopped(element);
+                    resume(instance);
+                    await wait(300);
+                    expect(element.paused).toBe(false);
+                    instance.stop();
+                    await expectStopped(element);
+                });
+
+            it('should still surface a play() error other than a pause interrupting it', async () =>
+            {
+                const { url } = music;
+
+                music.url = path.join(__dirname, 'resources', 'missing.mp3');
+                music.play();
+                music.url = url;
+                await wait(300);
+
+                expect(rejections.map((error) => error.name)).toEqual(['NotSupportedError']);
+            });
+        }
     });
 }
