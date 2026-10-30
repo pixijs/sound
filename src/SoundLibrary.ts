@@ -363,6 +363,10 @@ class SoundLibrary
      */
     public removeAll(): this
     {
+        if (!this._sounds)
+        {
+            return this;
+        }
         for (const sound of new Set(Object.values(this._sounds)))
         {
             sound.destroy();
@@ -378,6 +382,10 @@ class SoundLibrary
      */
     public stopAll(): this
     {
+        if (!this._sounds)
+        {
+            return this;
+        }
         for (const sound of new Set(Object.values(this._sounds)))
         {
             sound.stop();

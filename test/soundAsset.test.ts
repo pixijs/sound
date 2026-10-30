@@ -126,5 +126,21 @@ for (const useLegacy of [false, true])
             sound.stopAll();
             expect(stop).toHaveBeenCalledTimes(1);
         });
+
+        it('should allow removeAll, stopAll and close after close', () =>
+        {
+            sound.close();
+
+            try
+            {
+                expect(() => sound.removeAll()).not.toThrow();
+                expect(() => sound.stopAll()).not.toThrow();
+                expect(() => sound.close()).not.toThrow();
+            }
+            finally
+            {
+                sound.init();
+            }
+        });
     });
 }
