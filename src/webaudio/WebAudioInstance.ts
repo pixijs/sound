@@ -296,7 +296,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
 
         // Resume passes `elapsed % bufferDuration` as start and play() would also
         // use that value as loopStart, collapsing a sprite loop to its tail.
-        if (loop && this._loopRegionStart != null)
+        if (loop && this._loopRegionStart !== null)
         {
             const regionEnd = end ?? this._duration;
             const length = regionEnd - this._loopRegionStart;
@@ -336,7 +336,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
 
         if (this._loop)
         {
-            if (this._loopRegionStart == null)
+            if (this._loopRegionStart === null)
             {
                 this._loopRegionStart = start ?? 0;
             }
