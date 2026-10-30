@@ -1,0 +1,79 @@
+input[type='range'] {
+  -webkit-appearance: none;
+  display: block;
+  margin: 1em auto;
+  padding: 0 0.5em;
+  min-height: 2em;
+  background: transparent;
+  /* IE */
+  font-size: 1em;
+  cursor: pointer;
+  /* slider components */
+  /* slider variations */
+}
+input[type='range']::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  height: 0.5em;
+  border-radius: 0.25em;
+  background: #d8d8d8;
+}
+input[type='range']::-moz-range-track {
+  border: none;
+  height: 0.5em;
+  border-radius: 0.25em;
+  background: #d8d8d8;
+}
+input[type='range']::-ms-track {
+  border: none;
+  height: 0.5em;
+  border-radius: 0.25em;
+  background: #d8d8d8;
+  color: transparent;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  position: relative;
+  margin: -0.25em;
+  border: none;
+  /* Firefox, IE */
+  width: 1em;
+  height: 1em;
+  border-radius: 0.5em;
+}
+input[type='range']::-moz-range-thumb {
+  border: none;
+  /* Firefox, IE */
+  width: 1em;
+  height: 1em;
+  border-radius: 0.5em;
+  cursor: ew-resize;
+}
+input[type='range']::-ms-thumb {
+  border: none;
+  /* Firefox, IE */
+  width: 1em;
+  height: 1em;
+  border-radius: 0.5em;
+}
+input[type='range']::-ms-fill-lower, input[type='range']::-ms-fill-upper {
+  border-radius: 5em;
+  background: transparent;
+}
+input[type='range']::-ms-tooltip {
+  display: none;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background: #3f9eff;
+}
+input[type='range']::-moz-range-thumb {
+  background: #3f9eff;
+  cursor: ns-resize;
+}
+input[type='range']::-ms-thumb {
+  background: #3f9eff;
+}
+input[type='range']:focus {
+  outline: none;
+  background: whitesmoke;
+}

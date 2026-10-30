@@ -1,0 +1,272 @@
+body {
+    font-family: Roboto,sans-serif;
+    font-weight: 300;
+    background-color: #ecedf1;
+    color: #333;
+    color: #919bac;
+    background-color: #272d37;
+}
+
+h1, h2, h3, h4 {
+    font-weight: 400;
+    color: #fff;
+}
+
+h1 .logo {
+    width: 85px;
+    vertical-align: baseline;
+    margin-right: 10px;
+    font-size:2.5rem;
+}
+
+.navbar-inverse {
+    background-color: #1b2027;
+    border:0;
+    border-radius:0;
+}
+
+.navbar-inverse .navbar-nav>.active>a,
+.navbar-inverse .navbar-nav>.active>a:focus,
+.navbar-inverse .navbar-nav>.active>a:hover {
+    color: #fff;
+    background-color: #14171d;
+}
+
+.hljs, .CodeMirror {
+    height: auto !important;
+    background: #38404e !important;
+    border: 1px solid #465162;
+    color: #919bac;
+    border-radius:0;
+    padding: 1rem !important;
+    font-size: 100% !important;
+    line-height: 1.6 !important;
+    cursor: text;
+}
+
+pre {
+    background:transparent;
+    border-radius:0;
+    margin-bottom:20px;
+}
+
+.section-tabs>li>a {
+    color: #ed206e;
+    border-radius:0;
+}
+.section-tabs>li.active>a,
+.section-tabs>li.active>a:focus,
+.section-tabs>li.active>a:hover {
+    background: #ed206e;
+}
+
+.container-fluid.frame {
+    max-width: 980px;
+}
+
+.github img {
+    width:20px;
+    height:20px;
+    margin-right:5px;
+}
+.eq-sliders {
+    margin-bottom:15px;
+}
+.range-group {
+    height:30px;
+    display:block;
+    clear:both;
+}
+.range-group label {
+    display:block;
+    float:left;
+    width:20%;
+    margin-right:5%;
+    padding:5px 10px;
+    border-radius:4px;
+    text-align:center;
+    position: relative;
+    background: #38404e;
+    font-size:80%;
+}
+.range-group label:after {
+    left: 100%;
+    top: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: transparent;
+    border-left-color: #38404e;
+    border-width: 6px;
+    margin-top: -6px;
+}
+
+.range-group input {
+    display:block;
+    float: left;
+    width:75%;
+    margin:0;
+    min-height: auto;
+    height: 30px;
+}
+
+input[type='range']:focus {
+    background: transparent;
+}
+
+.sound-list {
+    margin: 20px 0;
+}
+
+.sound-controls {
+    margin-bottom: 20px;
+}
+
+.well h3 {
+    margin-top:0;
+}
+
+.well p {
+    margin-top:10px;
+}
+
+.btn {
+    outline: none !important;
+    border-radius: 0 !important;
+}
+
+.btn .off,
+.btn .on {
+    display: none;
+}
+
+.btn.off .off,
+.btn.on .on {
+    display: inline-block;
+}
+
+.btn-danger {
+    background-color: #ed206e;
+    border-color: #ed206e;
+    transition: background-color 0.2s;
+}
+.btn-danger:hover {
+    background-color: #d6115c;
+    border-color: #ca1057;
+}
+.btn-danger:active,
+.btn-danger:active:focus,
+.btn-danger:focus {
+    background-color: #ca1057;
+    border-color: #be0f52;
+}
+
+.progress {
+    height: 4px;
+    margin: 10px 0 5px;
+}
+
+.range {
+    height: 40px;
+}
+
+.progress-bar {
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    -o-transition: none;
+    transition: none;
+}
+
+.canvas {
+    width: 100%;
+    margin-bottom: 10px;
+    border: 1px solid #eee;
+    background: #fff;
+}
+
+pre {
+    padding: 0;
+    border:0;
+}
+pre code {
+    margin: 0;
+}
+
+.code-md {
+    min-height:160px;
+}
+
+.sprites .btn {
+    margin-bottom:10px;
+}
+
+.sortable-placeholder {
+    list-style-type: none;
+}
+
+.handle {
+    margin-right:10px;
+    cursor: move;
+    user-select:none;
+    background: transparent;
+    border:0;
+    color:inherit !important;
+    transition: background 0.2s;
+}
+
+.filter-list > .list-group-item {
+    border-radius: 0;
+    background: transparent !important;
+    border:1px solid #3c4555;
+}
+
+button.play {
+    margin-left: 10px;
+}
+
+.loop {
+    margin-bottom:20px;
+}
+.loop.play {
+    margin-left:0;
+}
+
+.loop .glyphicon {
+    display:block;
+    margin:10px auto;
+}
+.loop.play .stop, 
+.loop.stop .play {
+    display:none
+}
+
+.btn-range-group {
+    background-color:#fff;
+    margin-left:0 !important;
+}
+.btn-range-group .range {
+    width:120px;
+    display:inline-block;
+    margin: 0 0 0 10px;
+    vertical-align: middle;
+}
+.btn-range-group label {
+    font-weight:normal;
+}
+
+.btn-range-group {
+    border: 1px solid #ccc;
+    border-left:0;
+    padding: 2px 16px;
+    font-size: 18px;
+    line-height: 1.3333333;
+}
+
+code {
+    background: #38404e;
+    color: #fff;
+}

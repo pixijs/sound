@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>PixiJS Sound | Sprites</title>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/examples.css?v=2">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/languages/javascript.min.js"></script>
+        <script src="https://pixijs.download/dev/pixi.min.js"></script>
+        <script src="../dist/pixi-sound.js"></script>
+    </head>
+    <body>
+        <div class="container-fluid frame">
+            <h1><img src="resources/logo.svg" class="logo" alt="PixiJS" />Sound <small>Sprites</small></h1>
+            <nav class="navbar navbar-inverse">
+                <div class="container-fluid">
+                    <ul class="nav navbar-nav">
+                        <li><a href="index.html">Basics</a></li>
+                        <li class="active"><a href="sprites.html">Sprites</a></li>
+                        <li><a href="filters.html">Filters</a></li>
+                        <li><a href="demo.html">Demo</a></li>
+                        <li><a href="../docs/index.html">API Docs</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a class="github" href="https://github.com/pixijs/pixi-sound">
+                            <img src="resources/github.svg"> Github
+                        </a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <p>Audio sprites are a common technique for playing segments of a 
+            longer sound file, similar to image spritesheets. This is a common method
+            for reducing the network overhead of requesting many small files.</p>
+
+            <canvas id="waveform" class="canvas" width="1024" height="100"></canvas>
+
+            <div class="row sprites">
+                <div class="col-xs-4">
+                    <button data-sprite="alien death" class="btn btn-danger btn-block btn-default"><span class="glyphicon glyphicon-play"></span> alien death</button>
+                </div>
+                
+                <div class="col-xs-4">
+                    <button data-sprite="boss hit" class="btn btn-danger btn-block btn-default"><span class="glyphicon glyphicon-play"></span> boss hit</button>
+                </div>
+                
+                <div class="col-xs-4">
+                    <button data-sprite="escape" class="btn btn-danger btn-block btn-default"><span class="glyphicon glyphicon-play"></span> escape</button>
+                </div>
+                
+                <div class="col-xs-4">
+                    <button data-sprite="meow" class="btn btn-danger btn-block btn-default"><span class="glyphicon glyphicon-play"></span> meow</button>
+                </div>
+                
+                <div class="col-xs-4">
+                    <button data-sprite="numkey" class="btn btn-danger btn-block btn-default"><span class="glyphicon glyphicon-play"></span> numkey</button>
+                </div>
+                
+                <div class="col-xs-4">
+                    <button data-sprite="ping" class="btn btn-danger btn-block btn-default"><span class="glyphicon glyphicon-play"></span> ping</button>
+                </div>
+                
+                <div class="col-xs-4">
+                    <button data-sprite="death" class="btn btn-danger btn-block btn-default"><span class="glyphicon glyphicon-play"></span> death</button>
+                </div>
+                
+                <div class="col-xs-4">
+                    <button data-sprite="shot" class="btn btn-danger btn-block btn-default"><span class="glyphicon glyphicon-play"></span> shot</button>
+                </div>
+                
+                <div class="col-xs-4">
+                    <button data-sprite="squit" class="btn btn-danger btn-block btn-default"><span class="glyphicon glyphicon-play"></span> squit</button>
+                </div>
+            </div>
+            <h3>Construction Example</h3>
+            <p>A manifest (JSON object) can be used to assign the sprite data at construction time.</p>
+            <pre><code class="javascript">// Sprites must have a start and end time
+const sprites = {
+    'alien death': { start: 1, end: 2 },
+    'boss hit': { start: 3, end: 3.5 },
+    'escape': { start: 4, end: 7.2 },
+    'meow': { start: 8, end: 8.5 },
+    'numkey': { start: 9, end: 9.1 },
+    'ping': { start: 10, end: 11 },
+    'death': { start: 12, end: 16.2 },
+    'shot': { start: 17, end: 18 },
+    'squit': { start: 19, end: 19.3 }
+};
+
+// Add the sprites data when creating sounds
+const sound = PIXI.sound.Sound.from({
+    'url': 'resources/sprite.mp3',
+    'sprites': sprites
+});
+
+// Use the sprite alias to play
+sound.play('meow');</code></pre>
+
+            <h3>After Construction Example</h3>
+            <p>Sound sprites can be added after the sound has been created by using the <code>addSprites</code> method</p>
+            <pre><code class="javascript">// Create a new sound
+const sound = PIXI.sound.Sound.from('resources/sprite.mp3');
+
+// Add the sprite markers
+sound.addSprites({
+    'alien death': { start: 1, end: 2 },
+    'boss hit': { start: 3, end: 3.5 },
+    'escape': { start: 4, end: 7.2 },
+    'meow': { start: 8, end: 8.5 },
+    'numkey': { start: 9, end: 9.1 },
+    'ping': { start: 10, end: 11 },
+    'death': { start: 12, end: 16.2 },
+    'shot': { start: 17, end: 18 }
+});
+
+// Add a single sprite
+sound.addSprites('squit', {
+    start: 19,
+    end: 19.3
+});
+
+// Use the sprite alias to play
+sound.play('meow');</code></pre>
+        </div>
+        <script src="./client/sprites.js"></script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+            ga('create', 'UA-103772589-1', 'auto');
+            ga('send', 'pageview');
+        </script>
+    </body>
+</html>
