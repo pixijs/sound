@@ -62,27 +62,27 @@ jobs:
     # 2) branch A merged into branch B
     # 3) branch A pushed directly to git
     - name: Deploy Non-Tag Branches
-      uses: jakejarvis/s3-sync-action@master
       if: github.event_name == 'push' && !contains(github.ref, 'refs/tags') && env.AWS_ACCESS_KEY_ID != ''
-      with:
-        args: --acl public-read --follow-symlinks --delete --cache-control "max-age=60"
+      run: |
+        aws s3 sync "$SOURCE_DIR" "s3://$AWS_S3_BUCKET/$DEST_DIR" --region "${AWS_REGION:-us-east-1}" \
+          --no-progress --acl public-read --follow-symlinks --delete --cache-control "max-age=60"
       env:
         DEST_DIR: ${{ steps.branch_name.outputs.BRANCH_NAME }}
 
     # Release is published and deployed into s3://bucket-name/v5.22/
     - name: Deploy Released Branches
-      uses: jakejarvis/s3-sync-action@master
       if: (github.event_name == 'release' || contains(github.ref, 'refs/tags')) && env.AWS_ACCESS_KEY_ID != ''
-      with:
-        args: --acl public-read --follow-symlinks --delete --cache-control "max-age=2592000"
+      run: |
+        aws s3 sync "$SOURCE_DIR" "s3://$AWS_S3_BUCKET/$DEST_DIR" --region "${AWS_REGION:-us-east-1}" \
+          --no-progress --acl public-read --follow-symlinks --delete --cache-control "max-age=2592000"
       env:
         DEST_DIR: ${{ steps.tag_name.outputs.TAG_NAME }}
 
     # Same release from previous deployed into s3://bucket-name/release/
     - name: Deploy Latest Release
-      uses: jakejarvis/s3-sync-action@master
       if: (github.event_name == 'release' || contains(github.ref, 'refs/tags')) && env.AWS_ACCESS_KEY_ID != ''
-      with:
-        args: --acl public-read --follow-symlinks --delete --cache-control "max-age=1209600"
+      run: |
+        aws s3 sync "$SOURCE_DIR" "s3://$AWS_S3_BUCKET/$DEST_DIR" --region "${AWS_REGION:-us-east-1}" \
+          --no-progress --acl public-read --follow-symlinks --delete --cache-control "max-age=1209600"
       env:
         DEST_DIR: 'latest'
