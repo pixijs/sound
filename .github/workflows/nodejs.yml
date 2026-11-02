@@ -77,3 +77,12 @@ jobs:
           --no-progress --acl public-read --follow-symlinks --delete --cache-control "max-age=2592000"
       env:
         DEST_DIR: ${{ steps.tag_name.outputs.TAG_NAME }}
+
+    # Same release from previous deployed into s3://bucket-name/latest-5.x/
+    - name: Deploy Latest Release
+      if: (github.event_name == 'release' || contains(github.ref, 'refs/tags')) && env.AWS_ACCESS_KEY_ID != ''
+      run: |
+        aws s3 sync "$SOURCE_DIR" "s3://$AWS_S3_BUCKET/$DEST_DIR" --region "${AWS_REGION:-us-east-1}" \
+          --no-progress --acl public-read --follow-symlinks --delete --cache-control "max-age=1209600"
+      env:
+        DEST_DIR: 'latest-5.x'
