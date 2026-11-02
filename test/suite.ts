@@ -490,5 +490,3 @@ export function suite(useLegacy = false): void
     });
 }
 
-suite(false);
-suite(true);
