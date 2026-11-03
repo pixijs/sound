@@ -50,6 +50,12 @@ class WebAudioInstance extends utils.EventEmitter implements IMediaInstance
     /** `true` if should be looping. */
     private _loop: boolean;
 
+    /**
+     * Start of the looping region from the first `play()`.
+     * Resume seeks inside this region instead of using the offset as `loopStart`.
+     */
+    private _loopRegionStart: number | null = null;
+
     /** Gain node for controlling volume of instance */
     private _gain: GainNode;
 
@@ -72,6 +78,7 @@ class WebAudioInstance extends utils.EventEmitter implements IMediaInstance
         this.id = id++;
         this._media = null;
         this._paused = false;
+        this._pausedReal = false;
         this._muted = false;
         this._elapsed = 0;
 
@@ -108,7 +115,7 @@ class WebAudioInstance extends utils.EventEmitter implements IMediaInstance
     /** Stops the instance, don't use after this. */
     public stop(): void
     {
-        if (this._source)
+        if (this._source || this._pausedReal)
         {
             this._internalStop();
             this.emit('stop');
@@ -231,8 +238,8 @@ class WebAudioInstance extends utils.EventEmitter implements IMediaInstance
         const global = this._media.context;
         const sound = this._media.parent;
 
-        // Consider global and sound paused
-        const pausedReal = this._paused || sound.paused || global.paused;
+        // Consider global and sound paused, these can be undefined
+        const pausedReal = !!(this._paused || sound.paused || global.paused);
 
         if (pausedReal !== this._pausedReal)
         {
@@ -264,6 +271,8 @@ class WebAudioInstance extends utils.EventEmitter implements IMediaInstance
                     speed: this._speed,
                     loop: this._loop,
                     volume: this._volume,
+                    muted: this._muted,
+                    filters: this._filters,
                 });
             }
 
@@ -282,7 +291,21 @@ class WebAudioInstance extends utils.EventEmitter implements IMediaInstance
      */
     public play(options: PlayOptions): void
     {
-        const { start, end, speed, loop, volume, muted, filters } = options;
+        const { end, speed, loop, volume, muted, filters } = options;
+        let { start } = options;
+
+        // Resume passes `elapsed % bufferDuration` as start and play() would also
+        // use that value as loopStart, collapsing a sprite loop to its tail.
+        if (loop && this._loopRegionStart !== null)
+        {
+            const regionEnd = end ?? this._duration;
+            const length = regionEnd - this._loopRegionStart;
+
+            if (length > 0)
+            {
+                start = this._loopRegionStart + positiveModulo(this._elapsed - this._loopRegionStart, length);
+            }
+        }
 
         if (end)
         {
@@ -290,6 +313,8 @@ class WebAudioInstance extends utils.EventEmitter implements IMediaInstance
             console.assert(end > start, 'End time is before start time');
         }
         this._paused = false;
+        this._internalStop();
+        this._gain?.disconnect();
         const { source, gain } = this._media.nodes.cloneBufferSource();
 
         this._source = source;
@@ -311,8 +336,12 @@ class WebAudioInstance extends utils.EventEmitter implements IMediaInstance
 
         if (this._loop)
         {
+            if (this._loopRegionStart === null)
+            {
+                this._loopRegionStart = start ?? 0;
+            }
             this._source.loopEnd = end;
-            this._source.loopStart = start;
+            this._source.loopStart = this._loopRegionStart;
             this._source.start(0, start);
         }
         else if (end)
@@ -392,6 +421,7 @@ class WebAudioInstance extends utils.EventEmitter implements IMediaInstance
         this._paused = false;
         this._muted = false;
         this._pausedReal = false;
+        this._loopRegionStart = null;
     }
 
     /**
@@ -475,7 +505,18 @@ class WebAudioInstance extends utils.EventEmitter implements IMediaInstance
         {
             this.enableTicker(false);
             this._source.onended = null;
-            this._source.stop(0); // param needed for iOS 8 bug
+            try
+            {
+                this._source.stop(0); // param needed for iOS 8 bug
+            }
+            catch (err)
+            {
+                // A source that never started can't be stopped, e.g. play() threw before start()
+                if ((err as DOMException).name !== 'InvalidStateError')
+                {
+                    throw err;
+                }
+            }
             this._source.disconnect();
             try
             {
@@ -517,6 +558,12 @@ class WebAudioInstance extends utils.EventEmitter implements IMediaInstance
          */
         this.emit('end', this);
     }
+}
+
+/** Non-negative remainder. Playback elapsed can sit slightly below the region start. */
+function positiveModulo(value: number, length: number): number
+{
+    return ((value % length) + length) % length;
 }
 
 export { WebAudioInstance };

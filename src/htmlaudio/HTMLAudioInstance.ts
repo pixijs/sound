@@ -43,9 +43,6 @@ class HTMLAudioInstance extends utils.EventEmitter implements IMediaInstance
     /** Playback rate, where 1 is 100%. */
     private _start: number;
 
-    /** `true` if the audio is actually playing. */
-    private _playing: boolean;
-
     /** Volume for the instance. */
     private _volume: number;
 
@@ -61,6 +58,7 @@ class HTMLAudioInstance extends utils.EventEmitter implements IMediaInstance
         super();
 
         this.id = id++;
+        this._pausedReal = false;
 
         this.init(parent);
     }
@@ -111,36 +109,15 @@ class HTMLAudioInstance extends utils.EventEmitter implements IMediaInstance
     }
 
     /**
-     * Reference: http://stackoverflow.com/a/40370077
-     * @private
-     */
-    private _onPlay(): void
-    {
-        this._playing = true;
-    }
-
-    /**
-     * Reference: http://stackoverflow.com/a/40370077
-     * @private
-     */
-    private _onPause(): void
-    {
-        this._playing = false;
-    }
-
-    /**
      * Initialize the instance.
      * @param {htmlaudio.HTMLAudioMedia} media - Same as constructor
      */
     public init(media: HTMLAudioMedia): void
     {
-        this._playing = false;
         this._duration = media.source.duration;
         const source = this._source = media.source.cloneNode(false) as HTMLAudioElement;
 
         source.src = media.parent.url;
-        source.onplay = this._onPlay.bind(this);
-        source.onpause = this._onPause.bind(this);
         media.context.on('refresh', this.refresh, this);
         media.context.on('refreshPaused', this.refreshPaused, this);
         this._media = media;
@@ -152,7 +129,7 @@ class HTMLAudioInstance extends utils.EventEmitter implements IMediaInstance
      */
     private _internalStop(): void
     {
-        if (this._source && this._playing)
+        if (this._source)
         {
             this._source.onended = null;
             this._source.pause();
@@ -254,8 +231,8 @@ class HTMLAudioInstance extends utils.EventEmitter implements IMediaInstance
         const global = this._media.context;
         const sound = this._media.parent;
 
-        // Handle the paused state
-        const pausedReal = this._paused || sound.paused || global.paused;
+        // Handle the paused state, these can be undefined
+        const pausedReal = !!(this._paused || sound.paused || global.paused);
 
         if (pausedReal !== this._pausedReal)
         {
@@ -286,6 +263,7 @@ class HTMLAudioInstance extends utils.EventEmitter implements IMediaInstance
                     volume: this._volume,
                     speed: this._speed,
                     loop: this._loop,
+                    muted: this._muted,
                 });
             }
 
@@ -338,12 +316,19 @@ class HTMLAudioInstance extends utils.EventEmitter implements IMediaInstance
             {
                 this._source.currentTime = start;
                 this._source.onloadedmetadata = null;
-                this.emit('progress', start, this._duration);
+                this.emit('progress', start / this._duration, this._duration);
                 Ticker.shared.add(this._onUpdate, this);
             }
         };
         this._source.onended = this._onComplete.bind(this);
-        this._source.play();
+        this._source.play()?.catch((error: Error) =>
+        {
+            // A pause before playback starts rejects play()
+            if (error.name !== 'AbortError')
+            {
+                throw error;
+            }
+        });
 
         /**
          * The sound is started.
@@ -393,8 +378,6 @@ class HTMLAudioInstance extends utils.EventEmitter implements IMediaInstance
         {
             // Remove the listeners
             source.onended = null;
-            source.onplay = null;
-            source.onpause = null;
 
             this._internalStop();
         }
@@ -406,7 +389,6 @@ class HTMLAudioInstance extends utils.EventEmitter implements IMediaInstance
         this._end = null;
         this._start = 0;
         this._duration = 0;
-        this._playing = false;
         this._pausedReal = false;
         this._paused = false;
         this._muted = false;
