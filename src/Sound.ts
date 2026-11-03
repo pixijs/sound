@@ -556,6 +556,7 @@ class Sound
             speed: 1,
             muted: false,
             loop: false, ...(options || {}) };
+        options.start = options.start ?? 0;
 
         // A sprite is specified, add the options
         if (options.sprite)
