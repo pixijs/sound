@@ -82,6 +82,19 @@ for (const useLegacy of [false, true])
             expect(instance.progress).toBeLessThan(0.1);
         });
 
+        it('should resume an instance played with an undefined start', async () =>
+        {
+            const instance = music.play({ start: undefined }) as IMediaInstance;
+
+            await wait(50);
+            instance.paused = true;
+            expect(() =>
+            {
+                instance.paused = false;
+            }).not.toThrow();
+            expect(Number.isFinite(instance.progress)).toBe(true);
+        });
+
         afterEach(() =>
         {
             // Stop playing instances before resuming, so a resume can't restart them over themselves (#137)
