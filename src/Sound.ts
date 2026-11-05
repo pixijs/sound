@@ -143,6 +143,26 @@ type CompleteCallback = (sound: Sound) => void;
 type SoundSpriteDataMap = Record<string, SoundSpriteData>;
 
 /**
+ * Copy of the options without the keys set to `undefined`, so spreading
+ * them over the defaults doesn't replace a default with `undefined`.
+ * @ignore
+ */
+function withoutUndefined<T extends object>(options?: T): Partial<T>
+{
+    const result: Partial<T> = {};
+
+    for (const key of Object.keys(options || {}) as (keyof T)[])
+    {
+        if (options[key] !== undefined)
+        {
+            result[key] = options[key];
+        }
+    }
+
+    return result;
+}
+
+/**
  * Sound represents a single piece of loaded media. When playing a sound {@link IMediaInstance} objects
  * are created. Properties such a `volume`, `pause`, `mute`, `speed`, etc will have an effect on all instances.
  */
@@ -264,7 +284,7 @@ class Sound
             speed: 1,
             complete: null,
             loaded: null,
-            loop: false, ...options
+            loop: false, ...withoutUndefined(options)
         };
 
         Object.freeze(options);
@@ -556,9 +576,8 @@ class Sound
             volume: 1,
             speed: 1,
             muted: false,
-            loop: false, ...(options || {})
+            loop: false, ...withoutUndefined(options)
         };
-        options.start = options.start ?? 0;
 
         // A sprite is specified, add the options
         if (options.sprite)
