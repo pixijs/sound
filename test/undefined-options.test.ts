@@ -78,6 +78,21 @@ for (const useLegacy of [false, true])
             expect(warn).not.toHaveBeenCalled();
         });
 
+        it('should keep a volume of 0 when play gets one', () =>
+        {
+            const instance = music.play({ volume: 0 }) as IMediaInstance;
+
+            expect(instance.volume).toBe(0);
+        });
+
+        it('should keep a volume of 0 when Sound.from gets one', () =>
+        {
+            const fromSound = Sound.from({ url: musical, volume: 0 });
+
+            expect(fromSound.volume).toBe(0);
+            fromSound.destroy();
+        });
+
         it('should use the default volume and speed when Sound.from gets undefined values', async () =>
         {
             const fromSound = Sound.from({ url: musical, volume: undefined, speed: undefined });
