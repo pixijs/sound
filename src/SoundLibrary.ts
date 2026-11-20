@@ -130,8 +130,8 @@ class SoundLibrary
      * @param map - Map of sounds to add, the key is the alias, the value is the
      *        `string`, `ArrayBuffer`, `AudioBuffer`, `HTMLAudioElement` or the list of options
      *        (see {@link Options} for full options).
-     * @param globalOptions - The default options for all sounds.
-     *        if a property is defined, it will use the local property instead.
+     * @param globalOptions - Options applied to every sound in the map. These override
+     *        a sound's own options with the same key.
      * @return Instance to the Sound object.
      */
     public add(map: SoundSourceMap, globalOptions?: Options): SoundMap;
