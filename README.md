@@ -24,6 +24,19 @@ WebAudio API playback library, with filters. Modern audio playback for modern br
 * Safari 11+
 * iOS 11+
 
+**iOS silent mode**
+
+On iOS, the ringer/silent switch mutes WebAudio, but not HTML audio. This applies to every iOS browser. On iOS 17+, you can let sounds play in silent mode by setting the page's audio session before playing:
+
+```js
+if ('audioSession' in navigator)
+{
+    navigator.audioSession.type = 'playback';
+}
+```
+
+A `'playback'` session can pause audio from other apps, such as music, so only use it if that's acceptable for your app. On older iOS, setting `sound.useLegacy = true` before loading any sounds plays through HTML audio instead, without filters.
+
 ## Usage
 
 Installation is available by [NPM](https://npmjs.org):
