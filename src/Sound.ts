@@ -83,7 +83,8 @@ interface PlayOptions
      */
     end?: number;
     /**
-     * Override default speed, default to the Sound's speed setting.
+     * The instance speed, where 1 is 100%. The sound and global speeds multiply it.
+     * Defaults to 1, or to the sprite's speed when playing a sprite, which this overrides.
      */
     speed?: number;
     /**
@@ -548,6 +549,8 @@ class Sound
             options = source as PlayOptions;
         }
 
+        const playOptions = withoutUndefined(options);
+
         options = {
             complete: null,
             loaded: null,
@@ -557,7 +560,7 @@ class Sound
             volume: 1,
             speed: 1,
             muted: false,
-            loop: false, ...withoutUndefined(options)
+            loop: false, ...playOptions
         };
 
         // A sprite is specified, add the options
@@ -571,7 +574,7 @@ class Sound
 
             options.start = sprite.start + (options.start || 0);
             options.end = sprite.end;
-            options.speed = sprite.speed || 1;
+            options.speed = playOptions.speed ?? (sprite.speed || 1);
             options.loop = sprite.loop || options.loop;
             delete options.sprite;
         }
