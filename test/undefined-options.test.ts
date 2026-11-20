@@ -116,5 +116,24 @@ for (const useLegacy of [false, true])
             expect(loaded.volume).toBe(1);
             await Assets.unload(assetAlias);
         });
+
+        it('should keep a local volume when add gets an undefined global volume', () =>
+        {
+            const mapAlias = `undefined-options-map-${useLegacy}`;
+            const sounds = sound.add({ [mapAlias]: { url: musical, volume: 0.5 } }, { volume: undefined });
+
+            expect(sounds[mapAlias].volume).toBe(0.5);
+            sound.remove(mapAlias);
+        });
+
+        it('should use the default volume when add gets an undefined global volume and no local one', () =>
+        {
+            const mapAlias = `undefined-options-map-default-${useLegacy}`;
+            const sounds = sound.add({ [mapAlias]: musical }, { volume: undefined, speed: undefined });
+
+            expect(sounds[mapAlias].volume).toBe(1);
+            expect(sounds[mapAlias].speed).toBe(1);
+            sound.remove(mapAlias);
+        });
     });
 }

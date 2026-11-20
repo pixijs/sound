@@ -5,6 +5,7 @@ import { getInstance } from './instance';
 import { IMedia, IMediaContext, IMediaInstance } from './interfaces';
 import { SoundSprite, SoundSpriteData, SoundSprites } from './SoundSprite';
 import { extensions, supported } from './utils/supported';
+import { withoutUndefined } from './utils/withoutUndefined';
 import { WebAudioMedia } from './webaudio/WebAudioMedia';
 
 /**
@@ -141,26 +142,6 @@ type LoadedCallback = (err: Error, sound?: Sound, instance?: IMediaInstance) => 
 type CompleteCallback = (sound: Sound) => void;
 
 type SoundSpriteDataMap = Record<string, SoundSpriteData>;
-
-/**
- * Copy of the options without the keys set to `undefined`, so spreading
- * them over the defaults doesn't replace a default with `undefined`.
- * @ignore
- */
-function withoutUndefined<T extends object>(options?: T): Partial<T>
-{
-    const result: Partial<T> = {};
-
-    for (const key of Object.keys(options || {}) as (keyof T)[])
-    {
-        if (options[key] !== undefined)
-        {
-            result[key] = options[key];
-        }
-    }
-
-    return result;
-}
 
 /**
  * Sound represents a single piece of loaded media. When playing a sound {@link IMediaInstance} objects
