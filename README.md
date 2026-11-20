@@ -74,6 +74,22 @@ If you're using a `<script>` element to import `@pixi/sound` into your project, 
 </script>
 ```
 
+### Autoplay and User Gestures
+
+Browsers don't let a page start audio until the user has interacted with it. `@pixi/sound` creates its `AudioContext` on import, so it starts suspended and Chrome may log "The AudioContext was not allowed to start". That's expected. The library resumes the context on a `mousedown`, `touchstart` or `touchend` anywhere on the page, so a "click to start" screen is enough. If your app starts from the keyboard, resume it in your own handler:
+
+```typescript
+import { sound } from '@pixi/sound';
+
+document.addEventListener('keydown', () =>
+{
+    if (!sound.context.paused)
+    {
+        sound.context.audioContext.resume();
+    }
+});
+```
+
 ### Versions Compatibility
 
 | PixiJS | PixiJS Sound |
