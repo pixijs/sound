@@ -5,6 +5,7 @@ import { getInstance } from './instance';
 import { IMedia, IMediaContext, IMediaInstance } from './interfaces';
 import { SoundSprite, SoundSpriteData, SoundSprites } from './SoundSprite';
 import { extensions, supported } from './utils/supported';
+import { withoutUndefined } from './utils/withoutUndefined';
 import { WebAudioMedia } from './webaudio/WebAudioMedia';
 
 /**
@@ -265,7 +266,8 @@ class Sound
             speed: 1,
             complete: null,
             loaded: null,
-            loop: false, ...options };
+            loop: false, ...withoutUndefined(options)
+        };
 
         Object.freeze(options);
 
@@ -547,7 +549,7 @@ class Sound
             options = source as PlayOptions;
         }
 
-        const playSpeed = (options || {}).speed;
+        const playOptions = withoutUndefined(options);
 
         options = {
             complete: null,
@@ -558,8 +560,8 @@ class Sound
             volume: 1,
             speed: 1,
             muted: false,
-            loop: false, ...(options || {}) };
-        options.start = options.start ?? 0;
+            loop: false, ...playOptions
+        };
 
         // A sprite is specified, add the options
         if (options.sprite)
@@ -572,7 +574,7 @@ class Sound
 
             options.start = sprite.start + (options.start || 0);
             options.end = sprite.end;
-            options.speed = playSpeed ?? (sprite.speed || 1);
+            options.speed = playOptions.speed ?? (sprite.speed || 1);
             options.loop = sprite.loop || options.loop;
             delete options.sprite;
         }
