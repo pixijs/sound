@@ -5,6 +5,7 @@ import { getInstance } from './instance';
 import { IMedia, IMediaContext, IMediaInstance } from './interfaces';
 import { SoundSprite, SoundSpriteData, SoundSprites } from './SoundSprite';
 import { extensions, supported } from './utils/supported';
+import { withoutUndefined } from './utils/withoutUndefined';
 import { WebAudioMedia } from './webaudio/WebAudioMedia';
 
 /**
@@ -264,7 +265,7 @@ class Sound
             speed: 1,
             complete: null,
             loaded: null,
-            loop: false, ...options
+            loop: false, ...withoutUndefined(options)
         };
 
         Object.freeze(options);
@@ -556,9 +557,8 @@ class Sound
             volume: 1,
             speed: 1,
             muted: false,
-            loop: false, ...(options || {})
+            loop: false, ...withoutUndefined(options)
         };
-        options.start = options.start ?? 0;
 
         // A sprite is specified, add the options
         if (options.sprite)

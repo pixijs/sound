@@ -3,6 +3,7 @@ import { HTMLAudioContext } from './htmlaudio/HTMLAudioContext';
 import { IMediaContext } from './interfaces/IMediaContext';
 import { IMediaInstance } from './interfaces/IMediaInstance';
 import { CompleteCallback, Options, PlayOptions, Sound } from './Sound';
+import { withoutUndefined } from './utils/withoutUndefined';
 import { WebAudioContext } from './webaudio/WebAudioContext';
 
 type SoundSourceMap = Record<string, Options | string | ArrayBuffer | AudioBuffer | HTMLAudioElement>;
@@ -205,7 +206,7 @@ class SoundLibrary
         {
             options = source as Options;
         }
-        options = { ...options, ...(overrides || {}) };
+        options = { ...options, ...withoutUndefined(overrides) };
 
         return options;
     }
