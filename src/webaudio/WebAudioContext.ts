@@ -105,14 +105,17 @@ class WebAudioContext extends Filterable implements IMediaContext
 
         this._locked = ctx.state === 'suspended' && ('ontouchstart' in globalThis || 'onclick' in globalThis);
 
+        this._unlock = this._unlock.bind(this);
+        this._checkUnlocked = this._checkUnlocked.bind(this);
         // Listen for document level clicks to unlock WebAudio. See the _unlock method.
         if (this._locked)
         {
-            this._unlock(); // When played inside of a touch event, this will enable audio on iOS immediately.
-            this._unlock = this._unlock.bind(this);
+            // The context can also start without one of these: the app resumes it, or a sound starts in a key press
+            ctx.addEventListener('statechange', this._checkUnlocked);
             document.addEventListener('mousedown', this._unlock, true);
             document.addEventListener('touchstart', this._unlock, true);
             document.addEventListener('touchend', this._unlock, true);
+            this._unlock(); // When played inside of a touch event, this will enable audio on iOS immediately.
         }
 
         this.onFocus = this.onFocus.bind(this);
@@ -171,18 +174,56 @@ class WebAudioContext extends Filterable implements IMediaContext
             return;
         }
         this.playEmptySound();
-        if (this._ctx.state === 'running')
+        this._checkUnlocked();
+    }
+
+    /**
+     * Clear the lock once the context is running, whatever started it. Firefox and Safari only
+     * update the state when resume() settles, so this also runs on `statechange` and after each resume().
+     */
+    private _checkUnlocked(): void
+    {
+        if (this._locked && this._ctx.state === 'running')
         {
-            document.removeEventListener('mousedown', this._unlock, true);
-            document.removeEventListener('touchend', this._unlock, true);
-            document.removeEventListener('touchstart', this._unlock, true);
             this._locked = false;
+            this._removeUnlockListeners();
         }
+    }
+
+    /** Stop listening for the events that can unlock the context. */
+    private _removeUnlockListeners(): void
+    {
+        this._ctx.removeEventListener('statechange', this._checkUnlocked);
+        document.removeEventListener('mousedown', this._unlock, true);
+        document.removeEventListener('touchend', this._unlock, true);
+        document.removeEventListener('touchstart', this._unlock, true);
+    }
+
+    /** Resume the context, then suspend it again if that settles while paused. */
+    private _resume(): void
+    {
+        const ctx = this._ctx;
+
+        ctx.resume()?.then(() =>
+        {
+            if (this._ctx !== ctx)
+            {
+                return;
+            }
+            this._checkUnlocked();
+            // An unlock gesture resumes the context even while paused, and
+            // older Chromium ignores a suspend() made while a resume() is in flight
+            if (this._paused && ctx.state === 'running')
+            {
+                ctx.suspend()?.catch(ignore);
+            }
+        }).catch(ignore);
     }
 
     /**
      * Plays an empty sound in the web audio context.  This is used to enable web audio on iOS devices, as they
      * require the first sound to be played inside of a user initiated event (touch/click).
+     * If the context is paused, it's suspended again as soon as it has started.
      */
     public playEmptySound(): void
     {
@@ -193,7 +234,7 @@ class WebAudioContext extends Filterable implements IMediaContext
         source.start(0, 0, 0);
         if (source.context.state === 'suspended')
         {
-            (source.context as AudioContext).resume();
+            this._resume();
         }
     }
 
@@ -241,6 +282,7 @@ class WebAudioContext extends Filterable implements IMediaContext
         {
             ctx.close();
         }
+        this._removeUnlockListeners();
         globalThis.removeEventListener('focus', this.onFocus);
         globalThis.removeEventListener('blur', this.onBlur);
         this.events.removeAllListeners();
@@ -298,14 +340,7 @@ class WebAudioContext extends Filterable implements IMediaContext
         }
         else
         {
-            ctx.resume()?.then(() =>
-            {
-                // Older Chromium ignores a suspend() made while a resume() is in flight
-                if (this._paused && this._ctx === ctx && ctx.state === 'running')
-                {
-                    ctx.suspend()?.catch(ignore);
-                }
-            }).catch(ignore);
+            this._resume();
         }
     }
     public get paused(): boolean
