@@ -6,6 +6,27 @@ import { WebAudioContext } from './WebAudioContext';
 import { WebAudioInstance } from './WebAudioInstance';
 import { WebAudioNodes } from './WebAudioNodes';
 
+/** Adds the sound's URL to a decode error. The original error is kept as `cause`. */
+function decodeError(err: Error, url?: string): Error
+{
+    let from = '';
+
+    if (url)
+    {
+        let name = url;
+
+        // A data URL holds the whole file, so only keep its header
+        if (url.startsWith('data:'))
+        {
+            name = `${url.slice(0, url.indexOf(',') + 1)}…`;
+        }
+        from = ` from ${name}`;
+    }
+
+    // Object.assign because the ES2020 target has no ErrorOptions
+    return Object.assign(new Error(`Failed to decode sound${from}: ${err.message}`), { cause: err });
+}
+
 /**
  * Represents a single sound element. Can be used to play, pause, etc. sound instances.
  * @memberof webaudio
@@ -177,7 +198,8 @@ class WebAudioMedia implements IMedia
     }
 
     /**
-     * Decodes the array buffer.
+     * Decodes the array buffer. A decode error gets the sound's URL added, and is logged
+     * when there is no callback.
      * @param arrayBuffer - From load.
      * @param {Function} callback - Callback optional
      */
@@ -190,6 +212,10 @@ class WebAudioMedia implements IMedia
                 if (callback)
                 {
                     callback(err);
+                }
+                else
+                {
+                    console.error(err);
                 }
             }
             else
@@ -212,8 +238,20 @@ class WebAudioMedia implements IMedia
         else
         {
             const context = this.parent.context as WebAudioContext;
+            // Read the URL now, the sound may be destroyed before decoding finishes
+            const url = this.parent.url;
 
-            context.decode(arrayBuffer, audioBufferReadyFn);
+            context.decode(arrayBuffer, (err: Error, buffer: AudioBuffer) =>
+            {
+                if (err)
+                {
+                    audioBufferReadyFn(decodeError(err, url), buffer);
+                }
+                else
+                {
+                    audioBufferReadyFn(null, buffer);
+                }
+            });
         }
     }
 }
