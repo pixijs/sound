@@ -1,21 +1,47 @@
-import { Assets } from 'pixi.js';
+import path from 'path';
+import { Assets, DOMAdapter } from 'pixi.js';
 import { IMediaInstance, Sound, sound, webaudio } from '../src';
+
+type DecodeError = Error & { cause?: Error };
 
 // Bytes that no audio decoder accepts, as a data URL so both backends can load it
 const garbage = new Uint8Array(4096).map((_, i) => (i * 31) + 7);
 const corruptUrl = `data:audio/mpeg;base64,${btoa(String.fromCharCode(...garbage))}`;
+// What a decode error calls a data URL: its header, without the file
+const corruptName = 'data:audio/mpeg;base64,…';
+// A file URL for the cases that check the name. Nothing is there, so its fetch is mocked
+const namedUrl = path.join(__dirname, 'resources', 'corrupt.mp3');
+
+/** A corrupt data URL of its own, as each Assets case needs a src that no other case loads. */
+function corruptUrlFor(seed: number): string
+{
+    const bytes = garbage.slice();
+
+    bytes[0] = seed;
+
+    return `data:audio/mpeg;base64,${btoa(String.fromCharCode(...bytes))}`;
+}
+
+/** Make every fetch succeed with bytes that can't be decoded. */
+function mockFetch(): void
+{
+    jest.spyOn(DOMAdapter.get(), 'fetch').mockImplementation(async () => new Response(garbage.slice().buffer));
+}
 
 function wait(ms: number): Promise<void>
 {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/** Wait for the first report, then a little longer to catch a second one. */
+/**
+ * Wait for the first report, then a little longer to catch a second one.
+ * Gives up before the test's own timeout, so a missing report fails on its assertion.
+ */
 async function settle(reported: () => boolean): Promise<void>
 {
     const started = Date.now();
 
-    while (!reported() && Date.now() - started < 5000)
+    while (!reported() && Date.now() - started < 3000)
     {
         await wait(10);
     }
@@ -55,10 +81,17 @@ beforeAll(() =>
     window.addEventListener('error', onError);
 });
 
+/** The console.error spy that every test starts with. */
+function logged(): jest.SpyInstance
+{
+    return console.error as unknown as jest.SpyInstance;
+}
+
 beforeEach(() =>
 {
     uncaught.length = 0;
     (Sound as any)._pool.length = 0;
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
 });
 
 afterEach(() =>
@@ -144,6 +177,66 @@ for (const useLegacy of [false, true])
             expect(loaded).toHaveBeenCalledTimes(1);
             expect(errors[0]).toBeInstanceOf(Error);
             expect(uncaught).toHaveLength(0);
+        });
+
+        it('should log the error once when there is no loaded callback', async () =>
+        {
+            Sound.from({ url: corruptUrl, preload: true });
+            await settle(() => logged().mock.calls.length > 0);
+
+            expect(logged()).toHaveBeenCalledTimes(1);
+            expect(uncaught).toHaveLength(0);
+        });
+
+        it('should log the error once for a sound added without a loaded callback', async () =>
+        {
+            sound.add(`corrupt-silent-${useLegacy}`, { url: corruptUrl, preload: true });
+            await settle(() => logged().mock.calls.length > 0);
+
+            expect(logged()).toHaveBeenCalledTimes(1);
+            expect(uncaught).toHaveLength(0);
+        });
+
+        it('should not log an error that was passed to the loaded callback', async () =>
+        {
+            const errors: Error[] = [];
+
+            Sound.from({
+                url: corruptUrl,
+                preload: true,
+                loaded: (err) => errors.push(err),
+            });
+            await settle(() => errors.length > 0);
+
+            expect(errors).toHaveLength(1);
+            expect(logged()).not.toHaveBeenCalled();
+        });
+
+        it('should not log an error that rejected play()', async () =>
+        {
+            const s = Sound.from(corruptUrl);
+            const errors: Error[] = [];
+
+            (s.play() as Promise<IMediaInstance>).catch((err) => errors.push(err));
+            await settle(() => errors.length > 0);
+
+            expect(errors).toHaveLength(1);
+            expect(logged()).not.toHaveBeenCalled();
+        });
+
+        it('should not log an error that rejected Assets.load', async () =>
+        {
+            const loaded = jest.fn();
+
+            await expect(Assets.load({
+                src: corruptUrlFor(useLegacy ? 3 : 2),
+                alias: `corrupt-quiet-${useLegacy}`,
+                data: { loaded },
+            })).rejects.toThrow();
+            await settle(() => loaded.mock.calls.length > 0);
+
+            expect(loaded).toHaveBeenCalledTimes(1);
+            expect(logged()).not.toHaveBeenCalled();
         });
     });
 }
@@ -237,5 +330,200 @@ describe('Undecodable audio, decode() (webaudio)', () =>
 
         expect(calls).toHaveLength(1);
         expect(calls[0].message).toBe('Unable to decode file');
+    });
+
+    it('should report an error with no message as unable to decode', async () =>
+    {
+        const context = sound.context as webaudio.WebAudioContext;
+        const calls: Error[] = [];
+
+        mockDecode(context, (_ok, fail) =>
+        {
+            fail(new Error(''));
+
+            return undefined;
+        });
+        context.decode(new ArrayBuffer(8), (err) => calls.push(err));
+        await settle(() => calls.length > 0);
+
+        expect(calls).toHaveLength(1);
+        expect(calls[0].message).toBe('Unable to decode file');
+    });
+
+    it('should call back from decode() with the browser error', async () =>
+    {
+        const context = sound.context as webaudio.WebAudioContext;
+        const calls: Error[] = [];
+
+        context.decode(garbage.slice().buffer, (err) => calls.push(err));
+        await settle(() => calls.length > 0);
+
+        expect(calls).toHaveLength(1);
+        expect(calls[0].name).toBe('EncodingError');
+    });
+
+    it('should name the file in the error and keep the browser error as its cause', async () =>
+    {
+        const errors: DecodeError[] = [];
+
+        mockFetch();
+        Sound.from({
+            url: namedUrl,
+            preload: true,
+            loaded: (err) => errors.push(err),
+        });
+        await settle(() => errors.length > 0);
+
+        expect(errors).toHaveLength(1);
+        expect(errors[0].name).toBe('Error');
+        expect(errors[0].cause.name).toBe('EncodingError');
+        expect(errors[0].cause.message).not.toBe('');
+        expect(errors[0].message).toBe(`Failed to decode sound from ${namedUrl}: ${errors[0].cause.message}`);
+        expect(logged()).not.toHaveBeenCalled();
+    });
+
+    it('should log the error with the file name when there is no loaded callback', async () =>
+    {
+        mockFetch();
+        Sound.from({ url: namedUrl, preload: true });
+        await settle(() => logged().mock.calls.length > 0);
+
+        expect(logged()).toHaveBeenCalledTimes(1);
+
+        const error: DecodeError = logged().mock.calls[0][0];
+
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe(`Failed to decode sound from ${namedUrl}: ${error.cause.message}`);
+        expect(uncaught).toHaveLength(0);
+    });
+
+    it('should reject play() with the file name in the error', async () =>
+    {
+        const errors: DecodeError[] = [];
+
+        mockFetch();
+        (Sound.from(namedUrl).play() as Promise<IMediaInstance>).catch((err) => errors.push(err));
+        await settle(() => errors.length > 0);
+
+        expect(errors).toHaveLength(1);
+        expect(errors[0].message).toBe(`Failed to decode sound from ${namedUrl}: ${errors[0].cause.message}`);
+        expect(logged()).not.toHaveBeenCalled();
+    });
+
+    it('should leave the file name out of the error for an ArrayBuffer source', async () =>
+    {
+        const errors: DecodeError[] = [];
+
+        Sound.from({
+            source: garbage.slice().buffer,
+            preload: true,
+            loaded: (err) => errors.push(err),
+        });
+        await settle(() => errors.length > 0);
+
+        expect(errors).toHaveLength(1);
+        expect(errors[0].cause.name).toBe('EncodingError');
+        expect(errors[0].message).toBe(`Failed to decode sound: ${errors[0].cause.message}`);
+    });
+
+    it('should log an ArrayBuffer source error when there is no loaded callback', async () =>
+    {
+        Sound.from({ source: garbage.slice().buffer, preload: true });
+        await settle(() => logged().mock.calls.length > 0);
+
+        expect(logged()).toHaveBeenCalledTimes(1);
+        expect(logged().mock.calls[0][0].message).toMatch(/^Failed to decode sound: ./);
+        expect(uncaught).toHaveLength(0);
+    });
+
+    it('should name the URL in the error when a source is given with one', async () =>
+    {
+        const errors: DecodeError[] = [];
+
+        Sound.from({
+            source: garbage.slice().buffer,
+            url: namedUrl,
+            preload: true,
+            loaded: (err) => errors.push(err),
+        });
+        await settle(() => errors.length > 0);
+
+        expect(errors).toHaveLength(1);
+        expect(errors[0].message).toBe(`Failed to decode sound from ${namedUrl}: ${errors[0].cause.message}`);
+    });
+
+    it('should shorten a data URL to its header in the error', async () =>
+    {
+        const errors: DecodeError[] = [];
+
+        Sound.from({
+            url: corruptUrl,
+            preload: true,
+            loaded: (err) => errors.push(err),
+        });
+        await settle(() => errors.length > 0);
+
+        expect(errors).toHaveLength(1);
+        expect(errors[0].message).toBe(`Failed to decode sound from ${corruptName}: ${errors[0].cause.message}`);
+        expect(errors[0].message).not.toContain(corruptUrl.slice(corruptName.length - 1));
+    });
+
+    it('should keep an error that only rejects the promise as the cause', async () =>
+    {
+        const errors: DecodeError[] = [];
+
+        Sound.from({
+            source: document.createElement('audio') as any,
+            preload: true,
+            loaded: (err) => errors.push(err),
+        });
+        await settle(() => errors.length > 0);
+
+        expect(errors).toHaveLength(1);
+        expect(errors[0].cause.name).toBe('TypeError');
+        expect(errors[0].message).toBe(`Failed to decode sound: ${errors[0].cause.message}`);
+    });
+
+    it('should name the file when the browser gives no error', async () =>
+    {
+        const errors: DecodeError[] = [];
+
+        mockFetch();
+        mockDecode(sound.context as webaudio.WebAudioContext, (_ok, fail) =>
+        {
+            setTimeout(() => fail(null));
+
+            return undefined;
+        });
+        Sound.from({
+            url: namedUrl,
+            preload: true,
+            loaded: (err) => errors.push(err),
+        });
+        await settle(() => errors.length > 0);
+
+        expect(errors).toHaveLength(1);
+        expect(errors[0].message).toBe(`Failed to decode sound from ${namedUrl}: Unable to decode file`);
+    });
+
+    it('should reject Assets.load with the shortened data URL in the error', async () =>
+    {
+        const errors: Error[] = [];
+
+        await Assets.load({ src: corruptUrlFor(4), alias: 'corrupt-named' }).catch((err) => errors.push(err));
+
+        expect(errors).toHaveLength(1);
+        expect(errors[0].message).toContain(`Failed to decode sound from ${corruptName}: `);
+        expect(logged()).not.toHaveBeenCalled();
+    });
+
+    it('should load a good file without logging when there is no loaded callback', async () =>
+    {
+        const s = Sound.from({ url: path.join(__dirname, 'resources', 'silence.mp3'), preload: true });
+
+        await settle(() => s.isLoaded);
+
+        expect(s.isLoaded).toBe(true);
+        expect(logged()).not.toHaveBeenCalled();
     });
 });

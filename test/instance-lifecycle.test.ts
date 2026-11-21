@@ -8,6 +8,22 @@ function wait(ms: number): Promise<void>
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/**
+ * Waits until the context has rendered `seconds` more of audio. A context can report 'running'
+ * while its clock stands still, so a wall-clock sleep doesn't show that anything was rendered.
+ */
+async function rendered(audioContext: AudioContext, seconds: number): Promise<void>
+{
+    const target = audioContext.currentTime + seconds;
+    const deadline = Date.now() + 2000;
+
+    while (audioContext.currentTime < target && Date.now() < deadline)
+    {
+        await wait(10);
+    }
+    expect(audioContext.currentTime).toBeGreaterThanOrEqual(target);
+}
+
 /** Loudest sample on the library's analyser, read once the context is running again. */
 async function level(): Promise<number>
 {
@@ -18,7 +34,8 @@ async function level(): Promise<number>
         await wait(10);
     }
     expect(context.audioContext.state).toBe('running');
-    await wait(100);
+    // long enough to refill the analyser's buffer with what is playing now
+    await rendered(context.audioContext, 0.1);
     const data = new Uint8Array(context.analyser.fftSize);
 
     context.analyser.getByteTimeDomainData(data);

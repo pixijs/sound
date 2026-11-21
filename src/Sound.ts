@@ -39,7 +39,9 @@ interface Options
      */
     complete?: CompleteCallback;
     /**
-     * Call when finished loading.
+     * Call when finished loading. Called once with an error if loading or decoding fails.
+     * With WebAudio the error message names the file and the original error is in `cause`.
+     * If no callback is given, the error is logged to the console instead.
      * @type {Function}
      */
     loaded?: LoadedCallback;

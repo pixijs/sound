@@ -22,6 +22,47 @@ const manifest: Record<string, string> = {
     dataUrlOgg
 };
 
+interface Deferred
+{
+    /** Settles when `resolve` is called, or rejects with the first error thrown in a guarded callback. */
+    promise: Promise<void>;
+    /** Call where the test is complete. */
+    resolve: () => void;
+    /** Wraps a callback so that an error thrown inside it rejects `promise`. */
+    guard: <A extends unknown[]>(callback: (...args: A) => void) => (...args: A) => void;
+}
+
+/**
+ * A promise for a test to await while its callbacks run. An assertion that fails inside
+ * a guarded callback fails the test with its own message, instead of a timeout.
+ */
+function deferred(): Deferred
+{
+    let resolve!: () => void;
+    let reject!: (reason: unknown) => void;
+    const promise = new Promise<void>((res, rej) =>
+    {
+        resolve = res;
+        reject = rej;
+    });
+
+    return {
+        promise,
+        resolve,
+        guard: (callback) => (...args) =>
+        {
+            try
+            {
+                callback(...args);
+            }
+            catch (err)
+            {
+                reject(err);
+            }
+        },
+    };
+}
+
 // Import the library
 function suite(useLegacy = false): void
 {
@@ -51,12 +92,13 @@ function suite(useLegacy = false): void
             sound.useLegacy = !!useLegacy;
         });
 
-        it('should load a manifest', function (done)
+        it('should load a manifest', async () =>
         {
             let counter = 0;
+            const allLoaded = deferred();
             const results = sound.add(manifest, {
                 preload: true,
-                loaded: (_err, s) =>
+                loaded: allLoaded.guard((_err, s) =>
                 {
                     expect(s?.isLoaded).toBe(true);
                     expect(s?.isPlayable).toBe(true);
@@ -67,9 +109,9 @@ function suite(useLegacy = false): void
                     counter++;
                     if (counter === Object.keys(manifest).length)
                     {
-                        done();
+                        allLoaded.resolve();
                     }
-                },
+                }),
             });
 
             expect(typeof results).toBe('object');
@@ -81,6 +123,7 @@ function suite(useLegacy = false): void
             expect(results.silence).toBeInstanceOf(Sound);
             expect(results.dataUrlMp3).toBeInstanceOf(Sound);
             expect(results.dataUrlOgg).toBeInstanceOf(Sound);
+            await allLoaded.promise;
         });
 
         it('should let global options override local ones when adding a map', () =>
@@ -160,42 +203,50 @@ function suite(useLegacy = false): void
             expect(s.instances.length).toBe(0);
         });
 
-        it('should support volume change when instance is paused', function (done)
+        it('should support volume change when instance is paused', async () =>
         {
             const s = sound.find('alert-4');
             const i = s.play({ volume: 0 }) as IMediaInstance;
+            const changed = deferred();
 
-            setTimeout(() =>
+            setTimeout(changed.guard(() =>
             {
                 i.paused = true;
                 i.volume = 0.2;
-                done();
-            }, 100);
+                changed.resolve();
+            }), 100);
+            await changed.promise;
         });
 
-        it('should play a sound by alias', function (done)
+        it('should play a sound by alias', async () =>
         {
+            const completed = deferred();
+
             sound.play('silence', {
                 complete()
                 {
-                    done();
+                    completed.resolve();
                 },
             });
+            await completed.promise;
         });
 
-        it('should check to see if a file is playing', function (done)
+        it('should check to see if a file is playing', async () =>
         {
+            const completed = deferred();
+
             sound.stopAll();
             expect(sound.isPlaying()).toBe(false);
             sound.play('silence', {
-                complete()
+                complete: completed.guard(() =>
                 {
                     sound.stopAll();
                     expect(sound.isPlaying()).toBe(false);
-                    done();
-                }
+                    completed.resolve();
+                })
             });
             expect(sound.isPlaying()).toBe(true);
+            await completed.promise;
         });
 
         it('should remove all sounds', () =>
@@ -204,14 +255,15 @@ function suite(useLegacy = false): void
             expect(Object.keys((sound as any)._sounds).length).toBe(0);
         });
 
-        it('should load a sound file', function (done)
+        it('should load a sound file', async () =>
         {
             const alias = 'silence';
+            const loaded = deferred();
             const s = sound.add(alias, {
                 url: manifest[alias],
                 volume: 0,
                 preload: true,
-                loaded: (err, instance) =>
+                loaded: loaded.guard((err, instance) =>
                 {
                     expect(err).toBe(null);
                     expect(instance).toBe(s);
@@ -219,33 +271,35 @@ function suite(useLegacy = false): void
                     expect(sound.exists(alias)).toBe(true);
                     sound.remove(alias);
                     expect(sound.exists(alias)).toBe(false);
-                    done();
-                },
+                    loaded.resolve();
+                }),
             });
 
             expect(s.isLoaded).toBe(false);
             expect(s.isPlayable).toBe(false);
+            await loaded.promise;
         });
 
-        it('should play a file', function (done)
+        it('should play a file', async () =>
         {
             const alias = 'silence';
+            const completed = deferred();
             const s = sound.add(alias, {
                 url: manifest[alias],
                 preload: true,
-                loaded: () =>
+                loaded: completed.guard(() =>
                 {
                     expect(sound.volume(alias)).toBe(1);
                     sound.volume(alias, 0);
                     expect(sound.volume(alias)).toBe(0);
                     expect(s.volume).toBe(0);
 
-                    const instance = sound.play(alias, () =>
+                    const instance = sound.play(alias, completed.guard(() =>
                     {
                         expect(instance.progress).toBe(1);
                         sound.remove(alias);
-                        done();
-                    }) as IMediaInstance;
+                        completed.resolve();
+                    })) as IMediaInstance;
 
                     expect(instance.progress).toBe(0);
 
@@ -256,33 +310,40 @@ function suite(useLegacy = false): void
                     // Resume
                     sound.resume(alias);
                     expect(s.isPlaying).toBe(true);
-                },
+                }),
             });
+
+            await completed.promise;
         });
 
-        it('sound play once a file', (done) =>
+        it('sound play once a file', async () =>
         {
-            const alias = utils.playOnce(manifest.silence, (err) =>
+            const completed = deferred();
+            const alias = utils.playOnce(manifest.silence, completed.guard((err) =>
             {
                 expect(alias).toBeDefined();
                 expect(sound.exists(alias)).toBe(false);
                 expect(err).toBe(null);
-                done();
-            });
+                completed.resolve();
+            }));
+
+            await completed.promise;
         });
 
         if (!useLegacy)
         {
-            it('should play a sine tone', (done) =>
+            it('should play a sine tone', async () =>
             {
                 const s = utils.sineTone(200, 0.1);
+                const completed = deferred();
 
                 s.volume = 0;
                 s.play(() =>
                 {
-                    done?.();
+                    completed.resolve();
                 });
                 expect(s.isPlaying);
+                await completed.promise;
             });
         }
 
@@ -316,7 +377,7 @@ function suite(useLegacy = false): void
 
         if (!useLegacy)
         {
-            it('should take AudioBuffer as source', (done) =>
+            it('should take AudioBuffer as source', async () =>
             {
                 const s = utils.sineTone(200, 0.1);
                 const buffer = (s.media as any).buffer as AudioBuffer;
@@ -324,16 +385,18 @@ function suite(useLegacy = false): void
                 expect(buffer).toBeInstanceOf(AudioBuffer);
 
                 const snd = Sound.from(buffer);
+                const completed = deferred();
 
                 snd.volume = 0;
                 snd.play(() =>
                 {
-                    done?.();
+                    completed.resolve();
                 });
                 expect(snd.duration).toBe(0.1);
                 expect(snd.isPlaying).toBe(true);
 
                 expect(sound.add('sine', buffer)).toBeInstanceOf(Sound);
+                await completed.promise;
             });
         }
     });
@@ -345,7 +408,7 @@ function suite(useLegacy = false): void
             sound.removeAll();
         });
 
-        it('should return Promise for playing unloaded sound', function (done)
+        it('should return Promise for playing unloaded sound', async () =>
         {
             const SoundInstance = useLegacy
                 ? htmlaudio.HTMLAudioInstance
@@ -354,24 +417,25 @@ function suite(useLegacy = false): void
 
             expect(s).toBeInstanceOf(Sound);
             const promise = s.play() as Promise<IMediaInstance>;
-
-            promise.then((instance) =>
+            const checked = promise.then((instance) =>
             {
                 expect(instance).toBeInstanceOf(SoundInstance);
-                done();
             });
+
             expect(promise).toBeInstanceOf(Promise);
+            await checked;
         });
 
-        it('should return instance for playing loaded sound', function (done)
+        it('should return instance for playing loaded sound', async () =>
         {
             const SoundInstance = useLegacy
                 ? htmlaudio.HTMLAudioInstance
                 : webaudio.WebAudioInstance;
+            const loaded = deferred();
             const s = Sound.from({
                 url: manifest.silence,
                 preload: true,
-                loaded: (err) =>
+                loaded: loaded.guard((err) =>
                 {
                     expect(err).toBe(null);
                     expect(s.isLoaded).toBe(true);
@@ -379,17 +443,21 @@ function suite(useLegacy = false): void
                     const instance = s.play();
 
                     expect(instance).toBeInstanceOf(SoundInstance);
-                    done();
-                },
+                    loaded.resolve();
+                }),
             });
+
+            await loaded.promise;
         });
 
-        it('should apply filters for sound instance', function (done)
+        it('should apply filters for sound instance', async () =>
         {
+            const loaded = deferred();
+
             Sound.from({
                 url: manifest.silence,
                 preload: true,
-                loaded: (err, snd) =>
+                loaded: loaded.guard((err, snd) =>
                 {
                     expect(err).toBe(null);
 
@@ -423,9 +491,10 @@ function suite(useLegacy = false): void
                         (instance2 as webaudio.WebAudioInstance).destroy();
                         expect((instance2 as webaudio.WebAudioInstance).filters).toBe(null);
                     }
-                    done();
-                }
+                    loaded.resolve();
+                })
             });
+            await loaded.promise;
         });
     });
 
