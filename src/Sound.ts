@@ -731,10 +731,16 @@ class Sound
         return this._sprites;
     }
 
-    /** Get the duration of the audio in seconds. */
+    /**
+     * The duration of the audio in seconds, or `NaN` while it isn't known: before the sound
+     * has loaded, if loading failed, or after `destroy()`. Use `isPlayable` to check for a loaded sound.
+     * With HTML audio the duration can be known as soon as the file's metadata arrives,
+     * shortly before `isPlayable` is `true`.
+     * @readonly
+     */
     public get duration(): number
     {
-        return this.media.duration;
+        return this.media?.duration ?? NaN;
     }
 
     /** Auto play the first instance. */

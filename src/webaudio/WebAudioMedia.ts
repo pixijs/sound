@@ -89,13 +89,10 @@ class WebAudioMedia implements IMedia
         this._nodes.filters = filters;
     }
 
-    // Implements duration
+    // Implements duration: NaN until the buffer is decoded (like HTMLMediaElement.duration)
     public get duration(): number
     {
-        // eslint-disable-next-line no-console
-        console.assert(this.isPlayable, 'Sound not yet playable, no duration');
-
-        return this._source.buffer.duration;
+        return this._source.buffer?.duration ?? NaN;
     }
 
     /** Gets and sets the buffer. */
