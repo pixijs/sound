@@ -8,7 +8,11 @@ interface SoundSpriteData
     start: number;
     /** The end time in seconds. */
     end: number;
-    /** The optional speed, if not speed, uses the default speed of the parent. */
+    /**
+     * The optional speed, where 1 is 100% speed. Defaults to 1.
+     * The parent sound's speed still applies on top of it.
+     * A `speed` passed to `play()` overrides it.
+     */
     speed?: number;
 }
 
@@ -53,7 +57,8 @@ class SoundSprite
     public end: number;
 
     /**
-     * The speed override where 1 is 100% speed playback.
+     * Default instance speed for this sprite, where 1 is 100%.
+     * The parent sound's speed multiplies it.
      * @readonly
      */
     public speed: number;
@@ -93,7 +98,7 @@ class SoundSprite
     {
         return this.parent.play({
             complete,
-            speed: this.speed || this.parent.speed,
+            speed: this.speed || 1,
             end: this.end,
             start: this.start,
             loop: this.loop });
