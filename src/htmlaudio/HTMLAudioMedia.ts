@@ -41,7 +41,7 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
     }
 
     /**
-     * THe duration of the media in seconds.
+     * The duration of the media in seconds, or `NaN` until the element has loaded its metadata.
      * @readonly
      */
     public get duration(): number
