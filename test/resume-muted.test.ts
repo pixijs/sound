@@ -8,6 +8,22 @@ function wait(ms: number): Promise<void>
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/**
+ * Waits until the context has rendered `seconds` more of audio. A context can report 'running'
+ * while its clock stands still, so a wall-clock sleep doesn't show that anything was rendered.
+ */
+async function rendered(audioContext: AudioContext, seconds: number): Promise<void>
+{
+    const target = audioContext.currentTime + seconds;
+    const deadline = Date.now() + 2000;
+
+    while (audioContext.currentTime < target && Date.now() < deadline)
+    {
+        await wait(10);
+    }
+    expect(audioContext.currentTime).toBeGreaterThanOrEqual(target);
+}
+
 const cycles: [string, (instance: IMediaInstance) => void][] = [
     ['instance paused', (instance) =>
     {
@@ -40,8 +56,8 @@ for (const useLegacy of [false, true])
             {
                 await wait(10);
             }
-            // a gain read straight after it's set still has the old value
-            await wait(10);
+            // a gain read straight after it's set still has the old value, until the context renders again
+            await rendered(audioContext, 0.02);
 
             return (instance as any)._gain.gain.value;
         }
