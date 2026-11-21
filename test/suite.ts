@@ -100,6 +100,18 @@ export function suite(useLegacy = false): void
             expect(results.dataUrlOgg).toBeInstanceOf(Sound);
         });
 
+        it('should let global options override local ones when adding a map', () =>
+        {
+            const results = sound.add({
+                'map-precedence': { url: manifest['alert-4'], volume: 0.5, loop: true },
+            }, { volume: 0.25 });
+            const s = results['map-precedence'];
+
+            expect(s.volume).toBe(0.25);
+            expect(s.loop).toBe(true);
+            sound.remove('map-precedence');
+        });
+
         it('should get a reference by alias', () =>
         {
             const s = sound.find('alert-7');
