@@ -332,18 +332,30 @@ class WebAudioContext extends Filterable implements IMediaContext
     /**
      * Decode the audio data
      * @param arrayBuffer - Buffer from loader
-     * @param callback - When completed, error and audioBuffer are parameters.
+     * @param callback - Called once when decoding finishes, with an error or the decoded buffer.
      */
     public decode(arrayBuffer: ArrayBuffer, callback: (err?: Error, buffer?: AudioBuffer) => void): void
     {
+        // A failed decode rejects the promise and also calls the error callback, and some
+        // errors only reject the promise, so listen to both and report the first outcome only
+        let settled = false;
+        const finish = (err: Error, buffer?: AudioBuffer) =>
+        {
+            if (settled)
+            {
+                return;
+            }
+            settled = true;
+            callback(err, buffer);
+        };
         const handleError = (err: Error) =>
         {
-            callback(new Error(err?.message || 'Unable to decode file'));
+            finish(new Error(err?.message || 'Unable to decode file'));
         };
         const result = this._offlineCtx.decodeAudioData(
             arrayBuffer, (buffer: AudioBuffer) =>
             {
-                callback(null, buffer);
+                finish(null, buffer);
             },
             handleError,
         );
