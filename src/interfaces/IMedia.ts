@@ -19,7 +19,7 @@ interface IMedia
     readonly context: IMediaContext;
 
     /**
-     * Length of sound in seconds.
+     * Length of sound in seconds, or `NaN` until it's known (not loaded yet, or loading failed).
      * @readonly
      */
     readonly duration: number;
