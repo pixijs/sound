@@ -332,7 +332,7 @@ class WebAudioContext extends Filterable implements IMediaContext
     /**
      * Decode the audio data
      * @param arrayBuffer - Buffer from loader
-     * @param callback - Called once when decoding finishes, with an error or the decoded buffer.
+     * @param callback - Called once when decoding finishes, with the browser's error or the decoded buffer.
      */
     public decode(arrayBuffer: ArrayBuffer, callback: (err?: Error, buffer?: AudioBuffer) => void): void
     {
@@ -350,7 +350,8 @@ class WebAudioContext extends Filterable implements IMediaContext
         };
         const handleError = (err: Error) =>
         {
-            finish(new Error(err?.message || 'Unable to decode file'));
+            // Old engines call back with no error at all
+            finish(err?.message ? err : new Error('Unable to decode file'));
         };
         const result = this._offlineCtx.decodeAudioData(
             arrayBuffer, (buffer: AudioBuffer) =>
