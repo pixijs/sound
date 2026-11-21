@@ -537,7 +537,7 @@ class SoundLibrary
     /**
      * Get the length of a sound in seconds.
      * @param alias - The sound alias reference.
-     * @return The current duration in seconds.
+     * @return The duration in seconds, or `NaN` if the sound hasn't loaded yet (or failed to load).
      */
     public duration(alias: string): number
     {
