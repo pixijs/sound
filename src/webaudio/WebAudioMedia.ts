@@ -6,6 +6,8 @@ import { WebAudioContext } from './WebAudioContext';
 import { WebAudioInstance } from './WebAudioInstance';
 import { WebAudioNodes } from './WebAudioNodes';
 
+const DESTROYED = 'Sound was destroyed before it finished loading';
+
 /** Adds the sound's URL to a decode error. The original error is kept as `cause`. */
 function decodeError(err: Error, url?: string): Error
 {
@@ -160,7 +162,13 @@ class WebAudioMedia implements IMedia
     {
         try
         {
-            this._decode(await this._fetch(this.parent.url), callback);
+            const arrayBuffer = await this._fetch(this.parent.url);
+
+            if (!this.parent)
+            {
+                throw new Error(DESTROYED);
+            }
+            this._decode(arrayBuffer, callback);
         }
         catch (err)
         {
@@ -207,6 +215,12 @@ class WebAudioMedia implements IMedia
     {
         const audioBufferReadyFn = (err: Error, buffer: AudioBuffer) =>
         {
+            // The sound was destroyed while the file was decoding
+            if (!this.parent)
+            {
+                err = new Error(DESTROYED);
+            }
+
             if (err)
             {
                 if (callback)
