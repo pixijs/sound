@@ -2,6 +2,9 @@ import { EventEmitter } from 'pixi.js';
 import { Filterable } from '../Filterable';
 import { IMediaContext } from '../interfaces';
 
+/** A suspend() or resume() rejects when the context is closed or interrupted before it settles */
+const ignore = (): void => { /* nothing to do */ };
+
 /**
  * Main class to handle WebAudio API. There's a simple chain
  * of AudioNode elements: analyser > compressor > context.destination.
@@ -274,19 +277,36 @@ class WebAudioContext extends Filterable implements IMediaContext
      * Pauses all sounds, even though we handle this at the instance
      * level, we'll also pause the audioContext so that the
      * time used to compute progress isn't messed up.
+     * The audioContext follows the last value set, including when
+     * it's changed more than once in the same tick.
      * @default false
      */
     public set paused(paused: boolean)
     {
-        if (paused && this._ctx.state === 'running')
-        {
-            this._ctx.suspend();
-        }
-        else if (!paused && this._ctx.state === 'suspended')
-        {
-            this._ctx.resume();
-        }
         this._paused = paused;
+        const ctx = this._ctx;
+
+        if (ctx.state === 'closed')
+        {
+            return;
+        }
+        // The state can still show the old value while an earlier suspend() or resume() is in
+        // flight (Firefox, Safari), so always ask for the state we want instead of checking it first
+        if (paused)
+        {
+            ctx.suspend()?.catch(ignore);
+        }
+        else
+        {
+            ctx.resume()?.then(() =>
+            {
+                // Older Chromium ignores a suspend() made while a resume() is in flight
+                if (this._paused && this._ctx === ctx && ctx.state === 'running')
+                {
+                    ctx.suspend()?.catch(ignore);
+                }
+            }).catch(ignore);
+        }
     }
     public get paused(): boolean
     {
