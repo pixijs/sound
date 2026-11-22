@@ -60,7 +60,7 @@ class WebAudioContext extends Filterable implements IMediaContext
 
     /**
      * Indicated whether audio on iOS has been unlocked, which requires a touchend/mousedown event that plays an
-     * empty sound.
+     * empty sound. Only ever goes from true to false.
      */
     private _locked: boolean;
 
@@ -107,14 +107,15 @@ class WebAudioContext extends Filterable implements IMediaContext
 
         this._unlock = this._unlock.bind(this);
         this._checkUnlocked = this._checkUnlocked.bind(this);
-        // Listen for document level clicks to unlock WebAudio. See the _unlock method.
+        // Listen for document level clicks to unlock WebAudio the first time, and to start it again
+        // after the OS stops it. See the _unlock method.
+        document.addEventListener('mousedown', this._unlock, true);
+        document.addEventListener('touchstart', this._unlock, true);
+        document.addEventListener('touchend', this._unlock, true);
         if (this._locked)
         {
             // The context can also start without one of these: the app resumes it, or a sound starts in a key press
             ctx.addEventListener('statechange', this._checkUnlocked);
-            document.addEventListener('mousedown', this._unlock, true);
-            document.addEventListener('touchstart', this._unlock, true);
-            document.addEventListener('touchend', this._unlock, true);
             this._unlock(); // When played inside of a touch event, this will enable audio on iOS immediately.
         }
 
@@ -172,15 +173,20 @@ class WebAudioContext extends Filterable implements IMediaContext
      * Note that earlier versions of iOS supported `touchstart` for this, but iOS9 removed this functionality. Adding
      * a `touchstart` event to support older platforms may preclude a `mousedown` even from getting fired on iOS9, so we
      * stick with `mousedown` and `touchend`.
+     *
+     * Once unlocked, the same events restart a context that iOS stopped (app switch, call, headphones unplugged)
+     * unless it's paused.
      */
     private _unlock(): void
     {
-        if (!this._locked)
+        if (this._locked)
         {
+            this.playEmptySound();
+            this._checkUnlocked();
+
             return;
         }
-        this.playEmptySound();
-        this._checkUnlocked();
+        this._recover();
     }
 
     /**
@@ -192,11 +198,32 @@ class WebAudioContext extends Filterable implements IMediaContext
         if (this._locked && this._ctx.state === 'running')
         {
             this._locked = false;
-            this._removeUnlockListeners();
+            this._ctx.removeEventListener('statechange', this._checkUnlocked);
         }
     }
 
-    /** Stop listening for the events that can unlock the context. */
+    /**
+     * Start the context again when something other than `paused` stopped it: iOS suspends or interrupts it
+     * on an app switch, a call or when headphones are unplugged, and may only let it resume in a user gesture.
+     */
+    private _recover(): void
+    {
+        // A tap means the page is in front, even if the focus event never came
+        if (this.autoPause && this._pausedOnBlur !== undefined)
+        {
+            this.onFocus();
+
+            return;
+        }
+        const state = this._ctx.state as AudioContextState | 'interrupted';
+
+        if (!this._paused && (state === 'suspended' || state === 'interrupted'))
+        {
+            this._resume();
+        }
+    }
+
+    /** Stop listening for the events that unlock or restart the context. */
     private _removeUnlockListeners(): void
     {
         this._ctx.removeEventListener('statechange', this._checkUnlocked);
@@ -238,7 +265,9 @@ class WebAudioContext extends Filterable implements IMediaContext
         source.buffer = this._ctx.createBuffer(1, 1, 22050);
         source.connect(this._ctx.destination);
         source.start(0, 0, 0);
-        if (source.context.state === 'suspended')
+        const state = source.context.state as AudioContextState | 'interrupted';
+
+        if (state === 'suspended' || state === 'interrupted')
         {
             this._resume();
         }
@@ -327,6 +356,9 @@ class WebAudioContext extends Filterable implements IMediaContext
      * time used to compute progress isn't messed up.
      * The audioContext follows the last value set, including when
      * it's changed more than once in the same tick.
+     * While not paused, a context stopped by the browser is resumed on the next tap,
+     * including one stopped by calling `audioContext.suspend()` directly. Use `paused` or
+     * `pauseAll()` to pause.
      * @default false
      */
     public set paused(paused: boolean)
