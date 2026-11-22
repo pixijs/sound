@@ -64,7 +64,7 @@ class WebAudioContext extends Filterable implements IMediaContext
      */
     private _locked: boolean;
 
-    /** The paused state when blurring the current window */
+    /** The paused state saved by a window blur, or undefined when no blur is waiting for its focus */
     private _pausedOnBlur: boolean;
 
     /** Set to false ignore suspending when window is blurred */
@@ -131,16 +131,22 @@ class WebAudioContext extends Filterable implements IMediaContext
         {
             return;
         }
-        // Safari uses the non-standard "interrupted" state in some cases
-        // such as when the app loses focus because the screen is locked
-        // or when the user switches to another app.
-        const state = this._ctx.state as 'suspended' | 'interrupted';
+        const paused = this._pausedOnBlur;
 
-        if (state === 'suspended' || state === 'interrupted' || !this._locked)
+        if (paused === undefined)
         {
-            this.paused = this._pausedOnBlur;
-            this.refreshPaused();
+            // No blur to undo. Safari can still have stopped the context (it uses the non-standard
+            // "interrupted" state when the screen is locked or the user switches to another app)
+            if (!this._paused)
+            {
+                this._resume();
+            }
+
+            return;
         }
+        this._pausedOnBlur = undefined;
+        this.paused = paused;
+        this.refreshPaused();
     }
 
     /** Handle mobile WebAudio context suspend */
@@ -150,7 +156,7 @@ class WebAudioContext extends Filterable implements IMediaContext
         {
             return;
         }
-        if (!this._locked)
+        if (!this._locked && this._pausedOnBlur === undefined)
         {
             this._pausedOnBlur = this._paused;
             this.paused = true;
