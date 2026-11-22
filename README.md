@@ -57,6 +57,30 @@ mySound.play();
 
 Classes and namespaces (`Sound`, `filters`, `utils`, etc.) are named exports. They are not properties of the `sound` object, so import them directly.
 
+### Assets
+
+Importing `@pixi/sound` registers a loader with `PIXI.Assets`. Loaded sounds are added to the library under each of their aliases. Any [sound option](https://pixijs.io/sound/docs/Options.html) except `url` and `preload`, including `sprites`, can go in the asset's `data`. This works with `Assets.add`, `Assets.addBundle` and bundle manifests:
+
+```typescript
+import { Assets } from 'pixi.js';
+import { sound } from '@pixi/sound';
+
+Assets.add({
+    alias: 'sfx',
+    src: 'path/to/sfx.{ogg,mp3}',
+    data: {
+        volume: 0.5,
+        sprites: {
+            coin: { start: 0, end: 0.4 },
+            jump: { start: 0.5, end: 1.1 },
+        },
+    },
+});
+
+await Assets.load('sfx');
+sound.play('sfx', 'coin');
+```
+
 ### Browser Usage
 
 If you're using a `<script>` element to import `@pixi/sound` into your project, then the SoundLibrary object is `PIXI.sound` global. In the browser bundle, the named exports are also available on that global, which is why the [examples](https://pixijs.io/sound/examples/index.html) use `PIXI.sound.Sound` and `PIXI.sound.filters`.

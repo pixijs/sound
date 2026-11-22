@@ -97,6 +97,28 @@ for (const useLegacy of [false, true])
             expect(sound.exists('alert-4')).toBe(false);
         });
 
+        it('should pass asset data, including sprites, to the sound', async () =>
+        {
+            const alias = `sprites-${useLegacy}`;
+
+            Assets.add({
+                alias,
+                src: path.join(__dirname, 'resources/musical-11.mp3'),
+                data: { volume: 0.5, sprites: { coin: { start: 0, end: 0.4 } } },
+            });
+            const loaded = await Assets.load<Sound>(alias);
+
+            try
+            {
+                expect(loaded.volume).toBe(0.5);
+                expect(loaded.sprites.coin.end).toBe(0.4);
+            }
+            finally
+            {
+                await Assets.unload(alias);
+            }
+        });
+
         it.each([false, true])('should preserve reassigned aliases on unload (all: %s)', async (all) =>
         {
             const loaded = Assets.get<Sound>(fullAlias);
