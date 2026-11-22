@@ -51,8 +51,8 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
     private _loop: boolean;
 
     /**
-     * Start of the looping region from the first `play()`.
-     * Resume seeks inside this region instead of using the offset as `loopStart`.
+     * Start of the region from the first `play()`, looping or not, so a loop turned on later
+     * still starts there. Resume seeks inside this region instead of using the offset as `loopStart`.
      */
     private _loopRegionStart: number | null = null;
 
@@ -294,6 +294,12 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         const { end, speed, loop, volume, muted, filters } = options;
         let { start } = options;
 
+        // A play() on an instance that is still playing starts a new region
+        if (this._source)
+        {
+            this._loopRegionStart = null;
+        }
+
         // Resume passes `elapsed % bufferDuration` as start and play() would also
         // use that value as loopStart, collapsing a sprite loop to its tail.
         if (loop && this._loopRegionStart !== null)
@@ -334,12 +340,13 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         this._elapsed = start;
         this._source.onended = this._onComplete.bind(this);
 
+        if (this._loopRegionStart === null)
+        {
+            this._loopRegionStart = start ?? 0;
+        }
+
         if (this._loop)
         {
-            if (this._loopRegionStart === null)
-            {
-                this._loopRegionStart = start ?? 0;
-            }
             this._source.loopEnd = end;
             this._source.loopStart = this._loopRegionStart;
             this._source.start(0, start);
