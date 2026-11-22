@@ -19,10 +19,7 @@ WebAudio API playback library, with filters. Modern audio playback for modern br
 
 **Known Compatibility**
 
-* Chrome 58+
-* Firefox 52+
-* Safari 11+
-* iOS 11+
+* Any browser that PixiJS v8 runs in. WebAudio is used where available, with HTML audio as the fallback.
 
 **iOS silent mode**
 
