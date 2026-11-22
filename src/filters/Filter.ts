@@ -1,14 +1,31 @@
 /**
- * Represents a single sound element. Can be used to play, pause, etc. sound instances.
+ * Base class for all filters. Wraps any WebAudio `AudioNode`, or a chain of them,
+ * so it can be used in `Sound.filters`, `PlayOptions.filters` or `sound.filtersAll`.
+ * Wrap a node directly, or extend this class for a reusable filter.
+ * **Only supported with WebAudio.**
+ * @example
+ * import { filters, sound } from '@pixi/sound';
+ * const { audioContext } = sound.context;
  *
+ * // Wrap a single node
+ * const lowpass = audioContext.createBiquadFilter();
+ * lowpass.frequency.value = 800;
+ * sound.find('music').filters = [new filters.Filter(lowpass)];
+ *
+ * // Wrap a chain: pass the first node (input) and the last node (output)
+ * const highpass = audioContext.createBiquadFilter();
+ * const gain = audioContext.createGain();
+ * highpass.type = 'highpass';
+ * highpass.connect(gain);
+ * sound.play('music', { filters: [new filters.Filter(highpass, gain)] });
  * @memberof filters
  */
 class Filter
 {
-    /** The node to connect for the filter to the previous filter. */
+    /** The input node, which the previous filter connects to. */
     public destination: AudioNode;
 
-    /** The node to connect for the filter to the previous filter. */
+    /** The output node, which connects to the next filter. */
     public source: AudioNode;
 
     /**
