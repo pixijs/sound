@@ -246,6 +246,9 @@ class Sound
 
     /**
      * Create a new sound instance from source.
+     * The sound isn't added to the library, so `sound.stopAll()`, `sound.removeAll()` and
+     * `sound.isPlaying()` skip it until you call `sound.add('alias', mySound)`. The global
+     * volume, speed, mute, pause and filters still apply.
      * @param source - Either the path or url to the source file.
      *        or the object of options to use.
      * @return Created sound instance.
