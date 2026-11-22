@@ -42,11 +42,13 @@ interface Options
      * Call when finished loading. Called once with an error if loading or decoding fails.
      * With WebAudio the error message names the file and the original error is in `cause`.
      * If no callback is given, the error is logged to the console instead.
+     * Called once, even if `play()` is called while the sound is still loading.
      * @type {Function}
      */
     loaded?: LoadedCallback;
     /**
-     * `true` to immediately start preloading if loading from `url`.
+     * `true` to immediately start preloading if loading from `url`. Calling `play()` while
+     * it is still loading waits for this load; it does not start another.
      */
     preload?: boolean;
     /**
@@ -117,7 +119,8 @@ interface PlayOptions
      */
     complete?: CompleteCallback;
     /**
-     * If not already preloaded, callback when finishes load.
+     * If the sound has not loaded yet, called when it has, with the instance this call started.
+     * Not called if loading fails; the promise from `play()` rejects instead.
      * @type {Function}
      */
     loaded?: LoadedCallback;
@@ -145,6 +148,14 @@ type LoadedCallback = (err: Error, sound?: Sound, instance?: IMediaInstance) => 
 type CompleteCallback = (sound: Sound) => void;
 
 type SoundSpriteDataMap = Record<string, SoundSpriteData>;
+
+/** A `play()` call that is waiting for the sound to load. */
+interface PendingPlay
+{
+    options: PlayOptions;
+    resolve: (instance: IMediaInstance) => void;
+    reject: (err: Error) => void;
+}
 
 /**
  * Sound represents a single piece of loaded media. When playing a sound {@link IMediaInstance} objects
@@ -203,8 +214,11 @@ class Sound
     /** The audio source */
     public media: IMedia;
 
-    /** The list of play calls while waiting to preload the sound. */
-    private _preloadQueue: (() => void)[] | null;
+    /** The play calls, after the first one, that are waiting for the sound to load. */
+    private _preloadQueue: PendingPlay[] | null;
+
+    /** The callbacks waiting for the load in progress, or `null` when nothing is loading. */
+    private _loadCallbacks: LoadedCallback[] | null;
 
     /** The collection of instances being played. */
     private _instances: IMediaInstance[];
@@ -298,6 +312,7 @@ class Sound
         this._autoPlayOptions = complete ? { complete } : null;
         this.isLoaded = false;
         this._preloadQueue = null;
+        this._loadCallbacks = null;
         this.isPlaying = false;
         this.autoPlay = options.autoPlay;
         this.singleInstance = options.singleInstance;
@@ -447,6 +462,9 @@ class Sound
         this.media = null;
         this._sprites = null;
         this._instances = null;
+        // The load in progress keeps its own references, and still reports to every waiting call
+        this._preloadQueue = null;
+        this._loadCallbacks = null;
     }
 
     /**
@@ -511,8 +529,9 @@ class Sound
      * @param alias - The unique name of the sound sprite.
      * @param {Function} callback - Callback when completed.
      * @return The sound instance,
-     *        this cannot be reused after it is done playing. Returns a Promise if the sound
-     *        has not yet loaded.
+     *        this cannot be reused after it is done playing. Returns a Promise for it if the sound
+     *        has not yet loaded. Each call made before loading starts its own instance once the
+     *        sound has loaded. The promise rejects if loading fails.
      */
     public play(alias: string, callback?: CompleteCallback): IMediaInstance | Promise<IMediaInstance>;
 
@@ -523,8 +542,9 @@ class Sound
      * @param {Function|PlayOptions} source - Either completed function or play options.
      * @param {Function} callback - Callback when completed.
      * @return The sound instance,
-     *        this cannot be reused after it is done playing. Returns a Promise if the sound
-     *        has not yet loaded.
+     *        this cannot be reused after it is done playing. Returns a Promise for it if the sound
+     *        has not yet loaded. Each call made before loading starts its own instance once the
+     *        sound has loaded. The promise rejects if loading fails.
      */
     public play(source?: string | PlayOptions | CompleteCallback,
         callback?: CompleteCallback): IMediaInstance | Promise<IMediaInstance>;
@@ -591,41 +611,43 @@ class Sound
         // - usefull when the sound download isnt yet completed
         if (!this.isLoaded)
         {
-            // Handle the case when trying to play a sound that is not yet loaded
-            // We'll add it to a queue to play after initial load finishes
-            if (this._preloadQueue)
-            {
-                return new Promise<IMediaInstance>((resolve) =>
-                {
-                    this._preloadQueue.push(() =>
-                    {
-                        resolve(this.play(options));
-                    });
-                });
-            }
-
-            this._preloadQueue = [];
-            this.autoPlay = true;
-            this._autoPlayOptions = options;
-
             return new Promise<IMediaInstance>((resolve, reject) =>
             {
+                // Only the first play() asks for the load; the ones after it wait in the queue
+                if (this._preloadQueue)
+                {
+                    this._preloadQueue.push({ options, resolve, reject });
+
+                    return;
+                }
+
+                const queue: PendingPlay[] = [];
+
+                this._preloadQueue = queue;
+                this.autoPlay = true;
+                this._autoPlayOptions = options;
+
                 this._preload((err: Error, sound: Sound, media: IMediaInstance) =>
                 {
-                    this._preloadQueue.forEach((resolve) => resolve());
                     this._preloadQueue = null;
 
                     if (err)
                     {
                         reject(err);
+                        queue.forEach((pending) => pending.reject(err));
+
+                        return;
                     }
-                    else
+
+                    options.loaded?.(null, sound, media);
+                    resolve(media);
+
+                    for (const pending of queue)
                     {
-                        if (options.loaded)
-                        {
-                            options.loaded(err, sound, media);
-                        }
-                        resolve(media);
+                        const instance = this.play(pending.options) as IMediaInstance;
+
+                        pending.options.loaded?.(null, sound, instance);
+                        pending.resolve(instance);
                     }
                 });
             });
@@ -718,7 +740,32 @@ class Sound
     /** Starts the preloading of sound. */
     private _preload(callback?: LoadedCallback): void
     {
-        this.media.load(callback);
+        // Already loading: wait for that load, don't start another
+        if (this._loadCallbacks)
+        {
+            if (callback)
+            {
+                this._loadCallbacks.push(callback);
+            }
+
+            return;
+        }
+
+        const callbacks: LoadedCallback[] = callback ? [callback] : [];
+
+        // Set before load(), as an AudioBuffer source calls back straight away
+        this._loadCallbacks = callbacks;
+        this.media.load((err: Error, sound: Sound, instance: IMediaInstance) =>
+        {
+            // Cleared first, so a play() after a failed load can start a new one
+            this._loadCallbacks = null;
+
+            if (err && callbacks.length === 0)
+            {
+                console.error(err);
+            }
+            callbacks.forEach((loaded) => loaded(err, sound, instance));
+        });
     }
 
     /** Gets the list of instances that are currently being played of this sound. */
