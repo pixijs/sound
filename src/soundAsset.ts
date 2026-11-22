@@ -18,7 +18,9 @@ const getAliases = (asset: ResolvedAsset) =>
 };
 
 /**
- * Simple loader plugin for loading text data.
+ * Assets extension that loads audio files as {@link Sound} objects and adds them to the library
+ * under every alias. The asset's `data` is passed to {@link Sound.from}, so it accepts any
+ * {@link Options} except `url` and `preload`, including `sprites`.
  */
 const soundAsset = {
     extension: ExtensionType.Asset,
