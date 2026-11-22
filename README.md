@@ -45,15 +45,21 @@ npm i @pixi/sound --save
 To import into your project, for instance, when using [Webpack](https://webpack.js.org/), [Parcel](https://parceljs.org/), [Rollup](https://rollupjs.org/), or another bundler:
 
 ```typescript
-import { sound } from '@pixi/sound';
+import { sound, Sound } from '@pixi/sound';
 
 sound.add('my-sound', 'path/to/file.mp3');
 sound.play('my-sound');
+
+// Or create a sound without adding it to the library
+const mySound = Sound.from('path/to/file.mp3');
+mySound.play();
 ```
+
+Classes and namespaces (`Sound`, `filters`, `utils`, etc.) are named exports. They are not properties of the `sound` object, so import them directly.
 
 ### Browser Usage
 
-If you're using a `<script>` element to import `@pixi/sound` into your project, then the SoundLibrary object is `PIXI.sound` global.
+If you're using a `<script>` element to import `@pixi/sound` into your project, then the SoundLibrary object is `PIXI.sound` global. In the browser bundle, the named exports are also available on that global, which is why the [examples](https://pixijs.io/sound/examples/index.html) use `PIXI.sound.Sound` and `PIXI.sound.filters`.
 
 ```html
 <!-- PixiJS must be imported before @pixi/sound -->
