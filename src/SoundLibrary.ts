@@ -359,7 +359,7 @@ class SoundLibrary
     }
 
     /**
-     * Stops and removes all sounds. They cannot be used after this.
+     * Stops and removes all sounds in the library. They cannot be used after this.
      * @return Instance for chaining.
      */
     public removeAll(): this
@@ -378,7 +378,7 @@ class SoundLibrary
     }
 
     /**
-     * Stops all sounds.
+     * Stops all sounds in the library (see {@link Sound.from}).
      * @return Instance for chaining.
      */
     public stopAll(): this
@@ -415,7 +415,7 @@ class SoundLibrary
     }
 
     /**
-     * Convenience function to check to see if any sound is playing.
+     * Convenience function to check to see if any sound in the library is playing.
      * @returns `true` if any sound is currently playing.
      */
     public isPlaying(): boolean
