@@ -256,10 +256,19 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
                  */
                 this.emit('resumed');
 
+                // A whole-file play stores the duration as its end,
+                // and passing that back would turn the loop off
+                let end = this._end;
+
+                if (this._loop)
+                {
+                    end = null;
+                }
+
                 // resume the playing with offset
                 this.play({
                     start: this._source.currentTime,
-                    end: this._end,
+                    end,
                     volume: this._volume,
                     speed: this._speed,
                     loop: this._loop,

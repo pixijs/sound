@@ -93,4 +93,29 @@ describe('Resume a looping sprite (webaudio)', () =>
         expect(starts[0].source.loopStart).toBeCloseTo(0.3, 5);
         expect(starts[0].source.loopEnd).toBeCloseTo(0.6, 5);
     });
+
+    it.each([
+        ['a looping', true],
+        ['a non-looping', false],
+    ])('should loop from the new start when play() is called again on %s instance', async (_name, loop) =>
+    {
+        const { audioContext } = sound.context as webaudio.WebAudioContext;
+        const instance = await mySound.play({ start: 1.5, loop });
+        const target = audioContext.currentTime + 0.05;
+        const deadline = Date.now() + 2000;
+
+        // let it play on a little, so a stale loop region would move the new start
+        while (audioContext.currentTime < target && Date.now() < deadline)
+        {
+            await wait(10);
+        }
+        expect(audioContext.currentTime).toBeGreaterThanOrEqual(target);
+        const starts = recordStarts();
+
+        instance.play({ start: 0.5, end: null, speed: 1, volume: 1, loop: true, muted: false });
+
+        expect(starts).toHaveLength(1);
+        expect(starts[0].offset).toBeCloseTo(0.5, 5);
+        expect(starts[0].source.loopStart).toBeCloseTo(0.5, 5);
+    });
 });
