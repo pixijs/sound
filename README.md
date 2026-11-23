@@ -131,6 +131,18 @@ document.addEventListener('keydown', () =>
 * [Demo](https://pixijs.io/sound/examples/demo.html)
 * [API Documentation](https://pixijs.io/sound/docs/index.html)
 
+## Running the Tests
+
+The tests run in headless Chromium through Vitest's browser mode, so they get a real `AudioContext` and `HTMLAudioElement`. They need Node.js 22.12 or later. Install Playwright's Chromium once, then run them:
+
+```bash
+npm install
+npx playwright install chromium
+npm test
+```
+
+To run one file, pass its path: `npm test -- test/webaudio.test.ts`.
+
 ## License
 
 MIT License.

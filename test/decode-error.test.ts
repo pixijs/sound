@@ -1,6 +1,7 @@
-import path from 'path';
 import { Assets, DOMAdapter } from 'pixi.js';
 import { IMediaInstance, Sound, sound, webaudio } from '../src';
+
+import type { MockInstance } from 'vitest';
 
 type DecodeError = Error & { cause?: Error };
 
@@ -10,7 +11,7 @@ const corruptUrl = `data:audio/mpeg;base64,${btoa(String.fromCharCode(...garbage
 // What a decode error calls a data URL: its header, without the file
 const corruptName = 'data:audio/mpeg;base64,…';
 // A file URL for the cases that check the name. Nothing is there, so its fetch is mocked
-const namedUrl = path.join(__dirname, 'resources', 'corrupt.mp3');
+const namedUrl = '/test/resources/corrupt.mp3';
 
 /** A corrupt data URL of its own, as each Assets case needs a src that no other case loads. */
 function corruptUrlFor(seed: number): string
@@ -25,7 +26,7 @@ function corruptUrlFor(seed: number): string
 /** Make every fetch succeed with bytes that can't be decoded. */
 function mockFetch(): void
 {
-    jest.spyOn(DOMAdapter.get(), 'fetch').mockImplementation(async () => new Response(garbage.slice().buffer));
+    vi.spyOn(DOMAdapter.get(), 'fetch').mockImplementation(async () => new Response(garbage.slice().buffer));
 }
 
 function wait(ms: number): Promise<void>
@@ -56,7 +57,7 @@ function mockDecode(
 {
     const offline: OfflineAudioContext = (context as any)._offlineCtx;
 
-    jest.spyOn(offline, 'decodeAudioData').mockImplementation(
+    vi.spyOn(offline, 'decodeAudioData').mockImplementation(
         (_buffer, ok, fail) => decode(ok, fail as (err: Error) => void) as Promise<any>,
     );
 }
@@ -82,21 +83,21 @@ beforeAll(() =>
 });
 
 /** The console.error spy that every test starts with. */
-function logged(): jest.SpyInstance
+function logged(): MockInstance
 {
-    return console.error as unknown as jest.SpyInstance;
+    return console.error as unknown as MockInstance;
 }
 
 beforeEach(() =>
 {
     uncaught.length = 0;
     (Sound as any)._pool.length = 0;
-    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
 });
 
 afterEach(() =>
 {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
     sound.removeAll();
 });
 
@@ -162,7 +163,7 @@ for (const useLegacy of [false, true])
         it('should reject Assets.load and call the user loaded callback once', async () =>
         {
             const errors: Error[] = [];
-            const loaded = jest.fn((err: Error) =>
+            const loaded = vi.fn((err: Error) =>
             {
                 errors.push(err);
             });
@@ -226,7 +227,7 @@ for (const useLegacy of [false, true])
 
         it('should not log an error that rejected Assets.load', async () =>
         {
-            const loaded = jest.fn();
+            const loaded = vi.fn();
 
             await expect(Assets.load({
                 src: corruptUrlFor(useLegacy ? 3 : 2),
@@ -519,7 +520,7 @@ describe('Undecodable audio, decode() (webaudio)', () =>
 
     it('should load a good file without logging when there is no loaded callback', async () =>
     {
-        const s = Sound.from({ url: path.join(__dirname, 'resources', 'silence.mp3'), preload: true });
+        const s = Sound.from({ url: '/test/resources/silence.mp3', preload: true });
 
         await settle(() => s.isLoaded);
 

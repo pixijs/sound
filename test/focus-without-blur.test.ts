@@ -1,7 +1,8 @@
-import path from 'path';
 import { IMediaInstance, Sound, sound, webaudio } from '../src';
 
-const musical = path.join(__dirname, 'resources', 'musical-11.mp3');
+import type { MockInstance } from 'vitest';
+
+const musical = '/test/resources/musical-11.mp3';
 const realState = Object.getOwnPropertyDescriptor(BaseAudioContext.prototype, 'state').get;
 
 function wait(ms: number): Promise<void>
@@ -55,7 +56,7 @@ function lagState(ctx: AudioContext): () => void
 async function lockedContext(create: () => webaudio.WebAudioContext): Promise<webaudio.WebAudioContext>
 {
     // Electron starts contexts running, so report suspended during construction, then really suspend it
-    const stub = jest.spyOn(BaseAudioContext.prototype, 'state', 'get').mockReturnValue('suspended');
+    const stub = vi.spyOn(BaseAudioContext.prototype, 'state', 'get').mockReturnValue('suspended');
     const context = create();
 
     stub.mockRestore();
@@ -103,11 +104,14 @@ for (const lag of [false, true])
             return state() === 'suspended' && ac.currentTime === time;
         };
 
-        /** Wait for the resume() made by a gesture to settle */
-        const settled = async (resume: jest.SpyInstance): Promise<void> =>
+        /** Wait for the resume() made by a gesture to settle. Newer Chromium leaves it pending once a suspend() follows. */
+        const settled = async (resume: MockInstance): Promise<void> =>
         {
             expect(resume).toHaveBeenCalled();
-            await Promise.all(resume.mock.results.map((r) => r.value?.catch((): void => undefined)));
+            await Promise.race([
+                Promise.all(resume.mock.results.map((r) => r.value?.catch((): void => undefined))),
+                wait(500),
+            ]);
         };
 
         describe('a context of its own', () =>
@@ -147,7 +151,7 @@ for (const lag of [false, true])
             afterEach(() =>
             {
                 restore?.();
-                jest.restoreAllMocks();
+                vi.restoreAllMocks();
                 if (ctx.audioContext)
                 {
                     ctx.destroy();
@@ -167,7 +171,7 @@ for (const lag of [false, true])
                 {
                     ctx.paused = true;
                     expect(await until(() => state() === 'suspended')).toBe(true);
-                    const resume = jest.spyOn(ac, 'resume');
+                    const resume = vi.spyOn(ac, 'resume');
 
                     focus();
                     expect(ctx.paused).toBe(true);
@@ -206,7 +210,7 @@ for (const lag of [false, true])
 
                 it('should not restore an old blur on a second focus', async () =>
                 {
-                    const resume = jest.spyOn(ac, 'resume');
+                    const resume = vi.spyOn(ac, 'resume');
 
                     blur();
                     focus();
@@ -267,7 +271,7 @@ for (const lag of [false, true])
 
                     ctx.paused = true;
                     expect(await until(() => state() === 'suspended')).toBe(true);
-                    const resume = jest.spyOn(ac, 'resume');
+                    const resume = vi.spyOn(ac, 'resume');
 
                     focus();
                     expect(ctx.paused).toBe(true);
@@ -307,7 +311,7 @@ for (const lag of [false, true])
             afterEach(() =>
             {
                 restore?.();
-                jest.restoreAllMocks();
+                vi.restoreAllMocks();
                 music.destroy();
                 (Sound as any)._pool.length = 0;
                 sound.close();
@@ -321,7 +325,7 @@ for (const lag of [false, true])
                 expect(sound.context.paused).toBe(true);
                 expect(await frozen()).toBe(true);
 
-                const resume = jest.spyOn(ac, 'resume');
+                const resume = vi.spyOn(ac, 'resume');
 
                 gesture();
                 await settled(resume);

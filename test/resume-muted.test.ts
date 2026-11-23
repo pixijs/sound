@@ -1,7 +1,6 @@
-import path from 'path';
 import { IMediaInstance, Sound, sound, webaudio } from '../src';
 
-const alert = path.join(__dirname, 'resources', 'alert-4.mp3');
+const alert = '/test/resources/alert-4.mp3';
 
 function wait(ms: number): Promise<void>
 {

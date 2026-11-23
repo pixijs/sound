@@ -1,7 +1,8 @@
-import path from 'path';
 import { IMediaInstance, Sound, sound, webaudio } from '../src';
 
-const musical = path.join(__dirname, 'resources', 'musical-11.mp3');
+import type { MockInstance } from 'vitest';
+
+const musical = '/test/resources/musical-11.mp3';
 const realState = Object.getOwnPropertyDescriptor(BaseAudioContext.prototype, 'state').get;
 const gestures = ['mousedown', 'touchstart', 'touchend'];
 
@@ -79,7 +80,7 @@ async function stoppedContext(
 ): Promise<webaudio.WebAudioContext>
 {
     // Electron starts contexts running, so report the state during construction, then really suspend it
-    const stub = jest.spyOn(BaseAudioContext.prototype, 'state', 'get').mockReturnValue(state as AudioContextState);
+    const stub = vi.spyOn(BaseAudioContext.prototype, 'state', 'get').mockReturnValue(state as AudioContextState);
     const context = create();
 
     stub.mockRestore();
@@ -133,7 +134,7 @@ for (const lag of [false, true])
         };
 
         /** Wait for the resume() calls made so far to settle */
-        const settled = async (resume: jest.SpyInstance): Promise<void> =>
+        const settled = async (resume: MockInstance): Promise<void> =>
         {
             expect(resume).toHaveBeenCalled();
             await Promise.all(resume.mock.results.map((r) => r.value?.catch((): void => undefined)));
@@ -222,7 +223,7 @@ for (const lag of [false, true])
 
         const cleanUp = (): void =>
         {
-            jest.restoreAllMocks();
+            vi.restoreAllMocks();
             while (undo.length)
             {
                 undo.pop()();
@@ -279,7 +280,7 @@ for (const lag of [false, true])
                 it('should resume on a tap after an interruption', async () =>
                 {
                     await interrupt();
-                    const resume = jest.spyOn(ac, 'resume');
+                    const resume = vi.spyOn(ac, 'resume');
 
                     gesture('touchend');
                     expect(resume).toHaveBeenCalledTimes(1);
@@ -290,7 +291,7 @@ for (const lag of [false, true])
                 it('should try again on a tap after a resume that never settles', async () =>
                 {
                     await interrupt({ pending: true });
-                    const resume = jest.spyOn(ac, 'resume');
+                    const resume = vi.spyOn(ac, 'resume');
 
                     ctx.paused = false;
                     expect(resume).toHaveBeenCalledTimes(1);
@@ -306,7 +307,7 @@ for (const lag of [false, true])
                 it('should resume from playEmptySound while interrupted', async () =>
                 {
                     await interrupt();
-                    const resume = jest.spyOn(ac, 'resume');
+                    const resume = vi.spyOn(ac, 'resume');
 
                     ctx.playEmptySound();
                     expect(resume).toHaveBeenCalledTimes(1);
@@ -319,8 +320,8 @@ for (const lag of [false, true])
                     expect(ctx.paused).toBe(true);
                     expect(await frozen()).toBe(true);
                     await osStop();
-                    const refreshPaused = jest.fn();
-                    const resume = jest.spyOn(ac, 'resume');
+                    const refreshPaused = vi.fn();
+                    const resume = vi.spyOn(ac, 'resume');
 
                     ctx.events.on('refreshPaused', refreshPaused);
 
@@ -355,7 +356,7 @@ for (const lag of [false, true])
                     ctx.paused = true;
                     expect(await until(() => state() === 'suspended' && ac.state === 'suspended')).toBe(true);
                     await osStop();
-                    const resume = jest.spyOn(ac, 'resume');
+                    const resume = vi.spyOn(ac, 'resume');
 
                     gestures.forEach(gesture);
                     expect(resume).not.toHaveBeenCalled();
@@ -365,8 +366,8 @@ for (const lag of [false, true])
 
                 it('should not resume on any gesture or playEmptySound while running', async () =>
                 {
-                    const resume = jest.spyOn(ac, 'resume');
-                    const refreshPaused = jest.fn();
+                    const resume = vi.spyOn(ac, 'resume');
+                    const refreshPaused = vi.fn();
 
                     ctx.events.on('refreshPaused', refreshPaused);
 
@@ -381,7 +382,7 @@ for (const lag of [false, true])
                 it('should resume from interrupted when unpaused', async () =>
                 {
                     await interrupt();
-                    const resume = jest.spyOn(ac, 'resume');
+                    const resume = vi.spyOn(ac, 'resume');
 
                     ctx.paused = false;
                     expect(resume).toHaveBeenCalledTimes(1);
@@ -393,7 +394,7 @@ for (const lag of [false, true])
                     blur();
                     expect(ctx.paused).toBe(true);
                     await interrupt();
-                    const resume = jest.spyOn(ac, 'resume');
+                    const resume = vi.spyOn(ac, 'resume');
 
                     focus();
                     expect(ctx.paused).toBe(false);
@@ -407,7 +408,7 @@ for (const lag of [false, true])
                     await osStop();
                     const stop = watchRejections();
                     // iOS can reject with "InvalidStateError: Failed to start the audio device"
-                    const resume = jest.spyOn(ac, 'resume').mockImplementationOnce(() =>
+                    const resume = vi.spyOn(ac, 'resume').mockImplementationOnce(() =>
                         Promise.reject(new DOMException('Failed to start the audio device', 'InvalidStateError')));
 
                     gesture('touchend');
@@ -471,8 +472,8 @@ for (const lag of [false, true])
 
                     it.each(gestures)('should stop listening for %s', (type) =>
                     {
-                        const resume = jest.spyOn(ac, 'resume');
-                        const playEmptySound = jest.spyOn(ctx, 'playEmptySound');
+                        const resume = vi.spyOn(ac, 'resume');
+                        const playEmptySound = vi.spyOn(ctx, 'playEmptySound');
 
                         ctx.destroy();
                         gesture(type);
@@ -487,7 +488,7 @@ for (const lag of [false, true])
             {
                 use(await stoppedContext(() => new webaudio.WebAudioContext()));
                 expect(locked()).toBe(true);
-                const resume = jest.spyOn(ac, 'resume');
+                const resume = vi.spyOn(ac, 'resume');
 
                 gesture('touchend');
                 expect(resume).toHaveBeenCalledTimes(1);
@@ -501,7 +502,7 @@ for (const lag of [false, true])
                 use(await stoppedContext(() => new webaudio.WebAudioContext(), 'interrupted'));
                 expect(locked()).toBe(false);
                 await interrupt();
-                const resume = jest.spyOn(ac, 'resume');
+                const resume = vi.spyOn(ac, 'resume');
 
                 gesture('touchend');
                 expect(resume).toHaveBeenCalledTimes(1);
@@ -556,7 +557,7 @@ for (const lag of [false, true])
             {
                 sound.pauseAll();
                 expect(await until(() => state() === 'suspended' && ac.state === 'suspended')).toBe(true);
-                const resume = jest.spyOn(ac, 'resume');
+                const resume = vi.spyOn(ac, 'resume');
 
                 gesture('touchend');
                 expect(resume).not.toHaveBeenCalled();

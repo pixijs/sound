@@ -1,7 +1,6 @@
-import path from 'path';
 import { IMediaInstance, Sound, sound, webaudio } from '../src';
 
-const musical = path.join(__dirname, 'resources', 'musical-11.mp3');
+const musical = '/test/resources/musical-11.mp3';
 const realState = Object.getOwnPropertyDescriptor(BaseAudioContext.prototype, 'state').get;
 
 function wait(ms: number): Promise<void>
@@ -239,7 +238,7 @@ for (const useLegacy of [false, true])
             restore?.();
             sound.stopAll();
             sound.resumeAll();
-            jest.restoreAllMocks();
+            vi.restoreAllMocks();
         });
 
         afterAll(() =>
@@ -274,8 +273,8 @@ for (const useLegacy of [false, true])
             {
                 const context = new webaudio.WebAudioContext();
                 const rejected = (): Promise<void> => Promise.reject(new Error('interrupted'));
-                const suspend = jest.spyOn(context.audioContext, 'suspend').mockImplementation(rejected);
-                const resume = jest.spyOn(context.audioContext, 'resume').mockImplementation(rejected);
+                const suspend = vi.spyOn(context.audioContext, 'suspend').mockImplementation(rejected);
+                const resume = vi.spyOn(context.audioContext, 'resume').mockImplementation(rejected);
                 const stop = watchRejections();
 
                 context.paused = true;
@@ -283,7 +282,7 @@ for (const useLegacy of [false, true])
                 await wait(100);
                 const rejections = stop();
 
-                jest.restoreAllMocks();
+                vi.restoreAllMocks();
                 context.destroy();
 
                 expect(suspend).toHaveBeenCalledTimes(1);
@@ -294,15 +293,15 @@ for (const useLegacy of [false, true])
             it('should cope with a suspend and resume that return nothing', () =>
             {
                 const context = new webaudio.WebAudioContext();
-                const suspend = jest.spyOn(context.audioContext, 'suspend').mockImplementation(() => undefined);
-                const resume = jest.spyOn(context.audioContext, 'resume').mockImplementation(() => undefined);
+                const suspend = vi.spyOn(context.audioContext, 'suspend').mockImplementation(() => undefined);
+                const resume = vi.spyOn(context.audioContext, 'resume').mockImplementation(() => undefined);
 
                 expect(() => { context.paused = true; }).not.toThrow();
                 expect(() => { context.paused = false; }).not.toThrow();
                 expect(suspend).toHaveBeenCalledTimes(1);
                 expect(resume).toHaveBeenCalledTimes(1);
 
-                jest.restoreAllMocks();
+                vi.restoreAllMocks();
                 context.destroy();
             });
 
@@ -312,8 +311,8 @@ for (const useLegacy of [false, true])
                 const audioContext = context.audioContext;
 
                 await audioContext.close();
-                const suspend = jest.spyOn(audioContext, 'suspend');
-                const resume = jest.spyOn(audioContext, 'resume');
+                const suspend = vi.spyOn(audioContext, 'suspend');
+                const resume = vi.spyOn(audioContext, 'resume');
                 const stop = watchRejections();
 
                 expect(() => { context.paused = true; }).not.toThrow();
@@ -324,7 +323,7 @@ for (const useLegacy of [false, true])
                 const rejections = stop();
 
                 // Closing twice is an error, and the context is already closed
-                jest.spyOn(audioContext, 'close').mockImplementation(() => Promise.resolve());
+                vi.spyOn(audioContext, 'close').mockImplementation(() => Promise.resolve());
                 context.destroy();
 
                 expect(suspend).not.toHaveBeenCalled();
