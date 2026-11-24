@@ -133,15 +133,15 @@ document.addEventListener('keydown', () =>
 
 ## Running the Tests
 
-The tests run in headless Chromium through Vitest's browser mode, so they get a real `AudioContext` and `HTMLAudioElement`. They need Node.js 22.12 or later. Install Playwright's Chromium once, then run them:
+The tests run in headless Chromium and Firefox through Vitest's browser mode, so they get a real `AudioContext` and `HTMLAudioElement`. They need Node.js 22.12 or later. Install Playwright's browsers once, then run them:
 
 ```bash
 npm install
-npx playwright install chromium
+npx playwright install chromium firefox
 npm test
 ```
 
-To run one file, pass its path: `npm test -- test/webaudio.test.ts`.
+To run one file, pass its path: `npm test -- test/webaudio.test.ts`. To run one browser, name it: `npm test -- --project chromium`. Firefox needs an audio output, so on a machine without one its tests time out.
 
 ## License
 

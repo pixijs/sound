@@ -19,6 +19,13 @@ export default defineConfig({
                         launchOptions: { args: ['--autoplay-policy=no-user-gesture-required'] },
                     }),
                 },
+                {
+                    browser: 'firefox',
+                    provider: playwright({
+                        // Let audio start without a click
+                        launchOptions: { firefoxUserPrefs: { 'media.autoplay.default': 0 } },
+                    }),
+                },
             ],
         },
     },

@@ -79,10 +79,12 @@ async function stoppedContext(
     state = 'suspended',
 ): Promise<webaudio.WebAudioContext>
 {
-    // Electron starts contexts running, so report the state during construction, then really suspend it
+    // Nothing blocks audio here, so report the state until the context has started, then really suspend it
     const stub = vi.spyOn(BaseAudioContext.prototype, 'state', 'get').mockReturnValue(state as AudioContextState);
     const context = create();
 
+    // It starts by itself, in Firefox a moment later, and that would unlock it
+    await new Promise((resolve) => context.audioContext.addEventListener('statechange', resolve, { once: true }));
     stub.mockRestore();
     await context.audioContext.suspend();
 

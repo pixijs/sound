@@ -76,10 +76,12 @@ function watchRejections(): () => string[]
 /** Build a context that's locked, as a browser's is before the first user gesture */
 async function lockedContext(create: () => webaudio.WebAudioContext): Promise<webaudio.WebAudioContext>
 {
-    // Electron starts contexts running, so report suspended during construction, then really suspend it
+    // Nothing blocks audio here, so report suspended until the context has started, then really suspend it
     const stub = vi.spyOn(BaseAudioContext.prototype, 'state', 'get').mockReturnValue('suspended');
     const context = create();
 
+    // It starts by itself, in Firefox a moment later, and that would unlock it
+    await new Promise((resolve) => context.audioContext.addEventListener('statechange', resolve, { once: true }));
     stub.mockRestore();
     await context.audioContext.suspend();
 

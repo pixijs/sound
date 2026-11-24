@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [ chromium ]
+        browser: [ chromium, firefox ]
     steps:
     - uses: actions/checkout@v7
     - name: Use Node.js 24.x
@@ -48,6 +48,13 @@ jobs:
     - name: Install Playwright system dependencies
       if: steps.playwright-cache.outputs.cache-hit == 'true'
       run: npx playwright install-deps ${{ matrix.browser }}
+
+    # Runners have no audio output, and Firefox's AudioContext never starts without one
+    - name: Start a silent audio output
+      if: matrix.browser == 'firefox'
+      run: |
+        sudo apt-get install -y --no-install-recommends pulseaudio
+        pulseaudio --start --exit-idle-time=-1
 
     - name: Run Unit Tests
       run: npm test -- --project ${{ matrix.browser }}
