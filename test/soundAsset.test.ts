@@ -1,4 +1,3 @@
-import path from 'path';
 import { Assets } from 'pixi.js';
 import { Sound, sound } from '../src';
 
@@ -14,7 +13,7 @@ for (const useLegacy of [false, true])
         {
             Assets.addBundle(bundle, [{
                 alias: [fullAlias, shortAlias],
-                src: path.join(__dirname, 'resources/silence.mp3'),
+                src: '/test/resources/silence.mp3',
             }]);
         });
 
@@ -30,7 +29,7 @@ for (const useLegacy of [false, true])
             {
                 await Assets.unload(fullAlias);
             }
-            jest.restoreAllMocks();
+            vi.restoreAllMocks();
             sound.removeAll();
         });
 
@@ -43,13 +42,13 @@ for (const useLegacy of [false, true])
             expect(sound.find(fullAlias)).toBe(loaded);
             expect(sound.find(shortAlias)).toBe(loaded);
             expect(Assets.get(shortAlias)).toBe(loaded);
-            const play = jest.spyOn(loaded, 'play').mockReturnValue(null);
+            const play = vi.spyOn(loaded, 'play').mockReturnValue(null);
 
             sound.play(fullAlias);
             sound.play(shortAlias);
             expect(play).toHaveBeenCalledTimes(2);
 
-            const destroy = jest.spyOn(loaded, 'destroy');
+            const destroy = vi.spyOn(loaded, 'destroy');
 
             await Assets.unload(shortAlias);
             expect(destroy).toHaveBeenCalledTimes(1);
@@ -60,7 +59,7 @@ for (const useLegacy of [false, true])
         it('should remove all references when removed by a secondary alias', async () =>
         {
             const loaded = Assets.get<Sound>(fullAlias);
-            const destroy = jest.spyOn(loaded, 'destroy');
+            const destroy = vi.spyOn(loaded, 'destroy');
 
             sound.remove(shortAlias);
             expect(sound.exists(fullAlias)).toBe(false);
@@ -72,7 +71,7 @@ for (const useLegacy of [false, true])
         it('should destroy each sound only once in removeAll', async () =>
         {
             const loaded = Assets.get<Sound>(fullAlias);
-            const destroy = jest.spyOn(loaded, 'destroy');
+            const destroy = vi.spyOn(loaded, 'destroy');
 
             sound.removeAll();
             expect(sound.exists(fullAlias)).toBe(false);
@@ -83,7 +82,7 @@ for (const useLegacy of [false, true])
 
         it('should preserve the basename alias for direct URL loads', async () =>
         {
-            const url = path.join(__dirname, 'resources/alert-4.mp3').replace(/\\/g, '/');
+            const url = '/test/resources/alert-4.mp3';
             const loaded = await Assets.load<Sound>(url);
 
             try
@@ -103,7 +102,7 @@ for (const useLegacy of [false, true])
 
             Assets.add({
                 alias,
-                src: path.join(__dirname, 'resources/musical-11.mp3'),
+                src: '/test/resources/musical-11.mp3',
                 data: { volume: 0.5, sprites: { coin: { start: 0, end: 0.4 } } },
             });
             const loaded = await Assets.load<Sound>(alias);
@@ -122,10 +121,10 @@ for (const useLegacy of [false, true])
         it.each([false, true])('should preserve reassigned aliases on unload (all: %s)', async (all) =>
         {
             const loaded = Assets.get<Sound>(fullAlias);
-            const replacement = Sound.from({ url: path.join(__dirname, 'resources/silence.mp3') });
-            const destroy = jest.spyOn(loaded, 'destroy');
-            const replacementDestroy = jest.spyOn(replacement, 'destroy');
-            const assert = jest.spyOn(console, 'assert').mockImplementation(() => undefined);
+            const replacement = Sound.from({ url: '/test/resources/silence.mp3' });
+            const destroy = vi.spyOn(loaded, 'destroy');
+            const replacementDestroy = vi.spyOn(replacement, 'destroy');
+            const assert = vi.spyOn(console, 'assert').mockImplementation(() => undefined);
 
             sound.add(fullAlias, replacement);
             if (all)
@@ -143,7 +142,7 @@ for (const useLegacy of [false, true])
         it('should stop each sound only once in stopAll', () =>
         {
             const loaded = Assets.get<Sound>(fullAlias);
-            const stop = jest.spyOn(loaded, 'stop');
+            const stop = vi.spyOn(loaded, 'stop');
 
             sound.stopAll();
             expect(stop).toHaveBeenCalledTimes(1);

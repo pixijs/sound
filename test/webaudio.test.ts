@@ -1,4 +1,3 @@
-import path from 'path';
 import { DOMAdapter } from 'pixi.js';
 import { filters, Sound, webaudio } from '../src';
 import { suite } from './suite';
@@ -17,7 +16,7 @@ describe(`filters.DistortionFilter`, () =>
 
 describe('WebAudioMedia load errors', () =>
 {
-    const url = path.join(__resources, 'missing.mp3');
+    const url = `${__resources}/missing.mp3`;
 
     type LoadError = Error & { cause?: unknown };
 
@@ -34,14 +33,14 @@ describe('WebAudioMedia load errors', () =>
 
     afterEach(() =>
     {
-        jest.restoreAllMocks();
+        vi.restoreAllMocks();
     });
 
     it('should call loaded once with the URL when fetch rejects', async () =>
     {
         const error = new TypeError('Failed to fetch');
 
-        jest.spyOn(DOMAdapter.get(), 'fetch').mockRejectedValue(error);
+        vi.spyOn(DOMAdapter.get(), 'fetch').mockRejectedValue(error);
 
         const errors = await load();
 
@@ -54,7 +53,7 @@ describe('WebAudioMedia load errors', () =>
     {
         const error = new TypeError('network error');
 
-        jest.spyOn(DOMAdapter.get(), 'fetch').mockResolvedValue({
+        vi.spyOn(DOMAdapter.get(), 'fetch').mockResolvedValue({
             ok: true,
             arrayBuffer: () => Promise.reject(error),
         } as unknown as Response);
@@ -68,8 +67,8 @@ describe('WebAudioMedia load errors', () =>
 
     it('should call loaded once with the HTTP status without decoding when the response is not ok', async () =>
     {
-        jest.spyOn(DOMAdapter.get(), 'fetch').mockResolvedValue(new Response(null, { status: 404 }));
-        const decode = jest.spyOn(webaudio.WebAudioContext.prototype, 'decode');
+        vi.spyOn(DOMAdapter.get(), 'fetch').mockResolvedValue(new Response(null, { status: 404 }));
+        const decode = vi.spyOn(webaudio.WebAudioContext.prototype, 'decode');
 
         const errors = await load();
 
@@ -83,8 +82,8 @@ describe('WebAudioMedia load errors', () =>
     {
         const error = new TypeError('Cannot read properties of null');
 
-        jest.spyOn(DOMAdapter.get(), 'fetch').mockResolvedValue(new Response(new ArrayBuffer(8)));
-        jest.spyOn(webaudio.WebAudioContext.prototype, 'decode').mockImplementation(() =>
+        vi.spyOn(DOMAdapter.get(), 'fetch').mockResolvedValue(new Response(new ArrayBuffer(8)));
+        vi.spyOn(webaudio.WebAudioContext.prototype, 'decode').mockImplementation(() =>
         {
             throw error;
         });
@@ -97,8 +96,8 @@ describe('WebAudioMedia load errors', () =>
 
     it('should log the error with the URL when there is no loaded callback', async () =>
     {
-        jest.spyOn(DOMAdapter.get(), 'fetch').mockRejectedValue(new TypeError('Failed to fetch'));
-        const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+        vi.spyOn(DOMAdapter.get(), 'fetch').mockRejectedValue(new TypeError('Failed to fetch'));
+        const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
         Sound.from({ url, preload: true });
         await new Promise((resolve) => setTimeout(resolve, 100));

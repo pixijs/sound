@@ -14,7 +14,7 @@ function recordStarts(): { source: AudioBufferSourceNode, offset: number }[]
     const starts: { source: AudioBufferSourceNode, offset: number }[] = [];
     const start = AudioBufferSourceNode.prototype.start;
 
-    jest.spyOn(AudioBufferSourceNode.prototype, 'start').mockImplementation(function (
+    vi.spyOn(AudioBufferSourceNode.prototype, 'start').mockImplementation(function (
         this: AudioBufferSourceNode, when?: number, offset?: number, duration?: number)
     {
         starts.push({ source: this, offset });
@@ -44,7 +44,7 @@ describe('Resume a looping sprite (webaudio)', () =>
 
     afterEach(() =>
     {
-        jest.restoreAllMocks();
+        vi.restoreAllMocks();
         mySound.destroy();
         sound.resumeAll();
     });

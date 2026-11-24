@@ -1,7 +1,8 @@
-import path from 'path';
 import { IMediaInstance, Sound, sound, webaudio } from '../src';
 
-const musical = path.join(__dirname, 'resources', 'musical-11.mp3');
+import type { MockInstance } from 'vitest';
+
+const musical = '/test/resources/musical-11.mp3';
 
 for (const useLegacy of [false, true])
 {
@@ -9,7 +10,7 @@ for (const useLegacy of [false, true])
     {
         const alias = `sprite-speed-${useLegacy}`;
         let music: Sound;
-        let setParamValue: jest.SpyInstance;
+        let setParamValue: MockInstance;
 
         // playbackRate.value doesn't reflect setValueAtTime synchronously,
         // so on WebAudio read the last value refresh() set on the source
@@ -48,14 +49,14 @@ for (const useLegacy of [false, true])
 
         beforeEach(() =>
         {
-            setParamValue = jest.spyOn(webaudio.WebAudioUtils, 'setParamValue');
+            setParamValue = vi.spyOn(webaudio.WebAudioUtils, 'setParamValue');
         });
 
         afterEach(() =>
         {
             music.stop();
             music.speed = 1;
-            jest.restoreAllMocks();
+            vi.restoreAllMocks();
         });
 
         afterAll(() =>

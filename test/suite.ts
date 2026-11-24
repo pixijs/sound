@@ -1,4 +1,3 @@
-import path from 'path';
 import { Assets } from 'pixi.js';
 import { filters, htmlaudio, IMediaInstance, Sound, sound, utils, webaudio } from '../src';
 import { dataUrlMp3, dataUrlOgg } from './resources/dataUrlResources';
@@ -9,15 +8,15 @@ declare global
 }
 
 // Global reference to the resources
-window.__resources = path.join(__dirname, 'resources');
+window.__resources = '/test/resources';
 
 const manifest: Record<string, string> = {
-    'alert-4': path.join(__resources, 'alert-4.mp3'),
-    'alert-7': path.join(__resources, 'alert-7.mp3'),
-    'alert-12': path.join(__resources, 'alert-12.mp3'),
-    'musical-11': path.join(__resources, 'musical-11.mp3'),
-    'alert-4-ogg': path.join(__resources, 'alert-4.ogg'),
-    silence: path.join(__resources, 'silence.mp3'),
+    'alert-4': `${__resources}/alert-4.mp3`,
+    'alert-7': `${__resources}/alert-7.mp3`,
+    'alert-12': `${__resources}/alert-12.mp3`,
+    'musical-11': `${__resources}/musical-11.mp3`,
+    'alert-4-ogg': `${__resources}/alert-4.ogg`,
+    silence: `${__resources}/silence.mp3`,
     dataUrlMp3,
     dataUrlOgg
 };
@@ -470,7 +469,7 @@ function suite(useLegacy = false): void
                     if (useLegacy)
                     {
                         // eslint-disable-next-line @typescript-eslint/no-empty-function
-                        const spy = jest.spyOn(console, 'warn').mockImplementation(() => { });
+                        const spy = vi.spyOn(console, 'warn').mockImplementation(() => { });
 
                         expect((instance as any).filters).toBe(null);
                         expect((instance2 as any).filters).toBe(null);

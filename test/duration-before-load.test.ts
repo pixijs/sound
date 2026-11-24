@@ -1,8 +1,9 @@
-import path from 'path';
 import { Sound, sound } from '../src';
 
-const alert = path.join(__dirname, 'resources', 'alert-4.mp3');
-const missing = path.join(__dirname, 'resources', 'missing-113.mp3');
+import type { MockInstance } from 'vitest';
+
+const alert = '/test/resources/alert-4.mp3';
+const missing = '/test/resources/missing-113.mp3';
 
 // The loaded callback doesn't pass the sound on error, so keep the one from Sound.from
 const load = (url: string): Promise<{ err: Error; s: Sound }> =>
@@ -20,7 +21,7 @@ for (const useLegacy of [false, true])
     describe(`Duration before load (${useLegacy ? 'htmlaudio' : 'webaudio'})`, () =>
     {
         const alias = `duration-before-load-${useLegacy}`;
-        let assertSpy: jest.SpyInstance;
+        let assertSpy: MockInstance;
 
         beforeAll(() =>
         {
@@ -30,7 +31,7 @@ for (const useLegacy of [false, true])
 
         beforeEach(() =>
         {
-            assertSpy = jest.spyOn(console, 'assert');
+            assertSpy = vi.spyOn(console, 'assert');
         });
 
         afterEach(() =>

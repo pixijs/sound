@@ -13,19 +13,19 @@
     }
   },
   "scripts": {
-    "test": "xs test",
+    "test": "vitest run",
     "clean": "xs clean",
     "start": "xs serve",
     "watch": "xs watch",
     "lint": "xs lint",
     "lint:fix": "xs lint --fix",
-    "types": "xs types",
+    "types": "xs types && tsc -p test/tsconfig.json",
     "build": "xs build",
     "docs": "xs docs",
     "deploy:ci": "xs build,docs",
     "postdeploy:ci": "mkdirp deploy && copyfiles \"{dist,examples,docs}/**\" deploy && copyfiles -f dist/* deploy",
     "deploy": "xs deploy",
-    "release": "xs release"
+    "release": "xs bump && npm test && xs deploy,publish,git-push"
   },
   "extensionConfig": {
     "lint": [
@@ -72,11 +72,17 @@
   "homepage": "https://github.com/pixijs/sound#readme",
   "devDependencies": {
     "@pixi/extension-scripts": "^2.0.0",
+    "@vitest/browser-playwright": "^5.1.1",
     "copyfiles": "^2.4.1",
     "mkdirp": "^1.0.4",
-    "pixi.js": "^8.0.0"
+    "pixi.js": "^8.0.0",
+    "playwright": "^1.65.1",
+    "vitest": "^5.1.1"
   },
   "peerDependencies": {
     "pixi.js": "^8.0.0"
+  },
+  "overrides": {
+    "esbuild": "0.16.16"
   }
 }

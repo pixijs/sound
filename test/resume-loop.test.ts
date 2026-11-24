@@ -1,7 +1,6 @@
-import path from 'path';
 import { IMediaInstance, Sound, sound } from '../src';
 
-const alert = path.join(__dirname, 'resources', 'alert-7.mp3');
+const alert = '/test/resources/alert-7.mp3';
 
 function wait(ms: number): Promise<void>
 {
@@ -86,7 +85,7 @@ for (const useLegacy of [false, true])
 
         afterEach(() =>
         {
-            jest.restoreAllMocks();
+            vi.restoreAllMocks();
             music.stop();
             music.loop = false;
             sound.resumeAll();
@@ -145,7 +144,7 @@ for (const useLegacy of [false, true])
 
         it.each(cases)('should loop the whole file with %s after %s', async (_loop, _pause, start, pauseAndResume) =>
         {
-            const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+            const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
             const instance = start();
             const loop = instance.loop;
 

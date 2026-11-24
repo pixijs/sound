@@ -1,10 +1,10 @@
-import fs from 'fs';
-import path from 'path';
 import { DOMAdapter } from 'pixi.js';
 import { htmlaudio, IMediaInstance, Sound, sound, webaudio } from '../src';
 
-const good = path.join(__dirname, 'resources', 'silence.mp3');
-const missing = path.join(__dirname, 'resources', 'not-there.mp3');
+import type { MockInstance } from 'vitest';
+
+const good = '/test/resources/silence.mp3';
+const missing = '/test/resources/not-there.mp3';
 // Bytes that no audio decoder accepts, as a data URL so both backends can load it
 const garbage = new Uint8Array(4096).map((_, i) => (i * 31) + 7);
 const corruptUrl = `data:audio/mpeg;base64,${btoa(String.fromCharCode(...garbage))}`;
@@ -64,9 +64,9 @@ function from(options: Parameters<typeof Sound.from>[0]): Sound
 }
 
 /** The console.error spy that every test starts with. */
-function logged(): jest.SpyInstance
+function logged(): MockInstance
 {
-    return console.error as unknown as jest.SpyInstance;
+    return console.error as unknown as MockInstance;
 }
 
 beforeAll(() =>
@@ -79,12 +79,12 @@ beforeEach(() =>
 {
     uncaught.length = 0;
     (Sound as any)._pool.length = 0;
-    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
 });
 
 afterEach(() =>
 {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
     sound.removeAll();
     created.splice(0).filter((s) => s.media).forEach((s) => s.destroy());
 });
@@ -100,20 +100,20 @@ for (const useLegacy of [false, true])
 {
     describe(`play() before the sound has loaded (${useLegacy ? 'htmlaudio' : 'webaudio'})`, () =>
     {
-        let loads: jest.SpyInstance;
+        let loads: MockInstance;
 
         beforeEach(() =>
         {
             sound.useLegacy = useLegacy;
             // Spy before any sound exists, so a load started by the constructor is counted
-            loads = jest.spyOn((useLegacy ? htmlaudio.HTMLAudioMedia : webaudio.WebAudioMedia).prototype, 'load');
+            loads = vi.spyOn((useLegacy ? htmlaudio.HTMLAudioMedia : webaudio.WebAudioMedia).prototype, 'load');
         });
 
         it('should load once for preload then play()', async () =>
         {
-            const fetches = jest.spyOn(DOMAdapter.get(), 'fetch');
+            const fetches = vi.spyOn(DOMAdapter.get(), 'fetch');
             // HTML audio has no decode step
-            const decodes = useLegacy ? null : jest.spyOn(sound.context as webaudio.WebAudioContext, 'decode');
+            const decodes = useLegacy ? null : vi.spyOn(sound.context as webaudio.WebAudioContext, 'decode');
             const s = from({ url: good, preload: true, volume: 0, loop: true });
             const [played] = await outcomes(s.play());
 
@@ -133,7 +133,7 @@ for (const useLegacy of [false, true])
         it('should call the sound loaded callback once for preload then play() by alias', async () =>
         {
             const alias = `preloaded-${useLegacy}`;
-            const loaded = jest.fn();
+            const loaded = vi.fn();
             const s = sound.add(alias, { url: good, preload: true, volume: 0, loop: true, loaded });
             const [played] = await outcomes(sound.play(alias));
 
@@ -146,7 +146,7 @@ for (const useLegacy of [false, true])
 
         it('should play a sprite once for preload then play()', async () =>
         {
-            const complete = jest.fn();
+            const complete = vi.fn();
             const s = from({
                 url: good, preload: true, volume: 0, sprites: { short: { start: 0, end: 0.1 } },
             });
@@ -166,7 +166,7 @@ for (const useLegacy of [false, true])
 
         it('should load once and start one instance for autoPlay then play()', async () =>
         {
-            const loaded = jest.fn();
+            const loaded = vi.fn();
             const s = from({ url: good, autoPlay: true, volume: 0, loop: true, loaded });
             const [played] = await outcomes(s.play());
 
@@ -206,7 +206,7 @@ for (const useLegacy of [false, true])
 
         it('should call loaded for every play() with the instance it started', async () =>
         {
-            const loaded = [jest.fn(), jest.fn(), jest.fn()];
+            const loaded = [vi.fn(), vi.fn(), vi.fn()];
             const s = from({ url: good, volume: 0 });
             const played = await outcomes(...loaded.map((fn) => s.play({ loaded: fn })));
 
@@ -224,7 +224,7 @@ for (const useLegacy of [false, true])
         {
             it(`should reject every play() with the same error for ${label}`, async () =>
             {
-                const loaded = [jest.fn(), jest.fn(), jest.fn()];
+                const loaded = [vi.fn(), vi.fn(), vi.fn()];
                 const s = from({ url });
                 const played = await outcomes(...loaded.map((fn) => s.play({ loaded: fn })));
 
@@ -242,7 +242,7 @@ for (const useLegacy of [false, true])
 
             it(`should report the error once for preload then play() of ${label}`, async () =>
             {
-                const loaded = jest.fn();
+                const loaded = vi.fn();
                 const s = from({ url, preload: true, loaded });
                 const [played] = await outcomes(s.play());
 
@@ -335,7 +335,7 @@ for (const useLegacy of [false, true])
 
         it('should forget the waiting calls when destroyed', async () =>
         {
-            const loaded = jest.fn();
+            const loaded = vi.fn();
             const s = from({ url: good, preload: true, volume: 0, loaded });
             const pending = [s.play(), s.play()];
 
@@ -385,10 +385,9 @@ describe('play() before the sound has loaded, decoding (webaudio)', () =>
 
     it('should decode an ArrayBuffer source once for preload then play()', async () =>
     {
-        const file = fs.readFileSync(good);
-        const source = file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength) as ArrayBuffer;
-        const decodes = jest.spyOn(sound.context as webaudio.WebAudioContext, 'decode');
-        const loaded = jest.fn();
+        const source = await (await fetch(good)).arrayBuffer();
+        const decodes = vi.spyOn(sound.context as webaudio.WebAudioContext, 'decode');
+        const loaded = vi.fn();
         const s = from({ source, preload: true, volume: 0, loaded });
         const [played] = await outcomes(s.play());
 
@@ -403,7 +402,7 @@ describe('play() before the sound has loaded, decoding (webaudio)', () =>
     {
         const context = sound.context as webaudio.WebAudioContext;
         const source = context.audioContext.createBuffer(1, 4410, 44100);
-        const loaded = jest.fn();
+        const loaded = vi.fn();
         const s = from({ source, volume: 0 });
         const first = s.play({ loaded });
         const second = s.play();
@@ -425,10 +424,10 @@ describe('play() before the sound has loaded, decoding (webaudio)', () =>
     {
         const context = sound.context as webaudio.WebAudioContext;
         const decode = context.decode.bind(context);
-        const loaded = jest.fn();
+        const loaded = vi.fn();
         const s = from({ url: good, preload: true, volume: 0, loaded });
 
-        jest.spyOn(context, 'decode').mockImplementation((buffer, callback) =>
+        vi.spyOn(context, 'decode').mockImplementation((buffer, callback) =>
         {
             decode(buffer, callback);
             s.destroy();
@@ -450,7 +449,7 @@ describe('play() before the sound has loaded, decoding (webaudio)', () =>
         const decode = context.decode.bind(context);
         const s = from({ url: corruptUrl });
 
-        jest.spyOn(context, 'decode').mockImplementation((buffer, callback) =>
+        vi.spyOn(context, 'decode').mockImplementation((buffer, callback) =>
         {
             decode(buffer, callback);
             s.destroy();

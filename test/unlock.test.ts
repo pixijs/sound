@@ -1,7 +1,8 @@
-import path from 'path';
 import { IMediaInstance, Sound, sound, webaudio } from '../src';
 
-const musical = path.join(__dirname, 'resources', 'musical-11.mp3');
+import type { MockInstance } from 'vitest';
+
+const musical = '/test/resources/musical-11.mp3';
 const realState = Object.getOwnPropertyDescriptor(BaseAudioContext.prototype, 'state').get;
 const gestures = ['mousedown', 'touchstart', 'touchend'];
 
@@ -76,7 +77,7 @@ function watchRejections(): () => string[]
 async function lockedContext(create: () => webaudio.WebAudioContext): Promise<webaudio.WebAudioContext>
 {
     // Electron starts contexts running, so report suspended during construction, then really suspend it
-    const stub = jest.spyOn(BaseAudioContext.prototype, 'state', 'get').mockReturnValue('suspended');
+    const stub = vi.spyOn(BaseAudioContext.prototype, 'state', 'get').mockReturnValue('suspended');
     const context = create();
 
     stub.mockRestore();
@@ -125,7 +126,7 @@ for (const lag of [false, true])
         };
 
         /** Wait for the resume() made by a gesture to settle */
-        const settled = async (resume: jest.SpyInstance): Promise<void> =>
+        const settled = async (resume: MockInstance): Promise<void> =>
         {
             expect(resume).toHaveBeenCalled();
             await Promise.all(resume.mock.results.map((r) => r.value?.catch((): void => undefined)));
@@ -160,7 +161,7 @@ for (const lag of [false, true])
             afterEach(() =>
             {
                 restore?.();
-                jest.restoreAllMocks();
+                vi.restoreAllMocks();
                 if (ctx.audioContext)
                 {
                     ctx.destroy();
@@ -229,7 +230,7 @@ for (const lag of [false, true])
 
             it('should stop listening once unlocked', async () =>
             {
-                const remove = jest.spyOn(ac, 'removeEventListener');
+                const remove = vi.spyOn(ac, 'removeEventListener');
                 const statechange = () => remove.mock.calls.filter(([type]) => type === 'statechange').length;
 
                 gesture();
@@ -239,7 +240,7 @@ for (const lag of [false, true])
                 await wait(100);
                 expect(statechange()).toBe(1);
 
-                const playEmptySound = jest.spyOn(ctx, 'playEmptySound');
+                const playEmptySound = vi.spyOn(ctx, 'playEmptySound');
 
                 gestures.forEach(gesture);
                 expect(playEmptySound).not.toHaveBeenCalled();
@@ -247,13 +248,13 @@ for (const lag of [false, true])
 
             describe('paused before the first gesture', () =>
             {
-                let resume: jest.SpyInstance;
+                let resume: MockInstance;
 
                 beforeEach(async () =>
                 {
                     ctx.paused = true;
                     expect(await until(() => state() === 'suspended')).toBe(true);
-                    resume = jest.spyOn(ac, 'resume');
+                    resume = vi.spyOn(ac, 'resume');
                     gesture();
                     await settled(resume);
                 });
@@ -284,7 +285,7 @@ for (const lag of [false, true])
 
                 it('should stay suspended after a second gesture', async () =>
                 {
-                    const playEmptySound = jest.spyOn(ctx, 'playEmptySound');
+                    const playEmptySound = vi.spyOn(ctx, 'playEmptySound');
 
                     gesture();
                     expect(playEmptySound).not.toHaveBeenCalled();
@@ -300,7 +301,7 @@ for (const lag of [false, true])
                 ctx.paused = true;
                 expect(await until(() => state() === 'suspended')).toBe(true);
 
-                const resume = jest.spyOn(ac, 'resume');
+                const resume = vi.spyOn(ac, 'resume');
                 const stop = watchRejections();
 
                 ctx.playEmptySound();
@@ -328,7 +329,7 @@ for (const lag of [false, true])
 
                 it.each(gestures)('should stop listening for %s', (type) =>
                 {
-                    const playEmptySound = jest.spyOn(ctx, 'playEmptySound');
+                    const playEmptySound = vi.spyOn(ctx, 'playEmptySound');
 
                     ctx.destroy();
                     gesture(type);
@@ -383,7 +384,7 @@ for (const lag of [false, true])
             afterEach(() =>
             {
                 restore?.();
-                jest.restoreAllMocks();
+                vi.restoreAllMocks();
                 music.destroy();
                 (Sound as any)._pool.length = 0;
                 sound.close();
@@ -392,7 +393,7 @@ for (const lag of [false, true])
 
             it('should unlock on a click made after pauseAll, and play after resumeAll', async () =>
             {
-                const resume = jest.spyOn(ac, 'resume');
+                const resume = vi.spyOn(ac, 'resume');
 
                 sound.pauseAll();
                 gesture();

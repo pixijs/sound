@@ -1,7 +1,6 @@
-import path from 'path';
 import { IMediaInstance, Sound, sound, webaudio } from '../src';
 
-const musical = path.join(__dirname, 'resources', 'musical-11.mp3');
+const musical = '/test/resources/musical-11.mp3';
 
 function wait(ms: number): Promise<void>
 {
@@ -315,7 +314,7 @@ for (const useLegacy of [false, true])
 
             it('should stop an instance whose play() threw before it started', () =>
             {
-                const assert = jest.spyOn(console, 'assert').mockImplementation(() => undefined);
+                const assert = vi.spyOn(console, 'assert').mockImplementation(() => undefined);
 
                 expect(() => music.play({ start: 1, end: 0.5 })).toThrow(RangeError);
                 assert.mockRestore();
@@ -419,7 +418,7 @@ for (const useLegacy of [false, true])
             {
                 const { url } = music;
 
-                music.url = path.join(__dirname, 'resources', 'missing.mp3');
+                music.url = '/test/resources/missing.mp3';
                 music.play();
                 music.url = url;
                 await wait(300);

@@ -1,8 +1,7 @@
-import path from 'path';
 import { Assets } from 'pixi.js';
 import { IMediaInstance, Sound, sound } from '../src';
 
-const musical = path.join(__dirname, 'resources', 'musical-11.mp3');
+const musical = '/test/resources/musical-11.mp3';
 
 function wait(ms: number): Promise<void>
 {
@@ -33,7 +32,7 @@ for (const useLegacy of [false, true])
         afterEach(() =>
         {
             music.stop();
-            jest.restoreAllMocks();
+            vi.restoreAllMocks();
         });
 
         afterAll(() =>
@@ -66,7 +65,7 @@ for (const useLegacy of [false, true])
 
         it('should keep looping when play gets an undefined end', async () =>
         {
-            const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+            const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
             let instance: IMediaInstance;
 
             expect(() =>
