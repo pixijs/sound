@@ -196,10 +196,10 @@ for (const useLegacy of [false, true])
                 sound.pauseAll();
 
                 expect(sound.context.paused).toBe(true);
+                // Give a resume that wrongly wins the time to land. An <audio> clock only needs to settle, on WebKit
+                await wait(useLegacy ? 50 : 200);
                 if (!useLegacy)
                 {
-                    // Give a resume that wrongly wins the time to land
-                    await wait(200);
                     expect(await until(() => state() === 'suspended')).toBe(true);
                 }
                 expect(await frozen(instance)).toBe(true);

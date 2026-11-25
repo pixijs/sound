@@ -82,8 +82,8 @@ async function lockedContext(create: () => webaudio.WebAudioContext): Promise<we
 
     // It starts by itself, in Firefox a moment later, and that would unlock it
     await new Promise((resolve) => context.audioContext.addEventListener('statechange', resolve, { once: true }));
-    stub.mockRestore();
     await context.audioContext.suspend();
+    stub.mockRestore();
 
     return context;
 }

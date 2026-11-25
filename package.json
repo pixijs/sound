@@ -13,7 +13,7 @@
     }
   },
   "scripts": {
-    "test": "vitest run",
+    "test": "vitest run --project=!webkit",
     "clean": "xs clean",
     "start": "xs serve",
     "watch": "xs watch",

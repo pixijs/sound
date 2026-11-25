@@ -1,4 +1,5 @@
 import { Assets, DOMAdapter } from 'pixi.js';
+import { server } from 'vitest/browser';
 import { IMediaInstance, Sound, sound, webaudio } from '../src';
 
 import type { MockInstance } from 'vitest';
@@ -12,6 +13,8 @@ const corruptUrl = `data:audio/mpeg;base64,${btoa(String.fromCharCode(...garbage
 const corruptName = 'data:audio/mpeg;base64,…';
 // A file URL for the cases that check the name. Nothing is there, so its fetch is mocked
 const namedUrl = '/test/resources/corrupt.mp3';
+// WebKit's decodeAudioData calls back with null, so the error is the library's own
+const decodeErrorName = server.browser === 'webkit' ? 'Error' : 'EncodingError';
 
 /** A corrupt data URL of its own, as each Assets case needs a src that no other case loads. */
 function corruptUrlFor(seed: number): string
@@ -360,7 +363,7 @@ describe('Undecodable audio, decode() (webaudio)', () =>
         await settle(() => calls.length > 0);
 
         expect(calls).toHaveLength(1);
-        expect(calls[0].name).toBe('EncodingError');
+        expect(calls[0].name).toBe(decodeErrorName);
     });
 
     it('should name the file in the error and keep the browser error as its cause', async () =>
@@ -377,7 +380,7 @@ describe('Undecodable audio, decode() (webaudio)', () =>
 
         expect(errors).toHaveLength(1);
         expect(errors[0].name).toBe('Error');
-        expect(errors[0].cause.name).toBe('EncodingError');
+        expect(errors[0].cause.name).toBe(decodeErrorName);
         expect(errors[0].cause.message).not.toBe('');
         expect(errors[0].message).toBe(`Failed to decode sound from ${namedUrl}: ${errors[0].cause.message}`);
         expect(logged()).not.toHaveBeenCalled();
@@ -423,7 +426,7 @@ describe('Undecodable audio, decode() (webaudio)', () =>
         await settle(() => errors.length > 0);
 
         expect(errors).toHaveLength(1);
-        expect(errors[0].cause.name).toBe('EncodingError');
+        expect(errors[0].cause.name).toBe(decodeErrorName);
         expect(errors[0].message).toBe(`Failed to decode sound: ${errors[0].cause.message}`);
     });
 
