@@ -1,4 +1,5 @@
 import { Assets } from 'pixi.js';
+import { server } from 'vitest/browser';
 import { filters, htmlaudio, IMediaInstance, Sound, sound, utils, webaudio } from '../src';
 import { dataUrlMp3, dataUrlOgg } from './resources/dataUrlResources';
 
@@ -67,6 +68,13 @@ function suite(useLegacy = false): void
 {
     const suffix = useLegacy ? ' (htmlaudio)' : ' (webaudio)';
 
+    // In Playwright's WebKit an <audio> element with a data URL never fires canplaythrough, so it never loads
+    if (useLegacy && server.browser === 'webkit')
+    {
+        delete manifest.dataUrlMp3;
+        delete manifest.dataUrlOgg;
+    }
+
     describe(`SoundLibrary${suffix}`, () =>
     {
         beforeAll(async () =>
@@ -114,14 +122,10 @@ function suite(useLegacy = false): void
             });
 
             expect(typeof results).toBe('object');
-            expect(results['alert-4']).toBeInstanceOf(Sound);
-            expect(results['alert-7']).toBeInstanceOf(Sound);
-            expect(results['alert-12']).toBeInstanceOf(Sound);
-            expect(results['musical-11']).toBeInstanceOf(Sound);
-            expect(results['alert-4-ogg']).toBeInstanceOf(Sound);
-            expect(results.silence).toBeInstanceOf(Sound);
-            expect(results.dataUrlMp3).toBeInstanceOf(Sound);
-            expect(results.dataUrlOgg).toBeInstanceOf(Sound);
+            for (const alias in manifest)
+            {
+                expect(results[alias]).toBeInstanceOf(Sound);
+            }
             await allLoaded.promise;
         });
 

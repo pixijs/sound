@@ -143,6 +143,8 @@ npm test
 
 To run one file, pass its path: `npm test -- test/webaudio.test.ts`. To run one browser, name it: `npm test -- --project chromium`. Firefox needs an audio output, so on a machine without one its tests time out.
 
+CI also runs the tests in WebKit, where a failure doesn't block a merge. To run them, install it with `npx playwright install webkit`, then run `npx vitest run --project webkit`.
+
 ## License
 
 MIT License.

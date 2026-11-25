@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import { playwright } from '@vitest/browser-playwright';
 import { defineConfig } from 'vitest/config';
 
@@ -25,6 +26,12 @@ export default defineConfig({
                         // Let audio start without a click
                         launchOptions: { firefoxUserPrefs: { 'media.autoplay.default': 0 } },
                     }),
+                },
+                {
+                    browser: 'webkit',
+                    provider: playwright(),
+                    // WebKit has no such setting, so click before each test
+                    setupFiles: [resolve(import.meta.dirname, 'test/webkit-click.ts')],
                 },
             ],
         },
