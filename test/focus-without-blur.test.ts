@@ -106,13 +106,17 @@ for (const lag of [false, true])
             return state() === 'suspended' && ac.currentTime === time;
         };
 
-        /** Wait for the resume() made by a gesture to settle. Newer Chromium leaves it pending once a suspend() follows. */
-        const settled = async (resume: MockInstance): Promise<void> =>
+        /**
+         * Wait for the resume() made by a gesture to settle, giving up after `cap` milliseconds. Resolves to whether
+         * it settled. Newer Chromium leaves it pending once a suspend() follows.
+         */
+        const settled = async (resume: MockInstance, cap = 500): Promise<boolean> =>
         {
             expect(resume).toHaveBeenCalled();
-            await Promise.race([
-                Promise.all(resume.mock.results.map((r) => r.value?.catch((): void => undefined))),
-                wait(500),
+
+            return Promise.race([
+                Promise.all(resume.mock.results.map((r) => r.value?.catch((): void => undefined))).then(() => true),
+                wait(cap).then(() => false),
             ]);
         };
 
@@ -330,7 +334,8 @@ for (const lag of [false, true])
                 const resume = vi.spyOn(ac, 'resume');
 
                 gesture();
-                await settled(resume);
+                // Nothing suspends it before it settles, so it must, but Firefox waits for its audio device to start
+                expect(await settled(resume, 2000)).toBe(true);
                 expect(locked()).toBe(false);
                 expect(sound.context.paused).toBe(true);
 
