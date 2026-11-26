@@ -21,7 +21,6 @@ PIXI.Assets.loadBundle('demo').then(() =>
     for (let i = 0; i < plays.length; i++)
     {
         const button = plays[i];
-        const alias = button.getAttribute('data-sound');
 
         if ('ontouchstart' in window)
         {
@@ -34,9 +33,9 @@ PIXI.Assets.loadBundle('demo').then(() =>
     }
 });
 
-function play()
+function play(event)
 {
-    const button = this;
+    const button = event.currentTarget;
     const sound = PIXI.Assets.get(button.getAttribute('data-sound'));
     const loop = !!button.getAttribute('data-loop');
     const playing = !parseInt(button.getAttribute('data-playing'), 10);
@@ -54,7 +53,7 @@ function play()
             singleInstance: loop,
         });
 
-        instance.on('progress', function (progress, duration)
+        instance.on('progress', function (progress)
         {
             progressBar(button, progress);
         });
