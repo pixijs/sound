@@ -1,6 +1,14 @@
-import { AssetExtension, extensions, ExtensionType, LoaderParser, LoaderParserPriority, path, ResolvedAsset } from 'pixi.js';
+import {
+    type AssetExtension,
+    extensions,
+    ExtensionType,
+    type LoaderParser,
+    LoaderParserPriority,
+    path,
+    type ResolvedAsset
+} from 'pixi.js';
 import { getInstance } from './instance';
-import { Options, Sound } from './Sound';
+import { type Options, Sound } from './Sound';
 import { extensions as exts, mimes, supported } from './utils/supported';
 
 /** Get all aliases while preserving the basename fallback for direct URL loads. */

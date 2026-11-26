@@ -1,5 +1,5 @@
-import { CanvasSource, ICanvas, TextureSource } from 'pixi.js';
-import { Sound } from '../Sound';
+import { CanvasSource, type ICanvas, type TextureSource } from 'pixi.js';
+import { type Sound } from '../Sound';
 import { WebAudioMedia } from '../webaudio/WebAudioMedia';
 
 interface RenderOptions

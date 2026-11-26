@@ -1,6 +1,6 @@
 import { EventEmitter } from 'pixi.js';
 import { Filterable } from '../Filterable';
-import { IMediaContext } from '../interfaces';
+import { type IMediaContext } from '../interfaces';
 
 /** A suspend() or resume() rejects when the context is closed or interrupted before it settles */
 const ignore = (): void => { /* nothing to do */ };

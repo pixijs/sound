@@ -1,5 +1,5 @@
 import { Assets } from 'pixi.js';
-import { IMediaInstance, Sound, sound } from '../src';
+import { type IMediaInstance, Sound, sound } from '../src';
 
 const musical = '/test/resources/musical-11.mp3';
 

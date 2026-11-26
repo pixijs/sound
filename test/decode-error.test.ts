@@ -1,6 +1,6 @@
 import { Assets, DOMAdapter } from 'pixi.js';
 import { server } from 'vitest/browser';
-import { IMediaInstance, Sound, sound, webaudio } from '../src';
+import { type IMediaInstance, Sound, sound, type webaudio } from '../src';
 
 import type { MockInstance } from 'vitest';
 

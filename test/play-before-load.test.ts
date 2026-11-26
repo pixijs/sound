@@ -1,5 +1,5 @@
 import { DOMAdapter } from 'pixi.js';
-import { htmlaudio, IMediaInstance, Sound, sound, webaudio } from '../src';
+import { htmlaudio, type IMediaInstance, Sound, sound, webaudio } from '../src';
 
 import type { MockInstance } from 'vitest';
 

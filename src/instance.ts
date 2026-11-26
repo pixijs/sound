@@ -1,4 +1,4 @@
-import { SoundLibrary } from './SoundLibrary';
+import { type SoundLibrary } from './SoundLibrary';
 
 /**
  * Singleton instance of the SoundLibrary

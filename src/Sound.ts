@@ -1,9 +1,9 @@
 import { path } from 'pixi.js';
-import { Filter } from './filters/Filter';
+import { type Filter } from './filters/Filter';
 import { HTMLAudioMedia } from './htmlaudio/HTMLAudioMedia';
 import { getInstance } from './instance';
-import { IMedia, IMediaContext, IMediaInstance } from './interfaces';
-import { SoundSprite, SoundSpriteData, SoundSprites } from './SoundSprite';
+import { type IMedia, type IMediaContext, type IMediaInstance } from './interfaces';
+import { SoundSprite, type SoundSpriteData, type SoundSprites } from './SoundSprite';
 import { extensions, supported } from './utils/supported';
 import { withoutUndefined } from './utils/withoutUndefined';
 import { WebAudioMedia } from './webaudio/WebAudioMedia';

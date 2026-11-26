@@ -1,8 +1,8 @@
-import { Filter } from './filters/Filter';
+import { type Filter } from './filters/Filter';
 import { HTMLAudioContext } from './htmlaudio/HTMLAudioContext';
-import { IMediaContext } from './interfaces/IMediaContext';
-import { IMediaInstance } from './interfaces/IMediaInstance';
-import { CompleteCallback, Options, PlayOptions, Sound } from './Sound';
+import { type IMediaContext } from './interfaces/IMediaContext';
+import { type IMediaInstance } from './interfaces/IMediaInstance';
+import { type CompleteCallback, type Options, type PlayOptions, Sound } from './Sound';
 import { withoutUndefined } from './utils/withoutUndefined';
 import { WebAudioContext } from './webaudio/WebAudioContext';
 

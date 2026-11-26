@@ -1,4 +1,4 @@
-import { Filter } from './filters/Filter';
+import { type Filter } from './filters/Filter';
 
 /**
  * Abstract class which SoundNodes and SoundContext

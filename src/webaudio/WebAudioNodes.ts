@@ -1,5 +1,5 @@
 import { Filterable } from '../Filterable';
-import { WebAudioContext } from './WebAudioContext';
+import { type WebAudioContext } from './WebAudioContext';
 import { WebAudioUtils } from './WebAudioUtils';
 
 /** Output for cloning source node. */

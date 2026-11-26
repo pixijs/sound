@@ -1,4 +1,4 @@
-import { IMediaInstance, Sound, sound, webaudio } from '../src';
+import { type IMediaInstance, Sound, sound, webaudio } from '../src';
 
 import type { MockInstance } from 'vitest';
 

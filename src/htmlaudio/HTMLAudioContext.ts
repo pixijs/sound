@@ -1,6 +1,6 @@
 import { EventEmitter } from 'pixi.js';
-import { Filter } from '../filters/Filter';
-import { IMediaContext } from '../interfaces/IMediaContext';
+import { type Filter } from '../filters/Filter';
+import { type IMediaContext } from '../interfaces/IMediaContext';
 
 /**
  * The fallback version of WebAudioContext which uses `<audio>` instead of WebAudio API.

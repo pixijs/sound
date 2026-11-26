@@ -1,8 +1,8 @@
 import { EventEmitter, Ticker } from 'pixi.js';
-import { Filter } from '../filters/Filter';
-import { IMediaInstance } from '../interfaces';
-import { PlayOptions } from '../Sound';
-import { WebAudioMedia } from './WebAudioMedia';
+import { type Filter } from '../filters/Filter';
+import { type IMediaInstance } from '../interfaces';
+import { type PlayOptions } from '../Sound';
+import { type WebAudioMedia } from './WebAudioMedia';
 import { WebAudioUtils } from './WebAudioUtils';
 
 let id = 0;
