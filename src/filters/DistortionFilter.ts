@@ -43,7 +43,7 @@ class DistortionFilter extends Filter
         }
         const scaledValue = value * 1000;
         const samples = 44100;
-        const curve: Float32Array = new Float32Array(samples);
+        const curve = new Float32Array(samples);
         const deg: number = Math.PI / 180;
 
         let i = 0;

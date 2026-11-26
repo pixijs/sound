@@ -39,7 +39,7 @@ try
         refresh();
     });
 }
-catch (e)
+catch
 {
     // not support in IE 9
     // Sortable not supported in this browser

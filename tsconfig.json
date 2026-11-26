@@ -2,6 +2,7 @@
     "extends": "@pixi/extension-scripts/tsconfig",
     "compilerOptions": {
         "strict": false,
+        "strictNullChecks": false,
         "noImplicitThis": true,
         "strictFunctionTypes": true,
         "strictBindCallApply": true,

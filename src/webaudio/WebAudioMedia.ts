@@ -145,7 +145,7 @@ class WebAudioMedia implements IMedia
         // Load from the file path
         else if (this.parent.url)
         {
-            this._loadUrl(callback);
+            void this._loadUrl(callback);
         }
         else if (callback)
         {
