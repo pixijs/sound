@@ -32,16 +32,18 @@ for (const useLegacy of [false, true])
         {
             const deadline = Date.now() + 3000;
 
-            while (!done() && ended() === 0 && Date.now() < deadline)
+            while (ended() === 0 && !done() && Date.now() < deadline)
             {
                 await wait(5);
             }
             expect(Date.now()).toBeLessThan(deadline);
         }
 
-        function play(options?: { loop?: boolean, sprite?: string }): IMediaInstance
+        // Four times as fast, so a case waits about 0.2s for the file rather than 0.7s.
+        // Positions below are in the file's seconds, so a frame of delay moves them four times as far.
+        function play(options?: { loop?: boolean, sprite?: string, speed?: number }): IMediaInstance
         {
-            const instance = music.play(options) as IMediaInstance;
+            const instance = music.play({ speed: 4, ...options }) as IMediaInstance;
 
             ends = 0;
             instance.on('end', () => ends++);
@@ -149,7 +151,7 @@ for (const useLegacy of [false, true])
             const loop = instance.loop;
 
             // far enough in that a loop starting again from the resume point would show
-            await until(() => position(instance) > 0.2);
+            await until(() => position(instance) > 0.4);
             pauseAndResume(instance);
 
             expect(instance.loop).toBe(loop);
@@ -157,15 +159,18 @@ for (const useLegacy of [false, true])
             const landed = await nextWrap(instance);
 
             expect(ends).toBe(0);
-            expect(landed).toBeLessThan(0.15);
+            expect(landed).toBeLessThan(0.25);
             expect(music.instances).toContain(instance);
         });
 
         it.each(pauses)('should still end a sound that does not loop after %s', async (_pause, pauseAndResume) =>
         {
-            const instance = play();
+            // twice the speed rather than four times, and paused soon after it starts,
+            // so that a slow check can't let the file end before the pause
+            const instance = play({ speed: 2 });
 
-            await until(() => position(instance) > 0.2);
+            await until(() => position(instance) > 0.05);
+            expect(ends).toBe(0);
             pauseAndResume(instance);
             await until(() => false);
 
@@ -174,11 +179,14 @@ for (const useLegacy of [false, true])
 
         it.each(pauses)('should still end a sprite that does not loop after %s', async (_pause, pauseAndResume) =>
         {
-            const instance = play({ sprite: 'part' });
+            // normal speed: HTML checks for the sprite's end once a frame, and at four times
+            // the speed a frame runs too far past it for the check below
+            const instance = play({ sprite: 'part', speed: 1 });
 
             let furthest = 0;
 
             await until(() => position(instance) > 0.15);
+            expect(ends).toBe(0);
             pauseAndResume(instance);
             await until(() =>
             {
