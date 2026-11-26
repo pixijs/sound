@@ -116,11 +116,11 @@ document.addEventListener('keydown', () =>
 
 ### Versions Compatibility
 
-| PixiJS | PixiJS Sound |
-|---|---|
-| v5.x - v6.x | v4.x |
-| v7.x | v5.x |
-| v8.x | v6.x |
+| PixiJS | PixiJS Sound | Status |
+|---|---|---|
+| v5.x - v6.x | v4.x | No longer maintained |
+| v7.x | v5.x | No longer maintained |
+| v8.x | v6.x | Maintained |
 
 ### Resources
 
