@@ -251,8 +251,12 @@ class SoundLibrary
      */
     public remove(alias: string): this
     {
-        this.exists(alias, true);
-        const sound = this._sounds[alias];
+        const sound = this.find(alias);
+
+        if (!sound)
+        {
+            return this;
+        }
 
         for (const name in this._sounds)
         {
@@ -449,8 +453,9 @@ class SoundLibrary
      * @instance
      * @param {string} alias - The sound alias reference.
      * @param {string} sprite - The alias of the sprite to play.
-     * @return {IMediaInstance|null} The sound instance, this cannot be reused
-     *         after it is done playing. Returns `null` if the sound has not yet loaded.
+     * @return {IMediaInstance|Promise<IMediaInstance>|null} The sound instance, this cannot be reused
+     *         after it is done playing. Returns a Promise if the sound has not yet loaded, or `null`
+     *         if there's no sound with that alias or no sprite with that name.
      */
 
     /**
@@ -459,89 +464,91 @@ class SoundLibrary
      * @param {PlayOptions|Function} options - The options or callback when done.
      * @return The sound instance,
      *        this cannot be reused after it is done playing. Returns a Promise if the sound
-     *        has not yet loaded.
+     *        has not yet loaded. Returns `null` if there's no sound with that alias or no sprite
+     *        with that name.
      */
     public play(
         alias: string,
         options?: PlayOptions | CompleteCallback | string): IMediaInstance | Promise<IMediaInstance>
     {
-        return this.find(alias).play(options);
+        return this.find(alias)?.play(options) ?? null;
     }
 
     /**
      * Stops a sound.
      * @param alias - The sound alias reference.
-     * @return Sound object.
+     * @return Sound object, or `undefined` if there's no sound with that alias.
      */
     public stop(alias: string): Sound
     {
-        return this.find(alias).stop();
+        return this.find(alias)?.stop();
     }
 
     /**
      * Pauses a sound.
      * @param alias - The sound alias reference.
-     * @return Sound object.
+     * @return Sound object, or `undefined` if there's no sound with that alias.
      */
     public pause(alias: string): Sound
     {
-        return this.find(alias).pause();
+        return this.find(alias)?.pause();
     }
 
     /**
      * Resumes a sound.
      * @param alias - The sound alias reference.
-     * @return Instance for chaining.
+     * @return Sound object, or `undefined` if there's no sound with that alias.
      */
     public resume(alias: string): Sound
     {
-        return this.find(alias).resume();
+        return this.find(alias)?.resume();
     }
 
     /**
      * Get or set the volume for a sound.
      * @param alias - The sound alias reference.
      * @param volume - Optional current volume to set.
-     * @return The current volume.
+     * @return The current volume, or `NaN` if there's no sound with that alias.
      */
     public volume(alias: string, volume?: number): number
     {
         const sound = this.find(alias);
 
-        if (volume !== undefined)
+        if (sound && volume !== undefined)
         {
             sound.volume = volume;
         }
 
-        return sound.volume;
+        return sound?.volume ?? NaN;
     }
 
     /**
      * Get or set the speed for a sound.
      * @param alias - The sound alias reference.
      * @param speed - Optional current speed to set.
-     * @return The current speed.
+     * @return The current speed, or `NaN` if there's no sound with that alias.
      */
     public speed(alias: string, speed?: number): number
     {
         const sound = this.find(alias);
 
-        if (speed !== undefined)
+        if (sound && speed !== undefined)
         {
             sound.speed = speed;
         }
 
-        return sound.speed;
+        return sound?.speed ?? NaN;
     }
 
     /**
      * Get the length of a sound in seconds.
      * @param alias - The sound alias reference.
-     * @return The duration in seconds, or `NaN` if the sound hasn't loaded yet (or failed to load).
+     * @return The duration in seconds, or `NaN` if the sound hasn't loaded yet, failed to load, or
+     *         there's no sound with that alias.
      */
     public duration(alias: string): number
     {
-        return this.find(alias).duration;
+        return this.find(alias)?.duration ?? NaN;
     }
 
     /**
