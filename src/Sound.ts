@@ -534,7 +534,8 @@ class Sound
      * @return The sound instance,
      *        this cannot be reused after it is done playing. Returns a Promise for it if the sound
      *        has not yet loaded. Each call made before loading starts its own instance once the
-     *        sound has loaded. The promise rejects if loading fails.
+     *        sound has loaded. The promise rejects if loading fails. Returns `null` if there's no
+     *        sprite with that name.
      */
     public play(alias: string, callback?: CompleteCallback): IMediaInstance | Promise<IMediaInstance>;
 
@@ -547,7 +548,8 @@ class Sound
      * @return The sound instance,
      *        this cannot be reused after it is done playing. Returns a Promise for it if the sound
      *        has not yet loaded. Each call made before loading starts its own instance once the
-     *        sound has loaded. The promise rejects if loading fails.
+     *        sound has loaded. The promise rejects if loading fails. Returns `null` if there's no
+     *        sprite with that name.
      */
     public play(source?: string | PlayOptions | CompleteCallback,
         callback?: CompleteCallback): IMediaInstance | Promise<IMediaInstance>;
@@ -596,6 +598,11 @@ class Sound
             // eslint-disable-next-line no-console
             console.assert(!!this._sprites[alias], `Alias ${alias} is not available`);
             const sprite: SoundSprite = this._sprites[alias];
+
+            if (!sprite)
+            {
+                return null;
+            }
 
             options.start = sprite.start + (options.start || 0);
             options.end = sprite.end;
