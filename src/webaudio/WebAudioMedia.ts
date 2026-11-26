@@ -1,8 +1,8 @@
 import { DOMAdapter } from 'pixi.js';
-import { Filter } from '../filters/Filter';
-import { IMedia } from '../interfaces/IMedia';
-import { LoadedCallback, Sound } from '../Sound';
-import { WebAudioContext } from './WebAudioContext';
+import { type Filter } from '../filters/Filter';
+import { type IMedia } from '../interfaces/IMedia';
+import { type LoadedCallback, type Sound } from '../Sound';
+import { type WebAudioContext } from './WebAudioContext';
 import { WebAudioInstance } from './WebAudioInstance';
 import { WebAudioNodes } from './WebAudioNodes';
 

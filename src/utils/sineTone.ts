@@ -1,5 +1,5 @@
 import { Sound } from '../Sound';
-import { WebAudioContext } from '../webaudio/WebAudioContext';
+import { type WebAudioContext } from '../webaudio/WebAudioContext';
 import { WebAudioMedia } from '../webaudio/WebAudioMedia';
 
 /**

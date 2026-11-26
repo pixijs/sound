@@ -1,8 +1,8 @@
 import { EventEmitter } from 'pixi.js';
-import { Filter } from '../filters/Filter';
-import { IMedia } from '../interfaces/IMedia';
-import { LoadedCallback, Sound } from '../Sound';
-import { HTMLAudioContext } from './HTMLAudioContext';
+import { type Filter } from '../filters/Filter';
+import { type IMedia } from '../interfaces/IMedia';
+import { type LoadedCallback, type Sound } from '../Sound';
+import { type HTMLAudioContext } from './HTMLAudioContext';
 import { HTMLAudioInstance } from './HTMLAudioInstance';
 
 /**

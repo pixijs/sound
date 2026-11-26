@@ -1,6 +1,6 @@
 import { Assets } from 'pixi.js';
 import { server } from 'vitest/browser';
-import { filters, htmlaudio, IMediaInstance, Sound, sound, utils, webaudio } from '../src';
+import { filters, htmlaudio, type IMediaInstance, Sound, sound, utils, webaudio } from '../src';
 import { dataUrlMp3, dataUrlOgg } from './resources/dataUrlResources';
 
 declare global

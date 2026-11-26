@@ -1,4 +1,4 @@
-import { IMediaInstance, Sound, sound } from '../src';
+import { type IMediaInstance, Sound, sound } from '../src';
 
 const alert = '/test/resources/alert-7.mp3';
 

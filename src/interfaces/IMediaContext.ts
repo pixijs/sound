@@ -1,4 +1,4 @@
-import { Filter } from '../filters/Filter';
+import { type Filter } from '../filters/Filter';
 
 /**
  * Represents the audio context for playing back sounds. This can

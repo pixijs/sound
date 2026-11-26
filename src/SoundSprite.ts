@@ -1,5 +1,5 @@
-import { IMediaInstance } from './interfaces';
-import { CompleteCallback, Sound } from './Sound';
+import { type IMediaInstance } from './interfaces';
+import { type CompleteCallback, type Sound } from './Sound';
 
 /** Data for adding new sound sprites. */
 interface SoundSpriteData

@@ -1,4 +1,4 @@
-import { IMediaInstance, Sound, sound, webaudio } from '../src';
+import { type IMediaInstance, Sound, sound, webaudio } from '../src';
 
 const musical = '/test/resources/musical-11.mp3';
 const realState = Object.getOwnPropertyDescriptor(BaseAudioContext.prototype, 'state').get;
