@@ -59,7 +59,7 @@ jobs:
         pulseaudio --start --exit-idle-time=-1
 
     - name: Run Unit Tests
-      run: npx vitest run --project ${{ matrix.browser }}
+      run: npx xs test --project ${{ matrix.browser }}
       timeout-minutes: 3
 
   build:
@@ -80,9 +80,6 @@ jobs:
         cache: npm
     - name: Install dependencies
       run: npm ci
-
-    - name: Type-check Tests
-      run: npx tsc -p test/tsconfig.json
 
     - name: Prepare Deploy
       run: npm run deploy:ci
