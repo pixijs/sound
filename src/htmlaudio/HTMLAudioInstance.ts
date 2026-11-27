@@ -20,37 +20,37 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
     public readonly id: number;
 
     /** The instance of the Audio element. */
-    private _source: HTMLAudioElement;
+    private _source!: HTMLAudioElement;
 
     /** The instance of the Audio media element. */
-    private _media: HTMLAudioMedia;
+    private _media!: HTMLAudioMedia;
 
     /** Playback rate, where 1 is 100%. */
-    private _end: number;
+    private _end!: number;
 
     /** Current instance paused state. */
-    private _paused: boolean;
+    private _paused: boolean | undefined;
 
     /** Current instance muted state. */
-    private _muted: boolean;
+    private _muted!: boolean;
 
     /** Current actual paused state. */
     private _pausedReal: boolean;
 
     /** Total length of the audio. */
-    private _duration: number;
+    private _duration!: number;
 
     /** Playback rate, where 1 is 100%. */
-    private _start: number;
+    private _start!: number;
 
     /** Volume for the instance. */
-    private _volume: number;
+    private _volume!: number;
 
     /** Speed for the instance. */
-    private _speed: number;
+    private _speed!: number;
 
     /** `true` for looping the playback */
-    private _loop: boolean;
+    private _loop!: boolean;
 
     /** @param parent - Parent element */
     constructor(parent: HTMLAudioMedia)
@@ -100,7 +100,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
     /** Pauses the sound. */
     public get paused(): boolean
     {
-        return this._paused;
+        return this._paused!;
     }
     public set paused(paused: boolean)
     {
@@ -198,7 +198,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
     {
         console.warn('HTML Audio does not support filters');
 
-        return null;
+        return null!;
     }
     public set filters(_filters: Filter[])
     {
@@ -258,7 +258,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
 
                 // A whole-file play stores the duration as its end,
                 // and passing that back would turn the loop off
-                let end = this._end;
+                let end: number | null = this._end;
 
                 if (this._loop)
                 {
@@ -293,13 +293,13 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         if (end)
         {
             // eslint-disable-next-line no-console
-            console.assert(end > start, 'End time is before start time');
+            console.assert(end > start!, 'End time is before start time');
         }
 
-        this._speed = speed;
-        this._volume = volume;
+        this._speed = speed!;
+        this._volume = volume!;
         this._loop = !!loop;
-        this._muted = muted;
+        this._muted = muted!;
         this.refresh();
 
         // WebAudio doesn't support looping when a duration is set
@@ -310,7 +310,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
             this.loop = false;
         }
 
-        this._start = start;
+        this._start = start!;
         this._end = end || this._duration;
 
         // Lets expand the start and end a little
@@ -323,9 +323,9 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         {
             if (this._source)
             {
-                this._source.currentTime = start;
+                this._source.currentTime = start!;
                 this._source.onloadedmetadata = null;
-                this.emit('progress', start / this._duration, this._duration);
+                this.emit('progress', start! / this._duration, this._duration);
                 Ticker.shared.add(this._onUpdate, this);
             }
         };
@@ -391,11 +391,11 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
             this._internalStop();
         }
 
-        this._source = null;
+        this._source = null!;
         this._speed = 1;
         this._volume = 1;
         this._loop = false;
-        this._end = null;
+        this._end = null!;
         this._start = 0;
         this._duration = 0;
         this._pausedReal = false;
@@ -406,7 +406,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
         {
             this._media.context.off('refresh', this.refresh, this);
             this._media.context.off('refreshPaused', this.refreshPaused, this);
-            this._media = null;
+            this._media = null!;
         }
     }
 

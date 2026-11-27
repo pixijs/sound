@@ -12,8 +12,8 @@ import { HTMLAudioInstance } from './HTMLAudioInstance';
  */
 class HTMLAudioMedia extends EventEmitter implements IMedia
 {
-    public parent: Sound;
-    private _source: HTMLAudioElement;
+    public parent!: Sound;
+    private _source!: HTMLAudioElement;
 
     public init(parent: Sound): void
     {
@@ -61,7 +61,7 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
     /** The collection of filters, does not apply to HTML Audio. */
     public get filters(): Filter[]
     {
-        return null;
+        return null!;
     }
     public set filters(_filters: Filter[])
     {
@@ -73,13 +73,13 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
     {
         this.removeAllListeners();
 
-        this.parent = null;
+        this.parent = null!;
 
         if (this._source)
         {
             this._source.src = '';
             this._source.load();
-            this._source = null;
+            this._source = null!;
         }
     }
 
@@ -109,7 +109,7 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
             {
                 setTimeout(() =>
                 {
-                    callback(null, sound, instance);
+                    callback(null!, sound, instance);
                 }, 0);
             }
 
@@ -119,7 +119,7 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
         // If there's no source, we cannot load
         if (!sound.url)
         {
-            callback(new Error('sound.url or sound.source must be set'));
+            callback!(new Error('sound.url or sound.source must be set'));
 
             return;
         }
@@ -136,7 +136,7 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
 
             if (callback)
             {
-                callback(null, sound, instance);
+                callback(null!, sound, instance);
             }
         };
 
@@ -154,7 +154,7 @@ class HTMLAudioMedia extends EventEmitter implements IMedia
         {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
             removeListeners();
-            const message = `Failed to load audio element (code: ${source.error.code})`;
+            const message = `Failed to load audio element (code: ${source.error!.code})`;
 
             if (callback)
             {
