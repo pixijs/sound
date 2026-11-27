@@ -80,7 +80,7 @@ for (const useLegacy of [false, true])
                 Sound.from({
                     url: alert,
                     preload: true,
-                    loaded: (err, s) => (err ? reject(err) : resolve(s)),
+                    loaded: (err, s) => (err ? reject(err) : resolve(s!)),
                 });
             });
         });

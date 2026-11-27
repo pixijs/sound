@@ -3,7 +3,7 @@ import { type IMediaInstance, Sound, sound, webaudio } from '../src';
 import type { MockInstance } from 'vitest';
 
 const musical = '/test/resources/musical-11.mp3';
-const realState = Object.getOwnPropertyDescriptor(BaseAudioContext.prototype, 'state').get;
+const realState = Object.getOwnPropertyDescriptor(BaseAudioContext.prototype, 'state')!.get!;
 
 function wait(ms: number): Promise<void>
 {
@@ -78,7 +78,7 @@ for (const lag of [false, true])
     {
         let ctx: webaudio.WebAudioContext;
         let ac: AudioContext;
-        let restore: () => void;
+        let restore: (() => void) | null;
 
         // The real state of the AudioContext, whatever a lagging stub reports
         const state = (): string => realState.call(ac);
@@ -305,7 +305,7 @@ for (const lag of [false, true])
                         url: musical,
                         preload: true,
                         volume: 0,
-                        loaded: (err, s) => (err ? reject(err) : resolve(s)),
+                        loaded: (err, s) => (err ? reject(err) : resolve(s!)),
                     });
                 });
                 if (lag)

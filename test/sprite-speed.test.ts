@@ -42,7 +42,7 @@ for (const useLegacy of [false, true])
                         plain: { start: 0, end: 2 },
                         fast: { start: 3, end: 5, speed: 2 },
                     },
-                    loaded: (err, s) => (err ? reject(err) : resolve(s)),
+                    loaded: (err, s) => (err ? reject(err) : resolve(s!)),
                 });
             });
         });

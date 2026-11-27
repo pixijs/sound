@@ -9,9 +9,9 @@ function wait(ms: number): Promise<void>
 }
 
 /** Records each buffer source started from here on, with its start offset. */
-function recordStarts(): { source: AudioBufferSourceNode, offset: number }[]
+function recordStarts(): { source: AudioBufferSourceNode, offset: number | undefined }[]
 {
-    const starts: { source: AudioBufferSourceNode, offset: number }[] = [];
+    const starts: { source: AudioBufferSourceNode, offset: number | undefined }[] = [];
     const start = AudioBufferSourceNode.prototype.start;
 
     vi.spyOn(AudioBufferSourceNode.prototype, 'start').mockImplementation(function (
