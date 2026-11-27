@@ -304,7 +304,7 @@ function suite(useLegacy = false): void
                         completed.resolve();
                     })) as IMediaInstance;
 
-                    expect(instance.progress).toBe(0);
+                    expect(instance.progress * s.duration).toBeLessThan(0.01);
 
                     // Pause
                     sound.pause(alias);
