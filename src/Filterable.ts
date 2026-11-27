@@ -14,7 +14,7 @@ class Filterable
     private _output: AudioNode;
 
     /** Collection of filters. */
-    private _filters: Filter[];
+    private _filters: Filter[] | null | undefined;
 
     /**
      * @param input - The source audio node
@@ -35,7 +35,7 @@ class Filterable
     /** The collection of filters. */
     get filters(): Filter[]
     {
-        return this._filters;
+        return this._filters!;
     }
     set filters(filters: Filter[])
     {
@@ -61,7 +61,7 @@ class Filterable
             this._input.disconnect();
 
             // Connect each filter
-            let prevFilter: Filter = null;
+            let prevFilter: Filter | null = null;
 
             filters.forEach((filter: Filter) =>
             {
@@ -77,16 +77,16 @@ class Filterable
                 }
                 prevFilter = filter;
             });
-            prevFilter.connect(this._output);
+            prevFilter!.connect(this._output);
         }
     }
 
     /** Cleans up. */
     public destroy(): void
     {
-        this.filters = null;
-        this._input = null;
-        this._output = null;
+        this.filters = null!;
+        this._input = null!;
+        this._output = null!;
     }
 }
 

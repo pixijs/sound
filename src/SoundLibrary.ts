@@ -25,19 +25,19 @@ class SoundLibrary
      * For legacy approach for Audio. Instead of using WebAudio API
      * for playback of sounds, it will use HTML5 `<audio>` element.
      */
-    private _useLegacy: boolean;
+    private _useLegacy!: boolean;
 
     /** The global context to use. */
-    private _context: IMediaContext;
+    private _context!: IMediaContext;
 
     /** The WebAudio specific context */
-    private _webAudioContext: WebAudioContext;
+    private _webAudioContext: WebAudioContext | undefined;
 
     /** The HTML Audio (legacy) context. */
-    private _htmlAudioContext: HTMLAudioContext;
+    private _htmlAudioContext!: HTMLAudioContext;
 
     /** The map of all sounds by alias. */
-    private _sounds: SoundMap;
+    private _sounds!: SoundMap;
 
     constructor()
     {
@@ -150,7 +150,7 @@ class SoundLibrary
             for (const alias in source)
             {
                 const options: Options = this._getOptions(
-                    source[alias],
+                    source[alias]!,
                     sourceOptions as Options,
                 );
 
@@ -170,7 +170,7 @@ class SoundLibrary
             return sourceOptions;
         }
 
-        const options: Options = this._getOptions(sourceOptions);
+        const options: Options = this._getOptions(sourceOptions!);
         const sound: Sound = Sound.from(options);
 
         this._sounds[source] = sound;
@@ -224,7 +224,7 @@ class SoundLibrary
 
         // Set the context to use
         this._context = (!legacy && this.supported)
-            ? this._webAudioContext
+            ? this._webAudioContext!
             : this._htmlAudioContext;
     }
 
@@ -237,11 +237,11 @@ class SoundLibrary
      */
     public get disableAutoPause(): boolean
     {
-        return !this._webAudioContext.autoPause;
+        return !this._webAudioContext!.autoPause;
     }
     public set disableAutoPause(autoPause: boolean)
     {
-        this._webAudioContext.autoPause = !autoPause;
+        this._webAudioContext!.autoPause = !autoPause;
     }
 
     /**
@@ -426,7 +426,7 @@ class SoundLibrary
     {
         for (const alias in this._sounds)
         {
-            if (this._sounds[alias].isPlaying)
+            if (this._sounds[alias]!.isPlaying)
             {
                 return true;
             }
@@ -444,7 +444,7 @@ class SoundLibrary
     {
         this.exists(alias, true);
 
-        return this._sounds[alias];
+        return this._sounds[alias]!;
     }
 
     /**
@@ -559,18 +559,18 @@ class SoundLibrary
     public close(): this
     {
         this.removeAll();
-        this._sounds = null;
+        this._sounds = null!;
         if (this._webAudioContext)
         {
             this._webAudioContext.destroy();
-            this._webAudioContext = null;
+            this._webAudioContext = null!;
         }
         if (this._htmlAudioContext)
         {
             this._htmlAudioContext.destroy();
-            this._htmlAudioContext = null;
+            this._htmlAudioContext = null!;
         }
-        this._context = null;
+        this._context = null!;
 
         return this;
     }
