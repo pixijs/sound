@@ -37,7 +37,7 @@ interface Options
      * Global complete callback when play is finished.
      * @type {Function}
      */
-    complete?: CompleteCallback;
+    complete?: CompleteCallback | null;
     /**
      * Call when finished loading. Called once with an error if loading or decoding fails.
      * With WebAudio the error message names the file and the original error is in `cause`.
@@ -45,7 +45,7 @@ interface Options
      * Called once, even if `play()` is called while the sound is still loading.
      * @type {Function}
      */
-    loaded?: LoadedCallback;
+    loaded?: LoadedCallback | null;
     /**
      * `true` to immediately start preloading if loading from `url`. Calling `play()` while
      * it is still loading waits for this load; it does not start another.
@@ -59,11 +59,11 @@ interface Options
     /**
      * The source of the file being loaded
      */
-    url?: string | string[];
+    url?: string | string[] | null;
     /**
      * If sound is already preloaded, available.
      */
-    source?: ArrayBuffer | AudioBuffer | HTMLAudioElement;
+    source?: ArrayBuffer | AudioBuffer | HTMLAudioElement | null;
     /**
      * The map of sprite data. Where a sprite is an object
      * with a `start` and `end`, which are the times in seconds. Optionally, can include
@@ -85,7 +85,7 @@ interface PlayOptions
     /**
      * End time in seconds.
      */
-    end?: number;
+    end?: number | null;
     /**
      * The instance speed, where 1 is 100%. The sound and global speeds multiply it.
      * Defaults to 1, or to the sprite's speed when playing a sprite, which this overrides.
@@ -102,7 +102,7 @@ interface PlayOptions
     /**
      * The sprite to play.
      */
-    sprite?: string;
+    sprite?: string | null;
     /**
      * If sound instance is muted by default.
      * @default false
@@ -117,13 +117,13 @@ interface PlayOptions
      * When completed.
      * @type {Function}
      */
-    complete?: CompleteCallback;
+    complete?: CompleteCallback | null;
     /**
      * If the sound has not loaded yet, called when it has, with the instance this call started.
      * Not called if loading fails; the promise from `play()` rejects instead.
      * @type {Function}
      */
-    loaded?: LoadedCallback;
+    loaded?: LoadedCallback | null;
     /**
      * Setting `true` will stop any playing instances. This is the same as
      * the singleInstance property on Sound, but is play-specific.
