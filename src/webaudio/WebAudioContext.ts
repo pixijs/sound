@@ -56,7 +56,7 @@ class WebAudioContext extends Filterable implements IMediaContext
     private _offlineCtx: OfflineAudioContext;
 
     /** Current paused status */
-    private _paused: boolean;
+    private _paused!: boolean;
 
     /**
      * Indicated whether audio on iOS has been unlocked, which requires a touchend/mousedown event that plays an
@@ -65,7 +65,7 @@ class WebAudioContext extends Filterable implements IMediaContext
     private _locked: boolean;
 
     /** The paused state saved by a window blur, or undefined when no blur is waiting for its focus */
-    private _pausedOnBlur: boolean;
+    private _pausedOnBlur: boolean | undefined;
 
     /** Set to false ignore suspending when window is blurred */
     public autoPause = true;
@@ -323,11 +323,11 @@ class WebAudioContext extends Filterable implements IMediaContext
         this.events.removeAllListeners();
         this.analyser.disconnect();
         this.compressor.disconnect();
-        this.analyser = null;
-        this.compressor = null;
-        this.events = null;
-        this._offlineCtx = null;
-        this._ctx = null;
+        this.analyser = null!;
+        this.compressor = null!;
+        this.events = null!;
+        this._offlineCtx = null!;
+        this._ctx = null!;
     }
 
     /**
@@ -449,7 +449,7 @@ class WebAudioContext extends Filterable implements IMediaContext
         const result = this._offlineCtx.decodeAudioData(
             arrayBuffer, (buffer: AudioBuffer) =>
             {
-                finish(null, buffer);
+                finish(null!, buffer);
             },
             handleError,
         );

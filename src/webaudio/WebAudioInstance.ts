@@ -33,22 +33,22 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
     private _pausedReal: boolean;
 
     /** The instance volume */
-    private _volume: number;
+    private _volume!: number;
 
     /** Last update frame number. */
-    private _lastUpdate: number;
+    private _lastUpdate!: number;
 
     /** The total number of seconds elapsed in playback. */
     private _elapsed: number;
 
     /** Playback rate, where 1 is 100%. */
-    private _speed: number;
+    private _speed!: number;
 
     /** Playback rate, where 1 is 100%. */
-    private _end: number;
+    private _end: number | null | undefined;
 
     /** `true` if should be looping. */
-    private _loop: boolean;
+    private _loop!: boolean;
 
     /**
      * Start of the region from the first `play()`, looping or not, so a loop turned on later
@@ -57,26 +57,26 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
     private _loopRegionStart: number | null = null;
 
     /** Gain node for controlling volume of instance */
-    private _gain: GainNode;
+    private _gain!: GainNode;
 
     /** Length of the sound in seconds. */
-    private _duration: number;
+    private _duration!: number;
 
     /** The progress of the sound from 0 to 1. */
-    private _progress: number;
+    private _progress!: number;
 
     /** Audio buffer source clone from Sound object. */
-    private _source: AudioBufferSourceNode;
+    private _source: AudioBufferSourceNode | null | undefined;
 
     /** The filters */
-    private _filters: Filter[];
+    private _filters: Filter[] | null | undefined;
 
     constructor(media: WebAudioMedia)
     {
         super();
 
         this.id = id++;
-        this._media = null;
+        this._media = null!;
         this._paused = false;
         this._pausedReal = false;
         this._muted = false;
@@ -170,7 +170,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
     /** The collection of filters. */
     public get filters(): Filter[]
     {
-        return this._filters;
+        return this._filters!;
     }
     public set filters(filters: Filter[])
     {
@@ -179,7 +179,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
             this._filters?.filter((filter) => filter).forEach((filter) => filter.disconnect());
             this._filters = null;
             // Reconnect direct path
-            this._source.connect(this._gain);
+            this._source!.connect(this._gain);
         }
         this._filters = filters?.length ? filters.slice(0) : null;
         this.refresh();
@@ -218,10 +218,10 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         if (this._filters?.length)
         {
             // Disconnect direct path before inserting filters
-            this._source.disconnect();
+            this._source!.disconnect();
 
             // Connect each filter
-            let source: { connect: (node: AudioNode) => void } = this._source;
+            let source: { connect: (node: AudioNode) => void } = this._source!;
 
             this._filters.forEach((filter: Filter) =>
             {
@@ -272,7 +272,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
                     loop: this._loop,
                     volume: this._volume,
                     muted: this._muted,
-                    filters: this._filters,
+                    filters: this._filters!,
                 });
             }
 
@@ -316,7 +316,7 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         if (end)
         {
             // eslint-disable-next-line no-console
-            console.assert(end > start, 'End time is before start time');
+            console.assert(end > start!, 'End time is before start time');
         }
         this._paused = false;
         this._internalStop();
@@ -325,19 +325,19 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
 
         this._source = source;
         this._gain = gain;
-        this._speed = speed;
-        this._volume = volume;
+        this._speed = speed!;
+        this._volume = volume!;
         this._loop = !!loop;
-        this._muted = muted;
+        this._muted = muted!;
         this._filters = filters;
         this.refresh();
 
-        const duration: number = this._source.buffer.duration;
+        const duration: number = this._source.buffer!.duration;
 
         this._duration = duration;
         this._end = end;
         this._lastUpdate = this._now();
-        this._elapsed = start;
+        this._elapsed = start!;
         this._source.onended = this._onComplete.bind(this);
 
         if (this._loopRegionStart === null)
@@ -347,13 +347,13 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
 
         if (this._loop)
         {
-            this._source.loopEnd = end;
+            this._source.loopEnd = end!;
             this._source.loopStart = this._loopRegionStart;
             this._source.start(0, start);
         }
         else if (end)
         {
-            this._source.start(0, start, end - start);
+            this._source.start(0, start, end - start!);
         }
         else
         {
@@ -409,13 +409,13 @@ class WebAudioInstance extends EventEmitter implements IMediaInstance
         if (this._gain)
         {
             this._gain.disconnect();
-            this._gain = null;
+            this._gain = null!;
         }
         if (this._media)
         {
             this._media.context.events.off('refresh', this.refresh, this);
             this._media.context.events.off('refreshPaused', this.refreshPaused, this);
-            this._media = null;
+            this._media = null!;
         }
         this._filters?.forEach((filter) => filter.disconnect());
         this._filters = null;
