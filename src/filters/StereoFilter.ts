@@ -10,20 +10,20 @@ import { Filter } from './Filter';
 class StereoFilter extends Filter
 {
     /** The stereo panning node */
-    private _stereo: StereoPannerNode;
+    private _stereo: StereoPannerNode | undefined;
 
     /** The stereo panning node */
-    private _panner: PannerNode;
+    private _panner: PannerNode | undefined;
 
     /** The amount of panning, -1 is left, 1 is right, 0 is centered */
-    private _pan: number;
+    private _pan!: number;
 
     /** @param pan - The amount of panning, -1 is left, 1 is right, 0 is centered. */
     constructor(pan = 0)
     {
-        let stereo: StereoPannerNode;
-        let panner: PannerNode;
-        let destination: AudioNode;
+        let stereo: StereoPannerNode | undefined;
+        let panner: PannerNode | undefined;
+        let destination!: AudioNode;
 
         if (!getInstance().useLegacy)
         {
@@ -71,8 +71,8 @@ class StereoFilter extends Filter
     public destroy(): void
     {
         super.destroy();
-        this._stereo = null;
-        this._panner = null;
+        this._stereo = null!;
+        this._panner = null!;
     }
 }
 

@@ -39,7 +39,7 @@ function playOnce(url: string, callback?: (err?: Error) => void): string
             getInstance().remove(alias);
             if (callback)
             {
-                callback(null);
+                callback(null!);
             }
         },
     });

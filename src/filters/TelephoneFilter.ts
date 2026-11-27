@@ -11,8 +11,8 @@ class TelephoneFilter extends Filter
 {
     constructor()
     {
-        let destination: AudioNode;
-        let source: AudioNode;
+        let destination!: AudioNode;
+        let source!: AudioNode;
 
         if (!getInstance().useLegacy)
         {
