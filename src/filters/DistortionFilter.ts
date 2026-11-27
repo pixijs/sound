@@ -12,12 +12,12 @@ class DistortionFilter extends Filter
     private _distortion: WaveShaperNode;
 
     /** The amount of distoration */
-    private _amount: number;
+    private _amount!: number;
 
     /** @param amount - The amount of distoration from 0 to 1. */
     constructor(amount = 0)
     {
-        let distortion: WaveShaperNode;
+        let distortion!: WaveShaperNode;
 
         if (!getInstance().useLegacy)
         {
@@ -64,7 +64,7 @@ class DistortionFilter extends Filter
 
     public destroy(): void
     {
-        this._distortion = null;
+        this._distortion = null!;
         super.destroy();
     }
 }

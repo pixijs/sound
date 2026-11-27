@@ -38,8 +38,8 @@ function render(sound: Sound, options?: RenderOptions): TextureSource
         fill: 'black', ...(options || {})
     };
 
-    canvas.width = options.width;
-    canvas.height = options.height;
+    canvas.width = options.width!;
+    canvas.height = options.height!;
 
     const textureSource = new CanvasSource({
         resource: canvas as ICanvas,
@@ -55,21 +55,21 @@ function render(sound: Sound, options?: RenderOptions): TextureSource
     // eslint-disable-next-line no-console
     console.assert(!!media.buffer, 'No buffer found, load first');
 
-    const context: CanvasRenderingContext2D = canvas.getContext('2d');
+    const context: CanvasRenderingContext2D = canvas.getContext('2d')!;
 
-    context.fillStyle = options.fill;
+    context.fillStyle = options.fill!;
     const data: Float32Array = media.buffer.getChannelData(0);
-    const step: number = Math.ceil(data.length / options.width);
-    const amp: number = options.height / 2;
+    const step: number = Math.ceil(data.length / options.width!);
+    const amp: number = options.height! / 2;
 
-    for (let i = 0; i < options.width; i++)
+    for (let i = 0; i < options.width!; i++)
     {
         let min = 1.0;
         let max = -1.0;
 
         for (let j = 0; j < step; j++)
         {
-            const datum: number = data[(i * step) + j];
+            const datum: number = data[(i * step) + j]!;
 
             if (datum < min)
             {

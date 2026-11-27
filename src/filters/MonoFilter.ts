@@ -13,8 +13,8 @@ class MonoFilter extends Filter
 
     constructor()
     {
-        let merger: ChannelMergerNode;
-        let splitter: ChannelSplitterNode;
+        let merger!: ChannelMergerNode;
+        let splitter!: ChannelSplitterNode;
 
         if (!getInstance().useLegacy)
         {
@@ -31,7 +31,7 @@ class MonoFilter extends Filter
     public destroy(): void
     {
         this._merger?.disconnect();
-        this._merger = null;
+        this._merger = null!;
         super.destroy();
     }
 }

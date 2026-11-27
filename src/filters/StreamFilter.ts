@@ -12,8 +12,8 @@ class StreamFilter extends Filter
 
     constructor()
     {
-        let destination: MediaStreamAudioDestinationNode;
-        let source: MediaStreamAudioSourceNode;
+        let destination!: MediaStreamAudioDestinationNode;
+        let source!: MediaStreamAudioSourceNode;
 
         if (!getInstance().useLegacy)
         {
@@ -34,7 +34,7 @@ class StreamFilter extends Filter
 
     public destroy(): void
     {
-        this._stream = null;
+        this._stream = null!;
         super.destroy();
     }
 }

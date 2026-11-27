@@ -20,7 +20,7 @@ class ReverbFilter extends Filter
      */
     constructor(seconds = 3, decay = 2, reverse = false)
     {
-        super(null);
+        super(null!);
         this._seconds = this._clamp(seconds, 1, 50);
         this._decay = this._clamp(decay, 0, 100);
         this._reverse = reverse;

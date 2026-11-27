@@ -174,7 +174,7 @@ class EqualizerFilter extends Filter
         }
 
         // Setup the constructor AudioNode, where first is the input, and last is the output
-        super(bands[0], bands[bands.length - 1]);
+        super(bands[0]!, bands[bands.length - 1]);
 
         // Manipulate the bands
         this.bands = bands;
@@ -184,12 +184,12 @@ class EqualizerFilter extends Filter
 
         for (let i = 0; i < this.bands.length; i++)
         {
-            const node: BiquadFilterNode = this.bands[i];
+            const node = this.bands[i]!;
 
             // Connect the previous band to the current one
             if (i > 0)
             {
-                this.bands[i - 1].connect(node);
+                this.bands[i - 1]!.connect(node);
             }
             this.bandsMap[node.frequency.value] = node;
         }

@@ -23,10 +23,10 @@
 class Filter
 {
     /** The input node, which the previous filter connects to. */
-    public destination: AudioNode;
+    public destination!: AudioNode;
 
     /** The output node, which connects to the next filter. */
-    public source: AudioNode;
+    public source!: AudioNode;
 
     /**
      * @param {AudioNode} destination - The audio node to use as the destination for the input AudioNode
@@ -64,8 +64,8 @@ class Filter
     public destroy(): void
     {
         this.disconnect();
-        this.destination = null;
-        this.source = null;
+        this.destination = null!;
+        this.source = null!;
     }
 }
 
