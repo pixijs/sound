@@ -174,7 +174,7 @@ class WebAudioMedia implements IMedia
         {
             if (callback)
             {
-                callback(err);
+                callback(err as Error);
             }
             else
             {
@@ -199,7 +199,7 @@ class WebAudioMedia implements IMedia
         catch (err)
         {
             // Object.assign because the ES2020 target has no ErrorOptions
-            throw Object.assign(new Error(`Failed to load sound from ${url}: ${err.message}`), { cause: err });
+            throw Object.assign(new Error(`Failed to load sound from ${url}: ${(err as Error).message}`), { cause: err });
         }
 
         throw new Error(`Failed to load sound from ${url}: HTTP ${response.status}`);

@@ -1,18 +1,9 @@
 {
     "extends": "@pixi/extension-scripts/tsconfig",
     "compilerOptions": {
-        "strict": false,
         "strictNullChecks": false,
-        "noImplicitThis": true,
-        "strictFunctionTypes": true,
-        "strictBindCallApply": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "preserveConstEnums": true,
         "noFallthroughCasesInSwitch": true,
-        "noImplicitReturns": true,
-        "noUncheckedIndexedAccess": true,
-        "skipLibCheck": true
+        "noUncheckedIndexedAccess": true
     },
     "include": [
         "src/**/*"
