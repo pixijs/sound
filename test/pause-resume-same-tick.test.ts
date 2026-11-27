@@ -1,7 +1,7 @@
 import { type IMediaInstance, Sound, sound, webaudio } from '../src';
 
 const musical = '/test/resources/musical-11.mp3';
-const realState = Object.getOwnPropertyDescriptor(BaseAudioContext.prototype, 'state').get;
+const realState = Object.getOwnPropertyDescriptor(BaseAudioContext.prototype, 'state')!.get!;
 
 function wait(ms: number): Promise<void>
 {
@@ -75,15 +75,15 @@ for (const useLegacy of [false, true])
     describe(`Pause and resume in the same tick (${useLegacy ? 'htmlaudio' : 'webaudio'})`, () =>
     {
         let music: Sound;
-        let ctx: AudioContext;
-        let restore: () => void;
+        let ctx: AudioContext | null;
+        let restore: (() => void) | null;
 
         // The real state of the AudioContext, whatever a lagging stub reports
         const state = (): string => realState.call(ctx);
 
         // The audio clock the instance's progress is computed from
         const clock = (instance: IMediaInstance): number =>
-            (useLegacy ? (instance as any)._source.currentTime : ctx.currentTime);
+            (useLegacy ? (instance as any)._source.currentTime : ctx!.currentTime);
 
         /** Whether the audio clock and then the instance's progress move on */
         const advances = async (instance: IMediaInstance): Promise<boolean> =>
@@ -135,7 +135,7 @@ for (const useLegacy of [false, true])
             {
                 if (lag)
                 {
-                    restore = lagState(ctx);
+                    restore = lagState(ctx!);
                 }
             };
 
@@ -216,7 +216,7 @@ for (const useLegacy of [false, true])
                     url: musical,
                     preload: true,
                     volume: 0,
-                    loaded: (err, s) => (err ? reject(err) : resolve(s)),
+                    loaded: (err, s) => (err ? reject(err) : resolve(s!)),
                 });
             });
         });
@@ -293,8 +293,8 @@ for (const useLegacy of [false, true])
             it('should cope with a suspend and resume that return nothing', () =>
             {
                 const context = new webaudio.WebAudioContext();
-                const suspend = vi.spyOn(context.audioContext, 'suspend').mockImplementation(() => undefined);
-                const resume = vi.spyOn(context.audioContext, 'resume').mockImplementation(() => undefined);
+                const suspend = vi.spyOn(context.audioContext, 'suspend').mockImplementation(() => undefined!);
+                const resume = vi.spyOn(context.audioContext, 'resume').mockImplementation(() => undefined!);
 
                 expect(() => { context.paused = true; }).not.toThrow();
                 expect(() => { context.paused = false; }).not.toThrow();

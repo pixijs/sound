@@ -310,7 +310,7 @@ for (const useLegacy of [false, true])
             expect(second).toEqual({ rejected: first.rejected });
             if (!useLegacy)
             {
-                expect(first.rejected.message).toBe(destroyed);
+                expect(first.rejected!.message).toBe(destroyed);
             }
             expect(logged()).not.toHaveBeenCalled();
             expect(uncaught).toHaveLength(0);

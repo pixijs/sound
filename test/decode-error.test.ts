@@ -55,13 +55,13 @@ async function settle(reported: () => boolean): Promise<void>
 /** Replace the context's decodeAudioData with one that calls back as the test says. */
 function mockDecode(
     context: webaudio.WebAudioContext,
-    decode: (ok: (buffer: AudioBuffer) => void, fail: (err: Error) => void) => Promise<void> | undefined,
+    decode: (ok: (buffer: AudioBuffer) => void, fail: (err: Error | null) => void) => Promise<void> | undefined,
 ): void
 {
     const offline: OfflineAudioContext = (context as any)._offlineCtx;
 
     vi.spyOn(offline, 'decodeAudioData').mockImplementation(
-        (_buffer, ok, fail) => decode(ok, fail as (err: Error) => void) as Promise<any>,
+        (_buffer, ok, fail) => decode(ok!, fail as (err: Error | null) => void) as Promise<any>,
     );
 }
 
@@ -272,7 +272,7 @@ describe('Undecodable audio, decode() (webaudio)', () =>
     it('should call back from decode() exactly once', async () =>
     {
         const context = sound.context as webaudio.WebAudioContext;
-        const calls: [Error, AudioBuffer][] = [];
+        const calls: [Error | undefined, AudioBuffer | undefined][] = [];
 
         context.decode(garbage.slice().buffer, (err, buffer) => calls.push([err, buffer]));
         await settle(() => calls.length > 0);
@@ -329,7 +329,7 @@ describe('Undecodable audio, decode() (webaudio)', () =>
 
             return undefined;
         });
-        expect(() => context.decode(new ArrayBuffer(8), (err) => calls.push(err))).not.toThrow();
+        expect(() => context.decode(new ArrayBuffer(8), (err) => calls.push(err!))).not.toThrow();
         await settle(() => calls.length > 0);
 
         expect(calls).toHaveLength(1);
@@ -347,7 +347,7 @@ describe('Undecodable audio, decode() (webaudio)', () =>
 
             return undefined;
         });
-        context.decode(new ArrayBuffer(8), (err) => calls.push(err));
+        context.decode(new ArrayBuffer(8), (err) => calls.push(err!));
         await settle(() => calls.length > 0);
 
         expect(calls).toHaveLength(1);
@@ -359,7 +359,7 @@ describe('Undecodable audio, decode() (webaudio)', () =>
         const context = sound.context as webaudio.WebAudioContext;
         const calls: Error[] = [];
 
-        context.decode(garbage.slice().buffer, (err) => calls.push(err));
+        context.decode(garbage.slice().buffer, (err) => calls.push(err!));
         await settle(() => calls.length > 0);
 
         expect(calls).toHaveLength(1);
@@ -380,9 +380,9 @@ describe('Undecodable audio, decode() (webaudio)', () =>
 
         expect(errors).toHaveLength(1);
         expect(errors[0].name).toBe('Error');
-        expect(errors[0].cause.name).toBe(decodeErrorName);
-        expect(errors[0].cause.message).not.toBe('');
-        expect(errors[0].message).toBe(`Failed to decode sound from ${namedUrl}: ${errors[0].cause.message}`);
+        expect(errors[0].cause!.name).toBe(decodeErrorName);
+        expect(errors[0].cause!.message).not.toBe('');
+        expect(errors[0].message).toBe(`Failed to decode sound from ${namedUrl}: ${errors[0].cause!.message}`);
         expect(logged()).not.toHaveBeenCalled();
     });
 
@@ -397,7 +397,7 @@ describe('Undecodable audio, decode() (webaudio)', () =>
         const error: DecodeError = logged().mock.calls[0][0];
 
         expect(error).toBeInstanceOf(Error);
-        expect(error.message).toBe(`Failed to decode sound from ${namedUrl}: ${error.cause.message}`);
+        expect(error.message).toBe(`Failed to decode sound from ${namedUrl}: ${error.cause!.message}`);
         expect(uncaught).toHaveLength(0);
     });
 
@@ -410,7 +410,7 @@ describe('Undecodable audio, decode() (webaudio)', () =>
         await settle(() => errors.length > 0);
 
         expect(errors).toHaveLength(1);
-        expect(errors[0].message).toBe(`Failed to decode sound from ${namedUrl}: ${errors[0].cause.message}`);
+        expect(errors[0].message).toBe(`Failed to decode sound from ${namedUrl}: ${errors[0].cause!.message}`);
         expect(logged()).not.toHaveBeenCalled();
     });
 
@@ -426,8 +426,8 @@ describe('Undecodable audio, decode() (webaudio)', () =>
         await settle(() => errors.length > 0);
 
         expect(errors).toHaveLength(1);
-        expect(errors[0].cause.name).toBe(decodeErrorName);
-        expect(errors[0].message).toBe(`Failed to decode sound: ${errors[0].cause.message}`);
+        expect(errors[0].cause!.name).toBe(decodeErrorName);
+        expect(errors[0].message).toBe(`Failed to decode sound: ${errors[0].cause!.message}`);
     });
 
     it('should log an ArrayBuffer source error when there is no loaded callback', async () =>
@@ -453,7 +453,7 @@ describe('Undecodable audio, decode() (webaudio)', () =>
         await settle(() => errors.length > 0);
 
         expect(errors).toHaveLength(1);
-        expect(errors[0].message).toBe(`Failed to decode sound from ${namedUrl}: ${errors[0].cause.message}`);
+        expect(errors[0].message).toBe(`Failed to decode sound from ${namedUrl}: ${errors[0].cause!.message}`);
     });
 
     it('should shorten a data URL to its header in the error', async () =>
@@ -468,7 +468,7 @@ describe('Undecodable audio, decode() (webaudio)', () =>
         await settle(() => errors.length > 0);
 
         expect(errors).toHaveLength(1);
-        expect(errors[0].message).toBe(`Failed to decode sound from ${corruptName}: ${errors[0].cause.message}`);
+        expect(errors[0].message).toBe(`Failed to decode sound from ${corruptName}: ${errors[0].cause!.message}`);
         expect(errors[0].message).not.toContain(corruptUrl.slice(corruptName.length - 1));
     });
 
@@ -484,8 +484,8 @@ describe('Undecodable audio, decode() (webaudio)', () =>
         await settle(() => errors.length > 0);
 
         expect(errors).toHaveLength(1);
-        expect(errors[0].cause.name).toBe('TypeError');
-        expect(errors[0].message).toBe(`Failed to decode sound: ${errors[0].cause.message}`);
+        expect(errors[0].cause!.name).toBe('TypeError');
+        expect(errors[0].message).toBe(`Failed to decode sound: ${errors[0].cause!.message}`);
     });
 
     it('should name the file when the browser gives no error', async () =>

@@ -66,7 +66,7 @@ for (const useLegacy of [false, true])
 
         it('should return NaN while the sound is loading', async () =>
         {
-            let s: Sound;
+            let s!: Sound;
             const loaded = new Promise<void>((resolve, reject) =>
             {
                 s = Sound.from({

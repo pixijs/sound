@@ -80,7 +80,7 @@ for (const useLegacy of [false, true])
                     url: alert,
                     preload: true,
                     sprites: { part: { start: 0.1, end: 0.3 } },
-                    loaded: (err, s) => (err ? reject(err) : resolve(s)),
+                    loaded: (err, s) => (err ? reject(err) : resolve(s!)),
                 });
             });
         });

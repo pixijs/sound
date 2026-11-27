@@ -83,7 +83,7 @@ for (const useLegacy of [false, true])
                 sound.add(alias, {
                     url: musical,
                     preload: true,
-                    loaded: (err, s) => (err ? reject(err) : resolve(s)),
+                    loaded: (err, s) => (err ? reject(err) : resolve(s!)),
                 });
             });
         });

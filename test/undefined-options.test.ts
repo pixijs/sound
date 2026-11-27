@@ -24,7 +24,7 @@ for (const useLegacy of [false, true])
                 sound.add(alias, {
                     url: musical,
                     preload: true,
-                    loaded: (err, s) => (err ? reject(err) : resolve(s)),
+                    loaded: (err, s) => (err ? reject(err) : resolve(s!)),
                 });
             });
         });
@@ -43,7 +43,7 @@ for (const useLegacy of [false, true])
 
         it('should use the default volume when play gets an undefined volume', () =>
         {
-            let instance: IMediaInstance;
+            let instance!: IMediaInstance;
 
             expect(() =>
             {
@@ -54,7 +54,7 @@ for (const useLegacy of [false, true])
 
         it('should use the default speed when play gets an undefined speed', () =>
         {
-            let instance: IMediaInstance;
+            let instance!: IMediaInstance;
 
             expect(() =>
             {
@@ -66,7 +66,7 @@ for (const useLegacy of [false, true])
         it('should keep looping when play gets an undefined end', async () =>
         {
             const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-            let instance: IMediaInstance;
+            let instance!: IMediaInstance;
 
             expect(() =>
             {

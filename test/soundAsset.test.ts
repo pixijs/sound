@@ -42,7 +42,7 @@ for (const useLegacy of [false, true])
             expect(sound.find(fullAlias)).toBe(loaded);
             expect(sound.find(shortAlias)).toBe(loaded);
             expect(Assets.get(shortAlias)).toBe(loaded);
-            const play = vi.spyOn(loaded, 'play').mockReturnValue(null);
+            const play = vi.spyOn(loaded, 'play').mockReturnValue(null!);
 
             sound.play(fullAlias);
             sound.play(shortAlias);

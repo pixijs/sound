@@ -25,7 +25,7 @@ for (const useLegacy of [false, true])
                     url: musical,
                     preload: true,
                     sprites,
-                    loaded: (err, s) => (err ? reject(err) : resolve(s)),
+                    loaded: (err, s) => (err ? reject(err) : resolve(s!)),
                 });
             });
             sound.add(alias, loaded);

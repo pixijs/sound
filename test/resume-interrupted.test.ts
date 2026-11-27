@@ -3,7 +3,7 @@ import { type IMediaInstance, Sound, sound, webaudio } from '../src';
 import type { MockInstance } from 'vitest';
 
 const musical = '/test/resources/musical-11.mp3';
-const realState = Object.getOwnPropertyDescriptor(BaseAudioContext.prototype, 'state').get;
+const realState = Object.getOwnPropertyDescriptor(BaseAudioContext.prototype, 'state')!.get!;
 const gestures = ['mousedown', 'touchstart', 'touchend'];
 
 function wait(ms: number): Promise<void>
@@ -168,7 +168,7 @@ for (const lag of [false, true])
             await osStop();
 
             const own = Object.getOwnPropertyDescriptor(ac, 'state');
-            const before = own ? own.get : () => realState.call(ac);
+            const before = own ? own.get! : () => realState.call(ac);
             const hadResume = Object.prototype.hasOwnProperty.call(ac, 'resume');
             const resume = ac.resume;
             let interrupted = true;
@@ -228,7 +228,7 @@ for (const lag of [false, true])
             vi.restoreAllMocks();
             while (undo.length)
             {
-                undo.pop()();
+                undo.pop()!();
             }
         };
 
@@ -530,7 +530,7 @@ for (const lag of [false, true])
                         url: musical,
                         preload: true,
                         volume: 0,
-                        loaded: (err, s) => (err ? reject(err) : resolve(s)),
+                        loaded: (err, s) => (err ? reject(err) : resolve(s!)),
                     });
                 });
                 await unlocked();
