@@ -14,7 +14,7 @@ import { extensions as exts, mimes, supported } from './utils/supported';
 /** Get all aliases while preserving the basename fallback for direct URL loads. */
 const getAliases = (asset: ResolvedAsset) =>
 {
-    const src = asset.src;
+    const src = asset.src!;
     let alias = asset?.alias?.[0];
 
     if (!alias || asset.src === alias)
@@ -68,7 +68,7 @@ const soundAsset = {
                     }
                     else
                     {
-                        resolve(sound);
+                        resolve(sound!);
                     }
                     asset.data?.loaded?.(err, sound);
                 },

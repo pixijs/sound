@@ -227,22 +227,22 @@ class Sound
     private _sprites: SoundSprites;
 
     /** The options when auto-playing. */
-    private _autoPlayOptions: PlayOptions;
+    private _autoPlayOptions: PlayOptions | null;
 
     /** The internal volume. */
-    private _volume: number;
+    private _volume!: number;
 
     /** The internal paused state. */
-    private _paused: boolean;
+    private _paused: boolean | undefined;
 
     /** The internal muted state. */
-    private _muted: boolean;
+    private _muted: boolean | undefined;
 
     /** The internal volume. */
-    private _loop: boolean;
+    private _loop!: boolean;
 
     /** The internal playbackRate */
-    private _speed: number;
+    private _speed!: number;
 
     /**
      * Create a new sound instance from source.
@@ -317,16 +317,16 @@ class Sound
         this._preloadQueue = null;
         this._loadCallbacks = null;
         this.isPlaying = false;
-        this.autoPlay = options.autoPlay;
-        this.singleInstance = options.singleInstance;
+        this.autoPlay = options.autoPlay!;
+        this.singleInstance = options.singleInstance!;
         this.preload = options.preload || this.autoPlay;
 
         this.url = Array.isArray(options.url)
             ? this.preferUrl(options.url)
-            : options.url;
-        this.speed = options.speed;
-        this.volume = options.volume;
-        this.loop = options.loop;
+            : options.url!;
+        this.speed = options.speed!;
+        this.volume = options.volume!;
+        this.loop = options.loop!;
 
         if (options.sprites)
         {
@@ -385,7 +385,7 @@ class Sound
     /** Stops all the instances of this sound from playing. */
     public get paused(): boolean
     {
-        return this._paused;
+        return this._paused!;
     }
     public set paused(paused: boolean)
     {
@@ -441,7 +441,7 @@ class Sound
 
             for (const alias in source)
             {
-                results[alias] = this.addSprites(alias, source[alias]);
+                results[alias] = this.addSprites(alias, source[alias]!);
             }
 
             return results;
@@ -449,7 +449,7 @@ class Sound
 
         // eslint-disable-next-line no-console
         console.assert(!this._sprites[source], `Alias ${source} is already taken`);
-        const sprite = new SoundSprite(this, data);
+        const sprite = new SoundSprite(this, data!);
 
         this._sprites[source] = sprite;
 
@@ -462,9 +462,9 @@ class Sound
         this._removeInstances();
         this.removeSprites();
         this.media.destroy();
-        this.media = null;
-        this._sprites = null;
-        this._instances = null;
+        this.media = null!;
+        this._sprites = null!;
+        this._instances = null!;
         // The load in progress keeps its own references, and still reports to every waiting call
         this._preloadQueue = null;
         this._loadCallbacks = null;
@@ -485,7 +485,7 @@ class Sound
         }
         else
         {
-            const sprite: SoundSprite = this._sprites[alias];
+            const sprite: SoundSprite | undefined = this._sprites[alias];
 
             if (sprite !== undefined)
             {
@@ -518,7 +518,7 @@ class Sound
         // Go in reverse order so we don't skip items
         for (let i = this._instances.length - 1; i >= 0; i--)
         {
-            this._instances[i].stop();
+            this._instances[i]!.stop();
         }
 
         return this;
@@ -597,11 +597,11 @@ class Sound
 
             // eslint-disable-next-line no-console
             console.assert(!!this._sprites[alias], `Alias ${alias} is not available`);
-            const sprite: SoundSprite = this._sprites[alias];
+            const sprite: SoundSprite | undefined = this._sprites[alias];
 
             if (!sprite)
             {
-                return null;
+                return null!;
             }
 
             options.start = sprite.start + (options.start || 0);
@@ -637,7 +637,7 @@ class Sound
                 this.autoPlay = true;
                 this._autoPlayOptions = options;
 
-                this._preload((err: Error, sound: Sound, media: IMediaInstance) =>
+                this._preload((err: Error, sound?: Sound, media?: IMediaInstance) =>
                 {
                     this._preloadQueue = null;
 
@@ -649,14 +649,14 @@ class Sound
                         return;
                     }
 
-                    options.loaded?.(null, sound, media);
-                    resolve(media);
+                    options.loaded?.(null!, sound, media);
+                    resolve(media!);
 
                     for (const pending of queue)
                     {
                         const instance = this.play(pending.options) as IMediaInstance;
 
-                        pending.options.loaded?.(null, sound, instance);
+                        pending.options.loaded?.(null!, sound, instance);
                         pending.resolve(instance);
                     }
                 });
@@ -699,7 +699,7 @@ class Sound
 
         for (let i = 0; i < len; i++)
         {
-            this._instances[i].refresh();
+            this._instances[i]!.refresh();
         }
     }
 
@@ -710,7 +710,7 @@ class Sound
 
         for (let i = 0; i < len; i++)
         {
-            this._instances[i].refreshPaused();
+            this._instances[i]!.refreshPaused();
         }
     }
 
@@ -728,7 +728,7 @@ class Sound
     /** Gets and sets the muted flag. */
     public get muted(): boolean
     {
-        return this._muted;
+        return this._muted!;
     }
     public set muted(muted: boolean)
     {
@@ -748,7 +748,7 @@ class Sound
     }
 
     /** Starts the preloading of sound. */
-    private _preload(callback?: LoadedCallback): void
+    private _preload(callback?: LoadedCallback | null): void
     {
         // Already loading: wait for that load, don't start another
         if (this._loadCallbacks)
@@ -765,7 +765,7 @@ class Sound
 
         // Set before load(), as an AudioBuffer source calls back straight away
         this._loadCallbacks = callbacks;
-        this.media.load((err: Error, sound: Sound, instance: IMediaInstance) =>
+        this.media.load((err: Error, sound?: Sound, instance?: IMediaInstance) =>
         {
             // Cleared first, so a play() after a failed load can start a new one
             this._loadCallbacks = null;
@@ -805,11 +805,11 @@ class Sound
     /** Auto play the first instance. */
     public autoPlayStart(): IMediaInstance
     {
-        let instance: IMediaInstance;
+        let instance!: IMediaInstance;
 
         if (this.autoPlay)
         {
-            instance = this.play(this._autoPlayOptions) as IMediaInstance;
+            instance = this.play(this._autoPlayOptions!) as IMediaInstance;
         }
 
         return instance;
@@ -821,7 +821,7 @@ class Sound
         // destroying also stops
         for (let i = this._instances.length - 1; i >= 0; i--)
         {
-            this._poolInstance(this._instances[i]);
+            this._poolInstance(this._instances[i]!);
         }
         this._instances.length = 0;
     }
@@ -850,7 +850,7 @@ class Sound
     {
         if (Sound._pool.length > 0)
         {
-            const instance: IMediaInstance = Sound._pool.pop();
+            const instance: IMediaInstance = Sound._pool.pop()!;
 
             instance.init(this.media);
 

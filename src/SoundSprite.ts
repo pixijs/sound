@@ -48,20 +48,20 @@ class SoundSprite
      * The starting location in seconds.
      * @readonly
      */
-    public start: number;
+    public start!: number;
 
     /**
      * The ending location in seconds
      * @readonly
      */
-    public end: number;
+    public end!: number;
 
     /**
      * Default instance speed for this sprite, where 1 is 100%.
      * The parent sound's speed multiplies it.
      * @readonly
      */
-    public speed: number;
+    public speed!: number;
 
     /**
      * The duration of the sound in seconds.
@@ -73,7 +73,7 @@ class SoundSprite
      * Whether to loop the sound sprite.
      * @readonly
      */
-    public loop: boolean;
+    public loop!: boolean;
 
     /**
      * @param parent - The parent sound
@@ -108,7 +108,7 @@ class SoundSprite
     /** Destroy and don't use after this */
     public destroy(): void
     {
-        this.parent = null;
+        this.parent = null!;
     }
 }
 
