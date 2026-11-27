@@ -8,19 +8,19 @@ function wait(ms: number): Promise<void>
 }
 
 /**
- * Waits until the context has rendered `seconds` more of audio. A context can report 'running'
+ * Waits until a context or element has played `seconds` more of audio. A context can report 'running'
  * while its clock stands still, so a wall-clock sleep doesn't show that anything was rendered.
  */
-async function rendered(audioContext: AudioContext, seconds: number): Promise<void>
+async function rendered(clock: AudioContext | HTMLAudioElement, seconds: number): Promise<void>
 {
-    const target = audioContext.currentTime + seconds;
+    const target = clock.currentTime + seconds;
     const deadline = Date.now() + 2000;
 
-    while (audioContext.currentTime < target && Date.now() < deadline)
+    while (clock.currentTime < target && Date.now() < deadline)
     {
         await wait(10);
     }
-    expect(audioContext.currentTime).toBeGreaterThanOrEqual(target);
+    expect(clock.currentTime).toBeGreaterThanOrEqual(target);
 }
 
 /** Loudest sample on the library's analyser, read once the context is running again. */
@@ -300,12 +300,13 @@ for (const useLegacy of [false, true])
 
             it('should not let the old source end an instance that was played again', async () =>
             {
-                // the first source ends about 1s after the replay, the second about 1.8s after
-                const instance = music.play({ start: music.duration - 1.3 }) as IMediaInstance;
+                const { audioContext } = sound.context as webaudio.WebAudioContext;
+                // left playing, the first source would end about 0.3s after the replay, the second about 1.2s after
+                const instance = music.play({ start: music.duration - 0.35 }) as IMediaInstance;
 
-                await wait(300);
-                instance.play({ start: music.duration - 1.8, end: null, speed: 1, volume: 1, loop: false, muted: false });
-                await wait(1300);
+                await rendered(audioContext, 0.05);
+                instance.play({ start: music.duration - 1.2, end: null, speed: 1, volume: 1, loop: false, muted: false });
+                await rendered(audioContext, 0.7);
 
                 expect(music.instances).toContain(instance);
                 music.stop();
@@ -351,13 +352,23 @@ for (const useLegacy of [false, true])
 
             const expectStopped = async (element: HTMLAudioElement): Promise<void> =>
             {
-                await wait(300);
+                await new Promise<void>((resolve) =>
+                {
+                    element.addEventListener('pause', () => resolve(), { once: true });
+                    setTimeout(resolve, 2000);
+                });
                 const time = element.currentTime;
 
                 await wait(100);
                 expect(element.paused).toBe(true);
                 expect(element.currentTime).toBe(time);
                 expect(rejections).toEqual([]);
+            };
+
+            const expectPlaying = async (element: HTMLAudioElement): Promise<void> =>
+            {
+                await rendered(element, 0.1);
+                expect(element.paused).toBe(false);
             };
 
             beforeAll(() => window.addEventListener('unhandledrejection', onRejection));
@@ -372,8 +383,7 @@ for (const useLegacy of [false, true])
                 const instance = music.play() as IMediaInstance;
                 const element = elementOf(instance);
 
-                await wait(300);
-                expect(element.paused).toBe(false);
+                await expectPlaying(element);
                 instance.stop();
                 await expectStopped(element);
             });
@@ -408,8 +418,7 @@ for (const useLegacy of [false, true])
                     pause(instance);
                     await expectStopped(element);
                     resume(instance);
-                    await wait(300);
-                    expect(element.paused).toBe(false);
+                    await expectPlaying(element);
                     instance.stop();
                     await expectStopped(element);
                 });
