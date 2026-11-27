@@ -25,7 +25,7 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
     /** The instance of the Audio media element. */
     private _media!: HTMLAudioMedia;
 
-    /** Playback rate, where 1 is 100%. */
+    /** When playback ends, in seconds, including the padding. */
     private _end!: number;
 
     /** Current instance paused state. */
@@ -274,6 +274,10 @@ class HTMLAudioInstance extends EventEmitter implements IMediaInstance
                     loop: this._loop,
                     muted: this._muted,
                 });
+
+                // play() pads the end again, so keep the end the first play() padded. A loop passes
+                // no end and keeps play()'s (the duration), so turning the loop off still plays on
+                this._end = end ?? this._end;
             }
 
             /**

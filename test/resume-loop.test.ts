@@ -1,4 +1,4 @@
-import { type IMediaInstance, Sound, sound } from '../src';
+import { htmlaudio, type IMediaInstance, Sound, sound } from '../src';
 
 const alert = '/test/resources/alert-7.mp3';
 
@@ -177,7 +177,7 @@ for (const useLegacy of [false, true])
             expect(ends).toBe(1);
         });
 
-        it.each(pauses)('should still end a sprite that does not loop after %s', async (_pause, pauseAndResume) =>
+        it.each(pauses)('should end a sprite at its end after %s, three times', async (_pause, pauseAndResume) =>
         {
             // normal speed: HTML checks for the sprite's end once a frame, and at four times
             // the speed a frame runs too far past it for the check below
@@ -187,7 +187,11 @@ for (const useLegacy of [false, true])
 
             await until(() => position(instance) > 0.15);
             expect(ends).toBe(0);
-            pauseAndResume(instance);
+            // three resumes in a row, so an end that moves on each resume shows
+            for (let i = 0; i < 3; i++)
+            {
+                pauseAndResume(instance);
+            }
             await until(() =>
             {
                 furthest = ends === 0 ? position(instance) : furthest;
@@ -196,8 +200,24 @@ for (const useLegacy of [false, true])
             });
 
             expect(ends).toBe(1);
-            // well short of the end of the file, allowing for the HTML padding
-            expect(furthest).toBeLessThan(0.6);
+            // the sprite ends at 0.3, HTML pads that once, and the check runs once a frame
+            expect(furthest).toBeLessThan(0.3 + (useLegacy ? htmlaudio.HTMLAudioInstance.PADDING : 0) + 0.15);
+        });
+
+        // only HTML plays on past a sprite's end, for PADDING
+        it.runIf(useLegacy)('should resume a sprite paused after its end without an assert', async () =>
+        {
+            const assert = vi.spyOn(console, 'assert');
+            const instance = play({ sprite: 'part', speed: 1 });
+
+            await until(() => position(instance) > 0.3);
+            expect(ends).toBe(0);
+            instance.paused = true;
+            instance.paused = false;
+            await until(() => false);
+
+            expect(ends).toBe(1);
+            expect(assert.mock.calls.filter(([ok]) => !ok)).toEqual([]);
         });
     });
 }
