@@ -48,7 +48,7 @@ class WebAudioNodes extends Filterable
     public context: WebAudioContext;
 
     /** Private reference to the script processor node. */
-    private _script: ScriptProcessorNode;
+    private _script: ScriptProcessorNode | undefined;
 
     /**
      * @param context - The audio context.
@@ -101,12 +101,12 @@ class WebAudioNodes extends Filterable
         this.gain.disconnect();
         this.analyser.disconnect();
 
-        this.bufferSource = null;
-        this._script = null;
-        this.gain = null;
-        this.analyser = null;
+        this.bufferSource = null!;
+        this._script = null!;
+        this.gain = null!;
+        this.analyser = null!;
 
-        this.context = null;
+        this.context = null!;
     }
 
     /**

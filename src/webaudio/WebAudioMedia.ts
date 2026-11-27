@@ -39,19 +39,19 @@ class WebAudioMedia implements IMedia
      * Reference to the parent Sound container.
      * @readonly
      */
-    public parent: Sound;
+    public parent!: Sound;
 
     /**
      * The file buffer to load.
      * @readonly
      */
-    public source: ArrayBuffer | AudioBuffer;
+    public source!: ArrayBuffer | AudioBuffer;
 
     /** Instance of the chain builder. */
-    private _nodes: WebAudioNodes;
+    private _nodes!: WebAudioNodes;
 
     /** Instance of the source node. */
-    private _source: AudioBufferSourceNode;
+    private _source!: AudioBufferSourceNode;
 
     /**
      * Re-initialize without constructing.
@@ -68,9 +68,9 @@ class WebAudioMedia implements IMedia
     /** Destructor, safer to use `SoundLibrary.remove(alias)` to remove this sound. */
     public destroy(): void
     {
-        this.parent = null;
+        this.parent = null!;
         this._nodes.destroy();
-        this._nodes = null;
+        this._nodes = null!;
         try
         {
             this._source.buffer = null;
@@ -80,8 +80,8 @@ class WebAudioMedia implements IMedia
             // try/catch workaround for bug in older Chrome versions
             console.warn('Failed to set AudioBufferSourceNode.buffer to null:', err);
         }
-        this._source = null;
-        this.source = null;
+        this._source = null!;
+        this.source = null!;
     }
 
     // Implement create
@@ -121,7 +121,7 @@ class WebAudioMedia implements IMedia
     /** Gets and sets the buffer. */
     public get buffer(): AudioBuffer
     {
-        return this._source.buffer;
+        return this._source.buffer!;
     }
     public set buffer(buffer: AudioBuffer)
     {
@@ -213,7 +213,7 @@ class WebAudioMedia implements IMedia
      */
     private _decode(arrayBuffer: ArrayBuffer | AudioBuffer, callback?: LoadedCallback): void
     {
-        const audioBufferReadyFn = (err: Error, buffer: AudioBuffer) =>
+        const audioBufferReadyFn = (err: Error | null, buffer?: AudioBuffer) =>
         {
             // The sound was destroyed while the file was decoding
             if (!this.parent)
@@ -235,12 +235,12 @@ class WebAudioMedia implements IMedia
             else
             {
                 this.parent.isLoaded = true;
-                this.buffer = buffer;
+                this.buffer = buffer!;
                 const instance = this.parent.autoPlayStart();
 
                 if (callback)
                 {
-                    callback(null, this.parent, instance);
+                    callback(null!, this.parent, instance);
                 }
             }
         };
@@ -255,7 +255,7 @@ class WebAudioMedia implements IMedia
             // Read the URL now, the sound may be destroyed before decoding finishes
             const url = this.parent.url;
 
-            context.decode(arrayBuffer, (err: Error, buffer: AudioBuffer) =>
+            context.decode(arrayBuffer, (err?: Error, buffer?: AudioBuffer) =>
             {
                 if (err)
                 {
