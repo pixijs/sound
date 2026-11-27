@@ -1,7 +1,6 @@
 {
     "extends": "@pixi/extension-scripts/tsconfig",
     "compilerOptions": {
-        "strictNullChecks": false,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedIndexedAccess": true
     },
