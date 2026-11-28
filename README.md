@@ -2,7 +2,7 @@
 
 WebAudio API playback library, with filters. Modern audio playback for modern browsers. 
 
-[![Node.js CI](https://github.com/pixijs/sound/workflows/Node.js%20CI/badge.svg)](https://github.com/pixijs/sound/actions?query=workflow%3A%22Node.js+CI%22) [![npm version](https://badge.fury.io/js/%40pixi%2Fsound.svg)](https://badge.fury.io/js/%40pixi%2Fsound)
+[![Automation](https://github.com/pixijs/sound/actions/workflows/main.yml/badge.svg)](https://github.com/pixijs/sound/actions/workflows/main.yml) [![npm version](https://badge.fury.io/js/%40pixi%2Fsound.svg)](https://badge.fury.io/js/%40pixi%2Fsound)
 
 **Features**
 
@@ -14,7 +14,9 @@ WebAudio API playback library, with filters. Modern audio playback for modern br
     * ReverbFilter
     * DistortionFilter
     * EqualizerFilter
+    * MonoFilter
     * StereoFilter
+    * StreamFilter
     * TelephoneFilter
 
 **Known Compatibility**
@@ -87,7 +89,7 @@ If you're using a `<script>` element to import `@pixi/sound` into your project, 
 
 ```html
 <!-- PixiJS must be imported before @pixi/sound -->
-<script src="https://unpkg.com/pixi.js/dist/browser/pixi.min.js"></script>
+<script src="https://unpkg.com/pixi.js/dist/pixi.min.js"></script>
 
 <!-- found here, if not using CDN "./node_modules/@pixi/sound/dist/pixi-sound.js" -->
 <script src="https://unpkg.com/@pixi/sound/dist/pixi-sound.js"></script>
