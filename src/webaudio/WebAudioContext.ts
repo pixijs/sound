@@ -5,10 +5,26 @@ import { type IMediaContext } from '../interfaces';
 /** A suspend() or resume() rejects when the context is closed or interrupted before it settles */
 const ignore = (): void => { /* nothing to do */ };
 
+/** Time constant in seconds of the fade into a blur pause and out of any pause */
+const FADE_TIME_CONSTANT = 0.005;
+
+/** Seconds until that fade is down by 60 dB */
+const FADE_OUT = 0.04;
+
+/** Seconds ahead that the fade out starts. Firefox has already rendered up to a block past `currentTime` */
+const FADE_LEAD = 0.02;
+
+/** Seconds allowed for the output device to play what has been rendered */
+const OUTPUT_DELAY = 0.06;
+
+/** Seconds of audio the compressor holds back. It plays first after a pause, so the fade in waits for it */
+const COMPRESSOR_DELAY = 0.006;
+
 /**
  * Main class to handle WebAudio API. There's a simple chain
- * of AudioNode elements: analyser > compressor > context.destination.
- * any filters that are added are inserted between the analyser and compressor nodes
+ * of AudioNode elements: analyser > compressor > gain > context.destination.
+ * Any filters that are added are inserted between the analyser and compressor nodes.
+ * The gain fades the output out before the window-blur pause and back in afterwards.
  * @memberof webaudio
  */
 class WebAudioContext extends Filterable implements IMediaContext
@@ -67,6 +83,12 @@ class WebAudioContext extends Filterable implements IMediaContext
     /** The paused state saved by a window blur, or undefined when no blur is waiting for its focus */
     private _pausedOnBlur: boolean | undefined;
 
+    /** The last node of the chain. It fades the output out before a blur pause and back in on resume. */
+    private _gate: GainNode;
+
+    /** Pauses once the fade started by a blur has been played, or undefined when no blur is fading */
+    private _blurTimer: ReturnType<typeof setTimeout> | undefined;
+
     /** Set to false ignore suspending when window is blurred */
     public autoPause = true;
 
@@ -76,13 +98,16 @@ class WebAudioContext extends Filterable implements IMediaContext
         const ctx = new WebAudioContext.AudioContext();
         const compressor: DynamicsCompressorNode = ctx.createDynamicsCompressor();
         const analyser: AnalyserNode = ctx.createAnalyser();
+        const gate = ctx.createGain();
 
         // setup the end of the node chain
         analyser.connect(compressor);
-        compressor.connect(ctx.destination);
+        compressor.connect(gate);
+        gate.connect(ctx.destination);
 
         super(analyser, compressor);
 
+        this._gate = gate;
         this._ctx = ctx;
         // ios11 safari's webkitOfflineAudioContext allows only 44100 Hz sample rate
         //
@@ -159,10 +184,38 @@ class WebAudioContext extends Filterable implements IMediaContext
         }
         if (!this._locked && this._pausedOnBlur === undefined)
         {
+            const ctx = this._ctx;
+            const pause = (): void =>
+            {
+                this.paused = true;
+                this.refreshPaused();
+            };
+
             this._pausedOnBlur = this._paused;
-            this.paused = true;
-            this.refreshPaused();
+            if (this._paused || ctx.state !== 'running')
+            {
+                pause();
+
+                return;
+            }
+            // suspend() cuts the output wherever the wave is, so fade out first. It also drops what
+            // has been rendered but not yet played, so wait for the output delay as well.
+            // Reading outputLatency can stall Firefox's audio, hence the fixed allowance
+            this._paused = true;
+            this._fade(0, FADE_LEAD);
+            this._blurTimer = setTimeout(pause,
+                (FADE_LEAD + FADE_OUT + (ctx.baseLatency || 0) + OUTPUT_DELAY) * 1000);
         }
+    }
+
+    /** Fade the output level to `value`, starting `delay` seconds from now. */
+    private _fade(value: number, delay: number): void
+    {
+        const { gain } = this._gate;
+        const at = this._ctx.currentTime + delay;
+
+        gain.cancelScheduledValues(at);
+        gain.setTargetAtTime(value, at, FADE_TIME_CONSTANT);
     }
 
     /**
@@ -245,8 +298,9 @@ class WebAudioContext extends Filterable implements IMediaContext
             }
             this._checkUnlocked();
             // An unlock gesture resumes the context even while paused, and
-            // older Chromium ignores a suspend() made while a resume() is in flight
-            if (this._paused && ctx.state === 'running')
+            // older Chromium ignores a suspend() made while a resume() is in flight.
+            // A blur that is still fading out suspends when its timer fires
+            if (this._paused && this._blurTimer === undefined && ctx.state === 'running')
             {
                 ctx.suspend()?.catch(ignore);
             }
@@ -318,6 +372,8 @@ class WebAudioContext extends Filterable implements IMediaContext
             ctx.close();
         }
         this._removeUnlockListeners();
+        clearTimeout(this._blurTimer);
+        this._gate.disconnect();
         globalThis.removeEventListener('focus', this.onFocus);
         globalThis.removeEventListener('blur', this.onBlur);
         this.events.removeAllListeners();
@@ -326,6 +382,7 @@ class WebAudioContext extends Filterable implements IMediaContext
         this.analyser = null!;
         this.compressor = null!;
         this.events = null!;
+        this._gate = null!;
         this._offlineCtx = null!;
         this._ctx = null!;
     }
@@ -363,6 +420,8 @@ class WebAudioContext extends Filterable implements IMediaContext
      */
     public set paused(paused: boolean)
     {
+        clearTimeout(this._blurTimer);
+        this._blurTimer = undefined;
         this._paused = paused;
         const ctx = this._ctx;
 
@@ -378,6 +437,7 @@ class WebAudioContext extends Filterable implements IMediaContext
         }
         else
         {
+            this._fade(1, COMPRESSOR_DELAY);
             this._resume();
         }
     }
