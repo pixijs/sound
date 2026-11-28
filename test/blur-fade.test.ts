@@ -82,6 +82,10 @@ describe('WebAudioContext blur fade', () =>
     let ctx: webaudio.WebAudioContext;
     let ac: AudioContext;
     let tap: AnalyserNode;
+    /** Takes what `tap` hears and keeps it from the speakers */
+    let silent: GainNode;
+    /** The level of the tone going into the context */
+    let volume: GainNode;
     let suspend: ReturnType<typeof vi.spyOn>;
     /** The output level at each suspend() */
     let levels: number[];
@@ -135,7 +139,7 @@ describe('WebAudioContext blur fade', () =>
         const last = ends[ends.length - 1]!;
 
         // Listen there instead of playing it: the analyser only runs when it leads to the speakers
-        const silent = ac.createGain();
+        silent = ac.createGain();
 
         silent.gain.value = 0;
         tap = ac.createAnalyser();
@@ -144,10 +148,17 @@ describe('WebAudioContext blur fade', () =>
         last.connect(tap);
         tap.connect(silent);
         silent.connect(ac.destination);
+        // The context swaps in a new last node at each pause: keep listening to whichever is current
+        vi.spyOn(AudioNode.prototype, 'connect').mockImplementation(function follow(this: AudioNode, ...args: any[])
+        {
+            return (connect as any).apply(this, args[0] === ac.destination ? [tap] : args);
+        });
 
         const tone = ac.createOscillator();
 
-        tone.connect(ctx.destination);
+        volume = ac.createGain();
+        tone.connect(volume);
+        volume.connect(ctx.destination);
         tone.start();
         gesture();
         expect(await until(() => !(ctx as any)._locked && ac.state === 'running' && level() > 0.1)).toBe(true);
@@ -191,6 +202,66 @@ describe('WebAudioContext blur fade', () =>
         expect(levels[0]).toBeLessThan(0.001);
         expect(refreshes).toBe(1);
         expect(suspend).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not play the level from before a pause when it resumes', async () =>
+    {
+        // The analyser only shows the last 6 ms, so record the peak of every block the speakers would get
+        const recorder = `registerProcessor('peaks', class extends AudioWorkletProcessor
+        {
+            process(inputs)
+            {
+                const peak = (inputs[0][0] || []).reduce((max, v) => Math.max(max, Math.abs(v)), 0);
+
+                this.port.postMessage([currentFrame, peak]);
+
+                return true;
+            }
+        });`;
+        const blocks: [frame: number, peak: number][] = [];
+
+        await ac.audioWorklet.addModule(URL.createObjectURL(new Blob([recorder], { type: 'text/javascript' })));
+        const peaks = new AudioWorkletNode(ac, 'peaks');
+
+        peaks.port.onmessage = ({ data }) => blocks.push(data);
+        tap.connect(peaks);
+        peaks.connect(silent);
+        expect(await until(() => blocks.some(([, peak]) => peak > 0.1))).toBe(true);
+
+        // The compressor still holds 6 ms at the old level when the context stops
+        volume.gain.setValueAtTime(0, ac.currentTime);
+        ctx.paused = true;
+        expect(await until(() => realState.call(ac) === 'suspended')).toBe(true);
+        const stoppedAt = Math.round(ac.currentTime * ac.sampleRate);
+
+        ctx.paused = false;
+        expect(await until(() => blocks[blocks.length - 1]![0] > stoppedAt + (ac.sampleRate / 10))).toBe(true);
+        const heard = blocks.filter(([frame]) => frame >= stoppedAt).map(([, peak]) => peak);
+
+        expect(Math.max(...heard)).toBeLessThan(0.001);
+    });
+
+    it('should come back to full level after a pause', async () =>
+    {
+        ctx.paused = true;
+        expect(await until(() => realState.call(ac) === 'suspended')).toBe(true);
+        const stoppedAt = ac.currentTime;
+
+        ctx.paused = false;
+        // Not until the analyser has dropped what it heard before the pause
+        expect(await until(() => ac.currentTime > stoppedAt + 0.1 && level() > 0.1)).toBe(true);
+    });
+
+    it('should pause, and leave the compressor alone, when the app has disconnected it', async () =>
+    {
+        ctx.compressor.disconnect();
+        expect(() => { ctx.paused = true; }).not.toThrow();
+        expect(await until(() => realState.call(ac) === 'suspended')).toBe(true);
+        const stoppedAt = ac.currentTime;
+
+        ctx.paused = false;
+        expect(await until(() => ac.currentTime > stoppedAt + 0.1)).toBe(true);
+        expect(level()).toBeLessThan(0.001);
     });
 
     it('should wait for the output delay before it suspends', async () =>

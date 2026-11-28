@@ -83,7 +83,7 @@ class WebAudioContext extends Filterable implements IMediaContext
     /** The paused state saved by a window blur, or undefined when no blur is waiting for its focus */
     private _pausedOnBlur: boolean | undefined;
 
-    /** The last node of the chain. It fades the output out before a blur pause and back in on resume. */
+    /** The last node of the chain, new at each pause. It fades the output out before a blur pause and back in on resume. */
     private _gate: GainNode;
 
     /** Pauses once the fade started by a blur has been played, or undefined when no blur is fading */
@@ -433,6 +433,22 @@ class WebAudioContext extends Filterable implements IMediaContext
         // flight (Firefox, Safari), so always ask for the state we want instead of checking it first
         if (paused)
         {
+            // The compressor holds back 6 ms and plays it after the pause, at the level it had before.
+            // A gain change can land a sample late, so swap in a gate that starts shut
+            try
+            {
+                this.compressor.disconnect(this._gate);
+                const gate = ctx.createGain();
+
+                gate.gain.value = 0;
+                this.compressor.connect(gate);
+                gate.connect(ctx.destination);
+                this._gate = gate;
+            }
+            catch
+            {
+                // The app has disconnected the compressor itself, so there is nothing to swap
+            }
             ctx.suspend()?.catch(ignore);
         }
         else
