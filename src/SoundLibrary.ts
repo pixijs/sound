@@ -231,6 +231,7 @@ class SoundLibrary
     /**
      * This disables auto-pause all playback when the window blurs (WebAudio only).
      * This is helpful to keep from playing sounds when the user switches tabs.
+     * The output fades out first, so sounds pause a little over a tenth of a second after the blur.
      * However, if you're running content within an iframe, this may be undesirable
      * and you should disable (set to `true`) this behavior.
      * @default false
